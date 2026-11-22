@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">게시글 끌어올리기</title>
+	<title xml:lang="en">Document Pull-up</title>
+	<description xml:lang="ko">게시글 작성자 및 관리자가 포인트를 차감하고 게시글을 목록 상단으로 끌어올릴 수 있는 모듈입니다.</description>
+	<description xml:lang="en">Allows the author or a manager to bump a document to the top of the list, optionally deducting points.</description>
+	<version>1.0.1</version>
+	<date>2026-05-28</date>
+	<category>service</category>
+	<author email_address="moonjikwang@naver.com" link="https://ddgglabs.org">
+		<name xml:lang="ko">딱따고기</name>
+		<name xml:lang="en">딱따고기</name>
+	</author>
+</module>

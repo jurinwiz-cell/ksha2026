@@ -1,0 +1,13 @@
+<query id="markCouponIssueUsed" action="update">
+  <tables><table name="ddggshop_coupon_issue" /></tables>
+  <columns>
+    <column name="used" default="Y" />
+    <column name="order_srl" var="order_srl" />
+    <column name="used_date" var="used_date" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="coupon_srl" var="coupon_srl" notnull="notnull" />
+    <condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" pipe="and" />
+    <condition operation="equal" column="used" default="N" pipe="and" />
+  </conditions>
+</query>

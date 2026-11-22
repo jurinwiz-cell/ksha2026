@@ -1,0 +1,15 @@
+<query id="getCategoryItemCounts" action="select">
+  <tables>
+    <table name="ddggshop_item" />
+  </tables>
+  <columns>
+    <column name="category_srl" />
+    <column name="count(*)" alias="cnt" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="status" var="status" />
+  </conditions>
+  <groups>
+    <group column="category_srl" />
+  </groups>
+</query>

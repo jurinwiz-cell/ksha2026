@@ -1,0 +1,88 @@
+<include target="_console_head.html" />
+
+<form method="get" action="./" class="cs-card cs-card-p" style="margin-bottom:14px;">
+  <input type="hidden" name="mid" value="{$shop_mid}" />
+  <input type="hidden" name="act" value="dispDdggshopConsoleOrders" />
+  <div class="cs-filter">
+    <div class="fcol" style="flex:1;min-width:240px;">
+      <span>검색어</span>
+      <div class="cs-row" style="gap:0;flex-wrap:nowrap;">
+        <select name="search_target" class="cs-select" style="width:104px;border-radius:2px 0 0 2px;border-right:none;">
+          <option value="orderer_name" selected="selected"|cond="$search_target=='orderer_name'">주문자명</option>
+          <option value="order_code" selected="selected"|cond="$search_target=='order_code'">주문번호</option>
+        </select>
+        <input type="text" name="q" value="{$q}" class="cs-input" style="border-radius:0 2px 2px 0;" placeholder="검색어 입력" />
+      </div>
+    </div>
+    <div class="fcol"><span>주문상태</span>
+      <select name="status" class="cs-select" style="width:120px;">
+        <option value="">전체</option>
+        <option value="pending" selected="selected"|cond="$cur_status=='pending'">입금대기</option>
+        <option value="paid" selected="selected"|cond="$cur_status=='paid'">결제완료</option>
+        <option value="preparing" selected="selected"|cond="$cur_status=='preparing'">배송준비</option>
+        <option value="shipping" selected="selected"|cond="$cur_status=='shipping'">배송중</option>
+        <option value="delivered" selected="selected"|cond="$cur_status=='delivered'">배송완료</option>
+        <option value="cancelled" selected="selected"|cond="$cur_status=='cancelled'">취소</option>
+        <option value="refunded" selected="selected"|cond="$cur_status=='refunded'">환불</option>
+      </select>
+    </div>
+    <div class="fcol"><span>결제수단</span>
+      <select name="pay_method" class="cs-select" style="width:110px;">
+        <option value="">전체</option>
+        <option value="toss" selected="selected"|cond="$cur_pay=='toss'">카드(토스)</option>
+        <option value="banktransfer" selected="selected"|cond="$cur_pay=='banktransfer'">무통장</option>
+      </select>
+    </div>
+    <div class="fcol"><span>기간</span>
+      <select name="period" class="cs-select" style="width:100px;" onchange="if(this.value){this.form.from_date.value='';this.form.to_date.value='';}">
+        <option value="">전체</option>
+        <option value="today" selected="selected"|cond="$cur_period=='today'">오늘</option>
+        <option value="7d" selected="selected"|cond="$cur_period=='7d'">7일</option>
+        <option value="1m" selected="selected"|cond="$cur_period=='1m'">1개월</option>
+        <option value="3m" selected="selected"|cond="$cur_period=='3m'">3개월</option>
+      </select>
+    </div>
+    <div class="fcol"><span>날짜 범위</span>
+      <div class="cs-row" style="gap:5px;">
+        <input type="date" name="from_date" value="{$cur_from}" class="cs-input" style="width:140px;" />
+        <span style="color:#9aa0aa;">~</span>
+        <input type="date" name="to_date" value="{$cur_to}" class="cs-input" style="width:140px;" />
+      </div>
+    </div>
+    <div class="fcol"><span>&nbsp;</span>
+      <div class="cs-row"><button type="submit" class="cs-btn">검색</button><a href="{$u_orders}" class="cs-btn ghost">초기화</a></div>
+    </div>
+  </div>
+</form>
+
+<div class="cs-card">
+  <div class="cs-card-head"><h3>주문 목록 <span style="color:#8a9099;font-weight:500;">{number_format($total_count)}건</span></h3>
+    <a class="cs-btn ghost sm" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrdersExcel','status',$cur_status,'q',$q,'search_target',$search_target,'pay_method',$cur_pay,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to)}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> 엑셀 다운로드
+    </a>
+  </div>
+  <table class="cs-table">
+    <thead><tr><th>주문번호</th><th>주문자</th><th>연락처</th><th class="cs-right">결제금액</th><th>결제수단</th><th>상태</th><th>주문일시</th><th class="cs-center">주문서</th></tr></thead>
+    <tbody>
+      <tr cond="!count($orders)"><td colspan="8" class="cs-empty">주문 내역이 없습니다.</td></tr>
+      <tr loop="$orders=>$o">
+        <td><a class="cs-id" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrderView','order_srl',$o->order_srl)}">{$o->order_code}</a></td>
+        <td>{$o->orderer_name}</td>
+        <td class="cs-muted">{$o->orderer_phone}</td>
+        <td class="cs-right cs-num">{number_format($o->payment_price)}원</td>
+        <td class="cs-muted">{$o->pay_method=='toss' ? '카드(토스)' : '무통장'}</td>
+        <td><span class="cs-st {$o->status}">{$o->status_label}</span></td>
+        <td class="cs-muted cs-num">{zdate($o->regdate,'Y.m.d H:i')}</td>
+        <td class="cs-center"><a class="cs-btn ghost sm" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrderPrint','order_srl',$o->order_srl)}" target="_blank" rel="noopener" title="주문서 출력">🖨 출력</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cs-pager" cond="$total_page > 1">
+    <a cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrders','status',$cur_status,'q',$q,'search_target',$search_target,'pay_method',$cur_pay,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page-1)}">‹</a>
+    <span class="on">{$cur_page}</span>
+    <span style="border:none;background:none;color:#9aa0aa;">/ {$total_page}</span>
+    <a cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrders','status',$cur_status,'q',$q,'search_target',$search_target,'pay_method',$cur_pay,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page+1)}">›</a>
+  </div>
+</div>
+
+<include target="_console_foot.html" />

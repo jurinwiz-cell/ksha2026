@@ -1,0 +1,13 @@
+<query id="getReviewStats" action="select">
+  <tables>
+    <table name="ddggshop_review" />
+  </tables>
+  <columns>
+    <column name="count(*)" alias="cnt" />
+    <column name="avg(rating)" alias="avg_rating" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="item_srl" var="item_srl" notnull="notnull" />
+    <condition operation="equal" column="status" var="status" />
+  </conditions>
+</query>

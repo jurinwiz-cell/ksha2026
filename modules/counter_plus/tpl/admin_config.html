@@ -1,0 +1,104 @@
+<div class="x_content">
+  <div class="x_page-header">
+    <h1>GA4 연동 설정</h1>
+  </div>
+
+  <!-- 성공/오류 메시지 -->
+  <!--@if($oauth_success)-->
+  <div class="x_alert x_alert-success">✅ 구글 계정 연동이 완료되었습니다.</div>
+  <!--@end-->
+  <!--@if($oauth_error)-->
+  <div class="x_alert x_alert-danger">❌ 구글 인증 실패: {$oauth_error} — 다시 시도해주세요.</div>
+  <!--@end-->
+
+  <!-- STEP 1: OAuth2 클라이언트 설정 -->
+  <div class="x_box x_box-default">
+    <div class="x_box-header">
+      <h3 class="x_box-title">STEP 1 &nbsp; Google Cloud OAuth2 클라이언트 정보</h3>
+    </div>
+    <div class="x_box-body">
+      <div class="x_alert x_alert-info" style="font-size:13px">
+        <strong>준비사항</strong><br>
+        Google Cloud Console → API 및 서비스 → 사용자 인증 정보 → <strong>OAuth 2.0 클라이언트 ID 만들기</strong> (유형: 웹 애플리케이션)<br>
+        승인된 리디렉션 URI에 아래 주소를 추가하세요:<br>
+        <code style="display:inline-block;margin-top:4px;padding:4px 8px;background:#f5f5f5;border-radius:3px">{$redirect_uri|noescape}</code>
+      </div>
+
+      <form method="post" action="" style="margin-top:16px">
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act"    value="procCounter_plusAdminConfig" />
+
+        <div class="x_form-group">
+          <label>GA4 속성 ID <small style="color:#999">(숫자만, 예: 15064118477)</small></label>
+          <input type="text" name="ga4_property_id" class="x_form-control" style="max-width:320px"
+                 value="{$ga4_property_id|noescape}" placeholder="15064118477" />
+        </div>
+        <div class="x_form-group" style="margin-top:12px">
+          <label>OAuth2 클라이언트 ID</label>
+          <input type="text" name="ga4_client_id" class="x_form-control" style="max-width:560px"
+                 value="{$ga4_client_id|noescape}" placeholder="123456789-abc...apps.googleusercontent.com" />
+        </div>
+        <div class="x_form-group" style="margin-top:12px">
+          <label>OAuth2 클라이언트 보안 비밀</label>
+          <input type="text" name="ga4_client_secret" class="x_form-control" style="max-width:400px"
+                 value="{$ga4_client_secret|noescape}" placeholder="GOCSPX-..." />
+        </div>
+        <div style="margin-top:16px">
+          <button type="submit" class="x_btn x_btn-primary">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- STEP 2: 구글 계정 연동 -->
+  <div class="x_box x_box-default">
+    <div class="x_box-header">
+      <h3 class="x_box-title">STEP 2 &nbsp; 구글 계정 연동</h3>
+    </div>
+    <div class="x_box-body">
+
+      <!--@if($is_connected)-->
+      <!-- 연동됨 -->
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span style="font-size:22px">✅</span>
+        <div>
+          <strong style="color:#27ae60">연동됨</strong>
+          <!--@if($ga4_connected_at)-->
+          <span style="color:#999;font-size:12px;margin-left:8px">({$ga4_connected_at} 연결)</span>
+          <!--@end-->
+        </div>
+        <form method="post" action="" style="margin:0">
+          <input type="hidden" name="module" value="admin" />
+          <input type="hidden" name="act"    value="procCounter_plusAdminOAuthRevoke" />
+          <button type="submit" class="x_btn x_btn-danger x_btn-sm"
+                  onclick="return confirm('구글 연동을 해제하시겠습니까?')">연동 해제</button>
+        </form>
+        <!--@if($auth_url)-->
+        <a href="{$auth_url|noescape}" class="x_btn x_btn-default x_btn-sm">다른 계정으로 재연동</a>
+        <!--@end-->
+      </div>
+
+      <!--@elseif($auth_url)-->
+      <!-- 미연동 + 클라이언트 정보 있음 -->
+      <p style="color:#666;margin-bottom:16px">
+        GA4 데이터를 가져올 구글 계정으로 로그인하세요.<br>
+        <small>해당 계정은 GA4 속성(ID: {$ga4_property_id|noescape})에 <strong>뷰어 이상</strong>의 권한이 있어야 합니다.</small>
+      </p>
+      <a href="{$auth_url|noescape}"
+         style="display:inline-flex;align-items:center;gap:10px;padding:10px 20px;background:#fff;border:1px solid #dadce0;border-radius:4px;text-decoration:none;color:#3c4043;font-size:14px;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.12)">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Google 계정으로 로그인
+      </a>
+
+      <!--@else-->
+      <!-- 클라이언트 정보 미입력 -->
+      <p style="color:#999">STEP 1에서 OAuth2 클라이언트 ID와 보안 비밀을 저장하면 연동 버튼이 나타납니다.</p>
+      <!--@end-->
+
+    </div>
+  </div>
+
+  <div style="margin-top:8px">
+    <a href="{getUrl('act','dispCounter_plusAdminStats')|noescape}" class="x_btn x_btn-default">← 통계로 돌아가기</a>
+  </div>
+</div>

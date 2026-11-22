@@ -1,0 +1,24 @@
+<query id="getTopItems" action="select">
+  <tables>
+    <table name="ddggshop_order_item" />
+    <table name="ddggshop_order" />
+  </tables>
+  <columns>
+    <column name="ddggshop_order_item.item_name" alias="item_name" />
+    <column name="sum(ddggshop_order_item.qty)" alias="qty" />
+    <column name="sum(ddggshop_order_item.subtotal)" alias="sales" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="ddggshop_order.order_srl" default="ddggshop_order_item.order_srl" />
+    <condition operation="in" column="ddggshop_order.status" var="status_list" pipe="and" />
+    <condition operation="more" column="ddggshop_order.regdate" var="from_date" pipe="and" />
+    <condition operation="less" column="ddggshop_order.regdate" var="to_date" pipe="and" />
+  </conditions>
+  <groups>
+    <group column="ddggshop_order_item.item_name" />
+  </groups>
+  <navigation>
+    <index var="sort_index" default="sales" order="desc" />
+    <list_count var="list_count" default="10" />
+  </navigation>
+</query>

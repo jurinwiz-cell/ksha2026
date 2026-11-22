@@ -1,0 +1,5 @@
+<table name="commerce_credit_balance">
+	<column name="member_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="balance" type="bigint" notnull="notnull" default="0" />
+	<column name="upddate" type="char" size="14" />
+</table>

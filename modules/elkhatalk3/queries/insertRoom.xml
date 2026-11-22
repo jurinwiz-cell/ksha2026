@@ -1,0 +1,10 @@
+<query action="insert">
+	<tables>
+		<table name="elkhatalk" />
+	</tables>
+	<columns>
+		<column name="regdate" var="regdate" filter="number" notnull="notnull" />
+		<column name="extra_vars" var="extra_vars" />
+		<column name="password" var="password" />
+	</columns>
+</query>

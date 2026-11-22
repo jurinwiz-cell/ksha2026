@@ -1,0 +1,45 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead"><h1>상품 문의 <span class="sub">{number_format($total_count)}건</span></h1></div>
+
+<!--@if(!count($qnas))-->
+<div class="dga-card"><div class="dga-empty">등록된 문의가 없습니다.</div></div>
+<!--@else-->
+<div class="dga-qnalist">
+  <div class="dga-qna" loop="$qnas=>$q">
+    <div class="dga-qna-head">
+      <div>
+        <span class="dga-qna-item">{$q->item_name}</span>
+        <span class="dga-qna-meta">{$q->member_name} · {zdate($q->regdate,'Y.m.d H:i')}<!--@if($q->is_secret=='Y')--> · 🔒 비밀글<!--@end--></span>
+      </div>
+      <span class="dga-badge {$q->answer ? 'paid' : 'pending'}">{$q->answer ? '답변완료' : '미답변'}</span>
+    </div>
+    <div class="dga-qna-q">{nl2br(escape($q->content))}</div>
+    <form action="./" method="post" onsubmit="return ddggAnswerQna(this,{$q->qna_srl});" class="dga-qna-answer">
+      <textarea name="answer" placeholder="답변을 입력하세요.">{$q->answer}</textarea>
+      <div class="dga-qna-actions">
+        <button type="submit" class="x_btn x_btn-primary x_btn-mini">답변 저장</button>
+        <button type="button" class="x_btn x_btn-mini" onclick="ddggDelQna({$q->qna_srl})">문의 삭제</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="dga-pager" cond="$total_page > 1">
+  <a class="x_btn x_btn-mini" cond="$cur_page>1" href="{getUrl('','module','admin','act','dispDdggshopAdminQna','page',$cur_page-1)}">이전</a>
+  <span>{$cur_page} / {$total_page}</span>
+  <a class="x_btn x_btn-mini" cond="$cur_page<$total_page" href="{getUrl('','module','admin','act','dispDdggshopAdminQna','page',$cur_page+1)}">다음</a>
+</div>
+<!--@end-->
+
+<script>
+function ddggAnswerQna(form, srl){
+  exec_json('ddggshop.procDdggshopAdminAnswerQna', { qna_srl: srl, answer: form.answer.value }, function(){ location.reload(); });
+  return false;
+}
+function ddggDelQna(srl){
+  if(!confirm('이 문의를 삭제할까요?')) return;
+  exec_json('ddggshop.procDdggshopAdminDeleteQna', { qna_srl: srl }, function(){ location.reload(); });
+}
+</script>
+
+<include target="_admin_foot.html" />

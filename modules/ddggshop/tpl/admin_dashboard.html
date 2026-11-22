@@ -1,0 +1,48 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead"><h1>대시보드</h1><span class="sub">한눈에 보는 쇼핑몰 현황</span></div>
+
+<div class="dga-stats">
+  <div class="dga-stat primary">
+    <div class="label">오늘 매출</div>
+    <div class="num">{number_format($sum_today->total_sales)}원</div>
+    <div class="sub">{number_format($sum_today->order_count)}건 결제</div>
+  </div>
+  <div class="dga-stat">
+    <div class="label">이번달 매출</div>
+    <div class="num">{number_format($sum_month->total_sales)}원</div>
+    <div class="sub">{number_format($sum_month->order_count)}건</div>
+  </div>
+  <div class="dga-stat">
+    <div class="label">누적 매출</div>
+    <div class="num">{number_format($sum_all->total_sales)}원</div>
+    <div class="sub">{number_format($sum_all->order_count)}건</div>
+  </div>
+  <div class="dga-stat warn">
+    <div class="label">입금대기 주문</div>
+    <div class="num">{number_format($cnt_pending)}건</div>
+    <div class="sub"><a href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList','status','pending')}">처리하러 가기 →</a></div>
+  </div>
+  <div class="dga-stat">
+    <div class="label">상품 / 품절</div>
+    <div class="num">{number_format($cnt_items)} <span style="font-size:15px;color:#d63939;">/ {number_format($cnt_soldout)}</span></div>
+    <div class="sub">등록 상품 수</div>
+  </div>
+</div>
+
+<h2>최근 주문</h2>
+<table class="x_table x_table-bordered">
+  <thead><tr><th>주문번호</th><th>주문자</th><th style="text-align:right;">금액</th><th>상태</th><th>일시</th><th></th></tr></thead>
+  <tbody>
+    <tr cond="!count($recent_orders)"><td colspan="6" style="text-align:center;color:#888;padding:20px;">주문이 없습니다.</td></tr>
+    <tr loop="$recent_orders=>$o">
+      <td>{$o->order_code}</td>
+      <td>{$o->orderer_name}</td>
+      <td style="text-align:right;">{number_format($o->payment_price)}원</td>
+      <td><span class="dga-badge {$o->status}">{$o->status_label}</span></td>
+      <td>{zdate($o->regdate,'Y.m.d H:i')}</td>
+      <td><a href="{getUrl('','module','admin','act','dispDdggshopAdminOrderView','order_srl',$o->order_srl)}" class="x_btn x_btn-mini">상세</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<include target="_admin_foot.html" />

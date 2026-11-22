@@ -1,0 +1,24 @@
+<table name="ddggshop_order">
+  <column name="order_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="order_code" type="varchar" size="30" notnull="notnull" unique="unique_order_code" />
+  <column name="member_srl" type="bignumber" default="0" index="idx_member" />
+  <column name="orderer_name" type="varchar" size="100" notnull="notnull" />
+  <column name="orderer_phone" type="varchar" size="30" />
+  <column name="orderer_email" type="varchar" size="120" />
+  <column name="order_password" type="varchar" size="100" />
+  <column name="total_price" type="number" default="0" notnull="notnull" />
+  <column name="delivery_fee" type="number" default="0" notnull="notnull" />
+  <column name="discount_price" type="number" default="0" notnull="notnull" />
+  <column name="coupon_code" type="varchar" size="40" />
+  <column name="used_point" type="number" default="0" notnull="notnull" />
+  <column name="payment_price" type="number" default="0" notnull="notnull" />
+  <column name="pay_method" type="varchar" size="20" index="idx_pay_method" />
+  <column name="pg_tid" type="varchar" size="100" />
+  <column name="status" type="varchar" size="20" default="pending" notnull="notnull" index="idx_status" />
+  <column name="memo" type="text" />
+  <column name="admin_memo" type="text" />
+  <column name="shipping_company" type="varchar" size="60" />
+  <column name="shipping_invoice" type="varchar" size="100" />
+  <column name="regdate" type="date" index="idx_regdate" />
+  <column name="paid_date" type="datetime" />
+</table>

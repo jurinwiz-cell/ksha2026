@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches: [main, devel]
+  pull_request:
+
+env:
+  PDFIUM_BUILD: "7763"
+
+jobs:
+  rust:
+    name: Rust (fmt / clippy / test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@cargo-nextest
+
+      - name: Cache pdfium
+        id: cache-pdfium
+        uses: actions/cache@v4
+        with:
+          path: pdfium/
+          key: pdfium-${{ env.PDFIUM_BUILD }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Fetch pdfium
+        if: steps.cache-pdfium.outputs.cache-hit != 'true'
+        run: bash scripts/fetch-pdfium.sh
+
+      - name: Set pdfium env
+        run: |
+          echo "PDFIUM_DYNAMIC_LIB_PATH=$(pwd)/pdfium/lib" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$(pwd)/pdfium/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --exclude rpdf-desktop --all-targets -- -D warnings
+      - name: Test (nextest + insta snapshot check)
+        run: cargo nextest run --workspace --exclude rpdf-desktop
+        env:
+          INSTA_UPDATE: "no"
+
+      - name: Run image regression tests
+        run: |
+          PDFIUM_DYNAMIC_LIB_PATH=$(pwd)/pdfium/lib \
+          cargo nextest run -p rpdf-render -- image_regression
+
+      - name: Upload diff artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-diff-${{ runner.os }}
+          path: /tmp/rpdf-diff/
+          retention-days: 7
+
+      - name: Upload linux snapshots for first-run commit
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots-linux-${{ github.sha }}
+          path: crates/rpdf-render/tests/snapshots/linux/
+          retention-days: 3
+
+  node:
+    name: Node (install)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@wasm-pack
+      - name: "Build WASM (studio file: 의존성 해소)"
+        run: wasm-pack build crates/rpdf-wasm --target web --out-name rpdf_wasm
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+  wasm:
+    name: WASM (wasm-pack build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.15.0
+
+      - name: wasm-pack build
+        run: |
+          wasm-pack build crates/rpdf-wasm --target web \
+            --out-dir ../../npm/core \
+            --out-name rpdf_core \
+            --scope rpdf
+          bash scripts/rename-wasm-package.sh
+          # rename 결과 검증 — silent failure 방지
+          grep '"name": "@rpdf/core"' npm/core/package.json || exit 1
+
+      - name: Bundle size check (gzip ≤ 2MB)
+        run: |
+          # .wasm 단독 체크 (.js 글루 코드 ~50KB 포함해도 여유 충분)
+          SIZE=$(gzip -c npm/core/rpdf_core_bg.wasm | wc -c)
+          echo "gzip 번들 크기: ${SIZE} bytes"
+          if [ "$SIZE" -gt 2097152 ]; then
+            echo "❌ 번들 크기 초과: ${SIZE} bytes (상한: 2097152)"
+            exit 1
+          fi
+          echo "✅ 번들 크기 통과: ${SIZE} bytes"
+
+  studio:
+    name: Studio (typecheck / lint / test / build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@wasm-pack
+      - name: Build WASM
+        run: wasm-pack build crates/rpdf-wasm --target web --out-name rpdf_wasm
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @rpdf/ui typecheck
+      - run: pnpm --filter @rpdf/ui build
+      - run: pnpm --filter @rpdf/ui test:unit
+      - run: pnpm --filter @rpdf/studio typecheck
+      - run: pnpm --filter @rpdf/studio lint
+      - run: pnpm --filter @rpdf/studio test:unit
+      - run: pnpm --filter @rpdf/studio build
+      - run: pnpm --filter @rpdf/desktop typecheck
+      - name: Install Playwright browsers
+        run: pnpm --filter @rpdf/studio exec playwright install chromium --with-deps
+      - run: pnpm --filter @rpdf/studio test:e2e

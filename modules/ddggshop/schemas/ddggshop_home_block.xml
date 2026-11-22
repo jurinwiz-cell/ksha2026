@@ -1,0 +1,14 @@
+<table name="ddggshop_home_block">
+  <column name="block_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="block_type" type="varchar" size="20" notnull="notnull" default="products" />
+  <column name="title" type="varchar" size="200" />
+  <column name="source_type" type="varchar" size="20" />
+  <column name="source_value" type="text" />
+  <column name="list_count" type="number" size="11" default="8" />
+  <column name="layout" type="varchar" size="10" default="grid" />
+  <column name="image" type="varchar" size="255" />
+  <column name="link" type="varchar" size="255" />
+  <column name="list_order" type="number" size="11" default="0" index="idx_list_order" />
+  <column name="status" type="char" size="1" default="Y" index="idx_status" />
+  <column name="regdate" type="date" />
+</table>

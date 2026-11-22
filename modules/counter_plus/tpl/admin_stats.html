@@ -1,0 +1,950 @@
+<div class="x_content">
+  <div class="x_page-header">
+    <h1>인기 게시물 통계 <small>TOP 20</small></h1>
+  </div>
+
+  <!-- 탭 네비게이션 -->
+  <ul class="x_nav x_nav-tabs" style="margin-bottom:20px">
+    <li <!--@if($tab=='rhymix')-->class="x_active"<!--@end-->>
+      <a href="{getUrl('act','dispCounter_plusAdminStats','tab','rhymix')|noescape}">Rhymix 조회수</a>
+    </li>
+    <li <!--@if($tab=='ga4')-->class="x_active"<!--@end-->>
+      <a href="{getUrl('act','dispCounter_plusAdminStats','tab','ga4')|noescape}">GA4</a>
+    </li>
+    <li style="float:right;margin-top:4px">
+      <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}" class="x_btn x_btn-default x_btn-xs">⚙ GA4 설정</a>
+    </li>
+  </ul>
+
+  <!-- ============================================================ -->
+  <!-- 탭1: Rhymix 조회수 (5개 서브탭)                              -->
+  <!-- ============================================================ -->
+  <!--@if($tab=='rhymix')-->
+
+  <!-- 서브탭 네비게이션 -->
+  <div style="display:flex;border-bottom:2px solid #ddd;margin-bottom:16px">
+    <button class="cprx-tab cprx-tab-active" data-panel="cprx-summary">전체</button>
+    <button class="cprx-tab" data-panel="cprx-posts">인기 게시물</button>
+    <button class="cprx-tab" data-panel="cprx-hourly">시간대별</button>
+    <button class="cprx-tab" data-panel="cprx-boards">게시판별</button>
+    <button class="cprx-tab" data-panel="cprx-members">회원별</button>
+  </div>
+
+  <!-- ── 서브탭: 전체 ── -->
+  <div id="cprx-summary" class="cprx-panel">
+
+    <!-- 오늘/주간/월간 총 조회수 -->
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:18px 12px">
+        <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">오늘</div>
+        <div style="font-size:34px;font-weight:700;color:#2c3e50">{$rx_summary['counts']['today']|number_format}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:4px">조회수</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:18px 12px">
+        <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">최근 7일</div>
+        <div style="font-size:34px;font-weight:700;color:#2980b9">{$rx_summary['counts']['week']|number_format}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:4px">조회수</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:18px 12px">
+        <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">최근 30일</div>
+        <div style="font-size:34px;font-weight:700;color:#8e44ad">{$rx_summary['counts']['month']|number_format}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:4px">조회수</div>
+      </div>
+    </div>
+
+    <!-- 인기 게시물 TOP 5 + 게시판별 TOP 5 (2열) -->
+    <div style="display:flex;gap:16px;margin-bottom:16px">
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">인기 게시물 TOP 5 <small style="color:#aaa;font-size:11px">주간</small></h3></div>
+        <div class="x_box-body" style="padding:0">
+          <!--@if(count($rx_summary['top5']) === 0)-->
+          <div style="padding:16px;text-align:center;color:#999;font-size:13px">데이터 없음</div>
+          <!--@else-->
+          <!--@foreach($rx_summary['top5'] as $ri => $doc)-->
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f5f5f5;font-size:13px">
+            <span style="font-weight:bold;color:<!--@if($ri<3)-->#e74c3c<!--@else-->#aaa<!--@end-->;width:18px;text-align:center">{@ echo $ri + 1 }</span>
+            <a href="{$doc->url|noescape}" target="_blank" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{$doc->title}</a>
+            <span style="color:#888;font-size:12px">{$doc->total_views|number_format}</span>
+          </div>
+          <!--@end-->
+          <!--@end-->
+        </div>
+      </div>
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">게시판별 조회수 TOP 5 <small style="color:#aaa;font-size:11px">주간</small></h3></div>
+        <div class="x_box-body">
+          <!--@if(count($rx_summary['boards']) === 0)-->
+          <div style="color:#999;font-size:13px">데이터 없음</div>
+          <!--@else-->
+          <!--@foreach($rx_summary['boards'] as $brd)-->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:13px">
+              <span>{$brd['board_name']}</span>
+              <span style="color:#555">{$brd['views']|number_format}</span>
+            </div>
+            <div style="background:#eee;border-radius:3px;height:8px">
+              <div style="background:#27ae60;border-radius:3px;height:8px;width:{$brd['pct']}%"></div>
+            </div>
+          </div>
+          <!--@end-->
+          <!--@end-->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 시간대별 막대 차트 (오늘, 간략) -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">시간대별 조회수 <small style="color:#aaa;font-size:11px">오늘</small></h3></div>
+      <div class="x_box-body">
+        <div style="display:flex;align-items:flex-end;height:80px;gap:2px">
+          <!--@foreach($rx_summary['hourly'] as $h)-->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+            <div style="width:100%;background:#3498db;border-radius:2px 2px 0 0;height:{$h['pct']}px;min-height:1px"
+                 title="{$h['hour']}시: {$h['count']}"></div>
+          </div>
+          <!--@end-->
+        </div>
+        <div style="display:flex;gap:2px;margin-top:4px">
+          <!--@foreach($rx_summary['hourly'] as $h)-->
+          <div style="flex:1;text-align:center;font-size:9px;color:#bbb"><!--@if($h['hour'] % 6 === 0)-->{$h['hour']}<!--@end--></div>
+          <!--@end-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 서브탭: 인기 게시물 ── -->
+  <div id="cprx-posts" class="cprx-panel" style="display:none">
+
+    <div class="x_box x_box-default">
+      <div class="x_box-body">
+        <form method="get" action="" class="x_form-inline">
+          <input type="hidden" name="module" value="admin" />
+          <input type="hidden" name="act"    value="dispCounter_plusAdminStats" />
+          <input type="hidden" name="tab"    value="rhymix" />
+
+          <div class="x_form-group" style="margin-right:8px">
+            <label style="margin-right:4px">기간</label>
+            <select name="period" class="x_form-control">
+              <option value="today" <!--@if($period=='today')-->selected<!--@end-->>오늘</option>
+              <option value="week"  <!--@if($period=='week') -->selected<!--@end-->>최근 7일</option>
+              <option value="month" <!--@if($period=='month')-->selected<!--@end-->>최근 30일</option>
+              <option value="all"   <!--@if($period=='all')  -->selected<!--@end-->>전체</option>
+            </select>
+          </div>
+
+          <div class="x_form-group" style="margin-right:8px">
+            <label style="margin-right:4px">게시판</label>
+            <select name="module_srl" class="x_form-control">
+              <option value="0" <!--@if($module_srl==0)-->selected<!--@end-->>전체 게시판</option>
+              <!--@foreach($board_list as $board)-->
+              <option value="{$board->module_srl}" <!--@if($module_srl==$board->module_srl)-->selected<!--@end-->>{$board->browser_title}</option>
+              <!--@end-->
+            </select>
+          </div>
+
+          <button type="submit" class="x_btn x_btn-primary">조회</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="x_box x_box-default">
+      <div class="x_box-header">
+        <h3 class="x_box-title">
+          {$period_labels[$period]}
+          <!--@if($module_srl > 0)-->
+            <!--@foreach($board_list as $_b)-->
+              <!--@if($_b->module_srl == $module_srl)-->· {$_b->browser_title}<!--@end-->
+            <!--@end-->
+          <!--@end-->
+          인기 게시물 TOP 20
+        </h3>
+      </div>
+      <div class="x_box-body" style="padding:0">
+        <!--@if(count($top_docs) === 0)-->
+        <div style="padding:30px;text-align:center;color:#999">조회된 데이터가 없습니다.</div>
+        <!--@else-->
+        <table class="x_table x_table-striped x_table-hover" style="margin:0">
+          <thead>
+            <tr>
+              <th style="width:50px;text-align:center">순위</th>
+              <th>제목</th>
+              <th style="width:140px">게시판</th>
+              <th style="width:100px">작성자</th>
+              <th style="width:80px;text-align:right">조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($top_docs as $rank => $doc)-->
+            <tr>
+              <td style="text-align:center;font-weight:bold;color:<!--@if($rank<3)-->#e74c3c<!--@else-->#666<!--@end-->">{@ echo $rank + 1 }</td>
+              <td><a href="{$doc->url|noescape}" target="_blank">{$doc->title}</a></td>
+              <td>{$doc->board_name}</td>
+              <td>{$doc->nick_name}</td>
+              <td style="text-align:right;font-weight:bold">{$doc->total_views|number_format}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+        <!--@end-->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 서브탭: 시간대별 ── -->
+  <div id="cprx-hourly" class="cprx-panel" style="display:none">
+
+    <!-- 시간대별 (0~23시) -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">시간대별 조회수 <small style="color:#aaa;font-size:11px">최근 7일</small></h3></div>
+      <div class="x_box-body">
+        <div style="display:flex;align-items:flex-end;height:120px;gap:3px">
+          <!--@foreach($rx_hourly['hourly'] as $h)-->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0">
+            <div style="width:100%;background:#3498db;border-radius:2px 2px 0 0;height:{$h['pct']}px;min-height:1px"
+                 title="{$h['hour']}시: {$h['count']}건"></div>
+          </div>
+          <!--@end-->
+        </div>
+        <div style="display:flex;gap:3px;margin-top:4px">
+          <!--@foreach($rx_hourly['hourly'] as $h)-->
+          <div style="flex:1;text-align:center;font-size:10px;color:#888"><!--@if($h['hour'] % 3 === 0)-->{$h['hour']}<!--@end--></div>
+          <!--@end-->
+        </div>
+        <!-- 피크 시간 텍스트 -->
+        <div style="margin-top:12px;font-size:13px;color:#555;text-align:right">
+          피크: <strong>{$rx_hourly['peak_hour']}시</strong> ({$rx_hourly['peak_count']|number_format}건)
+        </div>
+      </div>
+    </div>
+
+    <!-- 요일별 조회수 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">요일별 조회수 <small style="color:#aaa;font-size:11px">최근 7일</small></h3></div>
+      <div class="x_box-body">
+        <!--@foreach($rx_hourly['weekly'] as $day)-->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+          <div style="width:24px;text-align:center;font-weight:bold;color:#555">{$day['label']}</div>
+          <div style="flex:1;background:#eee;border-radius:3px;height:12px">
+            <div style="background:#e67e22;border-radius:3px;height:12px;width:{$day['pct']}%"></div>
+          </div>
+          <div style="width:70px;text-align:right;color:#888">{$day['count']|number_format}건</div>
+        </div>
+        <!--@end-->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 서브탭: 게시판별 ── -->
+  <div id="cprx-boards" class="cprx-panel" style="display:none">
+
+    <!-- 게시판별 총 조회수 랭킹 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">게시판별 총 조회수 <small style="color:#aaa;font-size:11px">주간</small></h3></div>
+      <div class="x_box-body">
+        <!--@if(count($rx_boards['ranking']) === 0)-->
+        <div style="color:#999;font-size:13px">데이터 없음</div>
+        <!--@else-->
+        <!--@foreach($rx_boards['ranking'] as $bi => $brd)-->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+          <div style="width:22px;text-align:center;font-weight:bold;color:<!--@if($bi<3)-->#e74c3c<!--@else-->#bbb<!--@end-->">{@ echo $bi + 1 }</div>
+          <div style="width:120px;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{$brd['board_name']}</div>
+          <div style="flex:1;background:#eee;border-radius:3px;height:10px">
+            <div style="background:#27ae60;border-radius:3px;height:10px;width:{$brd['pct']}%"></div>
+          </div>
+          <div style="width:80px;text-align:right;color:#555">{$brd['views']|number_format}건</div>
+        </div>
+        <!--@end-->
+        <!--@end-->
+      </div>
+    </div>
+
+    <!-- 상위 5개 게시판별 인기글 TOP 5 -->
+    <!--@foreach($rx_boards['board_docs'] as $bd)-->
+    <div class="x_box x_box-default">
+      <div class="x_box-header">
+        <h3 class="x_box-title">{$bd['board']['board_name']} — 인기글 TOP 5</h3>
+      </div>
+      <div class="x_box-body" style="padding:0">
+        <!--@if(count($bd['docs']) === 0)-->
+        <div style="padding:12px 16px;color:#999;font-size:13px">게시물 없음</div>
+        <!--@else-->
+        <!--@foreach($bd['docs'] as $bdi => $doc)-->
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f5f5f5;font-size:13px">
+          <span style="font-weight:bold;color:<!--@if($bdi<3)-->#e74c3c<!--@else-->#bbb<!--@end-->;width:18px;text-align:center">{@ echo $bdi + 1 }</span>
+          <a href="{$doc->url|noescape}" target="_blank" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{$doc->title}</a>
+          <span style="color:#888;font-size:12px">{$doc->total_views|number_format}</span>
+        </div>
+        <!--@end-->
+        <!--@end-->
+      </div>
+    </div>
+    <!--@end-->
+
+  </div>
+
+  <!-- ── 서브탭: 회원별 ── -->
+  <div id="cprx-members" class="cprx-panel" style="display:none">
+
+    <!-- 로그인 vs 비로그인 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">로그인 vs 비로그인 <small style="color:#aaa;font-size:11px">주간</small></h3></div>
+      <div class="x_box-body">
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="flex:1;text-align:center;padding:14px;background:#eaf4fb;border-radius:6px">
+            <div style="font-size:28px;font-weight:700;color:#2980b9">{@ echo $rx_members['ratio']['guest_pct'] }%</div>
+            <div style="font-size:12px;color:#555;margin-top:4px">👤 비로그인</div>
+            <div style="font-size:11px;color:#999">{@ echo number_format($rx_members['ratio']['guest']) }건</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:14px;background:#f0f9f4;border-radius:6px">
+            <div style="font-size:28px;font-weight:700;color:#27ae60">{@ echo $rx_members['ratio']['member_pct'] }%</div>
+            <div style="font-size:12px;color:#555;margin-top:4px">🔐 로그인</div>
+            <div style="font-size:11px;color:#999">{@ echo number_format($rx_members['ratio']['member']) }건</div>
+          </div>
+        </div>
+        <div style="background:#eee;border-radius:3px;height:8px;overflow:hidden">
+          <div style="background:#2980b9;height:8px;width:{@ echo $rx_members['ratio']['guest_pct'] }%;float:left"></div>
+          <div style="background:#27ae60;height:8px;width:{@ echo $rx_members['ratio']['member_pct'] }%;float:left"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 가장 많이 읽는 회원 TOP 10 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">가장 많이 읽는 회원 TOP 10 <small style="color:#aaa;font-size:11px">주간</small></h3></div>
+      <div class="x_box-body" style="padding:0">
+        <!--@if(count($rx_members['top_members']) === 0)-->
+        <div style="padding:20px;text-align:center;color:#999;font-size:13px">데이터 없음</div>
+        <!--@else-->
+        <table class="x_table x_table-striped" style="margin:0">
+          <thead>
+            <tr>
+              <th style="width:50px;text-align:center">순위</th>
+              <th>닉네임</th>
+              <th style="width:100px;text-align:right">읽은 수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($rx_members['top_members'] as $mi => $mem)-->
+            <tr>
+              <td style="text-align:center;font-weight:bold;color:<!--@if($mi<3)-->#e74c3c<!--@else-->#888<!--@end-->">{@ echo $mi + 1 }</td>
+              <td>{$mem->nick_name}</td>
+              <td style="text-align:right;font-weight:bold">{$mem->read_count|number_format}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+        <!--@end-->
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+  .cprx-tab {
+    padding: 8px 22px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: -2px;
+    transition: color .15s;
+  }
+  .cprx-tab:hover { color: #222; background: #f7f7f7; }
+  .cprx-tab-active { color: #337ab7; border-bottom-color: #337ab7; font-weight: bold; }
+  </style>
+  <script>
+  (function () {
+    var STORAGE_KEY = 'cprx_subtab';
+    var tabs   = document.querySelectorAll('.cprx-tab');
+    var panels = document.querySelectorAll('.cprx-panel');
+
+    function switchTab(targetPanel) {
+      tabs.forEach(function (t) { t.classList.remove('cprx-tab-active'); });
+      panels.forEach(function (p) { p.style.display = 'none'; });
+      var active = Array.prototype.filter.call(tabs, function (t) {
+        return t.dataset.panel === targetPanel;
+      })[0];
+      if (active) { active.classList.add('cprx-tab-active'); }
+      var panel = document.getElementById(targetPanel);
+      if (panel) { panel.style.display = 'block'; }
+      try { localStorage.setItem(STORAGE_KEY, targetPanel); } catch (e) {}
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () { switchTab(this.dataset.panel); });
+    });
+
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && document.getElementById(saved)) { switchTab(saved); }
+    } catch (e) {}
+  })();
+  </script>
+
+  <!--@end-->
+
+  <!-- ============================================================ -->
+  <!-- 탭2: GA4                                                     -->
+  <!-- ============================================================ -->
+  <!--@if($tab=='ga4')-->
+
+  <!-- GA4 기간 필터 -->
+  <div class="x_box x_box-default">
+    <div class="x_box-body">
+      <form method="get" action="" class="x_form-inline">
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act"    value="dispCounter_plusAdminStats" />
+        <input type="hidden" name="tab"    value="ga4" />
+
+        <div class="x_form-group" style="margin-right:8px">
+          <label style="margin-right:4px">기간</label>
+          <select name="ga4_days" class="x_form-control">
+            <option value="7"  <!--@if($ga4_days=='7') -->selected<!--@end-->>최근 7일</option>
+            <option value="30" <!--@if($ga4_days=='30')-->selected<!--@end-->>최근 30일</option>
+          </select>
+        </div>
+
+        <button type="submit" class="x_btn x_btn-primary">조회</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- GA4 서브탭 네비게이션 -->
+  <div style="display:flex;border-bottom:2px solid #ddd;margin-bottom:16px">
+    <button class="cpg4-tab cpg4-tab-active" data-panel="cpg4-summary">요약</button>
+    <button class="cpg4-tab" data-panel="cpg4-pages">인기 페이지</button>
+    <button class="cpg4-tab" data-panel="cpg4-visitors">방문자 분석</button>
+    <button class="cpg4-tab" data-panel="cpg4-realtime">실시간</button>
+  </div>
+
+  <!-- ── 서브탭: 요약 ── -->
+  <div id="cpg4-summary" class="cpg4-panel">
+
+    <!--@if(!$ga4_dashboard)-->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="padding:30px;text-align:center;color:#e67e22">
+        GA4 설정이 없습니다.
+        <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}">GA4 설정 페이지</a>에서 속성 ID와 구글 계정 연동을 완료해주세요.
+      </div>
+    </div>
+    <!--@else-->
+
+    <!-- 총 지표 요약 카드 -->
+    <!--@if($ga4_dashboard['summary'])-->
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:14px 8px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">사용자</div>
+        <div style="font-size:26px;font-weight:700;color:#2980b9">{@ echo number_format($ga4_dashboard['summary']['users']) }</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">최근 {$ga4_days}일</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:14px 8px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">세션</div>
+        <div style="font-size:26px;font-weight:700;color:#27ae60">{@ echo number_format($ga4_dashboard['summary']['sessions']) }</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">최근 {$ga4_days}일</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:14px 8px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">페이지뷰</div>
+        <div style="font-size:26px;font-weight:700;color:#8e44ad">{@ echo number_format($ga4_dashboard['summary']['pageviews']) }</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">최근 {$ga4_days}일</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:14px 8px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">평균 세션시간</div>
+        <div style="font-size:20px;font-weight:700;color:#e67e22;margin-top:4px">{$ga4_dashboard['summary']['avg_time']}</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">세션당</div>
+      </div>
+      <div class="x_box x_box-default" style="flex:1;margin:0;text-align:center;padding:14px 8px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">이탈률</div>
+        <div style="font-size:26px;font-weight:700;color:#e74c3c">{$ga4_dashboard['summary']['bounce_rate']}%</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px">세션 기준</div>
+      </div>
+    </div>
+    <!--@end-->
+
+    <!-- 실시간 접속자 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
+        <!--@if($ga4_dashboard['active_users_error'])-->
+        <div>
+          <div style="font-size:15px;font-weight:bold;color:#e67e22">⚠ 실시간 API 오류</div>
+          <div style="font-size:12px;color:#999;margin-top:4px">{@ echo htmlspecialchars($ga4_dashboard['active_users_error']) }</div>
+        </div>
+        <!--@else-->
+        <div style="font-size:48px;font-weight:700;color:#27ae60;line-height:1">{$ga4_dashboard['active_users']}</div>
+        <div>
+          <div style="font-size:15px;font-weight:bold">지금 접속 중인 사용자</div>
+          <div style="font-size:12px;color:#999;margin-top:2px">실시간 (최근 30분)</div>
+        </div>
+        <div style="width:10px;height:10px;background:#27ae60;border-radius:50%;box-shadow:0 0 0 4px rgba(39,174,96,.2);margin-left:auto"></div>
+        <!--@end-->
+      </div>
+    </div>
+
+    <!-- 기기별 + 신규/재방문 (2열) -->
+    <div style="display:flex;gap:16px;margin-bottom:16px">
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">기기별 비율</h3></div>
+        <div class="x_box-body">
+          <!--@foreach($ga4_dashboard['devices'] as $dev)-->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:13px">
+              <span>{$dev['icon']} {$dev['label']}</span>
+              <span style="color:#555">{$dev['count']|number_format}세션 ({$dev['percent']}%)</span>
+            </div>
+            <div style="background:#eee;border-radius:3px;height:8px">
+              <div style="background:#3498db;border-radius:3px;height:8px;width:{$dev['percent']}%"></div>
+            </div>
+          </div>
+          <!--@end-->
+        </div>
+      </div>
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">신규 vs 재방문</h3></div>
+        <div class="x_box-body">
+          <div style="display:flex;gap:12px;margin-bottom:12px">
+            <div style="flex:1;text-align:center;padding:14px;background:#eaf4fb;border-radius:6px">
+              <div style="font-size:26px;font-weight:700;color:#2980b9">{@ echo $ga4_dashboard['user_types']['new_pct'] }%</div>
+              <div style="font-size:12px;color:#555;margin-top:4px">🆕 신규</div>
+              <div style="font-size:11px;color:#999">{@ echo number_format($ga4_dashboard['user_types']['new']) }세션</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:14px;background:#f0f9f4;border-radius:6px">
+              <div style="font-size:26px;font-weight:700;color:#27ae60">{@ echo $ga4_dashboard['user_types']['ret_pct'] }%</div>
+              <div style="font-size:12px;color:#555;margin-top:4px">🔁 재방문</div>
+              <div style="font-size:11px;color:#999">{@ echo number_format($ga4_dashboard['user_types']['ret']) }세션</div>
+            </div>
+          </div>
+          <div style="background:#eee;border-radius:3px;height:8px;overflow:hidden">
+            <div style="background:#2980b9;height:8px;width:{@ echo $ga4_dashboard['user_types']['new_pct'] }%;float:left"></div>
+            <div style="background:#27ae60;height:8px;width:{@ echo $ga4_dashboard['user_types']['ret_pct'] }%;float:left"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 유입 경로 (상위 3개) -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">유입 경로 (상위 3개)</h3></div>
+      <div class="x_box-body">
+        <!--@if(count($ga4_dashboard['sources']) === 0)-->
+        <div style="color:#999;font-size:13px">데이터가 없습니다.</div>
+        <!--@else-->
+        <!--@foreach($ga4_dashboard['sources'] as $src_i => $src)-->
+          <!--@if($src_i < 3)-->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+            <div style="width:90px;color:#333">{$src['label']}</div>
+            <div style="flex:1;background:#eee;border-radius:3px;height:10px">
+              <div style="background:#9b59b6;border-radius:3px;height:10px;width:{$src['bar_pct']}%"></div>
+            </div>
+            <div style="width:70px;text-align:right;color:#555">{$src['count']|number_format}</div>
+          </div>
+          <!--@end-->
+        <!--@end-->
+        <!--@end-->
+      </div>
+    </div>
+
+    <!--@end-->
+  </div>
+
+  <!-- ── 서브탭: 인기 페이지 ── -->
+  <div id="cpg4-pages" class="cpg4-panel" style="display:none">
+    <div class="x_box x_box-default">
+      <div class="x_box-header">
+        <h3 class="x_box-title">
+          GA4 인기 페이지 TOP 20
+          <small style="color:#999;font-size:12px;margin-left:8px">최근 {$ga4_days}일</small>
+        </h3>
+      </div>
+      <div class="x_box-body" style="padding:0">
+
+        <!--@if($ga4_result['error'] == 'not_configured')-->
+        <div style="padding:30px;text-align:center;color:#e67e22">
+          GA4 설정이 없습니다.
+          <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}">GA4 설정 페이지</a>에서 설정해주세요.
+        </div>
+
+        <!--@elseif($ga4_result['error'] == 'api_error')-->
+        <div style="padding:24px 30px;color:#721c24;background:#f8d7da;border-bottom:1px solid #f5c6cb">
+          <strong>GA4 API 호출 실패</strong>
+          <!--@if($ga4_result['error_detail'])-->
+          <div style="margin-top:6px;font-size:12px;font-family:monospace;color:#555">{$ga4_result['error_detail']}</div>
+          <!--@end-->
+          <div style="margin-top:8px;font-size:12px">
+            → <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}">GA4 설정 페이지</a>에서 원인을 확인하세요.
+          </div>
+        </div>
+
+        <!--@elseif(count($ga4_result['rows']) === 0)-->
+        <div style="padding:30px;text-align:center;color:#999">GA4 데이터가 없습니다.</div>
+
+        <!--@else-->
+        <table class="x_table x_table-striped x_table-hover" style="margin:0">
+          <thead>
+            <tr>
+              <th style="width:50px;text-align:center">순위</th>
+              <th>제목 / 경로</th>
+              <th style="width:130px">게시판</th>
+              <th style="width:90px">작성자</th>
+              <th style="width:80px;text-align:right">평균체류</th>
+              <th style="width:90px;text-align:right">페이지뷰</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($ga4_result['rows'] as $rank => $doc)-->
+            <tr>
+              <td style="text-align:center;font-weight:bold;color:<!--@if($rank<3)-->#e74c3c<!--@else-->#666<!--@end-->">{@ echo $rank + 1 }</td>
+              <td>
+                <!--@if($doc->matched)-->
+                <a href="{$doc->url|noescape}" target="_blank">{$doc->title}</a>
+                <!--@else-->
+                <span style="color:#999;font-size:12px">{$doc->title}</span>
+                <!--@end-->
+              </td>
+              <td>{$doc->board_name}</td>
+              <td>{$doc->nick_name}</td>
+              <td style="text-align:right;color:#e67e22;font-size:12px">{$doc->avg_time}</td>
+              <td style="text-align:right;font-weight:bold">{$doc->views|number_format}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+        <!--@end-->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 서브탭: 방문자 분석 ── -->
+  <div id="cpg4-visitors" class="cpg4-panel" style="display:none">
+
+    <!--@if(!$ga4_dashboard)-->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="padding:30px;text-align:center;color:#e67e22">
+        GA4 설정이 없습니다.
+        <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}">GA4 설정 페이지</a>에서 설정해주세요.
+      </div>
+    </div>
+    <!--@else-->
+
+    <!-- 일별 방문자 추이 차트 -->
+    <!--@if(count($ga4_dashboard['daily_trend']) > 0)-->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">일별 방문자 추이 <small style="color:#999;font-size:12px;margin-left:8px">최근 {$ga4_days}일</small></h3></div>
+      <div class="x_box-body">
+        <canvas id="cpg4-trend-chart" style="max-height:220px;width:100%"></canvas>
+        <script>
+        (function() {
+          var raw = {@ echo json_encode($ga4_dashboard['daily_trend']) };
+          var labels   = raw.map(function(r){ return r.date.substring(5); });
+          var sessions = raw.map(function(r){ return r.sessions; });
+          var users    = raw.map(function(r){ return r.users; });
+
+          function loadChart() {
+            if (typeof Chart === 'undefined') {
+              var s = document.createElement('script');
+              s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';
+              s.onload = drawChart;
+              document.head.appendChild(s);
+            } else { drawChart(); }
+          }
+
+          function drawChart() {
+            var ctx = document.getElementById('cpg4-trend-chart').getContext('2d');
+            new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: '세션',
+                    data: sessions,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52,152,219,.1)',
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: labels.length > 20 ? 0 : 3,
+                  },
+                  {
+                    label: '사용자',
+                    data: users,
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39,174,96,.08)',
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: labels.length > 20 ? 0 : 3,
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                  x: { ticks: { maxTicksLimit: 10, font: { size: 11 } } },
+                  y: { beginAtZero: true, ticks: { font: { size: 11 } } }
+                }
+              }
+            });
+          }
+          loadChart();
+        })();
+        </script>
+      </div>
+    </div>
+    <!--@end-->
+
+    <!-- 국가별 TOP 10 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">국가별 방문자 TOP 10</h3></div>
+      <div class="x_box-body" style="padding:0">
+        <!--@if(count($ga4_dashboard['countries']) === 0)-->
+        <div style="padding:20px;color:#999;text-align:center;font-size:13px">데이터가 없습니다.</div>
+        <!--@else-->
+        <table class="x_table x_table-striped" style="margin:0">
+          <thead>
+            <tr>
+              <th style="width:40px;text-align:center">#</th>
+              <th>국가</th>
+              <th style="width:100px;text-align:right">세션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($ga4_dashboard['countries'] as $ci => $c)-->
+            <tr>
+              <td style="text-align:center;color:#999;font-size:12px">{@ echo $ci + 1 }</td>
+              <td>{$c['flag']} {$c['name']}</td>
+              <td style="text-align:right;font-weight:bold">{$c['sessions']|number_format}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+        <!--@end-->
+      </div>
+    </div>
+
+    <!-- 기기별 상세 + 유입 경로 (2열) -->
+    <div style="display:flex;gap:16px;margin-bottom:16px">
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">기기별 상세</h3></div>
+        <div class="x_box-body">
+          <!--@foreach($ga4_dashboard['devices'] as $dev)-->
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px">
+              <span style="font-weight:bold">{$dev['icon']} {$dev['label']}</span>
+              <span style="color:#555">{$dev['count']|number_format}세션 ({$dev['percent']}%)</span>
+            </div>
+            <div style="background:#eee;border-radius:3px;height:10px">
+              <div style="background:#3498db;border-radius:3px;height:10px;width:{$dev['percent']}%"></div>
+            </div>
+          </div>
+          <!--@end-->
+        </div>
+      </div>
+
+      <div class="x_box x_box-default" style="flex:1;margin:0">
+        <div class="x_box-header"><h3 class="x_box-title">유입 경로 TOP 5</h3></div>
+        <div class="x_box-body">
+          <!--@if(count($ga4_dashboard['sources']) === 0)-->
+          <div style="color:#999;font-size:13px">데이터가 없습니다.</div>
+          <!--@else-->
+          <!--@foreach($ga4_dashboard['sources'] as $src)-->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+            <div style="width:90px;color:#333">{$src['label']}</div>
+            <div style="flex:1;background:#eee;border-radius:3px;height:10px">
+              <div style="background:#9b59b6;border-radius:3px;height:10px;width:{$src['bar_pct']}%"></div>
+            </div>
+            <div style="width:70px;text-align:right;color:#555">{$src['count']|number_format}</div>
+          </div>
+          <!--@end-->
+          <!--@end-->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 소스/매체 상세 -->
+    <!--@if(count($ga4_dashboard['source_medium']) > 0)-->
+    <div class="x_box x_box-default">
+      <div class="x_box-header"><h3 class="x_box-title">유입 소스/매체 상세 TOP 10</h3></div>
+      <div class="x_box-body" style="padding:0">
+        <table class="x_table x_table-striped" style="margin:0">
+          <thead>
+            <tr>
+              <th style="width:36px;text-align:center">#</th>
+              <th>소스 / 매체</th>
+              <th style="width:200px">비율</th>
+              <th style="width:80px;text-align:right">세션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($ga4_dashboard['source_medium'] as $smi => $sm)-->
+            <tr>
+              <td style="text-align:center;color:#999;font-size:12px">{@ echo $smi + 1 }</td>
+              <td style="font-size:13px">{$sm['source_medium']}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div style="flex:1;background:#eee;border-radius:3px;height:8px">
+                    <div style="background:#9b59b6;border-radius:3px;height:8px;width:{$sm['bar_pct']}%"></div>
+                  </div>
+                  <span style="font-size:11px;color:#777;width:36px;text-align:right">{$sm['pct']}%</span>
+                </div>
+              </td>
+              <td style="text-align:right;font-weight:bold">{$sm['sessions']|number_format}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!--@end-->
+
+    <!--@end-->
+  </div>
+
+  <!-- ── 서브탭: 실시간 ── -->
+  <div id="cpg4-realtime" class="cpg4-panel" style="display:none">
+
+    <!--@if(!$ga4_realtime || $ga4_realtime['error'] == 'not_configured')-->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="padding:30px;text-align:center;color:#e67e22">
+        GA4 설정이 없습니다.
+        <a href="{getUrl('act','dispCounter_plusAdminConfig')|noescape}">GA4 설정 페이지</a>에서 설정해주세요.
+      </div>
+    </div>
+
+    <!--@elseif($ga4_realtime['error'])-->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="padding:24px 30px;color:#721c24;background:#f8d7da">
+        <strong>실시간 데이터 오류:</strong> {@ echo htmlspecialchars($ga4_realtime['error']) }
+      </div>
+    </div>
+
+    <!--@else-->
+
+    <!-- 실시간 접속자 수 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-body" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
+        <div style="font-size:56px;font-weight:700;color:<!--@if($ga4_realtime['active_users'] > 0)-->#27ae60<!--@else-->#aaa<!--@end-->;line-height:1">{$ga4_realtime['active_users']}</div>
+        <div>
+          <div style="font-size:16px;font-weight:bold">지금 접속 중인 사용자</div>
+          <div style="font-size:13px;color:#999;margin-top:4px">
+            실시간 (최근 30분) · <span id="cprx-rt-updated">페이지 로드 시각 기준</span>
+          </div>
+        </div>
+        <!--@if($ga4_realtime['active_users'] > 0)-->
+        <div style="width:12px;height:12px;background:#27ae60;border-radius:50%;box-shadow:0 0 0 5px rgba(39,174,96,.2);margin-left:auto"></div>
+        <!--@else-->
+        <div style="width:12px;height:12px;background:#ccc;border-radius:50%;margin-left:auto"></div>
+        <!--@end-->
+      </div>
+    </div>
+
+    <!-- 현재 보고 있는 페이지 -->
+    <div class="x_box x_box-default">
+      <div class="x_box-header" style="display:flex;align-items:center;justify-content:space-between">
+        <h3 class="x_box-title">지금 보고 있는 페이지</h3>
+        <button id="cprx-rt-refresh" class="x_btn x_btn-default x_btn-xs" style="margin-right:8px">새로고침</button>
+      </div>
+      <div class="x_box-body" style="padding:0">
+        <!--@if(count($ga4_realtime['pages']) === 0)-->
+        <div style="padding:20px;text-align:center;color:#999;font-size:13px">현재 활성 페이지 없음</div>
+        <!--@else-->
+        <table class="x_table x_table-striped" style="margin:0">
+          <thead>
+            <tr>
+              <th>페이지 제목</th>
+              <th style="width:80px;text-align:right">접속자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--@foreach($ga4_realtime['pages'] as $pg)-->
+            <tr>
+              <td style="font-size:13px">{$pg['title']}</td>
+              <td style="text-align:right;font-weight:bold;color:#27ae60">{$pg['users']}</td>
+            </tr>
+            <!--@end-->
+          </tbody>
+        </table>
+        <!--@end-->
+      </div>
+    </div>
+
+    <script>
+    (function () {
+      var btn = document.getElementById('cprx-rt-refresh');
+      var lbl = document.getElementById('cprx-rt-updated');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        btn.textContent = '로딩 중…';
+        var url = location.href.replace(/#.*$/, '');
+        if (url.indexOf('tab=ga4') === -1) {
+          url += (url.indexOf('?') === -1 ? '?' : '&') + 'tab=ga4';
+        }
+        location.href = url;
+      });
+    })();
+    </script>
+
+    <!--@end-->
+  </div>
+
+  <style>
+  .cpg4-tab {
+    padding: 8px 22px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: -2px;
+    transition: color .15s;
+  }
+  .cpg4-tab:hover { color: #222; background: #f7f7f7; }
+  .cpg4-tab-active { color: #337ab7; border-bottom-color: #337ab7; font-weight: bold; }
+  </style>
+  <script>
+  (function () {
+    var STORAGE_KEY = 'cpg4_subtab';
+    var tabs   = document.querySelectorAll('.cpg4-tab');
+    var panels = document.querySelectorAll('.cpg4-panel');
+
+    function switchTab(targetPanel) {
+      tabs.forEach(function (t) { t.classList.remove('cpg4-tab-active'); });
+      panels.forEach(function (p) { p.style.display = 'none'; });
+      var active = Array.prototype.filter.call(tabs, function (t) {
+        return t.dataset.panel === targetPanel;
+      })[0];
+      if (active) { active.classList.add('cpg4-tab-active'); }
+      var panel = document.getElementById(targetPanel);
+      if (panel) { panel.style.display = 'block'; }
+      try { localStorage.setItem(STORAGE_KEY, targetPanel); } catch (e) {}
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () { switchTab(this.dataset.panel); });
+    });
+
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && document.getElementById(saved)) { switchTab(saved); }
+    } catch (e) {}
+  })();
+  </script>
+
+  <!--@end-->
+
+</div>

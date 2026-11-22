@@ -1,0 +1,13 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_public" />
+	</tables>
+	<conditions>
+		<condition operation="in" column="room" var="room" />
+		<condition operation="in" column="pk" var="pk" pipe="and" />
+	</conditions>
+	<navigation>
+		<index default="pk" order="desc" />
+		<list_count var="list_count" default="20" />
+	</navigation>
+</query>

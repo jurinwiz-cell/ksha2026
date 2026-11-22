@@ -1,0 +1,19 @@
+<query id="insertHomeBlock" action="insert">
+  <tables>
+    <table name="ddggshop_home_block" />
+  </tables>
+  <columns>
+    <column name="block_srl" var="block_srl" notnull="notnull" />
+    <column name="block_type" var="block_type" default="products" />
+    <column name="title" var="title" />
+    <column name="source_type" var="source_type" />
+    <column name="source_value" var="source_value" />
+    <column name="list_count" var="list_count" default="8" />
+    <column name="layout" var="layout" default="grid" />
+    <column name="image" var="image" />
+    <column name="link" var="link" />
+    <column name="list_order" var="list_order" default="0" />
+    <column name="status" var="status" default="Y" />
+    <column name="regdate" var="regdate" default="curdate()" />
+  </columns>
+</query>

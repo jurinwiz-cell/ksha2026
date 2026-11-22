@@ -1,0 +1,132 @@
+<?php
+
+namespace Rhymix\Modules\Allbandazole\Models;
+
+/**
+ * 기본 블랙리스트
+ */
+class Blacklist
+{
+	/**
+	 * User-Agent
+	 */
+	public const USER_AGENTS = [
+		'Adsbot',
+		'AhrefsBot',
+		'AI2Bot',
+		'Amazonbot',
+		'anthropic-ai',
+		'Applebot',
+		'Arachni',
+		'AwarioBot',
+		'Baiduspider',
+		'Barkrowler',
+		'bbot',
+		'BLEXBot',
+		'brands-bot',
+		'Bytedance',
+		'Bytespider',
+		'CCBot',
+		'Claude-Web',
+		'ClaudeBot',
+		'cohere-ai',
+		'ComVoy',
+		'CriteoBot',
+		'dataforseo-bot',
+		'Diffbot',
+		'DotBot',
+		'Exabot',
+		'Eyeotabot',
+		'FacebookBot',
+		'FriendlyCrawler',
+		'GoogleOther',
+		'GPTBot',
+		'GrapeshotCrawler',
+		'heritrix',
+		'iaskspider',
+		'ICC-Crawler',
+		'ImagesiftBot',
+		'img2dataset',
+		'integralads',
+		'InternetMeasurement',
+		'ISSCyberRiskCrawler',
+		'Kangaroo Bot',
+		'LieBaoFast',
+		'MegaIndex',
+		'meta-externalagent',
+		'meta-externalfetcher',
+		'meta-webindexer',
+		'MicroMessenger',
+		'MJ12bot',
+		'OAI-SearchBot',
+		'omgili',
+		'omgilibot',
+		'PerplexityBot',
+		'PetalBot',
+		'PhantomJS',
+		'SBIntuitionsBot',
+		'Scrapy',
+		'SemrushBot',
+		'serpstatbot',
+		'Sidetrade indexer bot',
+		'Timpibot',
+		'TinyTestBot',
+		'Turnitin',
+		'UCBrowser',
+		'VelenPublicWebCrawler',
+		'Webzio-Extended',
+		'WordPress',
+		'YouBot',
+		'zgrab',
+	];
+
+	/**
+	 * IP Blocks
+	 */
+	public const IP_BLOCKS = [
+		'222.239.104.0/24',
+		'125.132.9.0/24',
+	];
+
+	/**
+	 * Public Clouds
+	 */
+	public const PUBLIC_CLOUDS = [
+		'us' => [
+			'aws' => 'AWS',
+			'azure' => 'Azure',
+			'digitalocean' => 'DigitalOcean',
+			'gcp' => 'Google Cloud (GCP)',
+			'linode' => 'Linode (Akamai)',
+			'oracle' => 'Oracle Cloud',
+			'vultr' => 'Vultr',
+		],
+		'eu' => [
+			'contabo' => 'Contabo',
+			'hetzner' => 'Hetzner',
+			'ovh' => 'OVH',
+			'scaleway' => 'Scaleway',
+		],
+		'cn' => [
+			'alibaba' => 'Alibaba Cloud',
+			'huawei' => 'Huawei Cloud',
+			'tencent' => 'Tencent Cloud',
+		],
+		'kr' => [
+			'smileserv' => 'Smileserv (cloudv, iwinv)',
+		]
+	];
+
+	/**
+	 * GET parameters used by heuristic blocking
+	 */
+	public const GET_PARAMS = [
+		'page',
+		'cpage',
+		'listStyle',
+		'sort_index',
+		'order_type',
+		'division',
+		'last_division',
+	];
+}

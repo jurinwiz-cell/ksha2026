@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주택별 통합 시설 및 운영 관리 시스템 (Sheet-19)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* 부드러운 스크롤바 디자인 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+	<body>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[01 성산] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">01 성산</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">크린원 / 화요일<br>(22.06.14 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">KT텔레캅<br>올레KT CCTV<br>(3년 렌탈 후 소유)</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">토지임대부 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px; font-size:11px;">www.kt-kps.com<br>ID: tf002767<br>pw: a01067997317!<br>프로그램: RMS<br>녹화기: 2층 통신함</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">마포구 성산동 59-12</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#e2f0d9;">구일환경(마포점)-마포그린 상호변경<br>26.03.19 완료<br>26.09.18 예정<br>T.02-1877-3484</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">8면 / 9개</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">11 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.06.12 / -</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; font-size:11px;">메리츠화재<br>(2025.8.12.만기)</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px;">다</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; text-align:center;">X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px;">SH 청년주택부</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; font-size:11px;">5회차<br>240601~260531<br>2%인상</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">X / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">이혁표 대리<br>02-6940-8882</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center;">1 개</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[02 창천] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">02 창천</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">크린원 / 월요일<br>(22.07.17 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">딜라이브CCTV 미쁘다<br>(3년 렌탈 후 소유)</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">토지임대부 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px;">커뮤니티룸 인터넷 이용 가능</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">서대문구 창천동 388</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#e2f0d9;">신성정화<br>26.02.18 청소완료 예정<br>T.02-394-8880</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">6면 / 1개</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">11 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.06.12 / -</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; color:#cbd5e1;">-</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; font-size:11px;">공용 : #3250#<br>커뮤 : 0129* (1층 101호)<br>CCTV : asdf<br>마스터 : 9999</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px;">SH 청년주택부</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; font-size:11px;">5회차<br>241101~261031<br>2%인상</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">O / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">이혁표 대리<br>02-6940-8882</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center;">1 개</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[03 행운] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">03 행운</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">부자청소 / 수요일<br>(22.04.01 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">딜라이브CCTV 미쁘다<br>(3년 렌탈 후 소유)</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">토지임대부 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px; color:#cbd5e1;">-</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">관악구 봉천동 100-191</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#e2f0d9;">네오환경<br>26.03.06 청소예정<br>T.02-876-6655</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">1층 4, 지하1층 5 / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">18 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.06.12 / 박진환(3급)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; color:#cbd5e1;">-</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px;">101호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; font-size:11px;">공용:종7178<br>커뮤:654321*(지하1층)<br>지하:654321*<br>CCTV:1236<br>가스검침 자물쇠:3176*</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px;">SH 청년주택부</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; font-size:11px;">4회차<br>230701~250630<br>2%인상</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">X / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">이혁표 대리<br>02-6940-8882</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[04 삼송] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">04 삼송</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">크린원 / 화요일<br>(21.11.01 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">제이엠시스템</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">LH공공지원 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px;">시설폰으로 가능<br>어플 : JNR Viewer</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">고양시 덕양구 삼송동 315-4 외 1</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#f1f5f9; color:#64748b;">청소X<br>(하수처리장 직결)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">14면 / 13개</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">14 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.06.12 / 양희경(3급)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; color:#cbd5e1;">-</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px;">A101, B101</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; font-size:11px;">공용 : #1333<br>열쇠함: 무인8번 0129*</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px; font-size:11px;">HUG (동부주택도시금융센터)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; color:#cbd5e1; text-align:center;">-</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">찾아야 함 / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">김태면<br>02-3771-6295</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center; color:#cbd5e1;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[05 대조] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">05 대조</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">크린원 / 월요일<br>(21.11.01 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">ADT캡스</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">SH토지지원 리츠 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px; font-size:11px;"><a href="https://new.capslive.co.kr" target="_blank">캡스라이브 링크</a><br>ID : green202<br>PW : gbf3d4dpif<br>프로그램: ADT EYE 2.0</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">은평구 대조동 221-43 외 1</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#e2f0d9;">성신환경<br>26.06.12 청소예정<br>T.02-354-2662</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">8면 / 16개</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">16 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.06.12 / 김명균(3급)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; font-size:11px;">삼성화재<br>2026.12.16만기<br>이오성 010-7474-1411</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px;">101호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; text-align:center;">공용 : #0619</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px;">서울투자운용</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; color:#cbd5e1; text-align:center;">-</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">O / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">김태훈 차장, 김지수 과장<br>02-6958-2386</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center;">1 개</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+
+<table border="1" style="border-collapse:collapse; width:800px; font-family:'Malgun Gothic', sans-serif; font-size:12px; margin-bottom:50px; page-break-after:always;">
+  <tr style="background-color:#1e3a8a; color:white; font-weight:bold; text-align:center;">
+    <td colspan="6" style="padding:12px; font-size:16px;">[06 연남] 주택 종합 관리 및 시설 현황 지표 (A4 수록판)</td>
+  </tr>
+  <tr style="background-color:#f1f5f9; font-weight:bold; text-align:center;">
+    <td colspan="2" style="width:33.3%;">단전 1: 기본 인적사항</td>
+    <td colspan="2" style="width:33.3%;">단전 2: 위생 및 계약 정보</td>
+    <td colspan="2" style="width:33.4%;">단전 3: 보안 및 시설물 정보</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">주택명</td>
+    <td style="padding:6px; width:166px;">06 연남</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">청소업체/요일</td>
+    <td style="padding:6px; width:166px;">크린원 / 목요일<br>(22.04.01 인수)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center; width:100px;">CCTV 업체</td>
+    <td style="padding:6px; width:168px;">하이크 비전</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">유형</td>
+    <td style="padding:6px;">SH토지지원 리츠 사회주택</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">저수조 관리</td>
+    <td style="padding:6px; text-align:center;">X</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 온라인</td>
+    <td style="padding:6px; font-size:11px;">8164업무폰으로 가능 (hik connect)<br>녹화기 패턴: ㄱ자<br>ID : help@greenfriends.co.kr<br>PW : greenfr2023!<br>장비 코드: 0MJY1H</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">소재지</td>
+    <td style="padding:6px; font-size:11px;">마포구 연남동 504-40</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">정화조 상태</td>
+    <td style="padding:6px; font-size:11px; background-color:#e2f0d9;">구일환경(마포점)-마포그린 상호변경<br>26.10.29 청소예정<br>T.02-1877-3484</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">CCTV 면수/개수</td>
+    <td style="padding:6px;">8면 / X</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">호수 (규모)</td>
+    <td style="padding:6px;">20 호</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">방역일자/업체</td>
+    <td style="padding:6px;">24.05.24 / 주효연(3급)</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">영업/화재보험</td>
+    <td style="padding:6px; font-size:11px;">삼성화재<br>2027.05.01만기<br>이오성 010-7474-1411</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">상가 여부</td>
+    <td style="padding:6px;">B101</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">인터넷 설치</td>
+    <td style="padding:6px; text-align:center;">O</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">출입구 PW</td>
+    <td style="padding:6px; font-size:11px;">공용 : #1238 → #2640<br>커뮤 : 1234*<br>테라스 : 1234*<br>01번 공용택배함 *159#</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">협조기관</td>
+    <td style="padding:6px;">서울투자운용</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">토지임대차계약</td>
+    <td style="padding:6px; color:#cbd5e1; text-align:center;">-</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">택배함마스터 / 사다리</td>
+    <td style="padding:6px; text-align:center;">O / 2단 1층 CCTV실</td>
+  </tr>
+  <tr>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">담당자 연락처</td>
+    <td style="padding:6px; font-size:11px;">김태훈 차장, 김지수 과장<br>02-6958-2386</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">쏘카 존</td>
+    <td style="padding:6px; text-align:center;">1 개</td>
+    <td style="background-color:#f8fafc; font-weight:bold; padding:6px; text-align:center;">비고</td>
+    <td style="padding:6px; color:#64748b;">특이사항 없음</td>
+  </tr>
+</table>
+</body>
+</html>

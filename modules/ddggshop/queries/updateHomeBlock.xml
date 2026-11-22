@@ -1,0 +1,19 @@
+<query id="updateHomeBlock" action="update">
+  <tables>
+    <table name="ddggshop_home_block" />
+  </tables>
+  <columns>
+    <column name="block_type" var="block_type" />
+    <column name="title" var="title" />
+    <column name="source_type" var="source_type" />
+    <column name="source_value" var="source_value" />
+    <column name="list_count" var="list_count" />
+    <column name="layout" var="layout" />
+    <column name="image" var="image" />
+    <column name="link" var="link" />
+    <column name="status" var="status" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="block_srl" var="block_srl" notnull="notnull" />
+  </conditions>
+</query>

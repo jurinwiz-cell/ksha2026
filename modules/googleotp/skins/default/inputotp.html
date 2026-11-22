@@ -1,0 +1,258 @@
+<load target="../../../member/skins/default/css/member.css" />
+<div class="xm">
+
+    <div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/googleotp/tpl/inputotp/otplogin/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+        <p>{$XE_VALIDATOR_MESSAGE}</p>
+    </div>
+
+    <!--@if($active_issue_type == 'email')-->
+    <div class="message info">
+        <p>{substr($logged_info->email_id,0,5)}*******@{$logged_info->email_host} 으로 인증 메일이 발송되었습니다</p>
+        <p>메일함을 확인해주세요</p>
+    </div>
+    <!--@elseif($active_issue_type == 'sms')-->
+    <div class="message info">
+        <p><!--@for($i=0;$i<strlen($logged_info->phone_number)-4;$i++)-->*<!--@end-->{substr($logged_info->phone_number,-4)}로 인증 문자가 발송되었습니다</p>
+        <p>문자 메세지를 확인해주세요</p>
+    </div>
+    <!--@elseif($active_issue_type == 'passkey')-->
+    <div class="message info">
+        <p>패스키 인증을 진행해주세요.</p>
+        <p>아래 버튼을 눌러 지문, 얼굴 인식 또는 보안 키로 인증해주세요.</p>
+    </div>
+    <!--@endif-->
+
+    <!--@if($active_issue_type == 'passkey')-->
+    <div id="passkey_auth_section">
+        <section class="section">
+            <h1>로그인 2차 인증 (패스키)</h1>
+            <div class="control-group">
+                <div class="controls" style="text-align:center; padding:20px;">
+                    <button type="button" class="btn btn-primary btn-large" id="btn_passkey_auth" onclick="authenticatePasskey()" style="font-size:16px; padding:10px 30px;">
+                        패스키로 인증하기
+                    </button>
+                    <p class="help-block" id="passkey_auth_status" style="margin-top:10px;"></p>
+                </div>
+            </div>
+            <!--@if($googleotp_config->use_trusted_device == 'Y')-->
+            <div class="control-group">
+                <label class="control-label">이 기기 신뢰하기</label>
+                <div class="controls">
+                    <label class="inline">
+                        <input type="checkbox" name="trust_device_passkey" id="trust_device_passkey" value="Y" /> {$googleotp_config->trusted_device_duration}일 동안 이 기기에서 2차 인증 생략
+                    </label>
+                    <p class="help-block">공용 PC에서는 체크하지 마세요.</p>
+                </div>
+            </div>
+            <!--@endif-->
+        </section>
+        <!--@if($alternative_types && count($alternative_types) > 0)-->
+        <section class="section">
+            <h1>다른 인증 방식 사용</h1>
+            <div class="control-group">
+                <div class="controls">
+                    <p class="help-block">선택한 인증 방식을 사용할 수 없는 경우, 다른 방식으로 전환할 수 있습니다.</p>
+                    <!--@foreach($alternative_types as $alt_type)-->
+                    <form action="./" method="post" style="display:inline; margin-right:5px;">
+                        <input type="hidden" name="module" value="googleotp" />
+                        <input type="hidden" name="act" value="procGoogleotpSwitchAuthMethod" />
+                        <input type="hidden" name="switch_to" value="{$alt_type}" />
+                        <!--@if($alt_type == 'otp')-->
+                        <button type="submit" class="btn">Google OTP로 전환</button>
+                        <!--@elseif($alt_type == 'email')-->
+                        <button type="submit" class="btn">이메일 인증으로 전환</button>
+                        <!--@elseif($alt_type == 'sms')-->
+                        <button type="submit" class="btn">SMS 인증으로 전환</button>
+                        <!--@elseif($alt_type == 'passkey')-->
+                        <button type="submit" class="btn">패스키로 전환</button>
+                        <!--@endif-->
+                    </form>
+                    <!--@end-->
+                </div>
+            </div>
+        </section>
+        <!--@endif-->
+        <div class="clearfix btnArea">
+            <div class="pull-right">
+                <button class="btn btn-secondary" type="button" onclick="location.href='{getUrl('','act','dispMemberLogout')}'">로그아웃</button>
+            </div>
+        </div>
+    </div>
+    <!--@else-->
+    <form action="./" method="post" class="form-horizontal" id="fo_otplogin">
+        <input type="hidden" name="module" value="googleotp" />
+        <input type="hidden" name="act" value="procGoogleotpInputotp" />
+        <input type="hidden" name="xe_validator_id" value="modules/googleotp/tpl/inputotp/otplogin/1" />
+        <input type="hidden" name="error_return_url" value="{getRequestUriByServerEnviroment()}" />
+        <input type="hidden" name="member_srl" value="{$member_srl}">
+        <section class="section">
+            <h1>로그인 2차 인증</h1>
+            <div class="control-group">
+                <label class="control-label">인증 번호 입력</label>
+                <div class="controls">
+                    <input type="text" name="otpinput" required />
+                    <!--@if($active_issue_type == 'otp')-->
+                    <p class="help-block">Google OTP 앱에 뜬 번호를 입력해주세요.</p>
+                    <!--@elseif($active_issue_type == 'email')-->
+                    <p class="help-block">이메일로 발송된 인증 번호를 입력해주세요.</p>
+                    <!--@elseif($active_issue_type == 'sms')-->
+                    <p class="help-block">문자로 발송된 인증 번호를 입력해주세요.</p>
+                    <!--@endif-->
+                </div>
+            </div>
+            <div class="control-group" cond="in_array($active_issue_type, ['email','sms'])">
+                <label class="control-label">인증 <!--@if($active_issue_type == 'email')-->메일<!--@elseif($active_issue_type == 'sms')-->문자<!--@endif--> 재전송</label>
+                <div class="controls">
+                    <input type="button" id="reauth_send" class="btn" onclick="return false;" value="인증 <!--@if($active_issue_type == 'email')-->메일<!--@elseif($active_issue_type == 'sms')-->문자<!--@endif--> 재전송 (01:30)">
+                </div>
+            </div>
+            <!--@if($captcha)-->
+            <div class="control-group">
+                <label class="control-label">캡챠</label>
+                <div class="controls">
+                    {$captcha}
+                </div>
+            </div>
+            <!--@endif-->
+            <!--@if($googleotp_config->use_trusted_device == 'Y')-->
+            <div class="control-group">
+                <label class="control-label">이 기기 신뢰하기</label>
+                <div class="controls">
+                    <label class="inline">
+                        <input type="checkbox" name="trust_device" value="Y" /> {$googleotp_config->trusted_device_duration}일 동안 이 기기에서 2차 인증 생략
+                    </label>
+                    <p class="help-block">공용 PC에서는 체크하지 마세요.</p>
+                </div>
+            </div>
+            <!--@endif-->
+        </section>
+        <div class="clearfix btnArea">
+            <div class="pull-right">
+                <button class="btn btn-primary" type="submit">로그인</button>
+                <button class="btn btn-secondary" type="button" onclick="location.href='{getUrl('','act','dispMemberLogout')}'">로그아웃</button>
+            </div>
+        </div>
+    </form>
+    <!--@if($alternative_types && count($alternative_types) > 0)-->
+    <section class="section">
+        <h1>다른 인증 방식 사용</h1>
+        <div class="control-group">
+            <div class="controls">
+                <p class="help-block">선택한 인증 방식을 사용할 수 없는 경우, 다른 방식으로 전환할 수 있습니다.</p>
+                <!--@foreach($alternative_types as $alt_type)-->
+                <form action="./" method="post" style="display:inline; margin-right:5px;">
+                    <input type="hidden" name="module" value="googleotp" />
+                    <input type="hidden" name="act" value="procGoogleotpSwitchAuthMethod" />
+                    <input type="hidden" name="switch_to" value="{$alt_type}" />
+                    <!--@if($alt_type == 'otp')-->
+                    <button type="submit" class="btn">Google OTP로 전환</button>
+                    <!--@elseif($alt_type == 'email')-->
+                    <button type="submit" class="btn">이메일 인증으로 전환</button>
+                    <!--@elseif($alt_type == 'sms')-->
+                    <button type="submit" class="btn">SMS 인증으로 전환</button>
+                    <!--@elseif($alt_type == 'passkey')-->
+                    <button type="submit" class="btn">패스키로 전환</button>
+                    <!--@endif-->
+                </form>
+                <!--@end-->
+            </div>
+        </div>
+    </section>
+    <!--@endif-->
+    <!--@endif-->
+</div>
+<load target="../../vendor/davidearl/webauthn/src/webauthnauthenticate.js" />
+<script>
+    <!--@if($active_issue_type != 'passkey')-->
+    var timerId;
+    var resend_time = 90;
+    jQuery(document).ready(function(){
+        timerId = setInterval(ReSendTimer, 1000);
+    });
+    function ReSendTimer()
+    {
+        resend_time--;
+        if(resend_time <= 0)
+        {
+            clearInterval(timerId);
+            jQuery('#reauth_send').attr('onclick','return reSendAuth();').val('인증 <!--@if($active_issue_type == "email")-->메일<!--@elseif($active_issue_type == "sms")-->문자<!--@endif--> 재전송');
+        }
+        else
+        {
+            jQuery('#reauth_send').attr('onclick','return false;').val('인증 <!--@if($active_issue_type == "email")-->메일<!--@elseif($active_issue_type == "sms")-->문자<!--@endif--> 재전송 ('+new Date(resend_time * 1000).toISOString().substr(14, 5)+')');
+        }
+    }
+    function reSendAuth()
+    {
+        exec_json("googleotp.procGoogleotpResendauthmessage", {member_srl: "{$member_srl}"}, function(data){
+            if(data.error)
+            {
+                alert(data.message);
+            }
+            else
+            {
+                alert('인증 <!--@if($active_issue_type == "email")-->메일이<!--@elseif($active_issue_type == "sms")-->문자가<!--@endif--> 재발송되었습니다');
+            }
+        });
+
+        jQuery('#reauth_send').attr('onclick','return false;');
+    }
+    <!--@endif-->
+
+    <!--@if($active_issue_type == 'passkey')-->
+    function authenticatePasskey(){
+        if(!window.PublicKeyCredential){
+            document.getElementById('passkey_auth_status').textContent = '이 브라우저는 패스키를 지원하지 않습니다.';
+            document.getElementById('passkey_auth_status').style.color = 'red';
+            return;
+        }
+        var statusEl = document.getElementById('passkey_auth_status');
+        statusEl.textContent = '패스키 인증 준비 중...';
+        statusEl.style.color = '';
+        document.getElementById('btn_passkey_auth').disabled = true;
+
+        exec_json("googleotp.procGoogleotpPasskeyLoginChallenge", {}, function(data){
+            if(data.error != 0){
+                statusEl.textContent = data.message;
+                statusEl.style.color = 'red';
+                document.getElementById('btn_passkey_auth').disabled = false;
+                return;
+            }
+            statusEl.textContent = '보안 키를 터치하거나 생체 인증을 진행해주세요...';
+            webauthnAuthenticate(data.challenge, function(success, info){
+                if(success){
+                    var trust_device = 'N';
+                    var trustCheckbox = document.getElementById('trust_device_passkey');
+                    if(trustCheckbox && trustCheckbox.checked) trust_device = 'Y';
+
+                    exec_json("googleotp.procGoogleotpPasskeyAuthenticate", {passkey_info: info, trust_device: trust_device}, function(authData){
+                        if(authData.error != 0){
+                            statusEl.textContent = authData.message;
+                            statusEl.style.color = 'red';
+                            document.getElementById('btn_passkey_auth').disabled = false;
+                        } else {
+                            statusEl.textContent = '인증 성공! 리다이렉트 중...';
+                            statusEl.style.color = 'green';
+                            location.href = authData.redirect_url || '/';
+                        }
+                    });
+                } else {
+                    if(info === 'abort'){
+                        statusEl.textContent = '패스키 인증이 취소되었습니다.';
+                        statusEl.style.color = '#888';
+                    } else {
+                        statusEl.textContent = '패스키 인증 오류: ' + info;
+                        statusEl.style.color = 'red';
+                    }
+                    document.getElementById('btn_passkey_auth').disabled = false;
+                }
+            });
+        });
+    }
+
+    jQuery(document).ready(function(){
+        authenticatePasskey();
+    });
+    <!--@endif-->
+</script>
+<include target="../../../member/skins/default/common_footer.html" />

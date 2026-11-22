@@ -1,0 +1,25 @@
+<query id="getOrderList" action="select">
+  <tables>
+    <table name="ddggshop_order" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="status" var="status" />
+    <condition operation="equal" column="pay_method" var="pay_method" />
+    <condition operation="more" column="regdate" var="from_date" />
+    <condition operation="less" column="regdate" var="to_date" />
+    <condition operation="like" column="order_code" var="order_code" />
+    <condition operation="like" column="orderer_name" var="orderer_name" />
+    <condition operation="like" column="orderer_phone" var="orderer_phone" />
+    <condition operation="like" column="orderer_email" var="orderer_email" />
+    <condition operation="in" column="order_srl" var="order_srls" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="order_srl" order="desc" />
+    <list_count var="list_count" default="20" />
+    <page_count var="page_count" default="10" />
+    <page var="page" default="1" />
+  </navigation>
+</query>

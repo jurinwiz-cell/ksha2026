@@ -1,0 +1,32 @@
+<include target="_console_head.html" />
+
+<div class="cs-pagehead">
+  <div><span class="sub">상품 카드에 표시되는 뱃지(라벨) 관리 — 상품 등록/수정 시 뱃지를 부착합니다</span></div>
+</div>
+
+<div class="cs-card cs-card-p" style="max-width:560px;">
+  <div class="cs-card-head"><h3>뱃지 목록</h3></div>
+  <div class="cs-row" cond="!count($tags)"><span class="cs-hint">등록된 뱃지가 없습니다. 아래에서 추가하세요.</span></div>
+  <div class="cs-badge-list">
+    <div class="cs-badge-row" loop="$tags=>$t">
+      <span class="cs-badge-chip" style="background:{$t->badge_color ?: '#888'};">{$t->title}</span>
+      <span class="cs-hint" style="display:inline;">{$t->auto_source=='popular' ? '인기 자동' : ($t->auto_source=='new' ? '신상 자동' : '수동 부착')}</span>
+      <button type="button" class="cs-btn danger sm" style="margin-left:auto;" onclick="csTagDel({$t->tag_srl})">삭제</button>
+    </div>
+  </div>
+  <div style="margin-top:16px;border-top:1px solid #EAECEF;padding-top:16px;">
+    <div class="cs-row">
+      <input type="text" id="cs-tag-title" class="cs-input" style="flex:1;" placeholder="뱃지명 (예: 추천, NEW, BEST)" onkeydown="if(event.keyCode==13)csTagAdd();" />
+      <input type="color" id="cs-tag-color" value="#5B4FE0" style="width:42px;height:38px;padding:2px;border:1px solid #DCDFE3;border-radius:2px;" />
+      <button type="button" class="cs-btn" onclick="csTagAdd()">추가</button>
+    </div>
+    <p class="cs-hint" style="margin-top:10px;">뱃지를 만든 뒤, 상품관리에서 상품을 편집해 해당 뱃지를 부착하면 상품 카드에 색상 라벨로 표시됩니다.</p>
+  </div>
+</div>
+
+<script>
+function csTagAdd(){ var t=document.getElementById('cs-tag-title').value.replace(/^\s+|\s+$/g,''); if(!t){alert('뱃지명을 입력하세요.');return;} exec_json('ddggshop.procDdggshopAdminSaveTag',{title:t,badge_color:document.getElementById('cs-tag-color').value,auto_source:'manual',show_on_home:'N',show_badge:'Y',home_count:8,status:'Y'},function(){location.reload();}); }
+function csTagDel(srl){ if(!confirm('이 뱃지를 삭제할까요?'))return; exec_json('ddggshop.procDdggshopAdminDeleteTag',{tag_srl:srl},function(){location.reload();}); }
+</script>
+
+<include target="_console_foot.html" />

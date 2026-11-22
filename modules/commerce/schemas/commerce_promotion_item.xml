@@ -1,0 +1,6 @@
+<table name="commerce_promotion_item">
+	<column name="promo_item_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="promo_srl" type="bigint" notnull="notnull" index="idx_promo_srl" />
+	<column name="item_srl" type="bigint" notnull="notnull" index="idx_item_srl" />
+	<column name="list_order" type="int" notnull="notnull" default="0" />
+</table>

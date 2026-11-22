@@ -1,0 +1,9 @@
+<query id="updateCouponUsed" action="update">
+  <tables><table name="ddggshop_coupon" /></tables>
+  <columns>
+    <column name="used_count" var="used_count" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="coupon_srl" var="coupon_srl" notnull="notnull" />
+  </conditions>
+</query>

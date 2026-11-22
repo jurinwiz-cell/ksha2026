@@ -1,0 +1,8 @@
+<query id="deleteCouponLogByOrder" action="delete">
+  <tables>
+    <table name="ddggshop_coupon_log" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="order_srl" var="order_srl" notnull="notnull" />
+  </conditions>
+</query>

@@ -1,0 +1,14 @@
+<table name="ddggshop_claim">
+  <column name="claim_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="order_srl" type="bignumber" notnull="notnull" index="idx_order" />
+  <column name="order_code" type="varchar" size="30" />
+  <column name="member_srl" type="bignumber" default="0" index="idx_member" />
+  <column name="type" type="varchar" size="10" notnull="notnull" />
+  <column name="reason" type="text" />
+  <column name="items" type="text" />
+  <column name="status" type="varchar" size="12" default="requested" index="idx_status" />
+  <column name="refund_amount" type="number" default="0" />
+  <column name="admin_memo" type="text" />
+  <column name="regdate" type="date" index="idx_regdate" />
+  <column name="processed_date" type="datetime" />
+</table>

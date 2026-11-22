@@ -1,0 +1,67 @@
+<include target="header.html" />
+
+<form class="x_form-horizontal" action="./" method="POST" id="googleotp">
+	<input type="hidden" name="module" value="googleotp" />
+	<input type="hidden" name="act" value="procGoogleotpAdminUpdateConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input type="hidden" name="srl" value="{$srl}" /> 
+	<section class="section">
+		<h1>회원 2차 인증 설정</h1>
+		<div class="x_control-group">
+			<label class="x_control-label" for="use">회원 닉네임</label>
+			<div class="x_controls">
+				<p>{Context::get('nick_name')} ({$srl})</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="use">2차 인증 사용 여부</label>
+			<div class="x_controls">
+				<select name="use" id="use">
+					<option value="Y" selected="selected"|cond="$user_config->use == 'Y'">
+						사용함
+					</option>
+					<option value="N" selected="selected"|cond="$user_config->use == 'N'">
+						사용 안 함
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">인증 수단 (복수 선택 가능)</label>
+			<div class="x_controls">
+				<label class="inline">
+					<input type="checkbox" name="issue_type[]" value="otp" checked="checked"|cond="in_array('otp', explode(',', $user_config->issue_type))" disabled="disabled"|cond="!in_array('otp', $googleotp_config->allow_issue_type)" />
+					Google OTP <!--@if(!in_array('otp', $googleotp_config->allow_issue_type))-->(비활성화됨)<!--@endif-->
+				</label>
+				<label class="inline">
+					<input type="checkbox" name="issue_type[]" value="email" checked="checked"|cond="in_array('email', explode(',', $user_config->issue_type))" disabled="disabled"|cond="!in_array('email', $googleotp_config->allow_issue_type)" />
+					이메일 <!--@if(!in_array('email', $googleotp_config->allow_issue_type))-->(비활성화됨)<!--@endif-->
+				</label>
+				<label class="inline">
+					<input type="checkbox" name="issue_type[]" value="sms" checked="checked"|cond="in_array('sms', explode(',', $user_config->issue_type))" disabled="disabled"|cond="!in_array('sms', $googleotp_config->allow_issue_type)" />
+					문자 (SMS) <!--@if(!in_array('sms', $googleotp_config->allow_issue_type))-->(비활성화됨)<!--@endif-->
+				</label>
+				<label class="inline">
+					<input type="checkbox" name="issue_type[]" value="passkey" checked="checked"|cond="in_array('passkey', explode(',', $user_config->issue_type))" disabled="disabled"|cond="!in_array('passkey', $googleotp_config->allow_issue_type)" />
+					패스키 (Passkey) <!--@if(!in_array('passkey', $googleotp_config->allow_issue_type))-->(비활성화됨)<!--@endif-->
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="default_issue_type">기본 인증 수단</label>
+			<div class="x_controls">
+				<select name="default_issue_type" id="default_issue_type">
+					<option value="otp" selected="selected"|cond="($user_config->default_issue_type ?: explode(',', $user_config->issue_type)[0]) == 'otp'">Google OTP</option>
+					<option value="email" selected="selected"|cond="($user_config->default_issue_type ?: explode(',', $user_config->issue_type)[0]) == 'email'">이메일</option>
+					<option value="sms" selected="selected"|cond="($user_config->default_issue_type ?: explode(',', $user_config->issue_type)[0]) == 'sms'">문자 (SMS)</option>
+					<option value="passkey" selected="selected"|cond="($user_config->default_issue_type ?: explode(',', $user_config->issue_type)[0]) == 'passkey'">패스키 (Passkey)</option>
+				</select>
+				<p class="x_help-block">로그인 시 기본으로 사용할 인증 방식을 선택해주세요.</p>
+			</div>
+		</div>
+
+		<div class="btnArea x_clearfix">
+			<button type="submit" class="x_btn x_btn-primary x_pull-right">{$lang->cmd_registration}</button>
+		</div>
+	</section>
+</form>

@@ -1,0 +1,8 @@
+<h2 class="ds-ptitle">{$L['mypage']}</h2>
+<div class="ds-mypage-tabs">
+  <a class="{$mypage_tab=='home' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyPage')}">{$L['mypage']}</a>
+  <a class="{$mypage_tab=='orders' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders')}">{$L['tab_orders']}</a>
+  <a class="{$mypage_tab=='addresses' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyAddresses')}">{$L['tab_addresses']}</a>
+  <a cond="$use_coupon=='Y'" class="{$mypage_tab=='coupons' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyCoupons')}">{$L['tab_coupons']}</a>
+  <a class="{$mypage_tab=='wishlist' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyWishlist')}">{$L['tab_wishlist']}</a>
+</div>

@@ -1,0 +1,58 @@
+{@
+$regdate_last = $regdate_last ?? 0;
+$time_last = $time_last ?? 0;
+$week = array('일', '월', '화', '수', '목', '금', '토');
+
+$oModel = getModel('elkhatalk3');
+$plugins = $oModel->getPlugin('talk@before');
+foreach($plugins as $key => $val):
+	$plugins[$key]($talk_list);
+endforeach;
+
+}
+<!--@if(count($talk_list) >= $oModel->getConfig()->talk_list_count)-->
+<div class="more date"><a href="{$oModel->getUrl(['target_srl' => $target_srl, 'act'=>$_act,'popup'=>$popup, 'no_min' => reset($talk_list)->no])}" onclick="window.getElkhatalk3('getElkhatalk3TalkList', this.href, false);return false;">{$lang->elkhatalk3_prev_talk}</a></div>
+<!--@endif-->
+<div loop="$talk_list=>$key,$val" class="li li-talk{$val->no} li-member{$val->member_srl!=$logged_info->member_srl?$val->member_srl:-1}" data-no="{$val->no}" data-target_srl="{$val->member_srl}">
+{@
+$time = strtotime('20' . $val->regdate . '00');
+}
+	<div class="date" cond="$regdate_last!=(INT)date('Ymd', $time)"><span>{date('Y년 n월 j일', $time)} {$week[date('w', $time)]}요일</span></div>
+	<span class="thumb elkhatalk3-is_connected-custom" data-member_srl="{$val->member_srl}"><img src="{$profile_image_list[$val->member_srl]}" alt="" /></span>
+	<div class="profile_nick I"><i>[</i><a href="javascript:;" onclick="jQuery(this).addClass('member_' + {$val->member_srl}); return false;" class="nick">{$val->nick_name}</a><i>]</i></div>
+	<div class="msg-wrap">
+		<div class="msg{@
+		if(!isset($talk_list[$key+1]) || $talk_list[$key+1]->member_srl!=$val->member_srl || $talk_list[$key+1]->regdate!=$val->regdate) echo ' msg-last';
+		}">
+			<div class="msg-content">{$val->content}</div>
+			<span class="regdate">
+				<span class="time">{@ echo date('A', $time) . date( ' g:i ', $time); }</span>
+				<span class="read read{$val->read}">{$val->read}</span>
+			</span>
+		</div>
+	</div>
+{@
+$time_last = $time;
+$regdate_last = (INT)date('Ymd', $time);
+}
+</div>
+<!--@if(!count($talk_list))-->
+<div class="error elkhatalk3_start_message">{$lang->elkhatalk3_start_message}</div>
+<!--@endif-->
+<!--@if((INT)($no_min ?? 0))-->
+<div class="more date"><a href="{$oModel->getUrl(['target_srl' => $target_srl, 'act'=>$_act,'popup'=>$popup])}" onclick="window.getElkhatalk3('getElkhatalk3TalkList', this.href, false);return false;">{$lang->elkhatalk3_last_talk}</a></div>
+<!--@endif-->
+{@
+$oModel = getModel('elkhatalk3');
+$plugins = $oModel->getPlugin('talk@after');
+foreach($plugins as $key => $val):
+	$plugins[$key]($talk_list);
+endforeach;
+
+$no_max = count($talk_list)? end($talk_list)->no : -1;
+}
+<!--@if((INT)$target_srl && !(INT)($no_min ?? 0))-->
+<script>
+window['elkhatalk_room_' + {(INT)$target_srl}] = { 'time_last':{json_encode((INT)$time)}, 'regdate_last':{json_encode((INT)$regdate_last)}, 'no_max':{$no_max} };
+</script>
+<!--@endif-->

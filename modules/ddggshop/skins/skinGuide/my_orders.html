@@ -1,0 +1,48 @@
+<include target="_head.html" />
+
+<include target="_mypage_tabs.html" />
+
+<div class="ds-ordfilter">
+  <a class="ds-chip {$cur_order_status=='' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders')}">{$L['all']}</a>
+  <a loop="$order_status_filters=>$code,$label" class="ds-chip {$cur_order_status==$code ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders','status',$code)}">{$label}</a>
+</div>
+<div class="ds-ordfilter-note">{str_replace('%s', '<b>'.number_format($total_count).'</b>', $L['mo_total'])}</div>
+
+<!--@if(count($orders))-->
+<div>
+  <div loop="$orders=>$o" class="ds-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div><b>{$o->order_code}</b> <span style="color:var(--ds-sub);font-size:12px;">{zdate($o->regdate,'Y.m.d')}</span></div>
+      <span class="ds-status {$o->status}">{$o->status_label}</span>
+    </div>
+    <table class="ds-table">
+      <tbody>
+        <tr loop="$o->items=>$oi">
+          <td><div class="ds-citem"><!--@if($oi->thumb)--><img src="{$oi->thumb}" alt="" /><!--@end--><div>{$oi->item_name}<!--@if($oi->option_name)--><div style="font-size:12px;color:var(--ds-sub);">{$oi->option_name}</div><!--@end--><div style="font-size:12px;color:var(--ds-sub);">{number_format($oi->price)}{$L['won']} × {$oi->qty}</div></div></div></td>
+          <td style="text-align:right;font-weight:700;">{number_format($oi->subtotal)}{$L['won']}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+      <span style="font-weight:800;">{$L['order_paid_label']} {number_format($o->payment_price)}{$L['won']}</span>
+      <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="ds-claim-tag" cond="$o->claim_label">{$o->claim_label}</span>
+        <button type="button" class="ds-btn sm danger" cond="$o->cancellable" onclick="ddggCancelOrder('{$o->order_code}')">{$L['cancel_order']}</button>
+        <button type="button" class="ds-btn sm" cond="$o->can_claim" onclick="ddggClaim('{$o->order_code}')">{$L['claim']}</button>
+        <a cond="$o->tracking_url" href="{$o->tracking_url}" target="_blank" rel="noopener" class="ds-btn sm">{$L['track_delivery']}</a>
+        <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopOrderResult','order_code',$o->order_code)}" class="ds-btn sm">{$L['view_detail']}</a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="ds-pager" cond="$total_page > 1">
+  <a class="ds-btn sm" cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders','status',$cur_order_status,'page',$cur_page-1)}">{$L['prev']}</a>
+  <span>{$cur_page} / {$total_page}</span>
+  <a class="ds-btn sm" cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders','status',$cur_order_status,'page',$cur_page+1)}">{$L['next']}</a>
+</div>
+<!--@else-->
+<div class="ds-empty">{$L['mo_empty']}</div>
+<!--@end-->
+
+<include target="_foot.html" />

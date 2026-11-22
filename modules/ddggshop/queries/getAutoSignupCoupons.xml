@@ -1,0 +1,8 @@
+<query id="getAutoSignupCoupons" action="select">
+  <tables><table name="ddggshop_coupon" /></tables>
+  <columns><column name="coupon_srl" /></columns>
+  <conditions>
+    <condition operation="equal" column="auto_signup" var="auto_signup" notnull="notnull" />
+    <condition operation="equal" column="status" var="status" pipe="and" />
+  </conditions>
+</query>

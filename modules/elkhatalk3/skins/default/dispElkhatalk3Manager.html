@@ -1,0 +1,119 @@
+<load target="dispElkhatalk3Manager.js" />
+
+<h2>{$lang->cmd_setup}</h2>
+{@
+$_room = (INT)preg_replace('/[^0-9]+/', '', $room);
+$oMemberModel = getModel('member');
+$oClass = getClass('elkhatalk3');
+}
+
+<form method="post" action="{getUrl()}">
+<input type="hidden" name="module" value="elkhatalk3" />
+<input type="hidden" name="act" value="procElkhatalk3Manage" />
+<input type="hidden" name="room" value="{htmlspecialchars(Context::get('room'))}" />
+<input type="hidden" name="use_socket" value="Y" />
+<input type="hidden" name="_member_srl" value="{$logged_info->member_srl}" />
+<ul>
+<li>{$lang->title}: {@ echo $oClass->public_iframe("public$_room", $room_title, 0, 0, 'a'); }</li>
+<li>{$lang->no}: {htmlspecialchars($room)}</li>
+<li><button type="button" onclick="window.procElkhatalk3ManageClear();">{$lang->elkhatalk3_clean}</button></li>
+<li cond="$logged_info->is_admin=='Y'"><label for="elkhatalk3_chat_log"><input style="vertical-align:middle;" type="checkbox" name="chat_log" value="Y" checked="checked"|cond="!$room_grants->_R[$_room] && isset($room_grants->chat_log[$_room]) && $room_grants->chat_log[$_room]=='Y'" id="elkhatalk3_chat_log" disabled="disabled"|cond="$room_grants->_R[$_room]" /> <span style="vertical-align:middle;">{$lang->elkhatalk3_chat_log}</span></label></li>
+<li>{$lang->notice}:
+	<div><textarea name="notice-text" placeholder="{$lang->content}" cols="25" rows="3"></textarea>
+	<div>
+		<input type="checkbox" name="notice-inline" value="Y" id="elkhatalk3_notice_inline" />
+		<label for="elkhatalk3_notice_inline">inline</label>
+	</div>
+	<div><input type="text" name="notice-color" value="" placeholder="color (optional)" /></div>
+	<div><input type="text" name="notice-href" value="" placeholder="http(s)://~ (optional)" /></div>
+
+	<ul cond="count($notice_list)">
+	<block loop="$notice_list=>$key,$val">
+	{@
+	if( !$key || $notice_list[$key-1][3]!='Y' || $val[3]!='Y' ) echo '<li>';
+	echo '<div><input type="text" value="'.($key+1).'" name="notice_list_'.$key.'" style="width:20px;" /> ';
+	if($val[1]=='' && $val[2]=='') echo $val[0];
+	else if($val[1]!='' && $val[2]=='') echo sprintf('<span style="color:%s;">%s</span>', $val[1], $val[0]);
+	else if($val[1]=='' && $val[2]!='') echo sprintf('<a href="%s" onclick="alert(this.href);return false;">%s</a>', $val[2], $val[0]);
+	else if($val[1]!='' && $val[2]!='') echo sprintf('<a href="%s" style="color:%s;" onclick="alert(this.href);return false;">%s</a>', $val[2], $val[1], $val[0]);
+	}
+	<button type="button" onclick="window.procElkhatalk3ManageDeleteNotice({$key});">{$lang->cmd_delete}</button>
+	{@
+	echo '</div>';
+	if( !isset($notice_list[$key+1]) || $notice_list[$key+1][3]!='Y') echo '</li>';
+	}
+	</block>
+	</ul>
+</li>
+
+<li>{$lang->grant}:
+	<ul>
+	<li><label for="elkhatalk3_grant_guest_read"><input style="vertical-align:middle;" class="elkhatalk3_checkbox" type="checkbox" name="read" value="Y" checked="checked"|cond="!$room_grants->_R[$_room]" id="elkhatalk3_grant_guest_read" /> <span style="vertical-align:middle;">{$lang->elkhatalk3_grant_R2}</span></label></li>
+	<li><label for="elkhatalk3_grant_guest_write"><input style="vertical-align:middle;" class="elkhatalk3_checkbox" type="checkbox" name="write" value="Y" checked="checked"|cond="!$room_grants->_W[$_room]" id="elkhatalk3_grant_guest_write" /> <span style="vertical-align:middle;">{$lang->elkhatalk3_grant_W2}</span></label></li>
+	<li>
+		<label for="elkhatalk3_grant_cafe"><input style="vertical-align:middle;" class="elkhatalk3_checkbox" type="checkbox" name="cafe" value="Y" checked="checked"|cond="$room_grants->_C[$_room]" id="elkhatalk3_grant_cafe"> <span style="vertical-align:middle;">{$lang->elkhatalk3_grant_C}</span></label>
+		<div><input type="text" name="nick_name_cafe" style="vertical-align:middle;" placeholder="{$lang->nick_name}" disabled="disabled"|cond="!$room_grants->_C[$_room]" /></div>
+		<ul cond="count($cafe_list)">
+		<li loop="$cafe_list=>$member_info">
+		<a href="javascript:;" onclick="return false;" class="member_{$member_info->member_srl}">{$member_info->nick_name?$member_info->nick_name:'?'}</a>
+		<button type="button" onclick="window.procElkhatalk3ManageDelete({$member_info->member_srl}, 'C');">{$lang->cmd_delete}</button>
+		</li>
+		</ul>
+	</li>
+	<li>
+		<span style="vertical-align:middle;">{$lang->elkhatalk3_grant_G}</span>
+
+		<ul>{@
+		/*if($logged_info->is_admin=='Y'):
+			if($room_grants->_G[$_room])
+				$attr = $room_grants->_A[$_room]? ' checked="checked" ' : '';
+			else
+				$attr = ' disabled="disabled"';
+
+			echo sprintf('<li style="color:blue;"><label for="elkhatalk3_grant_group_A"><input type="checkbox" class="elkhatalk3_checkbox" name="group_srl_A" id="elkhatalk3_grant_group_A" value="Y"%s /> %s</label></li>', $attr, $lang->cmd_show_super_admin_member);
+		endif;*/
+		// $room_grants->_G[$_room]
+		$group_list = $oMemberModel->getGroups();
+		foreach($group_list as $group_info):
+			if($logged_info->is_admin!='Y' && !in_array($group_info->group_srl, $room_grants->G))
+				continue;
+
+			$attr = ' ';
+			$attr .= $room_grants->_G[$_room] && in_array($group_info->group_srl, $room_grants->G)? ' checked="checked" ' : '';
+			echo sprintf('<li><label for="elkhatalk3_grant_group_%d"><input type="checkbox" class="elkhatalk3_checkbox" name="group_srls[]" id="elkhatalk3_grant_group_%d" value="%d"%s /> %s</label></li>', $group_info->group_srl, $group_info->group_srl, $group_info->group_srl, $attr, $group_info->title);
+		endforeach;
+		}
+		</ul>
+	</li>
+	</ul>
+</li>
+<li><label style="vertical-align:middle;" for="elkhatalk3_grant_ban">{$lang->elkhatalk3_ban} </label>
+	<div><input type="text" id="elkhatalk3_grant_ban" name="nick_name_ban" style="vertical-align:middle;" placeholder="{$lang->nick_name}" /></div>
+	<label style="vertical-align:middle;" for="elkhatalk3_grant_ban_exp">{$lang->elkhatalk3_expire} ({$lang->unit_min})</label>
+	<div><input id="elkhatalk3_grant_ban_exp" type="number" name="expdate_ban" value="60" placeholder="minutes" min="0" style="vertical-align:middle;" /></div>
+	<ul cond="count($ban_list)">
+	<li loop="$ban_list=>$member_info">
+	<a href="javascript:;" onclick="return false;" class="member_{$member_info->member_srl}">{$member_info->nick_name?$member_info->nick_name:'?'}</a>
+	<button type="button" onclick="window.procElkhatalk3ManageDelete({$member_info->member_srl}, 'B');">{$lang->cmd_delete}</button>
+	<div cond="isset($exp_list[$member_info->member_srl])">~ {$exp_list[$member_info->member_srl]}</div>
+	</li>
+	</ul>
+</li>
+
+<li>
+	<label for="elkhatalk3_grant_freeze">{$lang->elkhatalk3_freeze} (0~10080 {$lang->unit_min})</label>
+	<div><input type="number" name="freeze" value="" placeholder="minutes" min="0" max="10080" id="elkhatalk3_grant_freeze" style="vertical-align:middle;" /></div>
+	<div cond="$room_grants->_F[$_room] && @isset($room_grants->pk[0][0]) && $room_grants->pk[0][0][2] && time() < strtotime($room_grants->pk[0][0][2])">~ {$room_grants->pk[0][0][2]}</div>
+</li>
+<li><label style="vertical-align:middle;" for="elkhatalk3_grant_guest_manager">{$lang->elkhatalk3_manager} </label>
+	<div cond="$logged_info->is_admin=='Y'"><input type="text" id="elkhatalk3_grant_guest_manager" name="nick_name_manager" style="vertical-align:middle;" placeholder="{$lang->nick_name}" /></div>
+	<ul cond="count($manager_list)">
+	<li loop="$manager_list=>$member_info">
+	<a href="javascript:;" onclick="return false;" class="member_{$member_info->member_srl}">{$member_info->nick_name?$member_info->nick_name:'?'}</a>
+	<button cond="$logged_info->is_admin=='Y'" type="button" onclick="window.procElkhatalk3ManageDelete({$member_info->member_srl}, 'M');">{$lang->cmd_delete}</button>
+	</li>
+	</ul>
+</li>
+</ul>
+<button type="submit" onclick="if(!confirm('{$lang->confirm_submit}')) return false;">{$lang->cmd_submit}</button>
+</form>

@@ -1,0 +1,15 @@
+<query id="getSalesSum" action="select">
+  <tables>
+    <table name="ddggshop_order" />
+  </tables>
+  <columns>
+    <column name="sum(payment_price)" alias="total_sales" />
+    <column name="count(*)" alias="order_count" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="status" var="status" />
+    <condition operation="in" column="status" var="status_list" />
+    <condition operation="more" column="regdate" var="from_date" />
+    <condition operation="less" column="regdate" var="to_date" />
+  </conditions>
+</query>

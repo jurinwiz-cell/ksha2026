@@ -1,0 +1,15 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_content" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="room_no" var="room_no" filter="number" notnull="notnull" />
+		<condition operation="more" column="read" var="read" default="1" filter="number" pipe="and" />
+		<condition operation="in" column="member_srl" var="target_srls" notnull="notnull" pipe="and" />
+		<condition operation="less" column="no" var="no_max" filter="number" pipe="and" />
+	</conditions>
+	<navigation>
+		<index default="no" order="desc" />
+		<list_count var="list_count" default="100" />
+	</navigation>
+</query>

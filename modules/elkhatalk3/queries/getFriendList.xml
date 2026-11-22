@@ -1,0 +1,117 @@
+<query action="select">
+	<tables>
+		<table query="true" alias="R">
+			<tables>
+				<table query="true" alias="c3">
+					<!--
+					#EXPLAIN
+					SELECT MAX(c.no) `content_no`, m.room_no `room_no`
+					FROM `td_member_friend` `f`
+					LEFT JOIN `td_elkhatalk_members` `m`
+					ON m.member_srl = f.member_srl
+					AND m.member_srl2 = f.target_srl
+					#AND m.hide = 'N'
+					AND m.member_srl2 != f.member_srl
+
+					LEFT JOIN `td_elkhatalk_content` `c`
+					ON m.room_no = c.room_no
+
+					WHERE f.member_srl = 2234379
+					AND f.last_update_elkhatalk3 IS NOT NULL
+					AND f.target_srl != f.member_srl
+					AND c.room_no IS NOT NULL
+
+					GROUP BY `room_no`
+
+					ORDER BY MAX(f.last_update_elkhatalk3) DESC, MAX(m.last_update) DESC #`content_no` DESC
+					LIMIT 20
+					-->
+					<tables>
+						<table name="member_friend" alias="f" />
+						<table name="elkhatalk_members" alias="m" type="left join">
+							<conditions>
+								<condition operation="equal" column="m.member_srl" default="f.member_srl" />
+								<condition operation="equal" column="m.member_srl2" default="f.target_srl" pipe="and" />
+								<condition operation="notequal" column="m.member_srl2" default="f.member_srl" pipe="and" />
+							</conditions>
+						</table>
+
+						<table name="elkhatalk_content" alias="c" type="left join">
+							<conditions>
+								<condition operation="equal" column="c.room_no" default="m.room_no" />
+							</conditions>
+						</table>
+					</tables>
+					<columns>
+						<column name="MAX(c.no)" alias="content_no" />
+						<column name="m.room_no" alias="room_no" />
+					</columns>
+					<conditions>
+						<condition operation="equal" column="f.member_srl" var="member_srl" filter="number" notnull="notnull" />
+						<condition operation="notnull" column="f.last_update_elkhatalk3" pipe="and" />
+						<condition operation="notequal" column="f.target_srl" var="not_member_srl" filter="number" pipe="and" />
+					</conditions>
+					<groups>
+						<group column="room_no" />
+					</groups>
+					<navigation>
+						<index default="MAX(f.last_update_elkhatalk3)" order="desc" />
+						<index default="MAX(m.last_update)" order="desc" />
+						<page_count var="page_count" />
+						<page var="page" />
+						<list_count var="list_count" default="20" />
+					</navigation>
+				</table>
+
+				<table name="elkhatalk_content" alias="c2" type="left join">
+					<conditions>
+						<condition operation="equal" column="c2.no" default="c3.content_no" />
+					</conditions>
+				</table>
+
+				<table name="elkhatalk_members" alias="c" type="left join">
+					<conditions>
+						<condition operation="equal" column="c.room_no" default="c3.room_no" />
+						<condition operation="equal" column="c.member_srl" var="member_srl" filter="number" notnull="notnull" pipe="and" />
+					</conditions>
+				</table>
+			</tables>
+			<columns>
+				<column name="c.*" />
+				<column name="c3.content_no" alias="content_no" />
+				<column name="c2.content" alias="content" />
+				<column name="c2.member_srl" alias="content_member_srl" />
+				<column name="c2.read" alias="content_read" />
+				<!-- php 에서 조절하기로.
+				<column name="CONCAT('20',c2.regdate,'00')" alias="content_time" />
+				-->
+				<column name="c2.regdate" alias="content_time" />
+			</columns>
+		</table>
+		<table name="member_friend" alias="f" type="right join">
+			<conditions>
+				<condition operation="equal" column="R.member_srl" default="f.member_srl" />
+				<condition operation="equal" column="R.member_srl2" default="f.target_srl" pipe="and" />
+			</conditions>
+		</table>
+	</tables>
+	<columns>
+		<column name="f.friend_srl" alias="friend_srl" />
+		<column name="f.member_srl" alias="f_member_srl" />
+		<column name="f.target_srl" alias="f_target_srl" />
+		<column name="f.regdate" alias="f_regdate" />
+		<column name="R.*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="f.member_srl" var="member_srl" filter="number" notnull="notnull" />
+		<condition operation="notnull" column="f.last_update_elkhatalk3" pipe="and" />
+		<condition operation="notequal" column="f.target_srl" var="not_member_srl" filter="number" pipe="and" />
+	</conditions>
+	<navigation>
+		<index default="f.last_update_elkhatalk3" order="desc" />
+		<index default="R.last_update" order="desc" />
+		<page_count var="page_count" />
+		<page var="page" />
+		<list_count var="list_count" default="20" />
+	</navigation>
+</query>

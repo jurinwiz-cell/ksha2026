@@ -1,0 +1,11 @@
+<table name="ddggshop_order_log">
+  <column name="log_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="order_srl" type="bignumber" notnull="notnull" index="idx_order" />
+  <column name="actor_srl" type="bignumber" default="0" />
+  <column name="actor_name" type="varchar" size="100" />
+  <column name="action" type="varchar" size="30" />
+  <column name="from_status" type="varchar" size="20" />
+  <column name="to_status" type="varchar" size="20" />
+  <column name="memo" type="varchar" size="255" />
+  <column name="regdate" type="datetime" index="idx_regdate" />
+</table>

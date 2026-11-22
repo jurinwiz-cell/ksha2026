@@ -1,0 +1,12 @@
+<query id="updateQnaAnswer" action="update">
+  <tables>
+    <table name="ddggshop_qna" />
+  </tables>
+  <columns>
+    <column name="answer" var="answer" />
+    <column name="answered_date" var="answered_date" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="qna_srl" var="qna_srl" notnull="notnull" />
+  </conditions>
+</query>

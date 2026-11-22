@@ -1,0 +1,20 @@
+<query id="getMemberCoupons" action="select">
+  <tables>
+    <table name="ddggshop_coupon_issue" />
+    <table name="ddggshop_coupon" />
+  </tables>
+  <columns>
+    <column name="ddggshop_coupon.*" />
+    <column name="ddggshop_coupon_issue.issue_srl" alias="issue_srl" />
+    <column name="ddggshop_coupon_issue.used" alias="issue_used" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="ddggshop_coupon.coupon_srl" default="ddggshop_coupon_issue.coupon_srl" />
+    <condition operation="equal" column="ddggshop_coupon_issue.member_srl" var="member_srl" notnull="notnull" pipe="and" />
+    <condition operation="equal" column="ddggshop_coupon_issue.used" var="used" pipe="and" />
+    <condition operation="equal" column="ddggshop_coupon.status" var="status" pipe="and" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="ddggshop_coupon_issue.issue_srl" order="desc" />
+  </navigation>
+</query>

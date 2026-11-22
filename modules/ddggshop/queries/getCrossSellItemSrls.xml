@@ -1,0 +1,22 @@
+<query id="getCrossSellItemSrls" action="select">
+  <tables>
+    <table name="ddggshop_order_item" alias="oi_a" />
+    <table name="ddggshop_order_item" alias="oi_b" />
+  </tables>
+  <columns>
+    <column name="oi_b.item_srl" alias="item_srl" />
+    <column name="count(*)" alias="freq" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="oi_a.order_srl" default="oi_b.order_srl" />
+    <condition operation="equal" column="oi_a.item_srl" var="item_srl" notnull="notnull" pipe="and" />
+    <condition operation="notequal" column="oi_b.item_srl" var="item_srl" notnull="notnull" pipe="and" />
+  </conditions>
+  <groups>
+    <group column="oi_b.item_srl" />
+  </groups>
+  <navigation>
+    <index var="sort_index" default="freq" order="desc" />
+    <list_count var="list_count" default="8" />
+  </navigation>
+</query>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon version="0.2">
+	<title xml:lang="ko">ZZAN SNS 로그인 - 시스템 메시지 연동</title>
+	<description xml:lang="ko">권한 오류 인라인 로그인 폼에 SNS 로그인 버튼을 삽입합니다.</description>
+	<version>1.0.0</version>
+	<date>2026-06-10</date>
+	<author email="contact@zzan.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+	</author>
+	<actions>
+		<action name="before_display_content" />
+	</actions>
+</addon>

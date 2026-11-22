@@ -1,0 +1,50 @@
+<include target="_head.html" />
+
+<div class="ds-flow"><span class="s on">{$L['flow_cart']}</span><span class="sep">›</span><span class="s">{$L['flow_order']}</span><span class="sep">›</span><span class="s">{$L['flow_done']}</span></div>
+
+<!--@if(count($cart->rows))-->
+<div class="ds-cols">
+  <div class="main">
+    <div class="ds-cart-list">
+      <div class="ds-cart-item" loop="$cart->rows=>$row">
+        <a class="ds-cart-thumb" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$row->item_srl)}">
+          <!--@if($row->thumb)--><img src="{$row->thumb}" alt="" /><!--@else--><span class="ph"></span><!--@end-->
+        </a>
+        <div class="ds-cart-info">
+          <a class="ds-cart-name" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$row->item_srl)}">{$row->item_name}</a>
+          <div class="ds-cart-opt" cond="$row->option_label">{$L['cart_opt']} {$row->option_label}</div>
+          <div class="ds-cart-unit"><span class="ds-oldprice" cond="!empty($row->discounted)">{number_format($row->orig_price)}{$L['won']}</span>{number_format($row->price)}{$L['won']}</div>
+          <div class="ds-cart-so" cond="!$row->available">{$L['cart_soldout']}</div>
+        </div>
+        <button type="button" class="ds-cart-del" onclick="ddggshopCartRemove({$row->cart_srl});return false;" aria-label="{$L['delete']}">×</button>
+        <div class="ds-cart-qty">
+          <div class="ds-qty" style="margin:0;">
+            <button type="button" onclick="ddggshopCartQty({$row->cart_srl},{$row->qty}-1)">−</button>
+            <input type="number" value="{$row->qty}" min="1" onchange="ddggshopCartQty({$row->cart_srl},this.value)" />
+            <button type="button" onclick="ddggshopCartQty({$row->cart_srl},{$row->qty}+1)">+</button>
+          </div>
+        </div>
+        <div class="ds-cart-sub">{number_format($row->subtotal)}{$L['won']}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-summary">
+    <h3>{$L['cart_pay_estimate']}</h3>
+    <div class="ds-srow"><span>{$L['item_total']}</span><span>{number_format($totals->item_total)}{$L['won']}</span></div>
+    <div class="ds-srow"><span>{$L['shipping']}</span><span>{$totals->delivery_fee ? '+'.number_format($totals->delivery_fee).$L['won'] : $L['free']}</span></div>
+    <div class="ds-srow total"><span>{$L['total']}</span><b>{number_format($totals->payment_price)}{$L['won']}</b></div>
+    <div class="ds-point-note" cond="$totals->point_earn">{str_replace('%s', number_format($totals->point_earn), $L['cart_point_earn'])}</div>
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopOrder')}" class="ds-btn primary block" style="margin-top:18px;">{$L['checkout']}</a>
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}" class="ds-btn block" style="margin-top:8px;">{$L['continue_shopping']}</a>
+  </div>
+</div>
+<!--@else-->
+<div class="ds-empty">
+  <p style="font-size:18px;margin-bottom:8px;">🛒</p>
+  {$L['cart_empty']}
+  <div style="margin-top:18px;"><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}" class="ds-btn primary">{$L['go_shopping']}</a></div>
+</div>
+<!--@end-->
+
+<include target="_foot.html" />

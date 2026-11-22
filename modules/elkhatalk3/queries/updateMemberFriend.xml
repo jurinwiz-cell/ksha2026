@@ -1,0 +1,12 @@
+<query action="update">
+	<tables>
+		<table name="member_friend" />
+	</tables>
+	<columns>
+		<column name="last_update_elkhatalk3" var="last_update" notnull="notnull" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" filter="number" notnull="notnull" />
+		<condition operation="equal" column="target_srl" var="target_srl" filter="number" notnull="notnull" pipe="and" />
+	</conditions>
+</query>

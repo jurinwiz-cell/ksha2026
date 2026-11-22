@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget version="0.5">
+    <title xml:lang="ko">Lavalic 뮤직 플레이어</title>
+    <title xml:lang="en">Lavalic Music Player</title>
+	<version>1.0.2</version>
+	<date>2026-07-06</date>
+    <author email_address="vhain6512@gmail.com">
+        <name xml:lang="ko">VHAIN(원제작자), Flowerrain(수정)</name>
+        <name xml:lang="en">VHAIN, Flowerrain</name>
+        <description xml:lang="ko">라이믹스 2.133. PHP8.3에 맞도록 수정</description>
+        <description xml:lang="en">라이믹스 2.133. PHP8.3에 맞도록 수정</description>
+    </author>
+    <extra_vars>
+        <var id="lavalic_module">
+            <name xml:lang="ko">Lavalic 모듈 선택</name>
+            <name xml:lang="en">Select Lavalic Module</name>
+            <type>mid_list</type>
+            <description xml:lang="ko">하나만 선택하세요.</description>
+            <description xml:lang="en">Only choose one.</description>
+        </var>
+        <var id="lavalic_popup_text">
+            <name xml:lang="ko">Lavalic 열기 텍스트</name>
+            <name xml:lang="en">Lavalic popup text</name>
+            <type>text</type>
+            
+        </var>
+    </extra_vars>
+</widget>

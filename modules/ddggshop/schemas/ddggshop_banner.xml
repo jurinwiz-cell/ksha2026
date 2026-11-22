@@ -1,0 +1,19 @@
+<table name="ddggshop_banner">
+  <column name="banner_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="title" type="varchar" size="200" />
+  <column name="content" type="varchar" size="500" />
+  <column name="image" type="varchar" size="250" notnull="notnull" />
+  <column name="link" type="varchar" size="250" />
+  <column name="link_target" type="char" size="6" default="self" />
+  <column name="text_align" type="char" size="10" default="left" />
+  <column name="text_valign" type="char" size="10" default="middle" />
+  <column name="title_color" type="varchar" size="20" default="#ffffff" />
+  <column name="content_color" type="varchar" size="20" default="#ffffff" />
+  <column name="title_size" type="number" size="4" default="30" />
+  <column name="content_size" type="number" size="4" default="16" />
+  <column name="font_family" type="varchar" size="60" />
+  <column name="overlay" type="char" size="1" default="N" />
+  <column name="list_order" type="bignumber" notnull="notnull" index="idx_list_order" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="regdate" type="date" />
+</table>

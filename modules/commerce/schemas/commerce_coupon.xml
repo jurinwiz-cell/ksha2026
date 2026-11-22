@@ -1,0 +1,16 @@
+<table name="commerce_coupon">
+	<column name="coupon_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="title" type="varchar" size="120" notnull="notnull" />
+	<column name="code" type="varchar" size="40" index="idx_code" />
+	<column name="discount_type" type="varchar" size="10" notnull="notnull" default="fixed" />
+	<column name="discount_value" type="bigint" notnull="notnull" default="0" />
+	<column name="max_discount" type="bigint" notnull="notnull" default="0" />
+	<column name="min_order" type="bigint" notnull="notnull" default="0" />
+	<column name="use_start" type="char" size="14" />
+	<column name="use_end" type="char" size="14" />
+	<column name="per_member" type="int" notnull="notnull" default="1" />
+	<column name="total_limit" type="int" notnull="notnull" default="0" />
+	<column name="used_count" type="int" notnull="notnull" default="0" />
+	<column name="status" type="char" size="1" notnull="notnull" default="Y" />
+	<column name="regdate" type="char" size="14" index="idx_regdate" />
+</table>

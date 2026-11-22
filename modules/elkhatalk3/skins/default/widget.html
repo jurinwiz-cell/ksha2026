@@ -1,0 +1,97 @@
+{@
+Context::addCssFile('modules/elkhatalk3/skins/default/overlayscrollbars.min.css');
+Context::addJsFile('modules/elkhatalk3/skins/default/overlayscrollbars.browser.es5.min.js');
+
+$oModel = getModel('elkhatalk3');
+Context::addHtmlHeader( $oModel->load_css() );
+$plugins = $oModel->getPlugin('tpl@before');
+foreach($plugins as $key => $val):
+	$plugins[$key]();
+endforeach;
+
+$elkhatalk_config = $oModel->getConfig();
+$popup = isset($popup) && $popup=='Y'? 'Y':'N';
+$target_srl = is_object($logged_info) && $logged_info->member_srl==$member_srl && isset($target_srl)? (INT)$target_srl : 0; // 탈퇴한 회원의 메세지도 봐야 하므로 target_srl 검증 하지 않음.
+
+$use_communication_friends = FALSE;
+if($elkhatalk_config->use_communication_friends != 'disabled'):
+	$oModuleModel = getModel('module');
+	$communication_config = $oModuleModel->getModuleConfig('communication');
+	$use_communication_friends = !isset($communication_config->enable_friend) || $communication_config->enable_friend != 'N';
+endif;
+
+$output = $oModel->getElkhatalk3AllList();
+ob_start();
+}
+<style type="text/css">
+<block cond="$popup=='Y'">html,body { position:relative; height:100%; margin:0; padding:0; font-size:12px; overflow:hidden; }</block>
+<block cond="$elkhatalk_config->font_family">.elkhatalk-wrap * { font-family:{$elkhatalk_config->font_family}; }</block>
+<block cond="isset($elkhatalk_config->popup_size[1])">.elkhatalk-m-0.elkhatalk-pop-N { height:{$elkhatalk_config->popup_size[1]}px; }</block>
+</style>
+{@
+Context::addHtmlHeader(ob_get_clean());
+}
+
+<div class="elkhatalk-wrap elkhatalk-pop-{$popup} elkhatalk-m-{(INT)$m} elkhatalk-member-{$target_srl || $oModel->get('notice_content') ?'Y':'N'} {@ echo ($friends ?? '') == 'Y' ? ' friends-Y' : ' friends-N'; }">
+	<div class="list">
+		<div class="list-member">
+			<div class="header members">
+				<h2><a href="{$oModel->getUrl([])}">{$lang->elkhatalk3_my_message}</a></h2>
+				<div class="a">
+					<!--@if(($elkhatalk_config->dark_mode ?? '') == 'A')-->
+					<a href="javascript:void(0);" class="elkhatalk3_dark_mode"><span>{$lang->elkhatalk3_dark_mode}</span></a>
+					<!--@endif-->
+					<a href="javascript:void(0);" class="notify" data-on="{$lang->elkhatalk3_notify_on}" data-off="{$lang->elkhatalk3_notify_off}" data-confirm="{$lang->elkhatalk3_notify_confirm}"><span>{$lang->elkhatalk3_notify_off}</span></a>
+				</div>
+			</div>
+			<form class="search-member" method="get" action="{getUrl()}" onsubmit="window.getElkhatalk3('getElkhatalk3MemberList', request_uri + '?' + jQuery(this).serialize(), true);return false;">
+				<input type="hidden" name="mid" value="{$mid}" />
+				<!--//<input type="hidden" name="act" value="{$act}" />-->
+				<input type="hidden" name="popup" value="{$popup}" />
+				<input type="hidden" name="module" value="{$module}" />
+				<input type="hidden" name="member_srl" value="{(INT)$member_srl}" />
+				<input type="hidden" name="target_srl" value="{(INT)$target_srl}" />
+				<input type="hidden" name="error_return_url" value="" />
+				<span class="input{@ if(isset($nick_name) && is_string($nick_name)) echo ' focus'; }">
+					<input class="iText" type="text" name="nick_name" value="{@ echo isset($nick_name) && is_string($nick_name)? strip_tags($nick_name) : ''; }" placeholder="{$lang->nick_name} {$lang->cmd_search}"  />
+					<span class="clear"><button type="button" title="{$lang->cmd_delete}" tabindex="-1">{$lang->cmd_delete}</button></span>
+				</span>
+				<span class="submit"><button type="submit">{$lang->cmd_search}</button></span>
+				<!--//<span class="submit"><button type="button">{$lang->cmd_cancel}</button></span>-->
+			</form>
+
+			<!--@if($use_communication_friends)-->
+			<div class="header friends">
+				{@
+				Context::loadLang('modules/communication');
+				//  onclick="window.getElkhatalk3('getElkhatalk3AllList', this.href, true); return false;"
+				}
+				<h2><a href="{$oModel->getUrl(['friends' => 'Y'])}">{$lang->cmd_view_friend}</a></h2>
+			</div>
+			<!--@end-->
+
+			<div class="list-member-wrap"><div class="list-member-abs overlayScrollbars" data-scroll="N" data-overlayscrollbars-initialize><div class="list-member-html">{@
+				echo $oModel->get('tpl_member_list');
+			}</div></div></div>
+
+			{@
+			echo $oModel->get('tpl_member_page') ?? '';
+			}
+		</div>
+
+		<div class="list-talk-wrap">{@
+			if( $target_srl || $oModel->get('notice_content') )	echo $oModel->get('tpl_talk_list');
+		}</div>
+	</div>
+	<div class="alert-wrap" onclick="jQuery(this).html('').hide();"></div>
+</div>
+{@
+$filename = 'modules/elkhatalk3/skins/'.$elkhatalk_config->skin.'/widget.min.js';
+$filemtime = filemtime(_XE_PATH_.$filename);
+echo '<'.'script src="'.$elkhatalk_config->cdn_path.$filename.'?c='.$filemtime.'" async'.'><'.'/script'.'>';
+
+$plugins = $oModel->getPlugin('tpl@after');
+foreach($plugins as $key => $val):
+	$plugins[$key]();
+endforeach;
+}

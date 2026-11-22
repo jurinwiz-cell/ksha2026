@@ -1,0 +1,26 @@
+<include target="_admin_nav.html" />
+<h1>결제 로그 <small style="font-size:13px;color:#999;">{number_format($total_count)}건</small></h1>
+
+<table class="x_table x_table-bordered">
+  <thead><tr><th>일시</th><th>주문번호</th><th>PG</th><th>동작</th><th>결과</th><th>거래번호</th><th style="text-align:right;">금액</th></tr></thead>
+  <tbody>
+    <tr cond="!count($logs)"><td colspan="7" style="text-align:center;color:#888;padding:24px;">로그가 없습니다.</td></tr>
+    <tr loop="$logs=>$lg">
+      <td>{zdate($lg->regdate,'Y.m.d H:i:s')}</td>
+      <td>{$lg->order_code}</td>
+      <td>{$lg->gateway}</td>
+      <td>{$lg->action}</td>
+      <td><!--@if($lg->result=='S')--><span style="color:#1a9c54;">성공</span><!--@else--><span style="color:#d63939;">실패</span><!--@end--></td>
+      <td style="font-size:11px;word-break:break-all;max-width:220px;">{$lg->pg_tid}</td>
+      <td style="text-align:right;">{number_format($lg->amount)}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="text-align:center;margin-top:14px;" cond="$total_page > 1">
+  <a class="x_btn x_btn-mini" cond="$cur_page>1" href="{getUrl('','module','admin','act','dispDdggshopAdminPayment','page',$cur_page-1)}">이전</a>
+  <span style="margin:0 10px;">{$cur_page} / {$total_page}</span>
+  <a class="x_btn x_btn-mini" cond="$cur_page<$total_page" href="{getUrl('','module','admin','act','dispDdggshopAdminPayment','page',$cur_page+1)}">다음</a>
+</div>
+
+<include target="_admin_foot.html" />

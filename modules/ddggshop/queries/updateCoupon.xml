@@ -1,0 +1,21 @@
+<query id="updateCoupon" action="update">
+  <tables>
+    <table name="ddggshop_coupon" />
+  </tables>
+  <columns>
+    <column name="code" var="code" />
+    <column name="title" var="title" />
+    <column name="discount_type" var="discount_type" />
+    <column name="discount_value" var="discount_value" />
+    <column name="min_order" var="min_order" />
+    <column name="max_discount" var="max_discount" />
+    <column name="start_date" var="start_date" />
+    <column name="end_date" var="end_date" />
+    <column name="usage_limit" var="usage_limit" />
+    <column name="per_member" var="per_member" />
+    <column name="auto_signup" var="auto_signup" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="coupon_srl" var="coupon_srl" notnull="notnull" />
+  </conditions>
+</query>

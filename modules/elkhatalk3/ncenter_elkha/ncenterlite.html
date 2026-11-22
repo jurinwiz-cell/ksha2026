@@ -1,0 +1,31 @@
+<div id="nc_container" {$ncenterlite_zindex} class="nc_container count-{$ncenterlite_page_navigation->total_count}">
+	<div class="nc_menu">
+		<a class="notify" href="javascript:;" onclick="return $$ncenterlite.getMyNotifyListTpl({ 'page':1 });"><strong>{$ncenterlite_page_navigation->total_count}</strong> 개의 알림</a>
+		|
+		<span class="more"><!--//  cond="$ncenterlite_page_navigation->total_count > 5" -->
+			<a href="javascript:;" onclick="return $$ncenterlite.more();">{$lang->ncenterlite_more}</a>
+			|
+		</span>
+		<span class="delete_all"><!--// cond="$ncenterlite_page_navigation->total_count >= 1" -->
+			<a href="javascript:;" onclick="return $$ncenterlite.delete_all();">{$lang->ncenterlite_delete_all}</a>
+			|
+		</span>
+		<a class="close" href="javascript:;" onclick="return $$ncenterlite.close();">{$lang->cmd_close}</a>
+	</div><!--//
+	<div class="list">
+		<ul>
+		<li loop="$ncenterlite_list => $o">
+		<a href="{$o->url}">
+			<block cond="$useProfileImage">
+				<img src="{$o->profileImage}"|cond="$o->profileImage" src="{Context::getRequestUri()}modules/ncenterlite/skins/default/img/p.png"|cond="!$o->profileImage" alt="" class="nc_profile_img" />
+			</block>
+			<span class="msg">{$o->text}</span><span class="ago">{$o->ago}</span>
+		</a>
+		</li>
+		</ul>
+	</div>
+--></div>
+<load target="ncenterlite.js" />
+<script>$$ncenterlite.init(document.getElementById('nc_container'),{
+	'total_count': {$ncenterlite_page_navigation->total_count}
+});</script>

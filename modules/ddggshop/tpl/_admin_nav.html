@@ -1,0 +1,16 @@
+<load target="css/admin.css" />
+<div class="ddgg-admin">
+  <div class="dga-top">
+    <div class="dga-brand">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
+      쇼핑몰 관리 콘솔 <span class="sep"></span> <span class="env">ddggshop</span>
+    </div>
+  </div>
+  <nav class="dga-tabs">
+    <a class="dga-tab {$admin_tab=='dashboard' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminDashboard')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>대시보드</a>
+    <a class="dga-tab {$admin_tab=='config' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/><circle cx="8" cy="7" r="1.6" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="10" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>쇼핑몰설정</a>
+    <a class="dga-tab {$admin_tab=='order' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l2 4v14a1 1 0 0 1-1.4.9L15 20l-2 1-2-1-2 1-1.6.9A1 1 0 0 1 6 20V6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>주문내역</a>
+    <a class="dga-tab {$admin_tab=='qna' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminQna')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>상품문의</a>
+    <a class="dga-tab {$admin_tab=='category' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminCategory')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>카테고리관리</a>
+    <a class="dga-tab {$admin_tab=='item' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminItemList')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>상품관리</a>
+  </nav>

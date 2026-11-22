@@ -1,0 +1,63 @@
+<include target="_console_head.html" />
+
+<div class="cs-kpis">
+  <div class="cs-kpi"><div class="lb">오늘 매출</div><div class="v">{number_format($sum_today->total_sales)}<span style="font-size:13px;font-weight:600;color:#8a9099;">원</span></div><div class="sub">주문 {number_format($sum_today->order_count)}건</div></div>
+  <div class="cs-kpi"><div class="lb">이번 달 매출</div><div class="v">{number_format($sum_month->total_sales)}<span style="font-size:13px;font-weight:600;color:#8a9099;">원</span></div><div class="sub">주문 {number_format($sum_month->order_count)}건</div></div>
+  <div class="cs-kpi"><div class="lb">누적 매출</div><div class="v">{number_format($sum_all->total_sales)}<span style="font-size:13px;font-weight:600;color:#8a9099;">원</span></div><div class="sub">전체 {number_format($sum_all->order_count)}건</div></div>
+  <div class="cs-kpi"><div class="lb">처리 대기 주문</div><div class="v">{number_format($cnt_pending + $cnt_ready)}<span style="font-size:13px;font-weight:600;color:#8a9099;">건</span></div><div class="sub">입금대기 {$cnt_pending} · 배송준비 {$cnt_ready}</div></div>
+  <div class="cs-kpi"><div class="lb">등록 상품</div><div class="v">{number_format($cnt_items)}<span style="font-size:13px;font-weight:600;color:#8a9099;">개</span></div><div class="sub">품절 {$cnt_soldout}개</div></div>
+</div>
+
+<div class="cs-grid2">
+  <div class="cs-card">
+    <div class="cs-card-head"><h3>주간 매출</h3><span style="font-size:12px;color:#8a9099;">최근 7일 · 단위 만원</span></div>
+    <div class="cs-card-p">
+      <div class="cs-bars">
+        <div class="cs-bar" loop="$bars=>$b">
+          <div class="amt">{$b->man}</div>
+          <div class="col" style="height:{$b->h}px;"></div>
+          <div class="d">{$b->d}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="cs-card-head"><h3>처리 대기</h3></div>
+    <div class="cs-card-p" style="padding-top:8px;padding-bottom:8px;">
+      <div class="cs-pend">
+        <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrders','status','pending')}">
+          <span class="l"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3zM3 7l3-4h12l3 4"/></svg></span>입금 대기</span>
+          <span class="c">{$cnt_pending}</span>
+        </a>
+        <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrders','status','paid')}">
+          <span class="l"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg></span>배송 준비</span>
+          <span class="c">{$cnt_ready}</span>
+        </a>
+        <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleItems','status','soldout')}">
+          <span class="l"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/></svg></span>품절 상품</span>
+          <span class="c">{$cnt_soldout}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-card">
+  <div class="cs-card-head"><h3>최근 주문</h3><a class="cs-sec-link" href="{$u_orders}">전체보기 →</a></div>
+  <table class="cs-table">
+    <thead><tr><th>주문번호</th><th>주문자</th><th>상품</th><th class="cs-right">결제금액</th><th>상태</th><th>주문일시</th></tr></thead>
+    <tbody>
+      <tr cond="!count($recent_orders)"><td colspan="6" class="cs-empty">주문 내역이 없습니다.</td></tr>
+      <tr loop="$recent_orders=>$o">
+        <td><a class="cs-id" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrderView','order_srl',$o->order_srl)}">{$o->order_code}</a></td>
+        <td>{$o->orderer_name}</td>
+        <td class="cs-muted">{$o->orderer_name}님의 주문</td>
+        <td class="cs-right cs-num">{number_format($o->payment_price)}원</td>
+        <td><span class="cs-st {$o->status}">{$o->status_label}</span></td>
+        <td class="cs-muted cs-num">{zdate($o->regdate,'Y.m.d H:i')}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<include target="_console_foot.html" />

@@ -1,0 +1,20 @@
+<query id="insertCoupon" action="insert">
+  <tables><table name="ddggshop_coupon" /></tables>
+  <columns>
+    <column name="coupon_srl" var="coupon_srl" notnull="notnull" />
+    <column name="code" var="code" notnull="notnull" />
+    <column name="title" var="title" />
+    <column name="discount_type" var="discount_type" default="amount" />
+    <column name="discount_value" var="discount_value" default="0" />
+    <column name="min_order" var="min_order" default="0" />
+    <column name="max_discount" var="max_discount" default="0" />
+    <column name="start_date" var="start_date" />
+    <column name="end_date" var="end_date" />
+    <column name="usage_limit" var="usage_limit" default="0" />
+    <column name="used_count" var="used_count" default="0" />
+    <column name="per_member" var="per_member" default="0" />
+    <column name="auto_signup" var="auto_signup" default="N" />
+    <column name="status" var="status" default="Y" />
+    <column name="regdate" var="regdate" default="curdate()" />
+  </columns>
+</query>

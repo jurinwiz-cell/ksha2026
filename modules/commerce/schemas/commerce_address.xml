@@ -1,0 +1,16 @@
+<table name="commerce_address">
+	<column name="address_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="member_srl" type="bigint" notnull="notnull" index="idx_member_srl" />
+	<column name="title" type="varchar" size="60" />
+	<column name="receiver_name" type="varchar" size="80" notnull="notnull" />
+	<column name="receiver_phone" type="varchar" size="30" />
+	<column name="phone_cc" type="varchar" size="6" />
+	<column name="country" type="varchar" size="2" notnull="notnull" default="KR" />
+	<column name="state" type="varchar" size="80" />
+	<column name="city" type="varchar" size="80" />
+	<column name="zipcode" type="varchar" size="10" />
+	<column name="address1" type="varchar" size="250" />
+	<column name="address2" type="varchar" size="250" />
+	<column name="is_default" type="char" size="1" notnull="notnull" default="N" />
+	<column name="regdate" type="char" size="14" />
+</table>

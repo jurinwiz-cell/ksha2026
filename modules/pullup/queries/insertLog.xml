@@ -1,0 +1,14 @@
+<query id="insertLog" action="insert">
+	<tables>
+		<table name="pullup_logs" />
+	</tables>
+	<columns>
+		<column name="log_srl" var="log_srl" />
+		<column name="document_srl" var="document_srl" />
+		<column name="module_srl" var="module_srl" />
+		<column name="member_srl" var="member_srl" />
+		<column name="point" var="point" default="0" />
+		<column name="origin_regdate" var="origin_regdate" />
+		<column name="regdate" var="regdate" default="now()" />
+	</columns>
+</query>

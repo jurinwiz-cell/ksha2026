@@ -1,0 +1,67 @@
+<!--#include("./header.html")-->
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/pullup/tpl/config/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form action="./" method="post" id="fo_pullup">
+<input type="hidden" name="module" value="admin" />
+<input type="hidden" name="act" value="procPullupAdminInsertConfig" />
+<input type="hidden" name="xe_validator_id" value="modules/pullup/tpl/config/1" />
+<table class="x_table x_table-striped x_table-hover">
+	<tbody>
+		<tr>
+			<th scope="row">{$lang->pullup_point}</th>
+			<td>
+				<input type="number" name="point" min="0" value="{$config->point}" class="x_form-control" style="width:120px;" /> P
+				<p class="x_help-block">{$lang->pullup_point_help}</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->pullup_min_days_after_write}</th>
+			<td>
+				<input type="number" name="min_days_after_write" min="0" value="{$config->min_days_after_write}" class="x_form-control" style="width:120px;" /> {$lang->unit_day}
+				<p class="x_help-block">{$lang->pullup_min_days_after_write_help}</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->pullup_min_days_after_bump}</th>
+			<td>
+				<input type="number" name="min_days_after_bump" min="0" value="{$config->min_days_after_bump}" class="x_form-control" style="width:120px;" /> {$lang->unit_day}
+				<p class="x_help-block">{$lang->pullup_min_days_after_bump_help}</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->pullup_update_regdate}</th>
+			<td>
+				<label class="x_inline"><input type="radio" name="update_regdate" value="Y" checked="checked"|cond="$config->update_regdate == 'Y'" /> {$lang->pullup_update_regdate_on}</label>
+				<label class="x_inline"><input type="radio" name="update_regdate" value="N" checked="checked"|cond="$config->update_regdate != 'Y'" /> {$lang->pullup_update_regdate_off}</label>
+				<p class="x_help-block">{$lang->pullup_update_regdate_help}</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->pullup_target_modules}</th>
+			<td>
+				<p class="x_help-block">{$lang->pullup_target_modules_help}</p>
+				<!--@if(!count($board_list))-->
+				<p>{$lang->pullup_no_board}</p>
+				<!--@else-->
+				<ul class="x_clearfix" style="margin:0;padding:0;list-style:none;">
+					<!--@foreach($board_list as $board)-->
+					<li style="float:left;width:33%;padding:4px 0;">
+						<label>
+							<input type="checkbox" name="target_modules[]" value="{$board->module_srl}" <!--@if(in_array($board->module_srl, array_map('intval', $config->target_modules)))-->checked="checked"<!--@end--> />
+							{$board->browser_title} <span class="gray">({$board->mid})</span>
+						</label>
+					</li>
+					<!--@end-->
+				</ul>
+				<!--@end-->
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="btnArea">
+	<input class="btn" type="submit" value="{$lang->cmd_registration}" />
+</div>
+</form>

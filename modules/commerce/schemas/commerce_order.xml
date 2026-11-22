@@ -1,0 +1,24 @@
+<table name="commerce_order">
+	<column name="order_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="order_code" type="varchar" size="30" notnull="notnull" unique="unique_order_code" />
+	<column name="channel" type="varchar" size="10" notnull="notnull" default="web" index="idx_channel" />
+	<column name="member_srl" type="bigint" notnull="notnull" default="0" index="idx_member_srl" />
+	<column name="orderer_name" type="varchar" size="80" notnull="notnull" />
+	<column name="orderer_phone" type="varchar" size="30" />
+	<column name="orderer_email" type="varchar" size="120" />
+	<column name="guest_password" type="varchar" size="128" />
+	<column name="item_total" type="bigint" notnull="notnull" default="0" />
+	<column name="delivery_fee_total" type="bigint" notnull="notnull" default="0" />
+	<column name="discount_total" type="bigint" notnull="notnull" default="0" />
+	<column name="credit_used" type="bigint" notnull="notnull" default="0" />
+	<column name="payment_price" type="bigint" notnull="notnull" default="0" />
+	<column name="currency" type="varchar" size="8" notnull="notnull" default="KRW" />
+	<column name="exchange_rate" type="varchar" size="16" default="" />
+	<column name="pay_order_srl" type="bigint" notnull="notnull" default="0" index="idx_pay_order_srl" />
+	<column name="status" type="varchar" size="20" notnull="notnull" default="pending" index="idx_status" />
+	<column name="memo" type="varchar" size="250" />
+	<column name="ipaddress" type="varchar" size="60" />
+	<column name="regdate" type="char" size="14" index="idx_regdate" />
+	<column name="paid_date" type="char" size="14" />
+	<column name="cancelled_date" type="char" size="14" />
+</table>

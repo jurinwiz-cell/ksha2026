@@ -1,0 +1,31 @@
+<include target="_head.html" />
+
+<include target="_mypage_tabs.html" />
+
+<!--@if(count($items))-->
+<div class="ds-grid">
+  <div loop="$items=>$item" class="ds-card ds-card-wish">
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$item->item_srl)}" class="ds-card-link">
+      <div class="ds-thumb">
+        <!--@if($item->thumb)--><img src="{$item->thumb}" alt="{$item->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end-->
+        <div class="ds-soldout" cond="$item->status=='soldout' || ($item->use_stock=='Y' && $item->stock<=0)">{$L['soldout']}</div>
+      </div>
+      <div class="ds-info">
+        <div class="ds-name">{$item->item_name}</div>
+        <!--@if($item->can_view_price)--><div class="ds-price">{number_format($item->price)}<small>{$L['won']}</small></div><!--@else--><div class="ds-price" style="font-size:13px;color:var(--ds-sub);font-weight:600;">🔒 {$L['wish_member_only']}</div><!--@end-->
+      </div>
+    </a>
+    <button type="button" class="ds-wish-remove" title="{$L['wish_remove']}" onclick="ddggToggleWishlist({$item->item_srl}, this)">♥</button>
+  </div>
+</div>
+
+<div class="ds-pager" cond="$total_page > 1">
+  <a class="ds-btn sm" cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyWishlist','page',$cur_page-1)}">{$L['prev']}</a>
+  <span>{$cur_page} / {$total_page}</span>
+  <a class="ds-btn sm" cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyWishlist','page',$cur_page+1)}">{$L['next']}</a>
+</div>
+<!--@else-->
+<div class="ds-empty">{$L['wish_empty']}</div>
+<!--@end-->
+
+<include target="_foot.html" />

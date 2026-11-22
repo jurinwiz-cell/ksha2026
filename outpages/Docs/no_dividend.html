@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가치공유주택 연결망 모델</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vis-Network JS for Graph Model -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script>
+        // 무해한 ResizeObserver 에러 콘솔 출력 방지
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('ResizeObserver loop')) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
+        });
+    </script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+        /* 에러 해결: 100vh 대신 100%를 사용하고 부모 요소 안에서 절대 위치로 고정하여 레이아웃 루프 방지 */
+        #network-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; outline: none; }
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen">
+
+    <!-- Network Graph Area -->
+    <div class="flex-grow relative h-3/5 md:h-full overflow-hidden">
+        <!-- Header Overlay -->
+        <div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur p-4 rounded-xl shadow-sm border border-slate-200 pointer-events-none">
+            <h1 class="text-xl font-bold text-slate-800">가치공유주택 연결망</h1>
+            <p class="text-sm text-slate-500 mt-1">노드를 드래그하거나 클릭하여 상세 정보를 확인하세요.</p>
+        </div>
+        
+        <!-- Legend Overlay -->
+        <div class="absolute bottom-4 left-4 z-10 bg-white/90 backdrop-blur p-3 rounded-xl shadow-sm border border-slate-200 text-xs hidden sm:block pointer-events-none">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#3b82f6]"></span> 핵심 모델</div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#10b981]"></span> 주요 특징/혜택</div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#f59e0b]"></span> 공급/운영 전략</div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#8b5cf6]"></span> 이해관계자</div>
+            </div>
+        </div>
+
+        <div id="network-container"></div>
+    </div>
+
+    <!-- Info Sidebar -->
+    <div id="info-sidebar" class="w-full md:w-96 bg-white border-t md:border-t-0 md:border-l border-slate-200 shadow-xl z-20 flex flex-col h-2/5 md:h-full sidebar-transition overflow-y-auto relative">
+        <div class="p-6">
+            <div id="default-msg" class="flex flex-col items-center justify-center h-full text-slate-400 mt-10 md:mt-32 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                <p>그래프의 노드(원)를 클릭하시면<br>상세 내용이 이곳에 표시됩니다.</p>
+            </div>
+
+            <div id="node-details" class="hidden">
+                <div class="flex items-center gap-2 mb-2">
+                    <span id="node-category" class="text-xs font-semibold px-2 py-1 rounded-md bg-blue-100 text-blue-700">카테고리</span>
+                </div>
+                <h2 id="node-title" class="text-2xl font-bold text-slate-800 mb-4 break-keep">노드 제목</h2>
+                <div class="h-1 w-12 bg-blue-500 rounded mb-4"></div>
+                <p id="node-desc" class="text-slate-600 leading-relaxed text-base break-keep">
+                    여기에 상세 설명이 들어갑니다.
+                </p>
+                <div class="mt-8 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <h3 class="text-sm font-semibold text-slate-500 mb-2">관련 항목</h3>
+                    <ul id="connected-nodes" class="text-sm text-slate-700 space-y-1">
+                        <!-- 연결된 노드 목록 렌더링 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데이터 정의 (노드와 간선)
+        const nodeData = [
+            { id: 1, label: '가치공유주택\n(Value-Sharing Housing)', group: 'core', value: 40, category: '핵심 모델', desc: '저성장 시대의 주거 문제를 해결하기 위해 부동산 시세 차익을 포기하고 삶의 가치와 주거 안정에 집중하는 무배당 사회적 경제 기반의 새로운 주택 모델입니다.' },
+            
+            { id: 2, label: '무배당 투자\n(No-Dividend)', group: 'feature', value: 25, category: '주요 원칙', desc: '투자자에게 높은 배당금을 지급하는 대신, 그 수익을 포기하고 주거비 인하에 사용하여 모델의 공공성을 극대화하는 핵심 원칙입니다.' },
+            { id: 3, label: '주거비 절감', group: 'feature', value: 20, category: '주요 혜택', desc: '무배당 구조를 통해 절감된 비용으로 입주자에게 주변 시세의 70~90% 이하 수준으로 매우 저렴하게 주택을 공급합니다.' },
+            { id: 4, label: '입주자', group: 'stakeholder', value: 20, category: '이해관계자', desc: '단순히 월세를 내는 세입자가 아니라, 주택의 투자자이자 공동 운영 주체로서 강력한 주거권을 가지며 커뮤니티를 직접 형성합니다.' },
+            
+            { id: 5, label: '공급 전략', group: 'strategy', value: 25, category: '공급 전략', desc: '대규모 신도시 택지와 도심 내 노후 저층 주거지 등 지역의 특성과 상황에 맞는 투트랙(Two-track) 방식을 사용하여 효율적으로 주택을 공급합니다.' },
+            { id: 6, label: '택지형(건설형)', group: 'strategy', value: 20, category: '공급 유형', desc: '신규 공공택지에 대규모 아파트 단지를 건설하는 방식입니다. 위스테이(WE STAY)와 같이 커뮤니티 시설이 특화된 아파트를 공급합니다.' },
+            { id: 7, label: '저층주거지형(재생형)', group: 'strategy', value: 20, category: '공급 유형', desc: '기존 도심의 노후된 저층 주거지(빌라, 다세대 등)를 개별 매입하여 신축 또는 리모델링을 통해 주거 환경을 획기적으로 개선합니다.' },
+            { id: 8, label: '수평적 아파트', group: 'feature', value: 18, category: '주요 특징', desc: '대규모 전면 철거 방식이 아닌, 노후 주택들을 개별 매입 후 5~10개 동을 하나의 단지처럼 묶어 아파트 수준의 관리와 커뮤니티를 제공하는 재생 개념입니다.' },
+            { id: 9, label: '번들링(Bundling)', group: 'feature', value: 15, category: '주요 기술', desc: '물리적으로 흩어져 있는 여러 소규모 필지와 주택들을 하나의 사업군으로 묶어서(Bundling) 개발 및 운영 관리의 효율성을 극대화하는 전략입니다.' },
+            
+            { id: 10, label: '모자리츠 구조', group: 'strategy', value: 25, category: '운영 구조', desc: '사업의 안정성과 전문성을 동시에 달성하기 위해 공공 중심의 지역리츠(母)와 운영 중심의 가치공유리츠(子)로 나눈 이중 리츠(REITs) 구조입니다.' },
+            { id: 11, label: '지역리츠 (Mother)', group: 'stakeholder', value: 20, category: '이해관계자', desc: '공공기금을 출자받아 토지를 안정적으로 매입하고 소유함으로써, 자산의 공공성과 영속성을 보장하는 역할을 수행합니다.' },
+            { id: 12, label: '가치공유리츠 (Child)', group: 'stakeholder', value: 20, category: '이해관계자', desc: '실제 주택의 건설과 입주자 관리를 포함한 전반적인 운영을 담당합니다. 사회적 경제 주체와 입주자가 직접 출자하고 참여합니다.' },
+            { id: 13, label: '코디네이터', group: 'stakeholder', value: 18, category: '이해관계자', desc: '부지 발굴부터 매입 협상, 입주자 모집, 커뮤니티 기획 등 복잡한 사업 전 과정을 주도적으로 기획하고 실행하는 로컬 디벨로퍼입니다.' },
+            
+            { id: 14, label: '기대 효과', group: 'effect', value: 25, category: '기대 효과', desc: '가치공유주택 모델이 시장에 성공적으로 도입되고 정착했을 때 얻을 수 있는 사회적, 경제적, 정책적 파급 효과입니다.' },
+            { id: 15, label: '재정 효율성', group: 'effect', value: 18, category: '세부 효과', desc: '소모성 보조금 지원 방식이 아닌 융자 기반의 순환형 투자를 통해, 한정된 국가 재원으로 기존 대비 5배 이상의 주택 공급 효과를 냅니다.' },
+            { id: 16, label: '시장 안정성', group: 'effect', value: 18, category: '세부 효과', desc: '매각에 따른 시세 차익이 아닌 장기적이고 안정적인 임대 수익에 기반하므로, 부동산 경기 변동이나 침체기에도 튼튼하게 유지됩니다.' },
+            { id: 17, label: '자산 보호 (리스크 완충)', group: 'effect', value: 18, category: '세부 효과', desc: '입주자의 보증금은 실물 자산(건물)으로 안전하게 담보되며, 지자체(지역리츠)가 후순위 투자자로 참여해 만일의 손실 리스크를 방어합니다.' }
+        ];
+
+        const edgeData = [
+            { from: 1, to: 2, arrows: 'to' },
+            { from: 1, to: 5, arrows: 'to' },
+            { from: 1, to: 10, arrows: 'to' },
+            { from: 1, to: 14, arrows: 'to' },
+            { from: 2, to: 3, arrows: 'to' },
+            { from: 2, to: 4, arrows: 'to' },
+            { from: 5, to: 6, arrows: 'to' },
+            { from: 5, to: 7, arrows: 'to' },
+            { from: 7, to: 8, arrows: 'to' },
+            { from: 7, to: 9, arrows: 'to' },
+            { from: 10, to: 11, arrows: 'to' },
+            { from: 10, to: 12, arrows: 'to' },
+            { from: 10, to: 13, arrows: 'to' },
+            { from: 14, to: 15, arrows: 'to' },
+            { from: 14, to: 16, arrows: 'to' },
+            { from: 14, to: 17, arrows: 'to' },
+            { from: 4, to: 12, dashes: true, title: '출자 및 운영 참여' },
+            { from: 8, to: 9, dashes: true }
+        ];
+
+        const options = {
+            nodes: {
+                shape: 'dot',
+                font: {
+                    size: 14,
+                    face: 'Pretendard, sans-serif',
+                    color: '#1e293b',
+                    bold: { color: '#0f172a' }
+                },
+                borderWidth: 2,
+                shadow: true
+            },
+            edges: {
+                width: 2,
+                color: { inherit: 'from', opacity: 0.6 },
+                smooth: { type: 'continuous' }
+            },
+            groups: {
+                core: { 
+                    color: { background: '#3b82f6', border: '#2563eb', hover: { background: '#2563eb', border: '#1d4ed8' } },
+                    font: { size: 20, color: '#ffffff' },
+                    shape: 'box',
+                    margin: 15,
+                    borderWidth: 0,
+                    shadow: { color: 'rgba(59, 130, 246, 0.4)', size: 10 }
+                },
+                feature: { 
+                    color: { background: '#10b981', border: '#059669' }
+                },
+                strategy: { 
+                    color: { background: '#f59e0b', border: '#d97706' }
+                },
+                stakeholder: { 
+                    color: { background: '#8b5cf6', border: '#7c3aed' }
+                },
+                effect: { 
+                    color: { background: '#ec4899', border: '#db2777' }
+                }
+            },
+            physics: {
+                forceAtlas2Based: {
+                    gravitationalConstant: -100,
+                    centralGravity: 0.005,
+                    springLength: 200,
+                    springConstant: 0.05
+                },
+                maxVelocity: 50,
+                solver: 'forceAtlas2Based',
+                timestep: 0.35,
+                stabilization: { iterations: 150 }
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 200,
+                zoomView: true,
+                dragView: true
+            }
+        };
+
+        const container = document.getElementById('network-container');
+        const data = {
+            nodes: new vis.DataSet(nodeData),
+            edges: new vis.DataSet(edgeData)
+        };
+        const network = new vis.Network(container, data, options);
+
+        // UI 요소
+        const defaultMsg = document.getElementById('default-msg');
+        const nodeDetails = document.getElementById('node-details');
+        const nCategory = document.getElementById('node-category');
+        const nTitle = document.getElementById('node-title');
+        const nDesc = document.getElementById('node-desc');
+        const connectedNodesList = document.getElementById('connected-nodes');
+
+        // 그룹별 라벨 색상 매핑
+        const categoryColors = {
+            'core': 'bg-blue-100 text-blue-800',
+            'feature': 'bg-emerald-100 text-emerald-800',
+            'strategy': 'bg-amber-100 text-amber-800',
+            'stakeholder': 'bg-violet-100 text-violet-800',
+            'effect': 'bg-pink-100 text-pink-800'
+        };
+
+        // 노드 클릭 이벤트
+        network.on('selectNode', function (params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                const node = data.nodes.get(nodeId);
+                
+                // 정보 업데이트
+                defaultMsg.classList.add('hidden');
+                nodeDetails.classList.remove('hidden');
+                
+                nCategory.innerText = node.category;
+                nCategory.className = `text-xs font-semibold px-2 py-1 rounded-md ${categoryColors[node.group] || 'bg-slate-100 text-slate-800'}`;
+                nTitle.innerText = node.label.replace('\n', ' ');
+                nDesc.innerText = node.desc;
+
+                // 연결된 노드 찾기
+                const connectedEdges = network.getConnectedEdges(nodeId);
+                const connectedNodeIds = network.getConnectedNodes(nodeId);
+                
+                connectedNodesList.innerHTML = '';
+                connectedNodeIds.forEach(cNodeId => {
+                    const cNode = data.nodes.get(cNodeId);
+                    const li = document.createElement('li');
+                    li.className = "flex items-center gap-2 py-1 cursor-pointer hover:text-blue-600 transition-colors";
+                    li.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> ${cNode.label.replace('\n', ' ')}`;
+                    li.onclick = () => {
+                        network.selectNodes([cNodeId]);
+                        network.focus(cNodeId, { scale: 1.2, animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+                        // Trigger select event manually to update sidebar
+                        network.emit('selectNode', { nodes: [cNodeId] });
+                    };
+                    connectedNodesList.appendChild(li);
+                });
+
+                // 노드 포커스 애니메이션
+                network.focus(nodeId, {
+                    scale: 1.2,
+                    animation: { duration: 500, easingFunction: 'easeInOutQuad' }
+                });
+            }
+        });
+
+        // 배경 클릭 시 선택 해제
+        network.on('deselectNode', function (params) {
+            if (params.nodes.length === 0) {
+                defaultMsg.classList.remove('hidden');
+                nodeDetails.classList.add('hidden');
+                network.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+            }
+        });
+
+        // 초기 로드 시 화면에 맞춤
+        network.once("stabilizationIterationsDone", function () {
+            network.fit({ animation: { duration: 1000, easingFunction: 'easeInOutQuad' } });
+        });
+
+    </script>
+</body>
+</html>

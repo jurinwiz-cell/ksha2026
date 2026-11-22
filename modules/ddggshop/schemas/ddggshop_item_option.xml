@@ -1,0 +1,9 @@
+<table name="ddggshop_item_option">
+  <column name="option_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="item_srl" type="bignumber" notnull="notnull" index="idx_item" />
+  <column name="option_label" type="varchar" size="250" notnull="notnull" />
+  <column name="price_add" type="number" default="0" notnull="notnull" />
+  <column name="stock" type="number" default="0" notnull="notnull" />
+  <column name="list_order" type="number" default="0" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+</table>

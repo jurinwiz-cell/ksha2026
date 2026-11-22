@@ -1,0 +1,62 @@
+{@
+Context::addHtmlHeader( $oView->load_css() );
+$plugins = $oView->getPlugin('tpl@before');
+foreach($plugins as $key => $val):
+	$plugins[$key]();
+endforeach;
+
+$popup = isset($popup) && is_string($popup) && in_array($popup, array('Y', 'N'))? $popup : 'Y';
+
+
+ob_start();
+}
+<style type="text/css">
+<block cond="$popup=='Y'">html,body { position:relative; height:100%; margin:0; padding:0; font-size:12px; overflow:hidden; }</block>
+<block cond="$elkhatalk_config->font_family">.elkhatalk-wrap * { font-family:{$elkhatalk_config->font_family}; }</block>
+<block cond="isset($elkhatalk_config->popup_size[1])">.elkhatalk-m-0.elkhatalk-pop-N { height:{$elkhatalk_config->popup_size[1]}px; }</block>
+</style>
+{@
+Context::addHtmlHeader(ob_get_clean());
+
+
+
+$i = 0;
+$rooms = [];
+$rooms_title = [];
+while(true):
+	$_room = \Context::get($i ? 'room' . $i : 'room');
+	$_toom_title = \Context::get($i ? 'room' . $i . '_title' : 'room_title');
+	if(is_string($_room) && strlen($_room) && is_string($_toom_title) && strlen($_toom_title)):
+		$rooms[] = $_room;
+		$rooms_title[] = $_toom_title;
+	elseif(!$i):
+		$rooms[] = $room;
+		$rooms_title[] = $room_title;
+	else:
+		break;
+	endif;
+	$i++;
+endwhile;
+
+
+$height = floor(100 / count($rooms));
+foreach($rooms as $idx => $room):
+	$top = $height * $idx;
+
+	// 마지막 방은 나머지 높이를 추가. (예: 33%, 33%, 34%)
+	if($idx == count($rooms) - 1)
+		$height += (100 % $height);
+
+	echo '<div style="height:' . $height . '%; left:0; right:0; top:' . $top . '%; ">';
+	echo getClass('elkhatalk3')->public_iframe($room, $rooms_title[$idx], '100%', '100%', $popup, FALSE);
+	echo '</div>';
+endforeach;
+
+// 기존 방식.
+//echo $oView->public_iframe($room, $room_title, '100%', '100%', $popup, FALSE);
+
+$plugins = $oView->getPlugin('tpl@after');
+foreach($plugins as $key => $val):
+	$plugins[$key]();
+endforeach;
+}

@@ -1,0 +1,11 @@
+<query id="getReview" action="select">
+  <tables>
+    <table name="ddggshop_review" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="review_srl" var="review_srl" notnull="notnull" />
+  </conditions>
+</query>

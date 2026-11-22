@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query id="getTargetModules" action="select">
+	<tables>
+		<table name="popup_target_modules" />
+	</tables>
+	<columns>
+		<column name="module_srl" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="popup_srl" var="popup_srl" filter="number" notnull="notnull" />
+	</conditions>
+</query>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module version="0.2">
+    <title xml:lang="ko">인기 게시물 통계</title>
+    <description xml:lang="ko">게시물 조회 이력을 날짜별로 기록하여 기간별 인기 게시물 TOP N을 보여줍니다.</description>
+    <version>1.0.0</version>
+    <date>2026-06-12</date>
+    <category>service</category>
+    <author email_address="ybs7415@gmail.com" link="https://bsplus.net/">
+        <name xml:lang="ko">불패의초인 (BSplus)</name>
+    </author>
+</module>

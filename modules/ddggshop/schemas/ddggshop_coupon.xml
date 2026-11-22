@@ -1,0 +1,17 @@
+<table name="ddggshop_coupon">
+  <column name="coupon_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="code" type="varchar" size="40" notnull="notnull" index="idx_code" />
+  <column name="title" type="varchar" size="120" />
+  <column name="discount_type" type="varchar" size="10" default="amount" notnull="notnull" />
+  <column name="discount_value" type="number" default="0" notnull="notnull" />
+  <column name="min_order" type="number" default="0" notnull="notnull" />
+  <column name="max_discount" type="number" default="0" notnull="notnull" />
+  <column name="start_date" type="date" />
+  <column name="end_date" type="date" />
+  <column name="usage_limit" type="number" default="0" notnull="notnull" />
+  <column name="used_count" type="number" default="0" notnull="notnull" />
+  <column name="per_member" type="number" default="0" notnull="notnull" />
+  <column name="auto_signup" type="char" size="1" default="N" notnull="notnull" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="regdate" type="date" />
+</table>

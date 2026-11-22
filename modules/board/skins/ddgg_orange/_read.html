@@ -1,0 +1,112 @@
+{@
+	$_board_title = $module_info->browser_title ?: $module_info->mid;
+	$_cat_srl = $oDocument->get('category_srl');
+	$_cc = $_cat_color[$_cat_srl] ?? 'c1';
+	$_is_new = $oDocument->get('regdate') > ($_new_threshold ?? '0');
+	$_is_hot = ($oDocument->get('readed_count') >= 1000) || ($oDocument->get('voted_count') >= 10);
+}
+
+<nav class="bc">
+	<a href="/">홈</a>
+	<span class="sep">/</span>
+	<a href="{getUrl('document_srl','','category','')}">{$_board_title}</a>
+	<span class="sep">/</span>
+	<span class="current">{$oDocument->getTitleText(40)}</span>
+</nav>
+
+<article class="ddgg-post">
+	<header class="post-head">
+		<div class="post-tags">
+			<span class="cat-tag {$_cc}" cond="$_cat_srl && ($module_info->use_category ?? 'N')=='Y'">{$category_list[$_cat_srl]->title}</span>
+			<span class="badge-hot" cond="$_is_hot">HOT</span>
+			<span class="badge-new" cond="$_is_new">NEW</span>
+		</div>
+		<h1 class="post-h1">{$oDocument->getTitle()}</h1>
+		<div class="post-meta">
+			<span class="avatar">{mb_substr($oDocument->getNickName() ?: '?',0,1,'UTF-8')}</span>
+			<a cond="$oDocument->getMemberSrl() > 0" href="#popup_menu_area" class="member_{$oDocument->get('member_srl')} author" onclick="return false">{$oDocument->getNickName()}</a>
+			<span cond="$oDocument->getMemberSrl() <= 0" class="author">{$oDocument->getNickName()}</span>
+			<span class="dot"></span>
+			<span>{$oDocument->getRegdate('Y.m.d H:i')}</span>
+			<span class="meta-stats">
+				<span class="stat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>{number_format($oDocument->get('readed_count'))}</span>
+				<span class="stat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>{$oDocument->getCommentCount()}</span>
+				<span class="stat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>{$oDocument->get('voted_count') ?: 0}</span>
+			</span>
+		</div>
+	</header>
+
+	<!-- 추가 입력 항목 -->
+	<div class="post-extra" cond="$oDocument->isExtraVarsExists() && $oDocument->isAccessible()">
+		<dl loop="$oDocument->getExtraVars() => $key,$val" cond="$val->hasValue()">
+			<dt>{$val->name}</dt><dd>{$val->getValueHTML()}</dd>
+		</dl>
+	</div>
+
+	<div class="post-body rhymix_content xe_content">
+		<!--@if(!$oDocument->isAccessible())-->
+		<form class="ddgg-pwform" action="./" method="get" onsubmit="return procFilter(this, input_password)">
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="page" value="{$page}" />
+			<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+			<p><label for="cpw">{$lang->msg_is_secret} {$lang->msg_input_password}</label></p>
+			<p><input type="password" name="password" id="cpw" class="ddgg-input" /> <input type="submit" value="{$lang->cmd_input}" class="btn btn-primary" /></p>
+		</form>
+		<!--@else-->
+		{$oDocument->getContent(false)}
+		<!--@end-->
+	</div>
+
+	<!-- 첨부파일 -->
+	<div cond="$oDocument->hasUploadedFiles()" class="post-files">
+		<div class="files-head">
+			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+			첨부파일 <strong>{$oDocument->get('uploaded_count')}</strong>
+		</div>
+		<ul class="files">
+			<li loop="$oDocument->getUploadedFiles()=>$key,$file"><a href="{getUrl('')}{$file->download_url}">{$file->source_filename} <span class="fsize">({FileHandler::filesize($file->file_size)})</span></a></li>
+		</ul>
+	</div>
+
+	<!-- 태그 -->
+	{@ $tag_list = $oDocument->get('tag_list'); }
+	<div class="post-tagrow" cond="count($tag_list ?: array())">
+		<!--@foreach($tag_list as $tag)-->
+			<a href="{getUrl('', 'mid', $mid, 'search_target', 'tag', 'search_keyword', $tag)}" class="chip" rel="tag">#{escape($tag, false)}</a>
+		<!--@end-->
+	</div>
+
+	<!-- 액션 -->
+	<div class="post-actions">
+		<block cond="$board_features->document->vote_up ?? true">
+			<a cond="$oDocument->getMyVote() <= 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteUp','{$oDocument->document_srl}');return false;" class="btn btn-outline">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+				추천 <b>{$oDocument->get('voted_count') ?: 0}</b>
+			</a>
+			<a cond="$oDocument->getMyVote() > 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteUpCancel','{$oDocument->document_srl}');return false;" class="btn btn-primary">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+				추천 <b>{$oDocument->get('voted_count') ?: 0}</b>
+			</a>
+		</block>
+		<a class="document_{$oDocument->document_srl} action btn btn-outline" href="#popup_menu_area" onclick="return false">
+			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 13.2l7.6 4.4M15.8 6.4l-7.6 4.4"/></svg>
+			공유 · 더보기
+		</a>
+		<span class="grow"></span>
+		<a cond="$oDocument->isEditable()" class="btn btn-ghost" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardWrite', 'document_srl', $oDocument->document_srl)}">수정</a>
+		<a cond="$oDocument->isEditable()" class="btn btn-ghost" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardDelete', 'document_srl', $oDocument->document_srl)}">삭제</a>
+		<a href="{getUrl('document_srl','','comment_srl','')}" class="btn btn-secondary">목록</a>
+	</div>
+
+	<!-- 작성자 서명 -->
+	<div class="post-sign" cond="($module_info->display_sign ?? 'N')!='N' && ($oDocument->getProfileImage() || $oDocument->getSignature())">
+		<img cond="$oDocument->getProfileImage()" src="{$oDocument->getProfileImage()}" alt="profile" class="pf" />
+		<div cond="$oDocument->getSignature()" class="tx rhymix_content xe_content">{$oDocument->getSignature()}</div>
+	</div>
+</article>
+
+<block cond="$oDocument->allowTrackback()">
+	<include target="_trackback.html" />
+</block>
+
+<include target="_comment.html" />

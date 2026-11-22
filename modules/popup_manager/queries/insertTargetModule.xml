@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query id="insertTargetModule" action="insert">
+	<tables>
+		<table name="popup_target_modules" />
+	</tables>
+	<columns>
+		<column name="popup_srl" var="popup_srl" filter="number" notnull="notnull" />
+		<column name="module_srl" var="module_srl" filter="number" notnull="notnull" />
+	</columns>
+</query>

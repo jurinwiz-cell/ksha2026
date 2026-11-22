@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+  <title xml:lang="ko">스킨 제작 가이드 (Skin Guide)</title>
+  <title xml:lang="en">Skin Guide</title>
+  <description xml:lang="ko">기본 스킨과 똑같이 동작하는 "안내형" 스킨입니다. 스토어프론트의 각 영역 위에 어떤 템플릿 파일·변수가 그 부분을 그리는지 라벨로 표시하고, 우측 하단 패널에서 전체 템플릿 목록과 변수 계약을 안내합니다. 새 스킨을 만들 땐 이 스킨(또는 기본 스킨)을 복사해 시작점으로 쓰세요. 우측 하단 토글로 가이드 표시를 끄면 일반 스킨처럼 보입니다.</description>
+  <description xml:lang="en">A working storefront skin (identical behavior to Default) with an on-page guide overlay: each region is labelled with the template file and variables that render it, and a bottom-right panel lists every template and the variable contract. Copy this as a starting point for your own skin.</description>
+  <version>1.0.0</version>
+  <date>2026-06-16</date>
+  <author link="https://ddgglabs.org">
+    <name xml:lang="ko">딱따고기</name>
+    <name xml:lang="en">DDGG</name>
+  </author>
+  <extra_vars>
+    <var name="primary_color" type="text">
+      <title xml:lang="ko">강조 색상 (예: #ff4d2d)</title>
+    </var>
+    <var name="grid_columns" type="select">
+      <title xml:lang="ko">상품 목록 열 수 (PC)</title>
+      <options value="3"><title>3열</title></options>
+      <options value="4"><title>4열</title></options>
+      <options value="5"><title>5열</title></options>
+    </var>
+  </extra_vars>
+</skin>

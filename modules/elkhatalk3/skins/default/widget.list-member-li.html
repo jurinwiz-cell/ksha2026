@@ -1,0 +1,37 @@
+{@
+$friends = ($friends ?? '') === 'Y' ? 'Y' : '';
+$target_srl = $target_srl ?? '';
+$oModel = getModel('elkhatalk3');
+$_mpage = isset($mpage) && (INT)$mpage >= 1 ? (INT)$mpage : '';
+}
+<!--@foreach($member_list as $room_no => $val)-->
+<li class="li1{@
+		echo ' li1-member' . (is_array($val->member_srl)? implode(',', $val->member_srl) : $val->member_srl);
+		if((is_array($val->member_srl) && in_array($target_srl, $val->member_srl)) || !is_array($val->member_srl) && $val->member_srl==$target_srl) echo ' on1';
+	}">
+	<span class="thumb elkhatalk3-is_connected-custom" data-member_srl="{$val->member_srl}"><img src="{$val->profile_image[0]}"|cond="is_array($val->profile_image)" src="{$val->profile_image}"|cond="is_string($val->profile_image)" alt="" /></span>
+	<a href="{@
+		$_target_srl = is_array($val->member_srl)? implode(',',$val->member_srl) : $val->member_srl;
+		echo $oModel->getUrl(['target_srl' => $_target_srl, 'friends' => $friends, 'mpage' => $_mpage]);
+		}" onclick="window.getElkhatalk3('getElkhatalk3TalkList',this.href, true);return false;">
+		<strong class="nick">{@
+			if(is_array($val->nick_name)) echo strip_tags(implode(',',$val->nick_name));
+			else echo strip_tags($val->nick_name);
+		}</strong>
+		<span class="desc" cond="$val->content">{@
+			echo $val->content; //htmlspecialchars(mb_substr($val->content, 0, 20, 'UTF-8'));
+		}</span>
+		<span class="regdate">{@
+			if(isset($val->content_time)) echo date('m-d H:i', strtotime($val->content_time));
+			else if(isset($val->regdate)) echo $lang->signup_date . ': ' . date('Y-m-d', strtotime($val->regdate));
+			else echo $lang->signup_date . ': ?';
+		}</span>
+		<span class="read read{$val->status}">{$val->status}</span>
+	</a>
+	<!--@if($friends != 'Y')-->
+	<span class="hide hide{(INT)(isset($val->hide) && $val->hide=='N' && !$val->status)}"><button type="button" onclick="window.procElkhatalk3MemberHide(this);" data-target_srl="{@
+		echo is_array($val->member_srl)? implode(',', $val->member_srl) : $val->member_srl;
+	}" data-message="{$lang->elkhatalk3_hide_room}">{$lang->elkhatalk3_hide}</button></span>
+	<!--@end-->
+</li>
+<!--@end-->

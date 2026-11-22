@@ -1,0 +1,14 @@
+<query id="insertShipFee" action="insert">
+  <tables>
+    <table name="ddggshop_shipfee" />
+  </tables>
+  <columns>
+    <column name="fee_srl" var="fee_srl" notnull="notnull" />
+    <column name="region" var="region" />
+    <column name="zip_start" var="zip_start" notnull="notnull" />
+    <column name="zip_end" var="zip_end" notnull="notnull" />
+    <column name="extra_fee" var="extra_fee" default="0" />
+    <column name="list_order" var="list_order" default="0" />
+    <column name="status" var="status" default="Y" />
+  </columns>
+</query>

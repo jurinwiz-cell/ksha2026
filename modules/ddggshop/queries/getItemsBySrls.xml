@@ -1,0 +1,12 @@
+<query id="getItemsBySrls" action="select">
+  <tables>
+    <table name="ddggshop_item" />
+  </tables>
+  <columns>
+    <column name="ddggshop_item.*" />
+  </columns>
+  <conditions>
+    <condition operation="in" column="item_srl" var="item_srls" notnull="notnull" />
+    <condition operation="equal" column="status" var="status" pipe="and" />
+  </conditions>
+</query>

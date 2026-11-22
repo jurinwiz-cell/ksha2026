@@ -1,0 +1,197 @@
+/* ddgg_editor (TipTap) skin */
+
+.rx_ddgg_editor {
+	border: 1px solid #d3d8de;
+	border-radius: 8px;
+	background: #fff;
+	overflow: hidden;
+}
+
+/* --- Toolbar (two rows) --- */
+.rx_ddgg_editor .ddgg-toolbar {
+	position: relative;
+	border-bottom: 1px solid #e5e9ee;
+	background: #f7f9fb;
+}
+.rx_ddgg_editor .ddgg-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 3px;
+	padding: 6px 8px;
+}
+.rx_ddgg_editor .ddgg-row1 {
+	gap: 2px;
+	padding: 6px 8px;
+	border-bottom: 1px solid #eaeef2;
+	background: #fdfdfe;
+}
+.rx_ddgg_editor .ddgg-row2 { padding: 5px 10px; }
+
+/* Row-1 primary tools: icon over label */
+.rx_ddgg_editor .ddgg-tool {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	width: 56px;
+	height: 52px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	background: transparent;
+	color: #2f3a47;
+	cursor: pointer;
+	transition: background .12s, color .12s;
+}
+.rx_ddgg_editor .ddgg-tool:hover { background: #eef2f6; }
+.rx_ddgg_editor .ddgg-tool.is-active { background: #e3effb; color: #1769b3; }
+.rx_ddgg_editor .ddgg-tool .ddgg-ic { width: 24px; height: 24px; }
+.rx_ddgg_editor .ddgg-tool .ddgg-ic svg { width: 24px; height: 24px; display: block; }
+.rx_ddgg_editor .ddgg-tool .ddgg-ic-img { width: 24px; height: 24px; object-fit: contain; display: block; }
+.rx_ddgg_editor .ddgg-tool .ddgg-lb { font-size: 11px; line-height: 1; letter-spacing: -.02em; }
+
+/* Generic (row-2) button */
+.rx_ddgg_editor .ddgg-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 30px;
+	height: 30px;
+	padding: 0 8px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	background: transparent;
+	color: #3a4654;
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background .12s, border-color .12s;
+}
+.rx_ddgg_editor .ddgg-btn:hover { background: #e9eef3; }
+.rx_ddgg_editor .ddgg-btn svg { display: block; }
+.rx_ddgg_editor .ddgg-btn:disabled { opacity: .5; cursor: default; }
+.rx_ddgg_editor .ddgg-btn.is-active { background: #e3effb; border-color: #9cc8ee; color: #1769b3; }
+
+.rx_ddgg_editor .ddgg-sep { width: 1px; height: 18px; margin: 0 4px; background: #d8dee5; }
+
+/* Row-2 controls */
+.rx_ddgg_editor .ddgg-select {
+	height: 30px; border: 1px solid #d8dee5; border-radius: 6px;
+	background: #fff; color: #3a4654; font-size: 13px; padding: 0 6px; cursor: pointer;
+}
+.rx_ddgg_editor .ddgg-color {
+	width: 30px; height: 30px; padding: 2px;
+	border: 1px solid #d8dee5; border-radius: 6px; background: #fff; cursor: pointer;
+}
+
+/* --- Popups (emoji) --- */
+.rx_ddgg_editor .ddgg-popup {
+	position: absolute; z-index: 20; background: #fff;
+	border: 1px solid #d3d8de; border-radius: 10px;
+	box-shadow: 0 8px 28px rgba(20,30,45,.16); padding: 8px;
+}
+.rx_ddgg_editor .ddgg-popup-emoji {
+	display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 320px;
+}
+.rx_ddgg_editor .ddgg-emoji {
+	width: 28px; height: 28px; border: 0; background: transparent;
+	font-size: 18px; line-height: 1; border-radius: 5px; cursor: pointer;
+}
+.rx_ddgg_editor .ddgg-emoji:hover { background: #eef2f6; }
+
+/* --- Editable area --- */
+.rx_ddgg_editor .ddgg-editable { padding: 16px 18px; }
+.rx_ddgg_editor .ProseMirror { outline: none; min-height: inherit; line-height: 1.7; word-break: break-word; }
+.rx_ddgg_editor .ProseMirror > * + * { margin-top: .75em; }
+.rx_ddgg_editor .ProseMirror img { max-width: 100%; height: auto; }
+.rx_ddgg_editor .ProseMirror blockquote {
+	border-left: 3px solid #cdd5dd; margin-left: 0; padding-left: 1em; color: #5a6573;
+}
+.rx_ddgg_editor .ProseMirror pre {
+	background: #1f2733; color: #e6edf3; border-radius: 6px; padding: 12px 14px;
+	overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.rx_ddgg_editor .ProseMirror table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.rx_ddgg_editor .ProseMirror th, .rx_ddgg_editor .ProseMirror td {
+	border: 1px solid #cfd6de; padding: 6px 9px; vertical-align: top;
+}
+.rx_ddgg_editor .ProseMirror th { background: #f1f4f7; font-weight: 600; }
+.rx_ddgg_editor .ProseMirror .tableWrapper { overflow-x: auto; }
+.rx_ddgg_editor .ProseMirror iframe { max-width: 100%; height: auto; border: 0; display: block; margin: 8px auto; }
+.rx_ddgg_editor .ProseMirror iframe.ProseMirror-selectednode { outline: 2px solid #1769b3; }
+.rx_ddgg_editor .ProseMirror p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder); float: left; color: #9aa4b0; pointer-events: none; height: 0;
+}
+
+/* OG link-preview card (editor refinements over inline styles) */
+.rx_ddgg_editor .ProseMirror a.og-card { transition: border-color .12s, box-shadow .12s; }
+.rx_ddgg_editor .ProseMirror a.og-card:hover { border-color: #c3d2e2 !important; box-shadow: 0 2px 10px rgba(20,30,45,.07); }
+.rx_ddgg_editor .ProseMirror a.og-card.ProseMirror-selectednode { outline: 2px solid #1769b3; }
+.rx_ddgg_editor .ProseMirror .og-card-title,
+.rx_ddgg_editor .ProseMirror .og-card-desc {
+	display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+}
+.rx_ddgg_editor .ProseMirror .og-card-title { -webkit-line-clamp: 2; }
+.rx_ddgg_editor .ProseMirror .og-card-desc { -webkit-line-clamp: 2; }
+.rx_ddgg_editor .ProseMirror .og-card-site { margin-top: auto; }
+
+/* HTML source mode */
+.rx_ddgg_editor .ddgg-source {
+	width: 100%; border: 0; padding: 16px 18px; box-sizing: border-box;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 13px; line-height: 1.6; resize: vertical; outline: none;
+	background: #fbfcfd; color: #2b3440;
+}
+
+/* --- Mobile: keep row-1 tools on a single line --- */
+@media (max-width: 600px) {
+	.rx_ddgg_editor .ddgg-row1 {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		gap: 2px;
+		padding: 5px 4px;
+		scrollbar-width: thin;
+	}
+	.rx_ddgg_editor .ddgg-row1::-webkit-scrollbar { height: 3px; }
+	.rx_ddgg_editor .ddgg-row1::-webkit-scrollbar-thumb { background: rgba(120,130,145,.35); border-radius: 3px; }
+	.rx_ddgg_editor .ddgg-tool {
+		flex: 0 0 auto;
+		width: 52px;
+		min-width: 52px;
+		height: 48px;
+		gap: 3px;
+		border-radius: 7px;
+	}
+	.rx_ddgg_editor .ddgg-tool .ddgg-ic,
+	.rx_ddgg_editor .ddgg-tool .ddgg-ic svg { width: 21px; height: 21px; }
+	.rx_ddgg_editor .ddgg-tool .ddgg-lb { font-size: 10px; }
+}
+@media (max-width: 360px) {
+	.rx_ddgg_editor .ddgg-tool .ddgg-lb { font-size: 9px; }
+	.rx_ddgg_editor .ddgg-tool .ddgg-ic,
+	.rx_ddgg_editor .ddgg-tool .ddgg-ic svg { width: 19px; height: 19px; }
+}
+
+/* --- Dark colorset --- */
+.rx_ddgg_editor.dark { border-color: #39424d; background: #1d242c; }
+.rx_ddgg_editor.dark .ddgg-toolbar { background: #232b34; border-bottom-color: #333d47; }
+.rx_ddgg_editor.dark .ddgg-row1 { background: #20272f; border-bottom-color: #2e3741; }
+.rx_ddgg_editor.dark .ddgg-tool { color: #c6cfd9; }
+.rx_ddgg_editor.dark .ddgg-tool:hover { background: #2e3842; }
+.rx_ddgg_editor.dark .ddgg-tool.is-active { background: #1d3a52; color: #6cb6f2; }
+.rx_ddgg_editor.dark .ddgg-btn { color: #c6cfd9; }
+.rx_ddgg_editor.dark .ddgg-btn:hover { background: #2e3842; }
+.rx_ddgg_editor.dark .ddgg-btn.is-active { background: #1d3a52; border-color: #2f6da3; color: #6cb6f2; }
+.rx_ddgg_editor.dark .ddgg-sep { background: #3a444f; }
+.rx_ddgg_editor.dark .ddgg-select, .rx_ddgg_editor.dark .ddgg-color { background: #272f39; border-color: #3a444f; color: #c6cfd9; }
+.rx_ddgg_editor.dark .ProseMirror { color: #dfe6ee; }
+.rx_ddgg_editor.dark .ProseMirror th,
+.rx_ddgg_editor.dark .ProseMirror td { border-color: #3a444f; }
+.rx_ddgg_editor.dark .ProseMirror th { background: #283039; color: #eef2f6; }
+.rx_ddgg_editor.dark .ProseMirror blockquote { border-left-color: #3a444f; color: #aeb8c4; }
+.rx_ddgg_editor.dark .ProseMirror hr { border-top-color: #333d47; }
+.rx_ddgg_editor.dark .ddgg-source { background: #1a2129; color: #dfe6ee; }
+.rx_ddgg_editor.dark .ddgg-popup { background: #232b34; border-color: #3a444f; }
+.rx_ddgg_editor.dark .ddgg-emoji:hover { background: #2e3842; }

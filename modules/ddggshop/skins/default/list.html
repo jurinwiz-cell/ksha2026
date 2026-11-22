@@ -1,0 +1,68 @@
+<include target="_head.html" />
+
+<div class="ds-bc">{$L['bc_home']}<!--@if(count($category_path))--><a loop="$category_path=>$cp" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$cp->category_srl)}"> / {$cp->category_name}</a><!--@else--> / {$list_title}<!--@end--></div>
+<h2 class="ds-ptitle" style="margin:0 0 4px;">{$list_title}</h2>
+<div style="font-size:13px;color:var(--ds-sub);margin-bottom:22px;">{str_replace('%s', '<b style="color:var(--ds-accent);">'.number_format($total_count).'</b>', $L['list_total'])}</div>
+
+<div class="ds-listlayout">
+  <aside class="ds-fside" id="ds-fside">
+    <div class="ds-fside-head">{$L['filter']} <button type="button" onclick="ddggFilterClose()" aria-label="{$L['close']}">✕</button></div>
+    <div class="ds-fgroup">
+      <div class="ds-ftitle">{$L['category']}</div>
+      <a class="ds-fitem {$category_srl ? '' : 'on'}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','search_keyword',$search_keyword,'sort',$sort,'price_band',$price_band)}">{$L['all_products']}</a>
+      <a loop="$categories=>$c" cond="$c->status=='Y'" class="ds-fitem {$category_srl==$c->category_srl ? 'on' : ''}" style="padding-left:{10 + $c->depth*16}px;" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$c->category_srl,'search_keyword',$search_keyword,'sort',$sort,'price_band',$price_band)}">{$c->depth>0 ? '· ' : ''}{$c->category_name}<!--@if($show_category_count=='Y')--> <span class="ds-fcount">{$c->item_count}</span><!--@end--></a>
+    </div>
+    <div class="ds-fgroup">
+      <div class="ds-ftitle">{$L['price_range']}</div>
+      <a class="ds-fitem {(!$price_band && !$cur_price_min && !$cur_price_max) ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'sort',$sort)}">{$L['all']}</a>
+      <a loop="$price_bands=>$bcode,$blabel" class="ds-fitem {$price_band==$bcode ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'sort',$sort,'price_band',$bcode)}">{$blabel}</a>
+      <form class="ds-price-range" data-base="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'sort',$sort)}" onsubmit="return ddggPriceApply(this);">
+        <div class="ds-price-inputs">
+          <input type="number" name="price_min" min="0" inputmode="numeric" placeholder="{$L['price_min_ph']}" value="{$cur_price_min}" />
+          <span class="ds-price-sep">~</span>
+          <input type="number" name="price_max" min="0" inputmode="numeric" placeholder="{$L['price_max_ph']}" value="{$cur_price_max}" />
+        </div>
+        <button type="submit" class="ds-price-apply">{$L['apply']}</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="ds-fcontent">
+    <button type="button" class="ds-filter-btn" onclick="ddggFilterOpen()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      {$L['filter']}
+    </button>
+    <div class="ds-sortbar">
+      <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'price_band',$price_band,'sort','')}" class="{$sort=='' ? 'on' : ''}">{$L['sort_latest']}</a>
+      <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'price_band',$price_band,'sort','popular')}" class="{$sort=='popular' ? 'on' : ''}">{$L['sort_popular']}</a>
+      <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'price_band',$price_band,'sort','price_asc')}" class="{$sort=='price_asc' ? 'on' : ''}">{$L['sort_price_asc']}</a>
+    </div>
+
+    <!--@if(count($items))-->
+    <div class="ds-grid cols-3">
+      <a loop="$items=>$item" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$item->item_srl)}" class="ds-card">
+        <div class="ds-thumb">
+          <!--@if($item->thumb)--><img src="{$item->thumb}" alt="{$item->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end-->
+          <div class="ds-badge"><span loop="$item->tags=>$tg" cond="$tg->show_badge=='Y'" style="background:{$tg->badge_color ?: 'rgba(0,0,0,.72)'};">{$tg->title}</span></div>
+          <div class="ds-soldout" cond="$item->status=='soldout' || ($item->use_stock=='Y' && $item->stock<=0)">{$L['soldout']}</div>
+        </div>
+        <div class="ds-info">
+          <div class="ds-name">{$item->item_name}</div>
+          <!--@if($item->can_view_price)--><div class="ds-price"><span class="ds-oldprice" cond="!empty($item->discounted)">{number_format($item->price)}{$L['won']}</span>{number_format(!empty($item->discounted) ? $item->member_price : $item->price)}<small>{$L['won']}</small></div><!--@else--><div class="ds-price" style="font-size:13px;color:var(--ds-sub);font-weight:600;">🔒 {$price_hidden_text}</div><!--@end-->
+        </div>
+      </a>
+    </div>
+
+    <div class="ds-pager" cond="$total_page > 1">
+      <a class="ds-btn sm" cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'sort',$sort,'price_band',$price_band,'page',$cur_page-1)}">{$L['prev']}</a>
+      <span>{$cur_page} / {$total_page}</span>
+      <a class="ds-btn sm" cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$category_srl,'search_keyword',$search_keyword,'sort',$sort,'price_band',$price_band,'page',$cur_page+1)}">{$L['next']}</a>
+    </div>
+    <!--@else-->
+    <div class="ds-empty">{$L['list_empty']}</div>
+    <!--@end-->
+  </div>
+</div>
+<div class="ds-filter-backdrop" id="ds-filter-backdrop" onclick="ddggFilterClose()"></div>
+
+<include target="_foot.html" />

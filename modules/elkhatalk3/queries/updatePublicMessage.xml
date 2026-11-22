@@ -1,0 +1,11 @@
+<query action="update">
+	<tables>
+		<table name="elkhatalk_public" />
+	</tables>
+	<columns>
+		<column name="option" var="option" notnull="notnull" />
+	</columns>
+	<conditions>
+		<condition operation="in" column="pk" var="pk" filter="number" notnull="notnull" />
+	</conditions>
+</query>

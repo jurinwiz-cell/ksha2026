@@ -1,0 +1,108 @@
+<include target="_console_head.html" />
+
+<form method="get" action="./" class="cs-card cs-card-p" style="margin-bottom:14px;">
+  <input type="hidden" name="mid" value="{$shop_mid}" /><input type="hidden" name="act" value="dispDdggshopConsoleQna" />
+  <div class="cs-filter">
+    <div class="fcol" style="flex:1;min-width:200px;"><span>검색어 (내용)</span><input type="text" name="q" value="{$q}" class="cs-input" placeholder="문의 내용 검색" /></div>
+    <div class="fcol"><span>답변여부</span>
+      <select name="answered" class="cs-select" style="width:110px;">
+        <option value="">전체</option>
+        <option value="unanswered" selected="selected"|cond="$cur_answered=='unanswered'">미답변</option>
+        <option value="answered" selected="selected"|cond="$cur_answered=='answered'">답변완료</option>
+      </select>
+    </div>
+    <div class="fcol"><span>카테고리</span>
+      <select name="category_srl" class="cs-select" style="width:150px;">
+        <option value="">전체</option>
+        <option loop="$filter_cats=>$fc" cond="$fc->status=='Y'" value="{$fc->category_srl}" selected="selected"|cond="$cur_cat==$fc->category_srl">{$fc->depth>0 ? '└ ' : ''}{$fc->category_name}</option>
+      </select>
+    </div>
+    <div class="fcol"><span>기간</span>
+      <div class="cs-row" style="gap:5px;">
+        <select name="period" class="cs-select" style="width:90px;" onchange="if(this.value){this.form.from_date.value='';this.form.to_date.value='';}"><option value="">전체</option><option value="today" selected="selected"|cond="$cur_period=='today'">오늘</option><option value="7d" selected="selected"|cond="$cur_period=='7d'">7일</option><option value="1m" selected="selected"|cond="$cur_period=='1m'">1개월</option><option value="3m" selected="selected"|cond="$cur_period=='3m'">3개월</option></select>
+        <input type="date" name="from_date" value="{$cur_from}" class="cs-input" style="width:140px;" /><span style="color:#9aa0aa;">~</span><input type="date" name="to_date" value="{$cur_to}" class="cs-input" style="width:140px;" />
+      </div>
+    </div>
+    <div class="fcol"><span>&nbsp;</span><div class="cs-row"><button type="submit" class="cs-btn">검색</button><a href="{$u_qna}" class="cs-btn ghost">초기화</a></div></div>
+  </div>
+</form>
+
+<div class="cs-card">
+  <div class="cs-card-head"><h3>상품문의 <span style="color:#8a9099;font-weight:500;">{number_format($total_count)}건</span></h3></div>
+  <div class="cs-card-p">
+    <div cond="!count($qnas)" class="cs-empty">등록된 문의가 없습니다.</div>
+    <div loop="$qnas=>$q" style="border:1px solid #EAECEF;border-radius:3px;padding:15px 16px;margin-bottom:11px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <span class="cs-st {$q->answer ? 'delivered' : 'pending'}">{$q->answer ? '답변완료' : '미답변'}</span>
+        <b style="font-size:13px;">{$q->item_name}</b>
+        <span class="cs-muted" style="font-size:12px;">{$q->member_name} · {zdate($q->regdate,'Y.m.d')}</span>
+        <span class="cs-st off" cond="$q->is_secret=='Y'">비밀글</span>
+        <button type="button" class="cs-btn danger sm" style="margin-left:auto;" onclick="csQnaDel({$q->qna_srl})">삭제</button>
+      </div>
+      <!-- 질문 -->
+      <div style="display:flex;gap:9px;align-items:flex-start;">
+        <span style="flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:#EEF1F5;color:#5b6470;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px;">Q</span>
+        <div style="flex:1;font-size:13.5px;color:#3C4149;line-height:1.6;background:#FAFBFC;border-radius:3px;padding:10px 12px;">{nl2br(escape($q->content))}</div>
+      </div>
+
+      <!-- 답변 보기(답변완료) -->
+      <!--@if($q->answer)-->
+      <div id="cs-qa-view-{$q->qna_srl}" style="display:flex;gap:9px;align-items:flex-start;margin-top:9px;">
+        <span style="flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:#E5F0FF;color:#2f6fd0;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px;">A</span>
+        <div style="flex:1;font-size:13.5px;color:#2b3038;line-height:1.6;background:#F4F8FF;border:1px solid #E2ECFA;border-radius:3px;padding:10px 12px;">
+          {nl2br(escape($q->answer))}
+          <div class="cs-muted" style="font-size:11.5px;margin-top:7px;display:flex;align-items:center;gap:8px;">
+            <span cond="$q->answered_date">답변일 {zdate($q->answered_date,'Y.m.d H:i')}</span>
+            <button type="button" class="cs-btn ghost sm" style="margin-left:auto;" onclick="csQnaEdit({$q->qna_srl})">답변 수정</button>
+          </div>
+        </div>
+      </div>
+      <!--@else-->
+      <div id="cs-qa-ask-{$q->qna_srl}" style="margin-top:9px;text-align:right;">
+        <button type="button" class="cs-btn sm" onclick="csQnaOpen({$q->qna_srl})">답변하기</button>
+      </div>
+      <!--@end-->
+
+      <!-- 답변 입력 폼(기본 숨김, 토글) -->
+      <div id="cs-qa-form-{$q->qna_srl}" style="display:none;margin-top:9px;">
+        <textarea id="cs-qa-{$q->qna_srl}" class="cs-textarea" rows="3" placeholder="답변을 입력하세요">{$q->answer}</textarea>
+        <div style="text-align:right;margin-top:7px;">
+          <button type="button" class="cs-btn ghost sm" onclick="csQnaCancel({$q->qna_srl})">취소</button>
+          <button type="button" class="cs-btn sm" onclick="csQnaAnswer({$q->qna_srl})">답변 등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cs-pager" cond="$total_page > 1">
+    <a cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleQna','q',$q,'answered',$cur_answered,'category_srl',$cur_cat,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page-1)}">‹</a>
+    <span class="on">{$cur_page}</span><span style="border:none;background:none;color:#9aa0aa;">/ {$total_page}</span>
+    <a cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleQna','q',$q,'answered',$cur_answered,'category_srl',$cur_cat,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page+1)}">›</a>
+  </div>
+</div>
+
+<script>
+function csQnaShow(id,on){ var e=document.getElementById(id); if(e) e.style.display = on ? '' : 'none'; }
+function csQnaOpen(srl){ // 미답변: 입력 폼 열기
+  csQnaShow('cs-qa-form-'+srl,true);
+  csQnaShow('cs-qa-ask-'+srl,false);
+  var t=document.getElementById('cs-qa-'+srl); if(t) t.focus();
+}
+function csQnaEdit(srl){ // 답변완료: 수정 폼 열기
+  csQnaShow('cs-qa-form-'+srl,true);
+  csQnaShow('cs-qa-view-'+srl,false);
+  var t=document.getElementById('cs-qa-'+srl); if(t){ t.focus(); }
+}
+function csQnaCancel(srl){ // 폼 닫고 원상복구
+  csQnaShow('cs-qa-form-'+srl,false);
+  csQnaShow('cs-qa-view-'+srl,true);
+  csQnaShow('cs-qa-ask-'+srl,true);
+}
+function csQnaAnswer(srl){
+  var v=document.getElementById('cs-qa-'+srl).value.replace(/^\s+|\s+$/g,'');
+  if(!v){ alert('답변 내용을 입력하세요.'); return; }
+  exec_json('ddggshop.procDdggshopAdminAnswerQna',{qna_srl:srl,answer:v},function(){ alert('답변이 등록되었습니다.'); location.reload(); });
+}
+function csQnaDel(srl){ if(!confirm('이 문의를 삭제할까요?')) return; exec_json('ddggshop.procDdggshopAdminDeleteQna',{qna_srl:srl},function(){ location.reload(); }); }
+</script>
+
+<include target="_console_foot.html" />

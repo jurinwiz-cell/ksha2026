@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">통합검색 구글 검색 스킨</title>
+    <title xml:lang="en">The Google Skin of the Integrated Search Module</title>
+    <description xml:lang="ko">통합검색 구글 검색 스킨</description>
+    <description xml:lang="en">The Google Skin of the Integrated Search Module</description>
+    <version>0.2</version>
+    <date>2022-09-19</date>
+
+    <author email_address="yjsoft@yjsoft.xyz" link="https://yjsoft.xyz/">
+        <name xml:lang="ko">YJSoft</name>
+        <name xml:lang="en">YJSoft</name>
+    </author>
+
+    <colorset>
+        <color name="normal">
+            <title xml:lang="ko">기본</title>
+            <title xml:lang="en">Default</title>
+        </color>
+        <color name="simple">
+            <title xml:lang="ko">Simplestrap용</title>
+            <title xml:lang="en">For Simplestrap</title>
+        </color>
+    </colorset>
+
+    <extra_vars>
+        <var name="googleSearchCX" type="textarea">
+            <title xml:lang="ko">구글검색 CX</title>
+            <description xml:lang="ko">CX 코드를 입력해 주세요.</description>
+        </var>
+    </extra_vars>
+</skin>

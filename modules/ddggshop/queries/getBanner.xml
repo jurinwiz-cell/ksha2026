@@ -1,0 +1,11 @@
+<query id="getBanner" action="select">
+  <tables>
+    <table name="ddggshop_banner" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="banner_srl" var="banner_srl" notnull="notnull" />
+  </conditions>
+</query>

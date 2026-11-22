@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<load target="css/shop.css" />
+<load target="js/shop.js" />
+<script>window.DDGL={$L_json};function dsl(k){return (window.DDGL&&DDGL[k]!=null)?DDGL[k]:k;}</script>
+<div class="ddggshop" data-mid="{$shop_mid}" data-base="{$shop_url_base}" style="--ds-accent:{$primary_color};--ds-accent-d:{$primary_color_dark};">
+<header class="ds-head">
+  <!--@if(!$shop_embedded)-->
+  <div class="ds-topbar">
+    <div class="ds-wrap ds-topbar-in">
+      <!--@if($is_logged)-->
+      <a cond="$is_site_admin" class="ds-topbar-admin" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsole')}" target="_blank" rel="noopener">{$L['topbar_admin']}</a>
+      <span class="ds-topbar-hi">{$L['greeting_prefix']}<b>{$logged_nick}</b>{$L['greeting_suffix']}</span>
+      <a href="{getUrl('act','dispMemberLogout')}">{$L['logout']}</a>
+      <!--@else-->
+      <a href="#" onclick="ddggLoginOpen();return false;">{$L['login']}</a>
+      <a href="{getUrl('act','dispMemberSignUpForm')}">{$L['signup']}</a>
+      <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopOrderLookup')}">{$L['order_lookup']}</a>
+      <!--@end-->
+      <!--@if($use_multilang)-->
+      <span class="ds-lang">
+        <a class="ds-lang-a {$lo->code==$shop_lang ? 'on' : ''}" loop="$lang_options=>$lo" href="{getUrl('','mid',$shop_mid,'act','procDdggshopSetLang','setlang',$lo->code)}">{$lo->name}</a>
+      </span>
+      <!--@end-->
+    </div>
+  </div>
+  <!--@end-->
+  <div class="ds-wrap">
+    <div class="ds-head-top">
+      <!--@if(!$shop_embedded)--><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopIndex')}" class="ds-logo"><!--@if($shop_logo)--><img src="{$shop_logo}" alt="{$shop_name}" class="ds-logo-img" /><!--@else-->{$shop_name}<!--@end--></a><!--@end-->
+      <form class="ds-search" method="get" action="{$shop_url_base}">
+        <input type="hidden" name="mid" value="{$shop_mid}" />
+        <input type="hidden" name="act" value="dispDdggshopProductList" />
+        <input type="text" name="search_keyword" placeholder="{$L['search_ph']}" />
+        <button type="submit" aria-label="{$L['search']}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+      </form>
+      <div class="ds-head-util">
+        <button type="button" class="ds-msearch-btn" onclick="ddggSearchOpen()" aria-label="{$L['search']}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+        <a class="ds-util-cart" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopCart')}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+          {$L['cart']} <span class="ds-cart-badge" cond="$cart_count">{$cart_count}</span>
+        </a>
+        <!--@if($is_logged)-->
+        <span class="ds-util-div"></span>
+        <a class="ds-util-acct" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyPage')}">{$L['mypage']}</a>
+        <!--@end-->
+        <button type="button" class="ds-ham-btn" onclick="ddggDrawerOpen()" aria-label="{$L['menu']}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      </div>
+    </div>
+    <nav class="ds-nav">
+      <a class="ds-navtop" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}">{$L['all_products']}</a>
+      <div class="ds-navitem" loop="$nav_menu=>$top">
+        <a class="ds-navtop" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$top->category_srl)}">{$top->category_name}</a>
+        <div class="ds-subnav" cond="count($top->children)">
+          <div class="ds-subcol" loop="$top->children=>$ch">
+            <a class="ds-subhead" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$ch->category_srl)}">{$ch->category_name}</a>
+            <a class="ds-subitem" loop="$ch->children=>$gc" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$gc->category_srl)}">{$gc->category_name}</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="ds-search-overlay" id="ds-search-overlay" onclick="ddggSearchClose(event)">
+  <div class="ds-search-sheet" onclick="event.stopPropagation();">
+    <form class="ds-search-sheet-form" method="get" action="{$shop_url_base}">
+      <input type="hidden" name="mid" value="{$shop_mid}" />
+      <input type="hidden" name="act" value="dispDdggshopProductList" />
+      <input type="text" name="search_keyword" id="ds-msearch-input" placeholder="{$L['search_ph']}" />
+      <button type="submit" aria-label="{$L['search']}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    </form>
+    <button type="button" class="ds-search-close" onclick="ddggSearchClose()">{$L['close']}</button>
+  </div>
+</div>
+
+<div class="ds-drawer-overlay" id="ds-drawer" onclick="ddggDrawerClose(event)">
+  <div class="ds-drawer" onclick="event.stopPropagation();">
+    <div class="ds-drawer-head">
+      <span><!--@if($is_logged)-->{$L['greeting_prefix']}<b>{$logged_nick}</b>{$L['greeting_suffix']}<!--@else-->{$L['welcome']}<!--@end--></span>
+      <button type="button" class="ds-drawer-x" onclick="ddggDrawerClose()" aria-label="{$L['close']}">✕</button>
+    </div>
+    <form class="ds-drawer-search" method="get" action="{$shop_url_base}">
+      <input type="hidden" name="mid" value="{$shop_mid}" />
+      <input type="hidden" name="act" value="dispDdggshopProductList" />
+      <input type="text" name="search_keyword" placeholder="{$L['search_ph_short']}" />
+      <button type="submit" aria-label="{$L['search']}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    </form>
+    <!--@if($use_multilang)-->
+    <div class="ds-drawer-lang">
+      <a class="ds-lang-a {$lo->code==$shop_lang ? 'on' : ''}" loop="$lang_options=>$lo" href="{getUrl('','mid',$shop_mid,'act','procDdggshopSetLang','setlang',$lo->code)}">{$lo->name}</a>
+    </div>
+    <!--@end-->
+    <div class="ds-drawer-acct">
+      <!--@if(!$shop_embedded)-->
+      <!--@if($is_logged)-->
+      <a cond="$is_site_admin" class="primary" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsole')}" target="_blank" rel="noopener">{$L['topbar_admin']}</a>
+      <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyPage')}">{$L['mypage']}</a>
+      <a href="{getUrl('act','dispMemberLogout')}">{$L['logout']}</a>
+      <!--@else-->
+      <a class="primary" href="#" onclick="ddggLoginOpen();ddggDrawerClose();return false;">{$L['login']}</a>
+      <a href="{getUrl('act','dispMemberSignUpForm')}">{$L['signup']}</a>
+      <!--@end-->
+      <!--@else-->
+      <a cond="$is_logged" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyPage')}">{$L['mypage']}</a>
+      <!--@end-->
+    </div>
+    <a class="ds-drawer-link" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopCart')}">{$L['cart']} <span class="ds-cart-badge" cond="$cart_count">{$cart_count}</span></a>
+    <a class="ds-drawer-link" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopOrderLookup')}">{$L['order_lookup']}</a>
+    <div class="ds-drawer-cats">
+      <div class="ds-drawer-cattitle">{$L['category']}</div>
+      <a class="ds-drawer-cat" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}">{$L['all_products']}</a>
+      <a class="ds-drawer-cat" loop="$cat_flat=>$c" cond="$c->status=='Y'" style="padding-left:{6 + $c->depth*16}px;" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$c->category_srl)}">{$c->depth>0 ? '· ' : ''}{$c->category_name}</a>
+    </div>
+  </div>
+</div>
+
+<!--@if(!$is_logged && !$shop_embedded)-->
+<div class="ds-modal" id="ds-login-modal" onclick="ddggLoginClose(event)">
+  <div class="ds-modal-box" onclick="event.stopPropagation();">
+    <button type="button" class="ds-modal-x" onclick="ddggLoginClose()" aria-label="{$L['close']}">✕</button>
+    <div class="ds-modal-logo"><!--@if($shop_logo)--><img src="{$shop_logo}" alt="{$shop_name}" /><!--@else-->{$shop_name}<!--@end--></div>
+    <form class="ds-login-form" onsubmit="return ddggLoginSubmit();">
+      <input type="text" id="ds-login-id" placeholder="{$L['login_id_ph']}" autocomplete="username" />
+      <input type="password" id="ds-login-pw" placeholder="{$L['password_ph']}" autocomplete="current-password" />
+      <label class="ds-login-keep"><input type="checkbox" id="ds-login-keep" /> {$L['keep_login']}</label>
+      <button type="submit" class="ds-btn primary block">{$L['login']}</button>
+    </form>
+    <div class="ds-login-links">
+      <a href="{getUrl('act','dispMemberSignUpForm')}">{$L['signup']}</a>
+      <span>·</span>
+      <a href="{getUrl('act','dispMemberFindAccount')}">{$L['find_account']}</a>
+    </div>
+  </div>
+</div>
+<!--@end-->
+
+<div class="ds-wrap ds-page">

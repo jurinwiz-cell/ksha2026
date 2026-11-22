@@ -1,0 +1,88 @@
+<load target="css/console.css" />
+<div class="cs">
+  <div class="cs-navdim" onclick="csNav(0)"></div>
+  <aside class="cs-side">
+    <div class="cs-side-head">
+      <div class="cs-brand">{$shop_name}</div>
+    </div>
+    <nav class="cs-nav">
+      <div class="cs-navsec">메뉴</div>
+      <div class="cs-navlist">
+        <a class="cs-navitem {$console_page=='dashboard' ? 'on' : ''}" href="{$u_dashboard}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          대시보드
+        </a>
+        <a class="cs-navitem {$console_page=='orders' ? 'on' : ''}" href="{$u_orders}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4h10l1 4H6l1-4Z"/><path d="M5 8h14v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8Z"/><path d="M9 12h6"/></svg>
+          주문내역
+          <span class="cs-navbadge" cond="$cnt_pending">{$cnt_pending}</span>
+        </a>
+        <a class="cs-navitem {$console_page=='stats' ? 'on' : ''}" href="{$u_stats}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>
+          통계
+        </a>
+        <a class="cs-navitem {$console_page=='qna' ? 'on' : ''}" href="{$u_qna}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H9l-4 3v-3H4V5Z"/><path d="M8 9h8M8 12h5"/></svg>
+          상품문의
+          <span class="cs-navbadge amber" cond="$cnt_qna">{$cnt_qna}</span>
+        </a>
+        <a class="cs-navitem {$console_page=='claims' ? 'on' : ''}" href="{$u_claims}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h13l-2-2M21 17H8l2 2"/><path d="M3 7l5 0M21 17l-5 0"/></svg>
+          교환/반품
+          <span class="cs-navbadge amber" cond="$cnt_claims">{$cnt_claims}</span>
+        </a>
+        <a class="cs-navitem {$console_page=='category' ? 'on' : ''}" href="{$u_category}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v3H3V6Z"/><path d="M3 10h18v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8Z"/></svg>
+          카테고리관리
+        </a>
+        <a class="cs-navitem {$console_page=='items' ? 'on' : ''}" href="{$u_items}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5v-9Z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/></svg>
+          상품관리
+        </a>
+        <a class="cs-navitem {$console_page=='badges' ? 'on' : ''}" href="{$u_badges}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V5a2 2 0 0 1 2-2h6.99a2 2 0 0 1 1.41.59l7.4 7.4a2 2 0 0 1 0 2.83Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>
+          상품 뱃지
+        </a>
+        <a class="cs-navitem {$console_page=='homeblocks' ? 'on' : ''}" href="{$u_homeblocks}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="12" width="8" height="9" rx="1"/><rect x="13" y="12" width="8" height="9" rx="1"/></svg>
+          홈 화면 구성
+        </a>
+        <a class="cs-navitem {$console_page=='coupon' ? 'on' : ''}" href="{$u_coupon}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"/><path d="M14 6v12"/></svg>
+          쿠폰
+        </a>
+      </div>
+      <div class="cs-navsec mt">설정</div>
+      <div class="cs-navlist">
+        <a class="cs-navitem {$console_page=='config' ? 'on' : ''}" href="{$u_config}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 6.6 19l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3 13.5H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.9 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10.5 3a2 2 0 1 1 4 0v.1A1.6 1.6 0 0 0 17 4.9l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.4 1.7Z"/></svg>
+          쇼핑몰설정
+        </a>
+      </div>
+    </nav>
+    <div class="cs-user">
+      <div class="cs-user-in">
+        <div class="cs-ava">{$console_ava}</div>
+        <div class="cs-user-t"><div class="n">{$console_nick}</div><div class="e">{$console_email}</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="cs-main">
+    <header class="cs-head">
+      <button type="button" class="cs-burger" onclick="csNav(1)" aria-label="메뉴"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div style="min-width:0;">
+        <div class="cs-crumb">{$console_crumb}</div>
+        <div class="cs-title">{$console_title}</div>
+      </div>
+      <div class="cs-head-right">
+        <!--@if($is_site_admin)-->
+        <a class="cs-btn ghost" href="{$rx_admin_url}" title="라이믹스 관리자">라이믹스 관리자</a>
+        <!--@end-->
+        <a class="cs-iconbtn" href="{$shop_home_url}" target="_blank" rel="noopener" title="쇼핑몰 화면 보기">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5b616e" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        </a>
+        <!--@if($console_btn_label)--><a class="cs-btn" href="{$console_btn_url}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>{$console_btn_label}</a><!--@end-->
+      </div>
+    </header>
+    <div class="cs-body">

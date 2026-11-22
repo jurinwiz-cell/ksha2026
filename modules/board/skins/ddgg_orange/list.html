@@ -1,0 +1,324 @@
+<include target="_header.html" />
+
+<!--// 게시글 상세보기 -->
+<include cond="$oDocument->isExists()" target="_read.html" />
+
+<!--// 목록 (상세보기 중이 아닐 때만) -->
+<block cond="!$oDocument->isExists()">
+{@ $_board_title = $module_info->browser_title ?: $module_info->mid; }
+{@ $_sort = Context::get('sort_index') ?: 'regdate'; }
+
+<nav class="bc">
+	<a href="/">홈</a>
+	<span class="sep">/</span>
+	<block cond="$_use_cate && !empty($category)">
+		<a href="{getUrl('category','','page','')}">{$_board_title}</a>
+		<span class="sep">/</span>
+		<span class="current">{$category_list[$category]->title}</span>
+	</block>
+	<block cond="!($_use_cate && !empty($category))">
+		<span class="current">{$_board_title}</span>
+	</block>
+</nav>
+
+<div class="ph">
+	<div>
+		<h1 class="ph-h1" cond="!$module_info->title_image">{$_board_title}</h1>
+		<h1 class="ph-h1" cond="$module_info->title_image"><img src="{$module_info->title_image}" alt="{$module_info->title_alt}" /></h1>
+		{@ $_board_intro = trim($module_info->board_intro ?? ''); if ($_board_intro === '') $_board_intro = trim($module_info->description ?? ''); }
+		<p class="ph-desc" cond="$_board_intro !== ''">{$_board_intro}</p>
+		<div class="ph-meta"><span>전체 <b>{number_format($total_count ?? 0)}</b>건</span></div>
+	</div>
+	<div class="ph-actions">
+		<a cond="$grant->manager" href="{getUrl('act','dispBoardAdminBoardInfo')}" class="btn btn-outline">
+			<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+			게시판 설정
+		</a>
+		<a cond="$grant->manager" href="{getUrl('act','dispDocumentManageDocument')}" class="btn btn-outline" onclick="popopen(this.href,'manageDocument'); return false;">글 관리</a>
+		<a cond="$grant->write_document" href="{getUrl('','mid',$mid,'act','dispBoardWrite','category',$category ?? null)}" class="btn btn-primary">
+			<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+			글쓰기
+		</a>
+	</div>
+</div>
+
+<div class="toolbar">
+	<div class="left">
+		<block cond="$_use_cate">
+			<a href="{getUrl('category','','document_srl','','page','')}" class="chip {empty($category) ? 'active' : ''}">전체</a>
+			<block loop="$category_list => $_csrl, $_cat" cond="!$_cat->depth">
+				<a href="{getUrl('category',$_cat->category_srl,'document_srl','','page','')}" class="chip {$category==$_cat->category_srl ? 'active' : ''}">{$_cat->title}</a>
+			</block>
+			<span class="tb-divider"></span>
+		</block>
+		<select class="chip ddgg-sort" onchange="if(this.value){location.href=this.value;}">
+			<option value="{getUrl('sort_index','regdate','order_type','desc','page','')}" selected="selected"|cond="$_sort=='regdate'">최신순</option>
+			<option value="{getUrl('sort_index','voted_count','order_type','desc','page','')}" selected="selected"|cond="$_sort=='voted_count'">추천순</option>
+			<option value="{getUrl('sort_index','readed_count','order_type','desc','page','')}" selected="selected"|cond="$_sort=='readed_count'">조회순</option>
+			<option value="{getUrl('sort_index','comment_count','order_type','desc','page','')}" selected="selected"|cond="$_sort=='comment_count'">댓글순</option>
+		</select>
+	</div>
+	<div class="right">
+		<form action="{getUrl()}" method="get" class="toolbar-search" rx-autoform="false">
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="category" value="{$category ?? ''}" />
+			<input type="hidden" name="search_target" value="title_content" />
+			<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+			<input type="text" name="search_keyword" value="{escape($search_keyword ?? '', false)}" placeholder="{$_board_title} 검색" />
+		</form>
+		<div class="seg" cond="$_show_switch">
+			<a href="{getUrl('ddgg_view','list')}" class="{$_view=='list' ? 'active' : ''}" title="목록형">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3.5" y1="6" x2="3.51" y2="6"/><line x1="3.5" y1="12" x2="3.51" y2="12"/><line x1="3.5" y1="18" x2="3.51" y2="18"/></svg>
+			</a>
+			<a href="{getUrl('ddgg_view','webzine')}" class="{$_view=='webzine' ? 'active' : ''}" title="웹진형">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><line x1="14" y1="5" x2="21" y2="5"/><line x1="14" y1="9" x2="21" y2="9"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="16" x2="21" y2="16"/><line x1="14" y1="20" x2="21" y2="20"/></svg>
+			</a>
+			<a href="{getUrl('ddgg_view','gallery')}" class="{$_view=='gallery' ? 'active' : ''}" title="갤러리형">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+			</a>
+			<a href="{getUrl('ddgg_view','faq')}" class="{$_view=='faq' ? 'active' : ''}" title="FAQ형">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+			</a>
+		</div>
+	</div>
+</div>
+
+<!--// 빈 목록 -->
+<block cond="!$document_list && !$notice_list">
+	<div class="ddgg-empty">{$lang->no_documents}</div>
+</block>
+
+<!--// ───────────────── 목록형 ───────────────── -->
+<block cond="$_view=='list' && ($document_list || $notice_list)">
+	<div class="ddgg-list" id="board_list" style="--ddgg-cols:{$_grid_cols}">
+		<div class="list-head">
+			<div class="col-cate" cond="$_use_cate">구분</div>
+			<div class="col-title">제목</div>
+			<div class="col-author" cond="$_show_nick">글쓴이</div>
+			<div class="col-date" cond="$_show_date">등록일</div>
+			<div class="col-vote" cond="$_show_vote">추천</div>
+			<div class="col-view" cond="$_show_view">조회</div>
+		</div>
+
+		<a loop="$notice_list=>$no,$document" href="{$document->getUrl()}" class="list-row is-notice">
+			<div class="col-cate" cond="$_use_cate"><span class="cat-tag notice">공지</span></div>
+			<div class="col-title title-cell">
+				<span class="badge-pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 4v6l3 4H5l3-4V4h8m1-2H7a1 1 0 0 0-1 1v1h1v6l-3 4v2h7v6h2v-6h7v-2l-3-4V4h1V3a1 1 0 0 0-1-1Z"/></svg></span>
+				<span class="title notice">{$document->getTitle()}</span>
+				<span class="comments" cond="$_show_comments && $document->getCommentCount()">[{$document->getCommentCount()}]</span>
+			</div>
+			<div class="col-author author" cond="$_show_nick"><span class="avatar">{mb_substr($document->getNickName() ?: '?',0,1,'UTF-8')}</span><span>{$document->getNickName()}</span></div>
+			<div class="col-date date" cond="$_show_date">{$document->getRegdate('Y.m.d')}</div>
+			<div class="col-vote num" cond="$_show_vote">{$document->get('voted_count') ?: 0}</div>
+			<div class="col-view views" cond="$_show_view">{number_format($document->get('readed_count'))}</div>
+			<div class="row-m-meta">
+				<span class="author" cond="$_show_nick">{$document->getNickName()}</span>
+				<span cond="$_show_vote">추천 {$document->get('voted_count') ?: 0}</span>
+				<span cond="$_show_view">조회 {number_format($document->get('readed_count'))}</span>
+				<span cond="$_show_comments">댓글 {$document->getCommentCount()}</span>
+			</div>
+		</a>
+
+		<block loop="$document_list=>$no,$document">
+			{@ $_is_new = $document->get('regdate') > $_new_threshold; }
+			{@ $_is_hot = ($document->get('readed_count') >= 1000) || ($document->get('voted_count') >= 10); }
+			{@ $_cc = $_cat_color[$document->get('category_srl')] ?? 'c1'; }
+			<a href="{$document->getUrl()}" class="list-row">
+				<div class="col-cate" cond="$_use_cate"><span class="cat-tag {$_cc}" cond="$document->get('category_srl')">{$category_list[$document->get('category_srl')]->title}</span></div>
+				<div class="col-title title-cell">
+					<span class="title">{$document->getTitle()}</span>
+					<span class="comments" cond="$_show_comments && $document->getCommentCount()">[{$document->getCommentCount()}]</span>
+					<span class="badge-hot" cond="$_is_hot">HOT</span>
+					<span class="badge-new" cond="$_is_new">NEW</span>
+				</div>
+				<div class="col-author author" cond="$_show_nick"><span class="avatar">{mb_substr($document->getNickName() ?: '?',0,1,'UTF-8')}</span><span>{$document->getNickName()}</span></div>
+				<div class="col-date date" cond="$_show_date">{$document->getRegdate('Y.m.d')}</div>
+				<div class="col-vote num" cond="$_show_vote">{$document->get('voted_count') ?: 0}</div>
+				<div class="col-view views" cond="$_show_view">{number_format($document->get('readed_count'))}</div>
+				<div class="row-m-meta">
+					<span class="author" cond="$_show_nick">{$document->getNickName()}</span>
+					<span cond="$_show_vote">추천 {$document->get('voted_count') ?: 0}</span>
+					<span cond="$_show_view">조회 {number_format($document->get('readed_count'))}</span>
+					<span cond="$_show_comments">댓글 {$document->getCommentCount()}</span>
+				</div>
+			</a>
+		</block>
+	</div>
+</block>
+
+<!--// ───────────────── 웹진형 ───────────────── -->
+<block cond="$_view=='webzine' && ($document_list || $notice_list)">
+	<div class="ddgg-zine">
+		<block loop="$notice_list=>$no,$document">
+			{@ $_thumb = $document->getThumbnail(480,300); }
+			<a href="{$document->getUrl()}" class="zine-item">
+				<div class="zine-thumb">
+					<img cond="$_thumb" src="{$_thumb}" alt="" />
+					<div class="thumb-ph thumb-c6" cond="!$_thumb"><span>NOTICE</span></div>
+				</div>
+				<div class="zine-body">
+					<div class="zine-tags"><span class="cat-tag notice">공지</span></div>
+					<div class="zine-title">{$document->getTitle()}</div>
+					{@ $_zintro = $document->getExtraEidValue('intro'); }
+					<div class="zine-intro" cond="$_zintro !== '' && $_zintro !== null">{$document->getExtraEidValueHTML('intro')}</div>
+					<div class="zine-excerpt" cond="$_show_summary">{$document->getSummary(120)}</div>
+					<div class="zine-meta"><span class="author" cond="$_show_nick">{$document->getNickName()}</span><span cond="$_show_date">{$document->getRegdate('Y.m.d')}</span><span cond="$_show_view">조회 {number_format($document->get('readed_count'))}</span><span cond="$_show_comments">댓글 {$document->getCommentCount()}</span><span cond="$_show_vote">추천 {$document->get('voted_count') ?: 0}</span></div>
+				</div>
+			</a>
+		</block>
+		<block loop="$document_list=>$no,$document">
+			{@ $_is_new = $document->get('regdate') > $_new_threshold; }
+			{@ $_is_hot = ($document->get('readed_count') >= 1000) || ($document->get('voted_count') >= 10); }
+			{@ $_cc = $_cat_color[$document->get('category_srl')] ?? 'c1'; }
+			{@ $_thumb = $document->getThumbnail(480,300); }
+			{@ $_tph = 'thumb-' . str_replace('c','c',$_cc); }
+			<a href="{$document->getUrl()}" class="zine-item">
+				<div class="zine-thumb">
+					<img cond="$_thumb" src="{$_thumb}" alt="" />
+					<div class="thumb-ph {$_tph}" cond="!$_thumb"><span>{$document->get('category_srl') ? $category_list[$document->get('category_srl')]->title : 'POST'}</span></div>
+				</div>
+				<div class="zine-body">
+					<div class="zine-tags">
+						<span class="cat-tag {$_cc}" cond="$document->get('category_srl')">{$category_list[$document->get('category_srl')]->title}</span>
+						<span class="badge-hot" cond="$_is_hot">HOT</span>
+						<span class="badge-new" cond="$_is_new">NEW</span>
+					</div>
+					<div class="zine-title">{$document->getTitle()}</div>
+					{@ $_zintro = $document->getExtraEidValue('intro'); }
+					<div class="zine-intro" cond="$_zintro !== '' && $_zintro !== null">{$document->getExtraEidValueHTML('intro')}</div>
+					<div class="zine-excerpt" cond="$_show_summary">{$document->getSummary(120)}</div>
+					<div class="zine-meta"><span class="author" cond="$_show_nick">{$document->getNickName()}</span><span cond="$_show_date">{$document->getRegdate('Y.m.d')}</span><span cond="$_show_view">조회 {number_format($document->get('readed_count'))}</span><span cond="$_show_comments">댓글 {$document->getCommentCount()}</span><span cond="$_show_vote">추천 {$document->get('voted_count') ?: 0}</span></div>
+				</div>
+			</a>
+		</block>
+	</div>
+</block>
+
+<!--// ───────────────── 갤러리형 ───────────────── -->
+<block cond="$_view=='gallery' && ($document_list || $notice_list)">
+	<div class="ddgg-gallery cols-{$_gallery_cols}">
+		<block loop="$notice_list=>$no,$document">
+			{@ $_thumb = $document->getThumbnail(640,400); }
+			<a href="{$document->getUrl()}" class="card">
+				<div class="card-thumb">
+					<img cond="$_thumb" src="{$_thumb}" alt="" />
+					<div class="thumb-ph thumb-c6" cond="!$_thumb"><span>NOTICE</span></div>
+					<div class="ribbon"><span class="cat-tag notice">공지</span></div>
+				</div>
+				<div class="card-body">
+					<div class="card-title">{$document->getTitle()}</div>
+					{@ $_intro = $document->getExtraEidValue('intro'); }
+					<div class="card-intro" cond="$_intro !== '' && $_intro !== null">{$document->getExtraEidValueHTML('intro')}</div>
+					<div class="card-desc" cond="$_show_summary">{$document->getSummary(100)}</div>
+					<div class="card-meta">
+						<span class="author" cond="$_show_nick || $_show_date"><span class="avatar" cond="$_show_nick">{mb_substr($document->getNickName() ?: '?',0,1,'UTF-8')}</span><span cond="$_show_nick">{$document->getNickName()} </span><span class="card-date" cond="$_show_date">· {$document->getRegdate('Y.m.d')}</span></span>
+						<span class="card-stats">
+							<span cond="$_show_view"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>{number_format($document->get('readed_count'))}</span>
+							<span cond="$_show_comments"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>{$document->getCommentCount()}</span>
+						</span>
+					</div>
+				</div>
+			</a>
+		</block>
+		<block loop="$document_list=>$no,$document">
+			{@ $_is_new = $document->get('regdate') > $_new_threshold; }
+			{@ $_is_hot = ($document->get('readed_count') >= 1000) || ($document->get('voted_count') >= 10); }
+			{@ $_cc = $_cat_color[$document->get('category_srl')] ?? 'c1'; }
+			{@ $_thumb = $document->getThumbnail(640,400); }
+			{@ $_tph = 'thumb-' . $_cc; }
+			<a href="{$document->getUrl()}" class="card">
+				<div class="card-thumb">
+					<img cond="$_thumb" src="{$_thumb}" alt="" />
+					<div class="thumb-ph {$_tph}" cond="!$_thumb"><span>{$document->get('category_srl') ? $category_list[$document->get('category_srl')]->title : 'POST'}</span></div>
+					<div class="ribbon">
+						<span class="badge-hot" cond="$_is_hot">HOT</span>
+						<span class="badge-new" cond="$_is_new">NEW</span>
+					</div>
+				</div>
+				<div class="card-body">
+					<span class="cat-tag {$_cc}" cond="$document->get('category_srl')">{$category_list[$document->get('category_srl')]->title}</span>
+					<div class="card-title">{$document->getTitle()}</div>
+					{@ $_intro = $document->getExtraEidValue('intro'); }
+					<div class="card-intro" cond="$_intro !== '' && $_intro !== null">{$document->getExtraEidValueHTML('intro')}</div>
+					<div class="card-desc" cond="$_show_summary">{$document->getSummary(100)}</div>
+					<div class="card-meta">
+						<span class="author" cond="$_show_nick || $_show_date"><span class="avatar" cond="$_show_nick">{mb_substr($document->getNickName() ?: '?',0,1,'UTF-8')}</span><span cond="$_show_nick">{$document->getNickName()} </span><span class="card-date" cond="$_show_date">· {$document->getRegdate('Y.m.d')}</span></span>
+						<span class="card-stats">
+							<span cond="$_show_view"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>{number_format($document->get('readed_count'))}</span>
+							<span cond="$_show_comments"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>{$document->getCommentCount()}</span>
+						</span>
+					</div>
+				</div>
+			</a>
+		</block>
+	</div>
+</block>
+
+<!--// ───────────────── FAQ형 ───────────────── -->
+<block cond="$_view=='faq' && ($document_list || $notice_list)">
+	<div class="ddgg-faq">
+		<block loop="$notice_list=>$no,$document">
+			{@ $_full = DocumentModel::getDocument($document->document_srl); }
+			<details class="faq-item is-notice">
+				<summary class="faq-q">
+					<span class="cat-tag notice">공지</span>
+					<span class="faq-title">{$document->getTitle()}</span>
+					<span class="faq-meta" cond="$_show_nick || $_show_date"><span class="author" cond="$_show_nick">{$document->getNickName()}</span><span cond="$_show_date">{$document->getRegdate('Y.m.d')}</span></span>
+					<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+				</summary>
+				<div class="faq-a">
+					<div class="faq-answer rhymix_content xe_content">{$_full->getContent()}</div>
+					<div class="faq-actions">
+						<a href="{$document->getUrl()}" class="faq-link">
+							원문 보기
+							<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+						</a>
+					</div>
+				</div>
+			</details>
+		</block>
+		<block loop="$document_list=>$no,$document">
+			{@ $_is_new = $document->get('regdate') > $_new_threshold; }
+			{@ $_is_hot = ($document->get('readed_count') >= 1000) || ($document->get('voted_count') >= 10); }
+			{@ $_cc = $_cat_color[$document->get('category_srl')] ?? 'c1'; }
+			{@ $_full = DocumentModel::getDocument($document->document_srl); }
+			<details class="faq-item">
+				<summary class="faq-q">
+					<span class="cat-tag {$_cc}" cond="$document->get('category_srl')">{$category_list[$document->get('category_srl')]->title}</span>
+					<span class="faq-title">{$document->getTitle()}</span>
+					<span class="badge-hot" cond="$_is_hot">HOT</span>
+					<span class="badge-new" cond="$_is_new">NEW</span>
+					<span class="faq-meta" cond="$_show_nick || $_show_date"><span class="author" cond="$_show_nick">{$document->getNickName()}</span><span cond="$_show_date">{$document->getRegdate('Y.m.d')}</span></span>
+					<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+				</summary>
+				<div class="faq-a">
+					<div class="faq-answer rhymix_content xe_content">{$_full->getContent()}</div>
+					<div class="faq-actions">
+						<a href="{$document->getUrl()}" class="faq-link">
+							원문 보기
+							<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+						</a>
+					</div>
+				</div>
+			</details>
+		</block>
+	</div>
+</block>
+
+<!--// 페이지네이션 -->
+<nav class="ddgg-pager" cond="$document_list || $notice_list">
+	<a href="{getUrl('page',1,'document_srl','')}" class="pg-edge" title="{$lang->first_page}">
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+	</a>
+	<block loop="$page_no=$page_navigation->getNextPage()">
+		<strong cond="$page==$page_no" class="active">{$page_no}</strong>
+		<a cond="$page!=$page_no" href="{getUrl('page',$page_no,'document_srl','')}">{$page_no}</a>
+	</block>
+	<a href="{getUrl('page',$page_navigation->last_page,'document_srl','')}" class="pg-edge" title="{$lang->last_page}">
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+	</a>
+</nav>
+
+</block>
+
+<include target="_footer.html" />

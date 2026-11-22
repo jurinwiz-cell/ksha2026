@@ -1,0 +1,3 @@
+[submodule "ncenter_elkha"]
+	path = ncenter_elkha
+	url = git@github.com:Elkha/ncenter_elkha.git

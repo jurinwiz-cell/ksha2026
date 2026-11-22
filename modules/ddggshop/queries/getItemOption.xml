@@ -1,0 +1,11 @@
+<query id="getItemOption" action="select">
+  <tables>
+    <table name="ddggshop_item_option" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="option_srl" var="option_srl" notnull="notnull" />
+  </conditions>
+</query>

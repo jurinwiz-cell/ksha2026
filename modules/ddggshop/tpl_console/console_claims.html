@@ -1,0 +1,92 @@
+<include target="_console_head.html" />
+
+<form method="get" action="./" class="cs-card cs-card-p" style="margin-bottom:14px;">
+  <input type="hidden" name="mid" value="{$shop_mid}" />
+  <input type="hidden" name="act" value="dispDdggshopConsoleClaims" />
+  <div class="cs-filter">
+    <div class="fcol" style="flex:1;min-width:200px;"><span>주문번호</span>
+      <input type="text" name="q" value="{$q}" class="cs-input" placeholder="주문번호 검색" />
+    </div>
+    <div class="fcol"><span>유형</span>
+      <select name="ctype" class="cs-select" style="width:100px;">
+        <option value="">전체</option>
+        <option value="exchange" selected="selected"|cond="$cur_type=='exchange'">교환</option>
+        <option value="return" selected="selected"|cond="$cur_type=='return'">반품</option>
+        <option value="cancel" selected="selected"|cond="$cur_type=='cancel'">취소</option>
+        <option value="refund" selected="selected"|cond="$cur_type=='refund'">환불</option>
+      </select>
+    </div>
+    <div class="fcol"><span>상태</span>
+      <select name="cstatus" class="cs-select" style="width:110px;">
+        <option value="">전체</option>
+        <option value="requested" selected="selected"|cond="$cstatus=='requested'">신청</option>
+        <option value="approved" selected="selected"|cond="$cstatus=='approved'">승인</option>
+        <option value="completed" selected="selected"|cond="$cstatus=='completed'">완료</option>
+        <option value="rejected" selected="selected"|cond="$cstatus=='rejected'">반려</option>
+      </select>
+    </div>
+    <div class="fcol"><span>기간</span>
+      <select name="period" class="cs-select" style="width:100px;" onchange="if(this.value){this.form.from_date.value='';this.form.to_date.value='';}">
+        <option value="">전체</option>
+        <option value="today" selected="selected"|cond="$cur_period=='today'">오늘</option>
+        <option value="7d" selected="selected"|cond="$cur_period=='7d'">7일</option>
+        <option value="1m" selected="selected"|cond="$cur_period=='1m'">1개월</option>
+        <option value="3m" selected="selected"|cond="$cur_period=='3m'">3개월</option>
+      </select>
+    </div>
+    <div class="fcol"><span>신청일 범위</span>
+      <div class="cs-row" style="gap:5px;">
+        <input type="date" name="from_date" value="{$cur_from}" class="cs-input" style="width:140px;" />
+        <span style="color:#9aa0aa;">~</span>
+        <input type="date" name="to_date" value="{$cur_to}" class="cs-input" style="width:140px;" />
+      </div>
+    </div>
+    <div class="fcol"><span>&nbsp;</span>
+      <div class="cs-row"><button type="submit" class="cs-btn">검색</button><a href="{$u_claims}" class="cs-btn ghost">초기화</a></div>
+    </div>
+  </div>
+</form>
+
+<div class="cs-card cs-card-p">
+  <div style="margin-bottom:10px;color:#8a9099;font-size:12.5px;font-weight:500;">총 {number_format($total_count)}건</div>
+  <table class="cs-table">
+    <thead><tr><th>주문번호</th><th>유형</th><th>사유</th><th>신청일</th><th class="cs-center">상태</th><th style="width:200px;">처리</th></tr></thead>
+    <tbody>
+      <tr cond="!count($claims)"><td colspan="6" class="cs-empty">신청 내역이 없습니다.</td></tr>
+      <tr loop="$claims=>$c">
+        <td><a class="cs-id" href="{$c->order_url}" style="font-weight:700;">{$c->order_code}</a></td>
+        <td>{$c->type_label}</td>
+        <td style="max-width:280px;white-space:normal;">{escape($c->reason)}<!--@if($c->admin_memo)--><div class="cs-hint" style="display:block;margin-top:3px;">관리자: {escape($c->admin_memo)}</div><!--@end--></td>
+        <td>{zdate($c->regdate,'Y.m.d H:i')}</td>
+        <td class="cs-center"><span class="cs-st {$c->status}">{$c->status_label}</span></td>
+        <td>
+          <!--@if($c->status=='requested')-->
+          <button type="button" class="cs-btn sm" onclick="csClaim({$c->claim_srl},'approve')">승인</button>
+          <button type="button" class="cs-btn ghost sm" onclick="csClaim({$c->claim_srl},'reject')">반려</button>
+          <!--@elseif($c->status=='approved')-->
+          <button type="button" class="cs-btn sm" onclick="csClaim({$c->claim_srl},'complete')">완료처리</button>
+          <button type="button" class="cs-btn ghost sm" onclick="csClaim({$c->claim_srl},'reject')">반려</button>
+          <!--@else-->
+          <span class="cs-hint">—</span>
+          <!--@end-->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cs-pager" cond="$total_page > 1" style="margin-top:14px;">
+    <a class="cs-btn ghost sm" cond="$cur_page > 1" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleClaims','cstatus',$cstatus,'ctype',$cur_type,'q',$q,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page-1)}">‹ 이전</a>
+    <span style="padding:0 10px;">{$cur_page} / {$total_page}</span>
+    <a class="cs-btn ghost sm" cond="$cur_page < $total_page" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleClaims','cstatus',$cstatus,'ctype',$cur_type,'q',$q,'period',$cur_period,'from_date',$cur_from,'to_date',$cur_to,'page',$cur_page+1)}">다음 ›</a>
+  </div>
+</div>
+
+<script>
+function csClaim(srl, action){
+  var memo='';
+  if(action==='reject'){ memo=prompt('반려 사유(선택 입력):')||''; }
+  if(action==='complete' && !confirm('완료 처리할까요?\n반품 신청이면 주문이 전체 환불(재고복원·포인트/쿠폰 환불·PG취소)됩니다.')) return;
+  exec_json('ddggshop.procDdggshopAdminProcessClaim',{claim_srl:srl,claim_action:action,admin_memo:memo},function(){ location.reload(); });
+}
+</script>
+
+<include target="_console_foot.html" />

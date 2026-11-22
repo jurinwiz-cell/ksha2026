@@ -1,0 +1,103 @@
+<include target="_head.html" />
+
+<include target="_mypage_tabs.html" />
+
+<div class="ds-cols">
+  <div class="main">
+    <!--@if(count($addresses))-->
+    <div class="ds-addrlist">
+      <div class="ds-addrcard {$a->is_default=='Y' ? 'default' : ''}" loop="$addresses=>$a">
+        <div class="ds-addrcard-top">
+          <b>{$a->receiver_name}</b>
+          <span class="ds-def" cond="$a->is_default=='Y'">{$L['addr_default']}</span>
+          <span class="ds-addrcard-label" cond="$a->label">{$a->label}</span>
+        </div>
+        <div class="ds-addrcard-body">{$a->receiver_phone}<br />({$a->zipcode}) {$a->addr1} {$a->addr2}</div>
+        <div class="ds-addrcard-actions">
+          <a href="#" cond="$a->is_default!='Y'" onclick="ddggSetDefault({$a->address_book_srl});return false;">{$L['set_default']}</a>
+          <a href="#" onclick="ddggEditAddr(this);return false;" data-srl="{$a->address_book_srl}" data-label="{escape($a->label)}" data-name="{escape($a->receiver_name)}" data-phone="{escape($a->receiver_phone)}" data-zip="{$a->zipcode}" data-a1="{escape($a->addr1)}" data-a2="{escape($a->addr2)}">{$L['edit']}</a>
+          <a href="#" onclick="ddggDelAddr({$a->address_book_srl});return false;">{$L['delete']}</a>
+        </div>
+      </div>
+    </div>
+    <!--@else-->
+    <div class="ds-empty">{$L['addr_empty']}</div>
+    <!--@end-->
+  </div>
+
+  <div class="ds-summary" style="position:static;">
+    <h3 id="addr-form-title">{$L['addr_new']}</h3>
+    <div class="ds-field"><label>{$L['addr_label']}</label><input type="text" id="addr-label" placeholder="{$L['addr_label_ph']}" /></div>
+    <input type="hidden" id="addr-srl" value="" />
+    <div class="ds-field"><label>{$L['receiver']} *</label><input type="text" id="addr-name" /></div>
+    <div class="ds-field"><label>{$L['phone']}</label><input type="text" id="addr-phone" placeholder="010-0000-0000" /></div>
+    <!--@if($address_input_mode == 'manual')-->
+    <div class="ds-field"><label>{$L['zip_manual']}</label><input type="text" id="addr-zip" placeholder="{$L['zip_manual_ph']}" /></div>
+    <div class="ds-field"><label>{$L['address']}</label><input type="text" id="addr-a1" placeholder="{$L['addr_manual_ph']}" /></div>
+    <div class="ds-field"><input type="text" id="addr-a2" placeholder="{$L['addr2_manual_ph']}" /></div>
+    <!--@else-->
+    <div class="ds-field"><label>{$L['zipcode']}</label>
+      <div class="ds-zip-row"><input type="text" id="addr-zip" readonly="readonly" /><button type="button" class="ds-btn sm" onclick="ddggAddrPostcode()">{$L['search']}</button></div>
+    </div>
+    <div class="ds-field"><label>{$L['address']}</label><input type="text" id="addr-a1" readonly="readonly" /></div>
+    <div class="ds-field"><input type="text" id="addr-a2" placeholder="{$L['addr_detail_ph']}" /></div>
+    <!--@end-->
+    <div class="ds-field"><label class="ds-check"><input type="checkbox" id="addr-default" /> {$L['set_as_default']}</label></div>
+    <button type="button" class="ds-btn primary block" onclick="ddggSaveAddr()">{$L['save']}</button>
+    <button type="button" class="ds-btn block" style="margin-top:8px;" onclick="ddggResetAddr()">{$L['addr_reset']}</button>
+  </div>
+</div>
+
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+function ddggAddrPostcode(){
+  var P=(window.kakao&&kakao.Postcode)?kakao.Postcode:((window.daum&&daum.Postcode)?daum.Postcode:null);
+  if(!P){ alert('{$L['js_addr_search_fail']}'); return; }
+  new P({oncomplete:function(d){
+    var a=d.roadAddress||d.jibunAddress; if(d.buildingName){ a+=' ('+d.buildingName+')'; }
+    document.getElementById('addr-zip').value=d.zonecode;
+    document.getElementById('addr-a1').value=a;
+    document.getElementById('addr-a2').focus();
+  }}).open();
+}
+function ddggEditAddr(el){
+  document.getElementById('addr-srl').value=el.getAttribute('data-srl');
+  document.getElementById('addr-label').value=el.getAttribute('data-label');
+  document.getElementById('addr-name').value=el.getAttribute('data-name');
+  document.getElementById('addr-phone').value=el.getAttribute('data-phone');
+  document.getElementById('addr-zip').value=el.getAttribute('data-zip');
+  document.getElementById('addr-a1').value=el.getAttribute('data-a1');
+  document.getElementById('addr-a2').value=el.getAttribute('data-a2');
+  document.getElementById('addr-form-title').innerText='{$L['addr_edit_title']}';
+  window.scrollTo(0,0);
+}
+function ddggResetAddr(){
+  var ids=['addr-srl','addr-label','addr-name','addr-phone','addr-zip','addr-a1','addr-a2'];
+  for(var i=0;i<ids.length;i++){ document.getElementById(ids[i]).value=''; }
+  document.getElementById('addr-default').checked=false;
+  document.getElementById('addr-form-title').innerText='{$L['addr_new']}';
+}
+function ddggSaveAddr(){
+  var n=document.getElementById('addr-name').value;
+  if(!n){ alert('{$L['js_need_receiver']}'); return; }
+  var p={};
+  p.address_book_srl=document.getElementById('addr-srl').value;
+  p.label=document.getElementById('addr-label').value;
+  p.receiver_name=n;
+  p.receiver_phone=document.getElementById('addr-phone').value;
+  p.zipcode=document.getElementById('addr-zip').value;
+  p.addr1=document.getElementById('addr-a1').value;
+  p.addr2=document.getElementById('addr-a2').value;
+  p.is_default=document.getElementById('addr-default').checked?'Y':'N';
+  exec_json('ddggshop.procDdggshopSaveAddress',p,function(){ location.reload(); });
+}
+function ddggDelAddr(srl){
+  if(!confirm('{$L['js_addr_del_confirm']}')) return;
+  exec_json('ddggshop.procDdggshopDeleteAddress',{address_book_srl:srl},function(){ location.reload(); });
+}
+function ddggSetDefault(srl){
+  exec_json('ddggshop.procDdggshopSetDefaultAddress',{address_book_srl:srl},function(){ location.reload(); });
+}
+</script>
+
+<include target="_foot.html" />

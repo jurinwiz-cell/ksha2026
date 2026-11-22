@@ -1,0 +1,249 @@
+<include target="_console_head.html" />
+
+<form action="./" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminInsertItem" />
+  <input type="hidden" name="console_return" value="{$console_return}" />
+  <input type="hidden" name="item_srl" value="{$item ? $item->item_srl : ''}" />
+
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+    <a href="{$u_items}" class="cs-btn ghost sm">‹ 목록</a>
+    <div style="font-size:16px;font-weight:700;">{$item ? '상품 수정' : '상품 등록'}</div>
+    <button type="submit" class="cs-btn" style="margin-left:auto;">{$item ? '수정 저장' : '등록'}</button>
+  </div>
+
+  <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+    <div style="flex:1;min-width:420px;display:flex;flex-direction:column;gap:14px;">
+
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 16px;">기본 정보</h3>
+        <div class="cs-field"><label>상품명 *</label><input type="text" name="item_name" value="{$item ? $item->item_name : ''}" class="cs-input" required="required" /></div>
+        <div class="cs-field"><label>카테고리</label>
+          <input type="hidden" name="category_srl" id="cat-sel-value" value="{$item ? $item->category_srl : '0'}" />
+          <div id="cat-cascade" class="cs-row"></div>
+          <p class="cs-hint">대분류 → 세부분류 순으로 선택. (가장 하위 분류로 저장)</p>
+        </div>
+        <div class="cs-formgrid">
+          <div class="cs-field"><label>상품코드</label><input type="text" name="item_code" value="{$item ? $item->item_code : ''}" class="cs-input" /></div>
+          <div class="cs-field"><label>요약 설명</label><input type="text" name="summary" value="{$item ? $item->summary : ''}" class="cs-input" /></div>
+          <div class="cs-field"><label>브랜드</label><input type="text" name="brand" value="{$item ? $item->brand : ''}" class="cs-input" /></div>
+          <div class="cs-field"><label>제조사</label><input type="text" name="manufacturer" value="{$item ? $item->manufacturer : ''}" class="cs-input" /></div>
+          <div class="cs-field"><label>원산지</label><input type="text" name="origin" value="{$item ? $item->origin : ''}" class="cs-input" /></div>
+        </div>
+        <div class="cs-field" style="margin-bottom:0;"><label>추가 정보 (상세표)</label>
+          <div id="attr-rows"></div>
+          <div class="attr-row" loop="$attr_list=>$ar" style="display:flex;gap:8px;margin-bottom:8px;">
+            <input type="text" name="attr_name[]" value="{escape($ar->name)}" class="cs-input" placeholder="항목" />
+            <input type="text" name="attr_value[]" value="{escape($ar->value)}" class="cs-input" placeholder="내용" />
+            <button type="button" class="cs-btn ghost sm" onclick="csAttrDel(this)">삭제</button>
+          </div>
+          <button type="button" class="cs-btn ghost sm" onclick="csAttrAdd()">+ 항목 추가</button>
+        </div>
+      </div>
+
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 16px;">판매 정보</h3>
+        <div class="cs-formgrid">
+          <div class="cs-field"><label>판매가 (원) *</label><input type="number" name="price" value="{$item ? $item->price : '0'}" class="cs-input" min="0" /></div>
+          <div class="cs-field"><label>원가 (원)</label><input type="number" name="cost_price" value="{$item ? $item->cost_price : '0'}" class="cs-input" min="0" /></div>
+          <div class="cs-field"><label>재고</label><input type="number" id="cs-stock" name="stock" value="{$item ? $item->stock : '0'}" class="cs-input" /><p class="cs-hint" id="cs-stock-auto" style="display:none;">옵션 사용 시 옵션 재고의 합계로 자동 계산됩니다.</p></div>
+          <div class="cs-field"><label>적립률 (%)</label><input type="number" name="point_rate" value="{$item ? $item->point_rate : '-1'}" class="cs-input" /><p class="cs-hint">-1 = 기본 설정 따름</p></div>
+        </div>
+        <div class="cs-field"><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_stock" value="N" checked="checked"|cond="$item && $item->use_stock=='N'" style="width:auto;"> 재고 관리 안 함 (무제한)</label></div>
+        <div class="cs-field"><label>1인당 구매 제한</label>
+          <div class="cs-row" style="align-items:center;gap:8px;">
+            <input type="number" name="buy_limit" value="{$item ? $item->buy_limit : '0'}" class="cs-input" style="width:120px;" min="0" /> 개
+          </div>
+          <p class="cs-hint"><b>0 = 무제한</b>. 예: 1로 지정하면 회원 1인당 최대 1개까지만 구매 가능(한정판·1인 1개 이벤트 등). 회원의 누적 구매수량(취소·환불 제외) 기준이며, 비회원은 1회 주문 내 수량으로 제한됩니다.</p>
+        </div>
+        <div class="cs-field">
+          <label class="cs-row" style="gap:7px;"><input type="checkbox" id="cs-grant-group" name="grant_group" value="Y" checked="checked"|cond="$item && $item->grant_group=='Y'" style="width:auto;" onchange="csGrantToggle()"> 구매 후 회원 그룹 변경 <span class="cs-muted" style="font-weight:400;">(콘텐츠 상품 등 결제 시 권한 부여)</span></label>
+          <p class="cs-hint">결제가 완료되면(무통장은 입금확인 시) 구매 회원의 그룹을 아래대로 변경합니다. 예: &lsquo;일반&rsquo; 제거 + &lsquo;유료회원&rsquo; 추가. 비회원 주문은 적용되지 않으며, 환불 시 자동 회수되지 않습니다.</p>
+          <div id="cs-grant-box" style="display:none;margin-top:8px;">
+            <div class="cs-row" style="gap:20px;align-items:flex-start;flex-wrap:wrap;">
+              <div style="min-width:200px;">
+                <div style="font-size:12.5px;font-weight:600;margin-bottom:6px;color:#c5343d;">제거할 그룹</div>
+                <label class="cs-row" style="gap:6px;font-size:13px;" loop="$member_groups=>$g"><input type="checkbox" name="grant_del_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl, $grant_del_arr)" style="width:auto;"> {$g->title}</label>
+              </div>
+              <div style="min-width:200px;">
+                <div style="font-size:12.5px;font-weight:600;margin-bottom:6px;color:#1f8b4c;">추가(이동)할 그룹</div>
+                <label class="cs-row" style="gap:6px;font-size:13px;" loop="$member_groups=>$g"><input type="checkbox" name="grant_add_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl, $grant_add_arr)" style="width:auto;"> {$g->title}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cs-field" style="margin-bottom:0;"><label>배송비</label>
+          <div class="cs-row" style="gap:14px;flex-wrap:wrap;">
+            <label style="display:inline-flex;gap:6px;"><input type="radio" name="ship_fee_type" value="default" checked="checked"|cond="!$item || !$item->ship_fee_type || $item->ship_fee_type=='default'" onclick="csShip()" style="width:auto;"> 기본 배송정책</label>
+            <label style="display:inline-flex;gap:6px;"><input type="radio" name="ship_fee_type" value="free" checked="checked"|cond="$item && $item->ship_fee_type=='free'" onclick="csShip()" style="width:auto;"> 무료배송</label>
+            <label style="display:inline-flex;gap:6px;"><input type="radio" name="ship_fee_type" value="fixed" checked="checked"|cond="$item && $item->ship_fee_type=='fixed'" onclick="csShip()" style="width:auto;"> 개별 배송비</label>
+            <span id="cs-shipfee-wrap" style="display:none;"><input type="number" name="ship_fee" value="{$item ? $item->ship_fee : '0'}" class="cs-input" style="width:130px;" placeholder="배송비(원)" /></span>
+          </div>
+          <p class="cs-hint">여러 상품 주문 시 가장 높은 배송비 1건만 부과됩니다(묶음배송).</p>
+        </div>
+        <div class="cs-field" style="margin-top:12px;margin-bottom:0;">
+          <label class="cs-row" style="gap:7px;"><input type="checkbox" name="require_address" value="N" checked="checked"|cond="$item ? $item->require_address=='N' : $default_require_address=='N'" style="width:auto;"> 배송 주소 입력 받지 않기 <span class="cs-muted" style="font-weight:400;">(기프트콘·콘텐츠 등 비배송 상품)</span></label>
+          <p class="cs-hint">체크하면 이 상품만 담긴 주문에서는 주문서에 배송지 입력창이 나타나지 않고 배송비도 부과되지 않습니다. (주문설정의 주소 수집 정책이 ‘상품 설정에 따름’일 때 적용)</p>
+        </div>
+      </div>
+
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 14px;">옵션</h3>
+        <label class="cs-row" style="gap:7px;"><input type="checkbox" id="use-options" name="use_options" value="Y" style="width:auto;"> 옵션 사용 (색상·사이즈 등 조합형)</label>
+        <div id="opt-area" style="display:none;margin-top:12px;">
+          <div id="opt-groups"></div>
+          <div class="cs-row" style="margin-top:6px;">
+            <button type="button" class="cs-btn ghost sm" onclick="csOptAddGroup()">+ 옵션 그룹</button>
+            <span id="opt-combo-count" class="cs-hint" style="display:inline;align-self:center;"></span>
+          </div>
+          <p class="cs-hint" style="margin-top:6px;">예: 색상=빨강,파랑 / 사이즈=270,280 → 4개 조합 자동 생성 (값 입력 시 실시간 갱신)</p>
+          <div id="opt-combos-wrap" style="display:none;margin-top:10px;border:1px solid #EAECEF;border-radius:2px;max-height:320px;overflow-y:auto;">
+            <table class="cs-table" id="opt-combos" style="margin:0;">
+              <thead><tr><th style="position:sticky;top:0;background:#F7F8FA;z-index:1;">옵션 조합</th><th style="width:130px;position:sticky;top:0;background:#F7F8FA;z-index:1;">추가금액</th><th style="width:110px;position:sticky;top:0;background:#F7F8FA;z-index:1;">재고</th></tr></thead>
+              <tbody id="opt-combo-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 14px;">상세 설명</h3>
+        <input type="hidden" name="content" value="{htmlspecialchars($item ? $item->content : '', ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+        {$editor}
+      </div>
+    </div>
+
+    <div style="flex:0 0 320px;display:flex;flex-direction:column;gap:14px;">
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 14px;">대표 이미지</h3>
+        <input type="hidden" name="thumb" id="ci-thumb" value="{$item ? $item->thumb : ''}" />
+        <div class="ci-thumb" id="ci-thumb-box">
+          <div class="ci-thumb-prev" id="ci-thumb-prev"><!--@if($item && $item->thumb)--><img src="{$item->thumb}" alt="" /><!--@end--></div>
+          <div class="ci-thumb-acts">
+            <label class="cs-btn ghost sm">이미지 선택<input type="file" name="thumb_file" accept="image/*" hidden="hidden" onchange="ciThumb(this)" /></label>
+            <button type="button" class="cs-btn ghost sm" id="ci-thumb-clear" onclick="ciThumbClear()" style="display:{$item && $item->thumb ? 'inline-flex' : 'none'};">제거</button>
+          </div>
+        </div>
+      </div>
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 14px;">추가 이미지</h3>
+        <div class="ci-imgs" id="ci-imgs">
+          <div class="ci-img" loop="$item_images=>$iu">
+            <img src="{$iu}" alt="" />
+            <input type="hidden" name="images[]" value="{$iu}" />
+            <button type="button" class="ci-img-del" onclick="ciImgDel(this)">×</button>
+          </div>
+        </div>
+        <label class="cs-btn ghost sm" style="margin-top:4px;">＋ 이미지 추가<input type="file" name="image_files[]" accept="image/*" multiple="multiple" hidden="hidden" onchange="ciImgPreview(this)" /></label>
+        <p class="cs-hint" style="margin-top:8px;">이미지를 선택하면 미리보기가 추가됩니다. × 로 제거 후 저장하면 반영됩니다.</p>
+      </div>
+      <div class="cs-card cs-card-p">
+        <h3 style="font-size:14px;margin:0 0 14px;">판매 설정</h3>
+        <div class="cs-field"><label>상태</label>
+          <select name="status" class="cs-select">
+            <option value="sale" selected="selected"|cond="$item && $item->status=='sale'">판매중</option>
+            <option value="soldout" selected="selected"|cond="$item && $item->status=='soldout'">품절</option>
+            <option value="hidden" selected="selected"|cond="$item && $item->status=='hidden'">숨김</option>
+          </select>
+        </div>
+        <div class="cs-field"><label>정렬값 (선택)</label><input type="number" name="list_order" value="{$item ? $item->list_order : ''}" class="cs-input" placeholder="비우면 자동" /><p class="cs-hint">숫자가 클수록 목록 상단에 노출됩니다. 보통은 목록에서 드래그로 조정하세요.</p></div>
+        <div class="cs-field" style="margin-bottom:0;"><label>태그</label>
+          <label loop="$all_tags=>$tg" cond="$tg->auto_source=='manual'" style="display:inline-flex;align-items:center;gap:6px;margin:0 12px 7px 0;"><input type="checkbox" name="tags[]" value="{$tg->tag_srl}" checked="checked"|cond="in_array($tg->tag_srl,$item_tag_srls)" style="width:auto;"> {$tg->title}</label>
+          <span class="cs-hint" cond="!count($all_tags)">태그가 없습니다. 설정 &gt; 홈 화면에서 추가하세요.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin:18px 0;text-align:right;"><button type="submit" class="cs-btn" style="height:42px;padding:0 30px;">{$item ? '수정 저장' : '상품 등록'}</button></div>
+</form>
+
+<script>
+function csAttrAdd(){ var b=document.getElementById('attr-rows'); var r=document.createElement('div'); r.className='attr-row'; r.style.cssText='display:flex;gap:8px;margin-bottom:8px;'; r.innerHTML='<input type="text" name="attr_name[]" class="cs-input" placeholder="항목" /><input type="text" name="attr_value[]" class="cs-input" placeholder="내용" /><button type="button" class="cs-btn ghost sm" onclick="csAttrDel(this)">삭제</button>'; b.appendChild(r); }
+function csAttrDel(btn){ var r=btn.parentNode; r.parentNode.removeChild(r); }
+function csShip(){ var v=document.querySelector('input[name=ship_fee_type]:checked'); document.getElementById('cs-shipfee-wrap').style.display=(v&&v.value=='fixed')?'':'none'; }
+csShip();
+
+/* 계단식 카테고리 */
+var DDG_CATS = {$categories_json};
+var DDG_ITEM_CAT = {$item_category_srl};
+function ccBy(p){ var r=[]; for(var i=0;i<DDG_CATS.length;i++){ if(DDG_CATS[i].parent==p) r.push(DDG_CATS[i]); } return r; }
+function ccPath(srl){ var m={},i; for(i=0;i<DDG_CATS.length;i++) m[DDG_CATS[i].srl]=DDG_CATS[i]; var p=[],c=srl; while(c&&m[c]){ p.unshift(c); c=m[c].parent; } return p; }
+function ccRender(path){
+  var box=document.getElementById('cat-cascade'); if(!box) return; box.innerHTML='';
+  document.getElementById('cat-sel-value').value = path.length ? path[path.length-1] : '0';
+  for(var lv=0;;lv++){
+    var par = lv===0?0:path[lv-1]; var opts=ccBy(par); if(opts.length===0) break;
+    var sel=document.createElement('select'); sel.className='cs-select'; sel.style.width='auto';
+    var d=document.createElement('option'); d.value=''; d.text=(lv===0?'대분류 선택':'세부분류'); sel.appendChild(d);
+    for(var k=0;k<opts.length;k++){ var o=document.createElement('option'); o.value=opts[k].srl; o.text=opts[k].name; if(path[lv]==opts[k].srl)o.selected=true; sel.appendChild(o); }
+    (function(L){ sel.onchange=function(){ var np=path.slice(0,L); var v=parseInt(this.value,10); if(v)np.push(v); ccRender(np); }; })(lv);
+    box.appendChild(sel);
+    if(path[lv]===undefined) break;
+  }
+  if(!box.children.length) box.innerHTML='<span class="cs-hint">등록된 카테고리가 없습니다.</span>';
+}
+(function(){ ccRender(DDG_ITEM_CAT?ccPath(DDG_ITEM_CAT):[]); })();
+
+/* 옵션 (조합형) */
+var OPT_GROUPS={$opt_groups_json}, OPT_ROWS={$opt_rows_json}, OPT_HAS='{$item_has_options}';
+function csEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function csOptAddGroup(name,values,skipgen){ var d=document.createElement('div'); d.style.cssText='display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:nowrap;'; d.innerHTML='<input type="text" name="opt_gname[]" class="cs-input" style="flex:0 0 130px;width:130px;" placeholder="옵션명(색상)" oninput="csOptGen()" value="'+csEsc(name||'')+'" /><input type="text" name="opt_gvalues[]" class="cs-input" style="flex:1 1 0;min-width:0;" placeholder="값 쉼표구분(빨강,파랑)" oninput="csOptGen()" value="'+csEsc(values||'')+'" /><button type="button" class="cs-btn ghost sm" style="flex:0 0 auto;white-space:nowrap;" onclick="var p=this.parentNode;p.parentNode.removeChild(p);csOptGen();">삭제</button>'; document.getElementById('opt-groups').appendChild(d); if(!skipgen) csOptGen(); }
+function csOptGroups(){ var rows=document.querySelectorAll('#opt-groups div'); var g=[]; for(var i=0;i<rows.length;i++){ var n=rows[i].querySelector('input[name="opt_gname[]"]').value.replace(/^\s+|\s+$/g,''); var vr=rows[i].querySelector('input[name="opt_gvalues[]"]').value; var vs=[]; vr.split(',').forEach(function(v){ v=v.replace(/^\s+|\s+$/g,''); if(v)vs.push(v); }); if(n&&vs.length) g.push({name:n,values:vs}); } return g; }
+function csCart(g){ var r=['']; for(var i=0;i<g.length;i++){ var n=[]; for(var a=0;a<r.length;a++) for(var b=0;b<g[i].values.length;b++) n.push(r[a]===''?g[i].values[b]:(r[a]+' / '+g[i].values[b])); r=n; } return g.length?r:[]; }
+function csOptGen(){
+  var labels=csCart(csOptGroups()); var body=document.getElementById('opt-combo-body'); var ex={},cur=body.querySelectorAll('tr');
+  for(var i=0;i<cur.length;i++){ var lb=cur[i].getAttribute('data-label'); ex[lb]={price:cur[i].querySelector('input[name="opt_price[]"]').value,stock:cur[i].querySelector('input[name="opt_stock[]"]').value}; }
+  for(var j=0;j<OPT_ROWS.length;j++){ if(!(OPT_ROWS[j].label in ex)) ex[OPT_ROWS[j].label]={price:OPT_ROWS[j].price,stock:OPT_ROWS[j].stock}; }
+  body.innerHTML='';
+  for(var k=0;k<labels.length;k++){ var L=labels[k],e=ex[L]||{price:0,stock:0}; var tr=document.createElement('tr'); tr.setAttribute('data-label',L);
+    tr.innerHTML='<td>'+csEsc(L)+'<input type="hidden" name="opt_label[]" value="'+csEsc(L)+'" /></td><td><input type="number" name="opt_price[]" class="cs-input" value="'+(parseInt(e.price,10)||0)+'" /></td><td><input type="number" name="opt_stock[]" class="cs-input" value="'+(parseInt(e.stock,10)||0)+'" /></td>'; body.appendChild(tr); }
+  document.getElementById('opt-combos-wrap').style.display = labels.length?'':'none';
+  var cnt=document.getElementById('opt-combo-count'); if(cnt) cnt.textContent = labels.length? ('총 '+labels.length+'개 조합') : '';
+  csStockSync();
+}
+/* 옵션 사용 시 본체 재고 = 옵션 재고 합계(읽기전용 자동) */
+function csStockSync(){
+  var on=document.getElementById('use-options').checked;
+  var stock=document.getElementById('cs-stock'), hint=document.getElementById('cs-stock-auto');
+  if(on){
+    var sum=0; document.querySelectorAll('#opt-combo-body input[name="opt_stock[]"]').forEach(function(el){ sum+=parseInt(el.value,10)||0; });
+    stock.value=sum; stock.readOnly=true; stock.style.background='#F1F3F5'; stock.style.color='#8a9099';
+    if(hint) hint.style.display='';
+  } else {
+    stock.readOnly=false; stock.style.background=''; stock.style.color='';
+    if(hint) hint.style.display='none';
+  }
+}
+function csOptToggle(){ document.getElementById('opt-area').style.display=document.getElementById('use-options').checked?'':'none'; csStockSync(); }
+function csGrantToggle(){ var c=document.getElementById('cs-grant-group'); var b=document.getElementById('cs-grant-box'); if(b) b.style.display=(c&&c.checked)?'':'none'; }
+(function(){ csGrantToggle(); })();
+(function(){ var c=document.getElementById('use-options'); c.addEventListener('change',csOptToggle);
+  var ob=document.getElementById('opt-combo-body'); if(ob) ob.addEventListener('input',function(e){ if(e.target&&e.target.name==='opt_stock[]') csStockSync(); });
+  if(OPT_GROUPS&&OPT_GROUPS.length){ for(var i=0;i<OPT_GROUPS.length;i++) csOptAddGroup(OPT_GROUPS[i].name,OPT_GROUPS[i].values.join(','),true); } else csOptAddGroup('','',true);
+  if(OPT_HAS==='Y'){ c.checked=true; csOptToggle(); csOptGen(); } })();
+
+/* 대표 이미지 */
+function ciThumb(input){
+  var f=input.files&&input.files[0]; if(!f) return;
+  var r=new FileReader(); r.onload=function(e){ var box=document.getElementById('ci-thumb-prev'); box.innerHTML=''; var im=document.createElement('img'); im.src=e.target.result; box.appendChild(im); document.getElementById('ci-thumb-clear').style.display=''; }; r.readAsDataURL(f);
+}
+function ciThumbClear(){
+  document.getElementById('ci-thumb-prev').innerHTML='';
+  document.getElementById('ci-thumb').value='';
+  var fi=document.querySelector('input[name=thumb_file]'); if(fi) fi.value='';
+  document.getElementById('ci-thumb-clear').style.display='none';
+}
+/* 추가 이미지 */
+function ciImgDel(btn){ var d=btn.closest('.ci-img'); if(d) d.parentNode.removeChild(d); }
+function ciImgPreview(input){
+  var grid=document.getElementById('ci-imgs');
+  grid.querySelectorAll('.ci-img.is-new').forEach(function(x){ x.parentNode.removeChild(x); });
+  var files=input.files||[];
+  for(var i=0;i<files.length;i++){
+    (function(f){ var r=new FileReader(); r.onload=function(e){ var d=document.createElement('div'); d.className='ci-img is-new'; var im=document.createElement('img'); im.src=e.target.result; d.appendChild(im); var b=document.createElement('span'); b.className='ci-img-new'; b.textContent='신규'; d.appendChild(b); grid.appendChild(d); }; r.readAsDataURL(f); })(files[i]);
+  }
+}
+</script>
+
+<include target="_console_foot.html" />

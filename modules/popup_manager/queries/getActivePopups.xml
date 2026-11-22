@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query id="getActivePopups" action="select">
+	<tables>
+		<table name="popups" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="is_enabled" var="is_enabled" default="Y" notnull="notnull" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="display_order" order="order_type" default_order="asc" />
+	</navigation>
+</query>

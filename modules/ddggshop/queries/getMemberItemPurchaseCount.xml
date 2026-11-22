@@ -1,0 +1,15 @@
+<query id="getMemberItemPurchaseCount" action="select">
+  <tables>
+    <table name="ddggshop_order_item" alias="oi" />
+    <table name="ddggshop_order" alias="o" />
+  </tables>
+  <columns>
+    <column name="count(*)" alias="count" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="oi.order_srl" default="o.order_srl" />
+    <condition operation="equal" column="oi.item_srl" var="item_srl" notnull="notnull" pipe="and" />
+    <condition operation="equal" column="o.member_srl" var="member_srl" notnull="notnull" pipe="and" />
+    <condition operation="in" column="o.status" var="status_list" notnull="notnull" pipe="and" />
+  </conditions>
+</query>

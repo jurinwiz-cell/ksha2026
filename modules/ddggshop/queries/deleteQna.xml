@@ -1,0 +1,8 @@
+<query id="deleteQna" action="delete">
+  <tables>
+    <table name="ddggshop_qna" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="qna_srl" var="qna_srl" notnull="notnull" />
+  </conditions>
+</query>

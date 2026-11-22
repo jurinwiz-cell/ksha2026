@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+  <title xml:lang="ko">기본 스킨</title>
+  <title xml:lang="en">Default</title>
+  <description xml:lang="ko">쇼핑몰 기본 스킨 (반응형 그리드 스토어프론트)</description>
+  <version>0.1.0</version>
+  <date>2026-06-10</date>
+  <author link="https://ddgglabs.org">
+    <name xml:lang="ko">딱따고기</name>
+    <name xml:lang="en">DDGG</name>
+  </author>
+  <extra_vars>
+    <var name="primary_color" type="text">
+      <title xml:lang="ko">강조 색상 (예: #ff4d2d)</title>
+    </var>
+    <var name="grid_columns" type="select">
+      <title xml:lang="ko">상품 목록 열 수 (PC)</title>
+      <options value="3"><title>3열</title></options>
+      <options value="4"><title>4열</title></options>
+      <options value="5"><title>5열</title></options>
+    </var>
+  </extra_vars>
+</skin>

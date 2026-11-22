@@ -1,0 +1,9 @@
+<query id="getCouponIssueCount" action="select">
+  <tables><table name="ddggshop_coupon_issue" /></tables>
+  <columns><column name="count(*)" alias="cnt" /></columns>
+  <conditions>
+    <condition operation="equal" column="coupon_srl" var="coupon_srl" notnull="notnull" />
+    <condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" pipe="and" />
+    <condition operation="equal" column="used" var="used" pipe="and" />
+  </conditions>
+</query>

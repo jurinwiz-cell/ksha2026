@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<permissions />
+	<actions>
+		<!-- Front controller: bump a document -->
+		<action name="procPullupDocument" type="controller" permission="member" standalone="true" />
+
+		<!-- Admin: configuration -->
+		<action name="dispPullupAdminConfig" type="view" admin_index="true" setup_index="true" menu_name="pullup" menu_index="true" />
+		<action name="dispPullupAdminList" type="view" menu_name="pullup" />
+		<action name="procPullupAdminInsertConfig" type="controller" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="document.getDocumentMenu" class="controller" method="triggerAddDocumentMenu" />
+	</eventHandlers>
+	<menus>
+		<menu name="pullup" type="all">
+			<title xml:lang="ko">게시글 끌어올리기</title>
+			<title xml:lang="en">Document Pull-up</title>
+		</menu>
+	</menus>
+</module>

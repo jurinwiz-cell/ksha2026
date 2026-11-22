@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="1.0.1">
+	<title xml:lang="ko">딱따고기 감귤보드</title>
+	<title xml:lang="en">DDGG Citrus Board</title>
+	<description xml:lang="ko">딱따고기연구소 레이아웃과 어울리는 모던 게시판 스킨(감귤보드). 목록형·웹진형·갤러리형·FAQ형을 설정에서 고를 수 있습니다.</description>
+	<description xml:lang="en">A modern board skin (Citrus Board) matching the DDGG Lab layout. Choose list / webzine / gallery / FAQ view in the settings.</description>
+	<version>1.2.0</version>
+	<date>2026-06-17</date>
+	<author email_address="development@xosoft.co.kr" link="https://xosoft.co.kr">
+		<name xml:lang="ko">딱따고기연구소</name>
+		<name xml:lang="en">DDGG Lab</name>
+	</author>
+	<license>GPL v2</license>
+	<extra_vars>
+		<var name="ddgg_colorset" type="select" default="citrus">
+			<title xml:lang="ko">컬러셋</title>
+			<title xml:lang="en">Color set</title>
+			<description xml:lang="ko">게시판의 포인트 색상 테마를 선택합니다. 기본값은 감귤(주황)입니다.</description>
+			<options value="citrus"><title xml:lang="ko">감귤 (주황) — 기본</title><title xml:lang="en">Citrus (Orange) — default</title></options>
+			<options value="blueberry"><title xml:lang="ko">블루베리 (인디고)</title><title xml:lang="en">Blueberry (Indigo)</title></options>
+			<options value="strawberry"><title xml:lang="ko">딸기 (로즈)</title><title xml:lang="en">Strawberry (Rose)</title></options>
+			<options value="greengrape"><title xml:lang="ko">청포도 (라임)</title><title xml:lang="en">Green Grape (Lime)</title></options>
+			<options value="grape"><title xml:lang="ko">포도 (퍼플)</title><title xml:lang="en">Grape (Purple)</title></options>
+		</var>
+		<var name="board_intro" type="text">
+			<title xml:lang="ko">게시판 한줄소개</title>
+			<title xml:lang="en">Board intro line</title>
+			<description xml:lang="ko">게시판 제목 바로 아래에 한 줄로 표시됩니다. 비우면 게시판 설명(있을 경우)이 대신 표시됩니다.</description>
+		</var>
+		<var name="list_type" type="select" default="list">
+			<title xml:lang="ko">목록 표시 형태</title>
+			<title xml:lang="en">List view type</title>
+			<description xml:lang="ko">기본으로 보여줄 목록 형태입니다. 방문자가 상단 전환 버튼으로 즉시 바꿀 수도 있습니다.</description>
+			<options value="list"><title xml:lang="ko">목록형 (테이블)</title><title xml:lang="en">List</title></options>
+			<options value="webzine"><title xml:lang="ko">웹진형 (썸네일 + 요약)</title><title xml:lang="en">Webzine</title></options>
+			<options value="gallery"><title xml:lang="ko">갤러리형 (카드 그리드)</title><title xml:lang="en">Gallery</title></options>
+			<options value="faq"><title xml:lang="ko">FAQ형 (아코디언)</title><title xml:lang="en">FAQ (Accordion)</title></options>
+		</var>
+		<var name="show_view_switch" type="select" default="Y">
+			<title xml:lang="ko">상단 보기 전환 버튼 표시</title>
+			<title xml:lang="en">Show view switcher</title>
+			<options value="Y"><title xml:lang="ko">표시</title><title xml:lang="en">Show</title></options>
+			<options value="N"><title xml:lang="ko">숨김</title><title xml:lang="en">Hide</title></options>
+		</var>
+		<var name="gallery_columns" type="select" default="3">
+			<title xml:lang="ko">갤러리 열 수</title>
+			<title xml:lang="en">Gallery columns</title>
+			<options value="2"><title xml:lang="ko">2열</title><title xml:lang="en">2</title></options>
+			<options value="3"><title xml:lang="ko">3열</title><title xml:lang="en">3</title></options>
+			<options value="4"><title xml:lang="ko">4열</title><title xml:lang="en">4</title></options>
+		</var>
+		<var name="title_image" type="image">
+			<title xml:lang="ko">게시판 제목 이미지</title>
+			<title xml:lang="en">Board title image</title>
+			<description xml:lang="ko">설정하면 제목 영역에 이미지로 표시됩니다.</description>
+		</var>
+		<var name="title_alt" type="text">
+			<title xml:lang="ko">게시판 제목 이미지 대체 텍스트</title>
+			<title xml:lang="en">Board title image alt text</title>
+		</var>
+		<var name="content_default" type="textarea">
+			<title xml:lang="ko">글 작성시 미리 입력된 글 출력 (글양식)</title>
+			<title xml:lang="en">Default content on write (post template)</title>
+			<description xml:lang="ko">글쓰기 화면에서 에디터 안에 미리 표시될 글(글양식)을 입력합니다. 미리 준비된 양식이나 작성 안내문 등에 사용할 수 있습니다. HTML을 사용할 수 있습니다.</description>
+		</var>
+	</extra_vars>
+</skin>

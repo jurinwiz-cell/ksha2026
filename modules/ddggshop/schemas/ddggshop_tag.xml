@@ -1,0 +1,12 @@
+<table name="ddggshop_tag">
+  <column name="tag_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="title" type="varchar" size="100" notnull="notnull" />
+  <column name="auto_source" type="varchar" size="20" default="manual" notnull="notnull" />
+  <column name="badge_color" type="varchar" size="20" />
+  <column name="show_on_home" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="show_badge" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="home_count" type="number" default="8" notnull="notnull" />
+  <column name="list_order" type="bignumber" notnull="notnull" index="idx_list_order" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="regdate" type="date" />
+</table>

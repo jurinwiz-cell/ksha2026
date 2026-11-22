@@ -1,0 +1,17 @@
+<query id="insertAddressBook" action="insert">
+  <tables>
+    <table name="ddggshop_address" />
+  </tables>
+  <columns>
+    <column name="address_book_srl" var="address_book_srl" notnull="notnull" />
+    <column name="member_srl" var="member_srl" notnull="notnull" />
+    <column name="label" var="label" />
+    <column name="receiver_name" var="receiver_name" notnull="notnull" />
+    <column name="receiver_phone" var="receiver_phone" />
+    <column name="zipcode" var="zipcode" />
+    <column name="addr1" var="addr1" />
+    <column name="addr2" var="addr2" />
+    <column name="is_default" var="is_default" default="N" />
+    <column name="regdate" var="regdate" default="curdate()" />
+  </columns>
+</query>

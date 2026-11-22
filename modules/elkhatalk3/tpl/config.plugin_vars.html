@@ -1,0 +1,36 @@
+<!--@if(isset($all_plugin_vars[$key]))-->
+<!--@foreach($all_plugin_vars[$key] as $val_name => $val)-->
+{@
+$vals = \elkhatalk3::getPluginVars($key);
+}
+<div style="margin-left:20px;">
+	<!--@if(is_string($val['vars']))-->
+	<label for="lang_plugin_vars_{$key}_{$val_name}">
+		<!--@if(strpos($val['vars'] ?? '', "\n")===FALSE && strpos($val['plac'] ?? '', "\n")===FALSE && strpos($vals[$val_name] ?? '', "\n")===FALSE)-->
+		<input type="text" name="plugin_vars_{$key}_{$val_name}" id="plugin_vars_{$key}_{$val_name}" value="{@ echo htmlentities($vals[$val_name] ?? ''); }" class="lang_code" placeholder="{@ echo htmlentities($val['plac'] ?? ''); }" />
+		<!--@else-->
+		<textarea name="plugin_vars_{$key}_{$val_name}" id="plugin_vars_{$key}_{$val_name}" class="lang_code" rows="5" placeholder="{@ echo htmlentities($val['plac'] ?? ''); }">{@ echo $vals[$val_name] ?? ''; }</textarea>
+		<!--@endif-->
+		{$val_name}
+	</label>
+	<!--@elseif(is_array($val['vars']))-->
+	{@
+	if(!count($vals[$val_name]) || strlen(reset($vals[$val_name])))
+		$vals[$val_name][] = '';
+	}
+	<!--@foreach($vals[$val_name] as $k => $v)-->
+	<!--@if(strpos( implode(' ', $val['vars']), "\n")===FALSE && strpos( $val['plac'] ?? '', "\n")===FALSE && strpos( implode(' ', $vals[$val_name]), "\n")===FALSE)-->
+	<input type="text" name="plugin_vars_{$key}_{$val_name}[]" value="{@ echo $vals[$val_name][$k] ?? ''; }" class="lang_code" placeholder="{@ echo htmlentities($val['plac'] ?? ''); }" />
+	<!--@else-->
+	<textarea name="plugin_vars_{$key}_{$val_name}[]" class="lang_code" rows="5" placeholder="{@ echo htmlentities($val['plac'] ?? ''); }">{@ echo $vals[$val_name][$k] ?? ''; }</textarea>
+	<!--@endif-->
+	<!--@endforeach-->
+	<!--@else-->
+	<label for="plugin_vars_{$key}_{$val_name}">
+		<input type="number" id="plugin_vars_{$key}_{$val_name}" name="plugin_vars_{$key}_{$val_name}" value="{@ echo $vals[$val_name] ?? ''; }" placeholder="{@ echo htmlentities($val['plac'] ?? ''); }" />
+		{$val_name}
+	</label>
+	<!--@end-->
+</div>
+<!--@endforeach-->
+<!--@endif-->

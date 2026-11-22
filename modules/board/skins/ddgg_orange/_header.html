@@ -1,0 +1,58 @@
+<load target="board.ddgg.css" />
+<load target="board.ddgg.js" type="body" />
+
+{@
+	// "신규" 판정 기준 시각
+	$_dur = (int)($module_info->duration_new ?? 0);
+	if (!$_dur) $_dur = 12;
+	$_new_threshold = date('YmdHis', time() - 60 * 60 * $_dur);
+
+	// 카테고리별 색상 클래스 (c1~c5 순환)
+	$_cat_color = array();
+	$_ci = 0;
+	foreach (($category_list ?? array()) as $_cs => $_cv):
+		$_cat_color[$_cs] = 'c' . (($_ci % 5) + 1);
+		$_ci++;
+	endforeach;
+
+	// 활성 보기 형태: URL 파라미터(ddgg_view) > 스킨 설정(list_type) > list
+	$_allowed_views = array('list', 'webzine', 'gallery', 'faq');
+	$_view = Context::get('ddgg_view');
+	if (!in_array($_view, $_allowed_views, true)) $_view = $module_info->list_type ?? 'list';
+	if (!in_array($_view, $_allowed_views, true)) $_view = 'list';
+
+	$_gallery_cols = (int)($module_info->gallery_columns ?? 3);
+	if ($_gallery_cols < 2 || $_gallery_cols > 4) $_gallery_cols = 3;
+	$_show_switch = ($module_info->show_view_switch ?? 'Y') !== 'N';
+
+	// 컬러셋: 스킨 설정(ddgg_colorset) > 감귤(citrus)
+	$_allowed_colorsets = array('citrus', 'blueberry', 'strawberry', 'greengrape', 'grape');
+	$_colorset = $module_info->ddgg_colorset ?? 'citrus';
+	if (!in_array($_colorset, $_allowed_colorsets, true)) $_colorset = 'citrus';
+
+	// 카테고리 사용 여부
+	$_use_cate = ($module_info->use_category ?? 'N') === 'Y' && count($category_list ?? array());
+
+	// 게시판 관리자의 "표시 항목" 설정 반영 (list_config) — 모든 보기 형태 공통
+	$_lc = is_array($list_config ?? null) ? $list_config : array();
+	$_show_nick     = isset($_lc['nick_name']);
+	$_show_date     = isset($_lc['regdate']) || isset($_lc['last_update']) || isset($_lc['last_post']);
+	$_show_vote     = isset($_lc['voted_count']);
+	$_show_view     = isset($_lc['readed_count']);
+	$_show_comments = isset($_lc['comment_count']);
+	$_show_summary  = isset($_lc['summary']);
+
+	// 목록형(list)의 grid 컬럼 폭 동적 산출 (보일 컬럼만 트랙 부여)
+	$_grid_cols = array();
+	if ($_use_cate)   $_grid_cols[] = '96px';
+	$_grid_cols[]   = 'minmax(0,1fr)'; // 제목은 항상 표시
+	if ($_show_nick) $_grid_cols[] = '132px';
+	if ($_show_date) $_grid_cols[] = '110px';
+	if ($_show_vote) $_grid_cols[] = '64px';
+	if ($_show_view) $_grid_cols[] = '72px';
+	$_grid_cols = implode(' ', $_grid_cols);
+}
+
+<div class="ddgg-board" data-colorset="{$_colorset}">
+	<div class="board-rich-text rhymix_content xe_content" cond="$m && $module_info->mobile_header_text">{$module_info->mobile_header_text}</div>
+	<div class="board-rich-text rhymix_content xe_content" cond="!($m && $module_info->mobile_header_text) && !empty($module_info->header_text)">{$module_info->header_text}</div>

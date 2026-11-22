@@ -1,0 +1,230 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead">
+  <h1>{$item ? '상품 수정' : '상품 등록'}</h1>
+  <a href="{getUrl('','module','admin','act','dispDdggshopAdminItemList')}" class="x_btn">목록</a>
+</div>
+
+<form action="./" method="post" enctype="multipart/form-data" class="x_form-horizontal">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminInsertItem" />
+  <input type="hidden" name="item_srl" value="{$item ? $item->item_srl : ''}" />
+
+  <div class="x_control-group">
+    <label class="x_control-label">상품명 *</label>
+    <div class="x_controls"><input type="text" name="item_name" value="{$item ? $item->item_name : ''}" class="x_input-xxlarge" required="required" /></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">카테고리</label>
+    <div class="x_controls">
+      <input type="hidden" name="category_srl" id="cat-sel-value" value="{$item ? $item->category_srl : '0'}" />
+      <div id="cat-cascade" class="dga-cascade"></div>
+      <p class="dga-sub" style="margin-top:6px;">대분류 → 세부분류 순으로 선택하세요. (선택한 가장 하위 분류로 저장됩니다)</p>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">상품코드</label>
+    <div class="x_controls"><input type="text" name="item_code" value="{$item ? $item->item_code : ''}" /></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">판매가 *</label>
+    <div class="x_controls"><input type="number" name="price" value="{$item ? $item->price : '0'}" min="0" /> 원</div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">원가</label>
+    <div class="x_controls"><input type="number" name="cost_price" value="{$item ? $item->cost_price : '0'}" min="0" /> 원 <small style="color:#999;">(마진 계산용)</small></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">재고</label>
+    <div class="x_controls">
+      <input type="number" name="stock" value="{$item ? $item->stock : '0'}" />
+      <label style="margin-left:10px;"><input type="checkbox" name="use_stock" value="N" checked="checked"|cond="$item && $item->use_stock=='N'" /> 재고 관리 안 함(무제한)</label>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">옵션</label>
+    <div class="x_controls">
+      <label><input type="checkbox" id="use-options" name="use_options" value="Y" /> 옵션 사용 (색상·사이즈 등 조합형)</label>
+      <div id="opt-area" style="display:none;margin-top:12px;">
+        <div id="opt-groups"></div>
+        <div style="margin-top:6px;">
+          <button type="button" class="x_btn x_btn-mini" onclick="ddggOptAddGroup()">+ 옵션 그룹 추가</button>
+          <button type="button" class="x_btn x_btn-mini x_btn-primary" onclick="ddggOptGenerate()">조합 생성 / 갱신</button>
+        </div>
+        <p class="dga-sub" style="margin-top:6px;">예: <b>색상</b> = 빨강,파랑 / <b>사이즈</b> = 270,280 → ‘조합 생성’ 시 4개 조합이 만들어집니다. 조합별 추가금액·재고를 입력하세요.</p>
+        <table class="x_table" id="opt-combos" style="display:none;margin-top:10px;">
+          <thead><tr><th>옵션 조합</th><th style="width:140px;">추가금액(원)</th><th style="width:120px;">재고</th></tr></thead>
+          <tbody id="opt-combo-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">대표 이미지</label>
+    <div class="x_controls">
+      <!--@if($item && $item->thumb)--><div style="margin-bottom:8px;"><img src="{$item->thumb}" style="width:90px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" alt="" /></div><!--@end-->
+      <input type="file" name="thumb_file" accept="image/*" />
+      <div style="margin-top:6px;"><input type="text" name="thumb" value="{$item ? $item->thumb : ''}" class="x_input-xxlarge" placeholder="또는 이미지 URL (파일 업로드 시 무시)" /></div>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">추가 이미지</label>
+    <div class="x_controls">
+      <input type="file" name="image_files[]" accept="image/*" multiple="multiple" />
+      <div style="margin-top:6px;"><textarea name="images_text" rows="2" class="x_input-xxlarge" placeholder="또는 이미지 URL을 한 줄에 하나씩">{$item ? $item->images_text : ''}</textarea></div>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">요약 설명</label>
+    <div class="x_controls"><input type="text" name="summary" value="{$item ? $item->summary : ''}" class="x_input-xxlarge" /></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">브랜드 / 제조사 / 원산지</label>
+    <div class="x_controls" style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input type="text" name="brand" value="{$item ? $item->brand : ''}" placeholder="브랜드" style="width:180px;" />
+      <input type="text" name="manufacturer" value="{$item ? $item->manufacturer : ''}" placeholder="제조사" style="width:180px;" />
+      <input type="text" name="origin" value="{$item ? $item->origin : ''}" placeholder="원산지" style="width:180px;" />
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">추가 정보</label>
+    <div class="x_controls">
+      <div id="attr-rows">
+        <div class="attr-row" loop="$attr_list=>$ar">
+          <input type="text" name="attr_name[]" value="{escape($ar->name)}" placeholder="항목 (예: 용량)" />
+          <input type="text" name="attr_value[]" value="{escape($ar->value)}" placeholder="내용 (예: 500ml)" />
+          <button type="button" class="x_btn x_btn-mini" onclick="ddggAttrDel(this)">삭제</button>
+        </div>
+      </div>
+      <button type="button" class="x_btn x_btn-mini" onclick="ddggAttrAdd()">+ 항목 추가</button>
+      <p class="dga-sub" style="margin-top:6px;">상품 상세페이지에 표로 노출됩니다. (브랜드·제조사·원산지 외 자유 항목)</p>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">상세 설명</label>
+    <div class="x_controls">
+      <input type="hidden" name="content" value="{htmlspecialchars($item ? $item->content : '', ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+      {$editor}
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">적립률</label>
+    <div class="x_controls"><input type="number" name="point_rate" value="{$item ? $item->point_rate : '-1'}" style="width:80px;" /> % <small style="color:#999;">(-1 = 기본 설정 따름)</small></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">상태</label>
+    <div class="x_controls">
+      <select name="status">
+        <option value="sale" selected="selected"|cond="$item && $item->status=='sale'">판매중</option>
+        <option value="soldout" selected="selected"|cond="$item && $item->status=='soldout'">품절</option>
+        <option value="hidden" selected="selected"|cond="$item && $item->status=='hidden'">숨김</option>
+      </select>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">태그</label>
+    <div class="x_controls">
+      <label loop="$all_tags=>$tg" cond="$tg->auto_source=='manual'" style="margin-right:16px;display:inline-block;"><input type="checkbox" name="tags[]" value="{$tg->tag_srl}" checked="checked"|cond="in_array($tg->tag_srl,$item_tag_srls)" /> {$tg->title}</label>
+      <span class="dga-sub" cond="!count($all_tags)">등록된 태그가 없습니다. ‘쇼핑몰설정 &gt; 홈 화면’에서 추가하세요.</span>
+    </div>
+  </div>
+  <div class="x_form-actions">
+    <button type="submit" class="x_btn x_btn-primary x_btn-large">{$item ? '수정' : '등록'}</button>
+  </div>
+</form>
+
+<script>
+function ddggAttrAdd(){
+  var box=document.getElementById('attr-rows');
+  var row=document.createElement('div');
+  row.className='attr-row';
+  row.innerHTML='<input type="text" name="attr_name[]" placeholder="항목 (예: 용량)" /><input type="text" name="attr_value[]" placeholder="내용 (예: 500ml)" /><button type="button" class="x_btn x_btn-mini" onclick="ddggAttrDel(this)">삭제</button>';
+  box.appendChild(row);
+}
+function ddggAttrDel(btn){ var r=btn.parentNode; r.parentNode.removeChild(r); }
+
+/* 계단식 카테고리 선택 */
+var DDG_CATS = {$categories_json};
+var DDG_ITEM_CAT = {$item_category_srl};
+function ddggCatsByParent(p){ var r=[]; for(var i=0;i<DDG_CATS.length;i++){ if(DDG_CATS[i].parent==p) r.push(DDG_CATS[i]); } return r; }
+function ddggCatPath(srl){ var map={},i; for(i=0;i<DDG_CATS.length;i++) map[DDG_CATS[i].srl]=DDG_CATS[i]; var path=[],cur=srl; while(cur && map[cur]){ path.unshift(cur); cur=map[cur].parent; } return path; }
+function ddggRenderCascade(path){
+  var box=document.getElementById('cat-cascade'); if(!box) return; box.innerHTML='';
+  document.getElementById('cat-sel-value').value = path.length ? path[path.length-1] : '0';
+  for(var level=0; ; level++){
+    var parent = level===0 ? 0 : path[level-1];
+    var opts = ddggCatsByParent(parent);
+    if(opts.length===0) break;
+    var sel=document.createElement('select');
+    var def=document.createElement('option'); def.value=''; def.text=(level===0?'대분류 선택':'세부분류 (선택)'); sel.appendChild(def);
+    for(var k=0;k<opts.length;k++){ var c=opts[k]; var o=document.createElement('option'); o.value=c.srl; o.text=c.name; if(path[level]==c.srl) o.selected=true; sel.appendChild(o); }
+    (function(lv){ sel.onchange=function(){ var np=path.slice(0,lv); var v=parseInt(this.value,10); if(v) np.push(v); ddggRenderCascade(np); }; })(level);
+    box.appendChild(sel);
+    if(path[level]===undefined) break;
+  }
+  if(!box.children.length){ box.innerHTML='<span class="dga-sub">등록된 카테고리가 없습니다.</span>'; }
+}
+(function(){ ddggRenderCascade(DDG_ITEM_CAT ? ddggCatPath(DDG_ITEM_CAT) : []); })();
+
+/* 상품 옵션 (조합형) */
+var OPT_GROUPS = {$opt_groups_json};
+var OPT_ROWS = {$opt_rows_json};
+var OPT_HAS = '{$item_has_options}';
+function ddggOptEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function ddggOptAddGroup(name, values){
+  var div=document.createElement('div'); div.className='dga-optgroup-row';
+  div.innerHTML='<input type="text" name="opt_gname[]" placeholder="옵션명 (예: 색상)" value="'+ddggOptEsc(name||'')+'" />'
+    +'<input type="text" name="opt_gvalues[]" placeholder="값 — 쉼표로 구분 (예: 빨강,파랑)" value="'+ddggOptEsc(values||'')+'" />'
+    +'<button type="button" class="x_btn x_btn-mini" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">삭제</button>';
+  document.getElementById('opt-groups').appendChild(div);
+}
+function ddggOptReadGroups(){
+  var rows=document.querySelectorAll('#opt-groups .dga-optgroup-row'); var groups=[];
+  for(var i=0;i<rows.length;i++){
+    var n=rows[i].querySelector('input[name="opt_gname[]"]').value.replace(/^\s+|\s+$/g,'');
+    var vraw=rows[i].querySelector('input[name="opt_gvalues[]"]').value; var vals=[];
+    vraw.split(',').forEach(function(v){ v=v.replace(/^\s+|\s+$/g,''); if(v) vals.push(v); });
+    if(n && vals.length) groups.push({name:n, values:vals});
+  }
+  return groups;
+}
+function ddggOptCartesian(groups){
+  var result=[''];
+  for(var g=0; g<groups.length; g++){
+    var next=[];
+    for(var r=0;r<result.length;r++){ for(var v=0;v<groups[g].values.length;v++){
+      next.push(result[r]==='' ? groups[g].values[v] : (result[r]+' / '+groups[g].values[v]));
+    }}
+    result=next;
+  }
+  return groups.length ? result : [];
+}
+function ddggOptGenerate(){
+  var labels=ddggOptCartesian(ddggOptReadGroups());
+  var body=document.getElementById('opt-combo-body');
+  var existing={}; var cur=body.querySelectorAll('tr');
+  for(var i=0;i<cur.length;i++){ var lb=cur[i].getAttribute('data-label'); existing[lb]={price:cur[i].querySelector('input[name="opt_price[]"]').value, stock:cur[i].querySelector('input[name="opt_stock[]"]').value}; }
+  for(var j=0;j<OPT_ROWS.length;j++){ if(!(OPT_ROWS[j].label in existing)) existing[OPT_ROWS[j].label]={price:OPT_ROWS[j].price, stock:OPT_ROWS[j].stock}; }
+  body.innerHTML='';
+  for(var k=0;k<labels.length;k++){
+    var lb2=labels[k]; var ex=existing[lb2]||{price:0,stock:0};
+    var tr=document.createElement('tr'); tr.setAttribute('data-label', lb2);
+    tr.innerHTML='<td>'+ddggOptEsc(lb2)+'<input type="hidden" name="opt_label[]" value="'+ddggOptEsc(lb2)+'" /></td>'
+      +'<td><input type="number" name="opt_price[]" value="'+(parseInt(ex.price,10)||0)+'" /></td>'
+      +'<td><input type="number" name="opt_stock[]" value="'+(parseInt(ex.stock,10)||0)+'" /></td>';
+    body.appendChild(tr);
+  }
+  document.getElementById('opt-combos').style.display = labels.length ? '' : 'none';
+}
+function ddggOptToggle(){
+  document.getElementById('opt-area').style.display = document.getElementById('use-options').checked ? '' : 'none';
+}
+(function(){
+  var chk=document.getElementById('use-options');
+  chk.addEventListener('change', ddggOptToggle);
+  if(OPT_GROUPS && OPT_GROUPS.length){ for(var i=0;i<OPT_GROUPS.length;i++){ ddggOptAddGroup(OPT_GROUPS[i].name, OPT_GROUPS[i].values.join(',')); } }
+  else { ddggOptAddGroup('',''); }
+  if(OPT_HAS==='Y'){ chk.checked=true; ddggOptToggle(); ddggOptGenerate(); }
+})();
+</script>
+
+<include target="_admin_foot.html" />

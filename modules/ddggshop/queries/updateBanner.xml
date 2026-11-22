@@ -1,0 +1,25 @@
+<query id="updateBanner" action="update">
+  <tables>
+    <table name="ddggshop_banner" />
+  </tables>
+  <columns>
+    <column name="title" var="title" />
+    <column name="content" var="content" />
+    <column name="image" var="image" notnull="notnull" />
+    <column name="link" var="link" />
+    <column name="link_target" var="link_target" default="self" />
+    <column name="text_align" var="text_align" default="left" />
+    <column name="text_valign" var="text_valign" default="middle" />
+    <column name="title_color" var="title_color" />
+    <column name="content_color" var="content_color" />
+    <column name="title_size" var="title_size" default="30" />
+    <column name="content_size" var="content_size" default="16" />
+    <column name="font_family" var="font_family" />
+    <column name="overlay" var="overlay" default="N" />
+    <column name="list_order" var="list_order" />
+    <column name="status" var="status" default="Y" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="banner_srl" var="banner_srl" notnull="notnull" />
+  </conditions>
+</query>

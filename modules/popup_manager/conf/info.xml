@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">팝업 관리자</title>
+	<title xml:lang="en">Popup Manager</title>
+	<description xml:lang="ko">레이어 팝업을 관리합니다. 에디터/이미지로 콘텐츠 작성, 표시 위치, 시작·종료 일시(시간 단위) 기간, 애드온 방식의 대상 모듈(포함/제외) 설정이 가능합니다.</description>
+	<description xml:lang="en">Manage layer popups with editor/image content, position settings, start/end date-time ranges, and addon-style target module (include/exclude) settings.</description>
+	<version>1.1.0</version>
+	<date>2026-06-23</date>
+	<license>Commercial</license>
+	<license_link>https://jikwang.net</license_link>
+	<category>content</category>
+	<author email_address="" link="https://jikwang.net">
+		<name xml:lang="ko">딱따고기</name>
+		<name xml:lang="en">ddgg</name>
+	</author>
+</module>

@@ -1,0 +1,21 @@
+<query action="update">
+	<tables>
+		<table name="elkhatalk_members" />
+	</tables>
+	<columns>
+		<column name="status" default="plus(1)" var="status" />
+		<column name="last_update" var="last_update" />
+		<column name="hide" var="hide" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="room_no" var="room_no" filter="number" notnull="notnull" />
+		<condition operation="in" column="member_srl" var="member_srl" filter="number" notnull="notnull" pipe="and" />
+	</conditions>
+</query>
+<!--
+$query = sprintf('UPDATE %selkhatalk_members
+	SET `status`=`status`+1, `regdate` = %s
+	WHERE `room_no` = %s
+	AND member_srl = %d;',
+	$db->prefix, $date, $room_no, $you_member_srl);
+-->

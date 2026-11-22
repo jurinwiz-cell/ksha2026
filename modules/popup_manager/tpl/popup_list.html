@@ -1,0 +1,155 @@
+<config autoescape="on" />
+
+<style>
+/* Pagination Style */
+.popup_manager_pagination {
+	text-align: center;
+	margin: 20px 0;
+}
+.popup_manager_pagination a,
+.popup_manager_pagination span {
+	display: inline-block;
+	padding: 6px 12px;
+	margin: 0 2px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	text-decoration: none;
+	color: #333;
+	background: #fff;
+}
+.popup_manager_pagination a:hover {
+	background: #f5f5f5;
+	border-color: #ccc;
+}
+.popup_manager_pagination a.current,
+.popup_manager_pagination span.current {
+	background: #5cb85c;
+	border-color: #5cb85c;
+	color: #fff;
+}
+.popup_manager_pagination .disabled {
+	color: #999;
+	cursor: not-allowed;
+}
+</style>
+
+<div class="x_page-header">
+	<h1>{$lang->popup_manager}</h1>
+</div>
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<!-- Search Form -->
+<div class="x_well">
+	<form action="./" method="get" class="x_form-inline">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="dispPopup_managerAdminList" />
+
+		<div class="x_control-group">
+			<select name="is_enabled" class="x_input-medium">
+				<option value="">{$lang->all}</option>
+				<option value="Y" selected="selected"|cond="$is_enabled == 'Y'">{$lang->enabled}</option>
+				<option value="N" selected="selected"|cond="$is_enabled == 'N'">{$lang->disabled}</option>
+			</select>
+
+			<select name="search_target" class="x_input-medium">
+				<option value="title" selected="selected"|cond="$search_target == 'title'">{$lang->popup_title}</option>
+			</select>
+
+			<input type="text" name="search_keyword" value="{$search_keyword}" class="x_input-medium" placeholder="{$lang->cmd_search}" />
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_search}</button>
+		</div>
+	</form>
+</div>
+
+<!-- Action Buttons -->
+<div class="x_btn-group x_pull-right" style="margin-bottom:10px;">
+	<a href="{getUrl('act', 'dispPopup_managerAdminEdit', 'popup_srl', '')}" class="x_btn x_btn-primary">{$lang->cmd_insert_popup}</a>
+</div>
+
+<div class="x_clearfix"></div>
+
+<!-- Data Table -->
+<form id="fo_list" action="./" method="post">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procPopup_managerAdminDeletePopups" />
+
+	<table class="x_table x_table-striped x_table-hover">
+		<caption>{$lang->total_count}: {number_format($total_count)}</caption>
+		<thead>
+			<tr>
+				<th style="width:60px;">{$lang->popup_srl}</th>
+				<th>{$lang->popup_title}</th>
+				<th style="width:80px;">{$lang->popup_type}</th>
+				<th style="width:100px;">{$lang->start_date}</th>
+				<th style="width:100px;">{$lang->end_date}</th>
+				<th style="width:70px;">{$lang->is_enabled}</th>
+				<th style="width:60px;">{$lang->display_order}</th>
+				<th style="width:80px;">{$lang->cmd_manage}</th>
+				<th style="width:40px;"><input type="checkbox" onclick="doCheckAll(this.form)" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr cond="!$popup_list || !count($popup_list)">
+				<td colspan="9" style="text-align:center; padding:50px 0;">{$lang->no_popup}</td>
+			</tr>
+			<tr loop="$popup_list => $popup">
+				<td style="text-align:center;">{$popup->popup_srl}</td>
+				<td>
+					<a href="{getUrl('act', 'dispPopup_managerAdminEdit', 'popup_srl', $popup->popup_srl)}">{$popup->title}</a>
+				</td>
+				<td style="text-align:center;">
+					<span cond="$popup->popup_type == 'image'" class="x_label x_label-info">{$lang->popup_type_image}</span>
+					<span cond="$popup->popup_type != 'image'" class="x_label">{$lang->popup_type_html}</span>
+				</td>
+				<td style="text-align:center;">{$popup->start_date ? zdate($popup->start_date, 'Y-m-d') : '-'}</td>
+				<td style="text-align:center;">{$popup->end_date ? zdate($popup->end_date, 'Y-m-d') : '-'}</td>
+				<td style="text-align:center;">
+					<span cond="$popup->is_enabled == 'Y'" class="x_label x_label-success">{$lang->enabled}</span>
+					<span cond="$popup->is_enabled != 'Y'" class="x_label x_label-default">{$lang->disabled}</span>
+				</td>
+				<td style="text-align:center;">{$popup->display_order}</td>
+				<td style="text-align:center;">
+					<a href="{getUrl('act', 'dispPopup_managerAdminEdit', 'popup_srl', $popup->popup_srl)}" class="x_btn x_btn-small">{$lang->cmd_modify}</a>
+				</td>
+				<td style="text-align:center;"><input type="checkbox" name="popup_srls[]" value="{$popup->popup_srl}" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="x_btn-group">
+		<button type="submit" class="x_btn" onclick="return confirm('{$lang->msg_confirm_delete}')">{$lang->cmd_delete}</button>
+	</div>
+</form>
+
+<!-- Pagination -->
+<div cond="$page_navigation && $page_navigation->total_page > 1" class="popup_manager_pagination">
+	<a cond="$page > 1" href="{getUrl('page', '1')}">&laquo;</a>
+	<span cond="$page <= 1" class="disabled">&laquo;</span>
+
+	<a cond="$page > 1" href="{getUrl('page', $page - 1)}">&lsaquo;</a>
+	<span cond="$page <= 1" class="disabled">&lsaquo;</span>
+
+	<!--@for($i = $page_navigation->first_page; $i <= $page_navigation->last_page; $i++)-->
+	<a cond="$i != $page" href="{getUrl('page', $i)}">{$i}</a>
+	<span cond="$i == $page" class="current">{$i}</span>
+	<!--@end-->
+
+	<a cond="$page < $page_navigation->total_page" href="{getUrl('page', $page + 1)}">&rsaquo;</a>
+	<span cond="$page >= $page_navigation->total_page" class="disabled">&rsaquo;</span>
+
+	<a cond="$page < $page_navigation->total_page" href="{getUrl('page', $page_navigation->total_page)}">&raquo;</a>
+	<span cond="$page >= $page_navigation->total_page" class="disabled">&raquo;</span>
+</div>
+
+<script>
+function doCheckAll(form) {
+	var checkboxes = form.querySelectorAll('input[type="checkbox"][name="popup_srls[]"]');
+	var masterCheckbox = form.querySelector('input[type="checkbox"][onclick]');
+	for(var i = 0; i < checkboxes.length; i++) {
+		checkboxes[i].checked = masterCheckbox.checked;
+	}
+}
+</script>

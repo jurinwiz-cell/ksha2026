@@ -1,0 +1,28 @@
+<query id="getItemList" action="select">
+  <tables>
+    <table name="ddggshop_item" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="category_srl" var="category_srl" />
+    <condition operation="in" column="category_srl" var="category_srls" />
+    <condition operation="equal" column="status" var="status" />
+    <condition operation="equal" column="is_recommend" var="is_recommend" />
+    <condition operation="like" column="item_name" var="search_keyword" />
+    <condition operation="more" column="price" var="price_min" />
+    <condition operation="less" column="price" var="price_max" />
+    <condition operation="in" column="item_srl" var="item_srls" />
+    <condition operation="more" column="regdate" var="reg_from" />
+    <condition operation="less" column="regdate" var="reg_to" />
+    <condition operation="more" column="last_update" var="upd_from" />
+    <condition operation="less" column="last_update" var="upd_to" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="list_order" order="order_type" />
+    <list_count var="list_count" default="20" />
+    <page_count var="page_count" default="10" />
+    <page var="page" default="1" />
+  </navigation>
+</query>

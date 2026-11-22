@@ -1,0 +1,209 @@
+<include target="_head.html" />
+
+<div class="ds-bc">{$L['bc_home']}<!--@if(count($category_path))--><a loop="$category_path=>$cp" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList','category_srl',$cp->category_srl)}"> / {$cp->category_name}</a><!--@end--> / {$item->item_name}</div>
+
+<div class="ds-detail">
+  <div class="ds-detail-gallery">
+    <div class="main">
+      <!--@if($item->thumb)--><img id="ds-main-img" src="{$item->thumb}" alt="{$item->item_name}" /><!--@else--><div class="ph" style="display:flex;align-items:center;justify-content:center;height:100%;color:#c3c7cf;">{$L['no_image']}</div><!--@end-->
+    </div>
+    <div class="thumbs" cond="count($images)">
+      <img cond="$item->thumb" src="{$item->thumb}" onclick="ddggMainImg('{$item->thumb}')" alt="" />
+      <img loop="$images=>$img" src="{$img}" onclick="ddggMainImg('{$img}')" alt="" />
+    </div>
+  </div>
+
+  <div class="ds-detail-buy">
+    <div class="ds-detail-tags" cond="count($item->tags)"><span loop="$item->tags=>$tg" cond="$tg->show_badge=='Y'" class="ds-tagchip" style="background:{$tg->badge_color ?: '#444'};">{$tg->title}</span></div>
+    <h1>{$item->item_name}</h1>
+    <div class="ds-rating" cond="$review_stats->count">
+      <span class="ds-stars">{$review_stats->star_html}</span>
+      <b>{$review_stats->avg}</b> <a href="#" class="cnt" onclick="ddggShowTab('review');return false;">{str_replace('%s', $review_stats->count, $L['detail_reviews_count'])}</a>
+    </div>
+    <!--@if($can_view_price)--><div class="ds-detail-price"><!--@if($has_member_discount)--><span class="ds-detail-oldprice">{number_format($item->price)}{$L['won']}</span> <span class="ds-member-badge">{$member_disc_badge}</span><br /><!--@end-->{number_format($has_member_discount ? $member_price : $item->price)}<span style="font-size:16px;">{$L['won']}</span></div><!--@else--><div class="ds-detail-price" style="font-size:20px;color:var(--ds-sub);">🔒 {$price_hidden_text}</div><!--@end-->
+    <!--@if($item->summary)--><p style="color:var(--ds-sub);margin:0 0 14px;">{$item->summary}</p><!--@end-->
+
+    <div class="ds-detail-meta" cond="count($meta_rows) || $item->use_stock=='Y' || $delivery_company || ($item->buy_limit ?? 0) > 0">
+      <dl loop="$meta_rows=>$m"><dt>{$m->name}</dt><dd>{$m->value}</dd></dl>
+      <dl cond="$item->use_stock=='Y'"><dt>{$L['detail_stock']}</dt><dd>{number_format($item->stock)}{$L['unit_count']}</dd></dl>
+      <dl cond="($item->buy_limit ?? 0) > 0"><dt>{$L['detail_buy_limit']}</dt><dd>{str_replace('%s', $item->buy_limit, $L['detail_buy_limit_val'])}</dd></dl>
+      <dl cond="$delivery_company"><dt>{$L['shipping_label']}</dt><dd>{$delivery_company}</dd></dl>
+    </div>
+
+    <!--@if(!$can_view_price)-->
+    <div class="ds-buy-actions"><button type="button" class="ds-btn primary block" onclick="ddggLoginOpen()">{$L['detail_login_price']}</button></div>
+    <!--@elseif($item->available)-->
+      <!--@if($item->has_options=='Y')-->
+      <script>window.DDG_OPTIONS={$options_json};window.DDG_BASEPRICE={$item->price};window.DDG_USESTOCK='{$item_use_stock}';window.DDG_DISC_RULES={$member_disc_rules_json};</script>
+      <div class="ds-optsel">
+        <div class="ds-optgroup" loop="$opt_groups=>$g">
+          <label>{$g->name}</label>
+          <select class="ds-optselect" onchange="ddggOptChange()">
+            <option value="">{str_replace('%s', $g->name, $L['detail_opt_select'])}</option>
+            <option loop="$g->values=>$v" value="{$v->v}" data-v="{$v->v}">{$v->v}</option>
+          </select>
+        </div>
+      </div>
+      <div class="ds-optchosen" id="ds-optchosen"></div>
+      <div class="ds-optsum" id="ds-optsum"></div>
+      <div class="ds-buy-actions">
+        <button type="button" class="ds-btn block" onclick="ddggOptAddCart({$item->item_srl})">{$L['cart']}</button>
+        <button type="button" class="ds-btn primary block" onclick="ddggOptBuyNow({$item->item_srl})">{$L['buy_now']}</button>
+      </div>
+      <!--@else-->
+      <div class="ds-qty">
+        <button type="button" onclick="ddggQty(-1)">−</button>
+        <input type="number" id="ds-qty" value="1" min="1" />
+        <button type="button" onclick="ddggQty(1)">+</button>
+      </div>
+      <div class="ds-single-total" id="ds-single-total" data-price="{$has_member_discount ? $member_price : $item->price}" data-label="{$L['js_opt_total']}"></div>
+      <div class="ds-buy-actions">
+        <button type="button" class="ds-btn block" onclick="ddggshopAddCart({$item->item_srl})">{$L['cart']}</button>
+        <button type="button" class="ds-btn primary block" onclick="ddggshopBuyNow({$item->item_srl})">{$L['buy_now']}</button>
+      </div>
+      <!--@end-->
+    <!--@else-->
+    <div class="ds-buy-actions"><button type="button" class="ds-btn block" disabled="disabled">{$L['soldout_btn']}</button></div>
+    <!--@end-->
+    <div class="ds-wish-row">
+      <!--@if($use_wishlist=='Y')-->
+      <button type="button" id="ds-wish-btn" class="ds-wish {$is_wished ? 'on' : ''}" data-item="{$item->item_srl}" onclick="ddggToggleWishlist({$item->item_srl}, this)">
+        <span class="ds-wish-ico">{$is_wished ? '♥' : '♡'}</span> <span class="ds-wish-txt">{$is_wished ? $L['detail_wished'] : $L['detail_wish']}</span>
+      </button>
+      <!--@end-->
+      <button type="button" class="ds-share" data-title="{escape($item->item_name)}" onclick="ddggShare(this)" aria-label="{$L['detail_share']}" title="{$L['detail_share']}">
+        <svg class="ds-share-ico" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span class="ds-share-txt">{$L['detail_share_txt']}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="ds-tabs">
+  <div class="ds-tabnav">
+    <button type="button" class="ds-tab on" data-tab="info">{$L['tab_info']}</button>
+    <button type="button" class="ds-tab" data-tab="review">{$L['tab_review']} <span>{$review_stats->count}</span></button>
+    <button type="button" class="ds-tab" data-tab="qna">{$L['tab_qna']} <span>{count($qnas)}</span></button>
+  </div>
+
+  <!-- 상세설명 -->
+  <div class="ds-tabpane on" data-pane="info">
+    <!--@if($item->content)--><div class="ds-content rhymix_content xe_content">{$item->content}</div><!--@end-->
+    <!--@if($delivery_info)--><div class="ds-info-block"><h3>{$L['info_shipping']}</h3><div class="rhymix_content xe_content">{$delivery_info}</div></div><!--@end-->
+    <!--@if($exchange_return)--><div class="ds-info-block"><h3>{$L['info_return']}</h3><div class="rhymix_content xe_content">{$exchange_return}</div></div><!--@end-->
+    <!--@if(!$item->content && !$delivery_info && !$exchange_return)--><div class="ds-empty">{$L['detail_empty']}</div><!--@end-->
+  </div>
+
+  <!-- 리뷰 -->
+  <div class="ds-tabpane" data-pane="review">
+    <div class="ds-reviews" id="reviews" data-item="{$item->item_srl}">
+      <!--@if($can_write_review)-->
+      <div class="ds-rev-write">
+        <div class="ds-rev-write-top">
+          <span class="ds-rev-label">{$L['rev_rating']}</span>
+          <div class="ds-starpick" id="rv-stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+          <input type="hidden" id="rv-rating" value="5" />
+        </div>
+        <textarea id="rv-content" placeholder="{$L['rev_ph']}"></textarea>
+        <div class="ds-rev-photo">
+          <label class="ds-rev-photo-btn">{$L['rev_photo']}<input type="file" id="rv-images" accept="image/*" multiple onchange="ddggReviewPhotoPreview(this)" hidden="hidden" /></label>
+          <span id="rv-photo-names" class="ds-rev-photo-names"></span>
+          <!--@if($use_review_point=='Y')--><span class="ds-rev-point-hint">{str_replace('%s', number_format($review_point), $L['rev_point'])}<!--@if($photo_review_point>$review_point)--> · {str_replace('%s', number_format($photo_review_point), $L['rev_photo_point'])}<!--@end--></span><!--@end-->
+        </div>
+        <div style="text-align:right;margin-top:8px;"><button type="button" class="ds-btn primary" onclick="ddggReviewSubmit()">{$L['rev_submit']}</button></div>
+      </div>
+      <!--@else-->
+      <p class="ds-rev-login">{$review_perm_msg}</p>
+      <!--@end-->
+      <!--@if(count($reviews))-->
+      <div class="ds-rev-list">
+        <div class="ds-rev-item" loop="$reviews=>$rv">
+          <div class="ds-rev-top">
+            <span class="ds-stars">{$rv->star_html}</span>
+            <span class="ds-rev-name">{$rv->member_name}</span>
+            <span class="ds-rev-date">{zdate($rv->regdate,'Y.m.d')}</span>
+            <a href="#" class="ds-rev-del" cond="$rv->can_delete" onclick="ddggReviewDelete({$rv->review_srl});return false;">{$L['delete']}</a>
+          </div>
+          <div class="ds-rev-body">{nl2br(escape($rv->content))}</div>
+          <div class="ds-rev-imgs" cond="count($rv->image_list)"><img loop="$rv->image_list=>$ri" src="{$ri}" alt="{$L['rev_img_alt']}" loading="lazy" onclick="ddggImgZoom('{$ri}')" /></div>
+        </div>
+      </div>
+      <!--@else-->
+      <div class="ds-empty" style="padding:30px;">{$L['rev_empty']}</div>
+      <!--@end-->
+    </div>
+  </div>
+
+  <!-- 문의 -->
+  <div class="ds-tabpane" data-pane="qna">
+    <div class="ds-qna" data-item="{$item->item_srl}">
+      <!--@if($can_write_qna)-->
+      <div class="ds-qna-write">
+        <textarea id="qna-content" placeholder="{$L['qna_ph']}"></textarea>
+        <div class="ds-qna-write-bottom">
+          <label class="ds-check"><input type="checkbox" id="qna-secret" /> {$L['qna_secret']}</label>
+          <button type="button" class="ds-btn primary" onclick="ddggQnaSubmit()">{$L['qna_submit']}</button>
+        </div>
+      </div>
+      <!--@else-->
+      <p class="ds-rev-login">{$qna_perm_msg}</p>
+      <!--@end-->
+      <!--@if(count($qnas))-->
+      <div class="ds-qna-list">
+        <div class="ds-qna-item" loop="$qnas=>$q">
+          <div class="ds-qna-q">
+            <span class="ds-qna-icon">Q</span>
+            <div class="ds-qna-qbody">
+              <!--@if($q->can_view)--><div class="ds-qna-text">{nl2br(escape($q->content))}</div><!--@else--><div class="ds-qna-text secret">🔒 {$L['qna_secret_msg']}</div><!--@end-->
+              <div class="ds-qna-meta">{$q->member_name} · {zdate($q->regdate,'Y.m.d')}<!--@if($q->is_secret=='Y')--> · {$L['qna_secret_tag']}<!--@end--><a href="#" class="ds-qna-del" cond="$q->can_delete" onclick="ddggQnaDelete({$q->qna_srl});return false;">{$L['delete']}</a></div>
+            </div>
+          </div>
+          <!--@if($q->answer && $q->can_view)-->
+          <div class="ds-qna-a">
+            <span class="ds-qna-icon a">A</span>
+            <div class="ds-qna-abody"><div class="ds-qna-text">{nl2br(escape($q->answer))}</div><div class="ds-qna-meta">{$L['qna_seller_answer']} · {zdate($q->answered_date,'Y.m.d')}</div></div>
+          </div>
+          <!--@end-->
+        </div>
+      </div>
+      <!--@else-->
+      <div class="ds-empty" style="padding:40px;">{$L['qna_empty']}</div>
+      <!--@end-->
+    </div>
+  </div>
+</div>
+
+<div class="ds-reco" cond="count($crosssell_items)">
+  <h3 class="ds-reco-title">{$L['reco_crosssell']}</h3>
+  <div class="ds-mini-row">
+    <a loop="$crosssell_items=>$it" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$it->item_srl)}" class="ds-mini-card">
+      <div class="ds-mini-thumb"><!--@if($it->thumb)--><img src="{$it->thumb}" alt="{$it->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end--></div>
+      <div class="ds-mini-name">{$it->item_name}</div>
+      <!--@if($it->can_view_price)--><div class="ds-mini-price">{number_format($it->price)}{$L['won']}</div><!--@else--><div class="ds-mini-price lock">🔒 {$L['wish_member_only']}</div><!--@end-->
+    </a>
+  </div>
+</div>
+
+<div class="ds-reco" cond="count($related_items)">
+  <h3 class="ds-reco-title">{$L['reco_related']}</h3>
+  <div class="ds-mini-row">
+    <a loop="$related_items=>$it" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$it->item_srl)}" class="ds-mini-card">
+      <div class="ds-mini-thumb"><!--@if($it->thumb)--><img src="{$it->thumb}" alt="{$it->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end--></div>
+      <div class="ds-mini-name">{$it->item_name}</div>
+      <!--@if($it->can_view_price)--><div class="ds-mini-price">{number_format($it->price)}{$L['won']}</div><!--@else--><div class="ds-mini-price lock">🔒 {$L['wish_member_only']}</div><!--@end-->
+    </a>
+  </div>
+</div>
+
+<div class="ds-reco" cond="count($recent_items)">
+  <h3 class="ds-reco-title">{$L['recent_products']}</h3>
+  <div class="ds-mini-row">
+    <a loop="$recent_items=>$it" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$it->item_srl)}" class="ds-mini-card">
+      <div class="ds-mini-thumb"><!--@if($it->thumb)--><img src="{$it->thumb}" alt="{$it->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end--></div>
+      <div class="ds-mini-name">{$it->item_name}</div>
+      <!--@if($it->can_view_price)--><div class="ds-mini-price">{number_format($it->price)}{$L['won']}</div><!--@else--><div class="ds-mini-price lock">🔒 {$L['wish_member_only']}</div><!--@end-->
+    </a>
+  </div>
+</div>
+
+<include target="_foot.html" />

@@ -1,0 +1,19 @@
+<include target="_head.html" />
+
+<div class="ds-result" style="max-width:460px;">
+  <h1 style="font-size:22px;">{$L['order_lookup']}</h1>
+  <!--@if($lookup_required)-->
+  <div class="ds-alert">{$L['ol_alert']}</div>
+  <!--@end-->
+  <p class="code" style="margin-bottom:20px;">{$L['ol_desc']}</p>
+
+  <form id="ds-lookup-form" onsubmit="ddggshopLookup();return false;" style="text-align:left;">
+    <input type="hidden" id="ds-lookup-mid" value="{$shop_mid}" />
+    <div class="ds-field"><label>{$L['ol_order_no']}</label><input type="text" id="ds-lookup-code" placeholder="{$L['ol_code_ph']}" /></div>
+    <div class="ds-field"><label>{$L['ol_pw']}</label><input type="password" id="ds-lookup-pw" /></div>
+    <button type="submit" class="ds-btn primary block" style="margin-top:8px;">{$L['ol_submit']}</button>
+  </form>
+  <p style="margin-top:18px;font-size:13px;color:var(--ds-sub);">{str_replace('%s', '<a href="'.getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders').'" style="text-decoration:underline;">'.$L['my_orders_link'].'</a>', $L['ol_member_note'])}</p>
+</div>
+
+<include target="_foot.html" />

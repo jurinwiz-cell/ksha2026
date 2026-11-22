@@ -1,0 +1,8 @@
+<query id="deleteHomeBlock" action="delete">
+  <tables>
+    <table name="ddggshop_home_block" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="block_srl" var="block_srl" notnull="notnull" />
+  </conditions>
+</query>

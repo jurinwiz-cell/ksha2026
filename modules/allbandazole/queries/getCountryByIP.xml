@@ -1,0 +1,16 @@
+<query id="getCountryByIP" action="select">
+	<tables>
+		<table name="allbandazole_countries" />
+	</tables>
+	<columns>
+		<column name="start_ip" />
+		<column name="country" />
+	</columns>
+	<conditions>
+		<condition operation="gte" column="end_ip" var="ip" />
+	</conditions>
+	<navigation>
+		<index default="end_ip" order="asc" />
+		<list_count default="1" />
+	</navigation>
+</query>

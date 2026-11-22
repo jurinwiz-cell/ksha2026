@@ -1,0 +1,13 @@
+<query action="update">
+	<tables>
+		<table name="elkhatalk_public_grants" />
+	</tables>
+	<columns>
+		<column name="grants_int" var="grants_int" notnull="notnull" />
+		<column name="expdate" var="expdate" />
+		<!--<column name="chat_log" var="chat_log" />-->
+	</columns>
+	<conditions>
+		<condition operation="equal" column="pk" var="pk" filter="number" notnull="notnull" />
+	</conditions>
+</query>

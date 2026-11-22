@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin>
+    <title xml:lang="ko">ms play 로고 출력 스킨</title>
+    <title xml:lang="en">ms play Logo Display Skin</title>
+    <maker email_address="icando24@paran.com" link="http://www.rssm.net/" date="2008. 1. 8">
+        <name xml:lang="ko">msplay</name>
+        <name xml:lang="en">msplay</name>
+        <description xml:lang="ko">ms 로고를 클릭하여 플레이어를 띄웁니다.</description>
+        <description xml:lang="en">Click MS logo to popup player.</description>
+    </maker>
+    <colorset>
+        <color name="default">
+            <title xml:lang="ko">기본</title>
+            <title xml:lang="en">Normal</title>
+        </color>
+    </colorset>
+</skin>

@@ -1,0 +1,18 @@
+<query id="updateAddressBook" action="update">
+  <tables>
+    <table name="ddggshop_address" />
+  </tables>
+  <columns>
+    <column name="label" var="label" />
+    <column name="receiver_name" var="receiver_name" notnull="notnull" />
+    <column name="receiver_phone" var="receiver_phone" />
+    <column name="zipcode" var="zipcode" />
+    <column name="addr1" var="addr1" />
+    <column name="addr2" var="addr2" />
+    <column name="is_default" var="is_default" default="N" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="address_book_srl" var="address_book_srl" notnull="notnull" />
+    <condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" />
+  </conditions>
+</query>

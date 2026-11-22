@@ -1,0 +1,13 @@
+<query id="updateOrderShipping" action="update">
+  <tables>
+    <table name="ddggshop_order" />
+  </tables>
+  <columns>
+    <column name="status" var="status" notnull="notnull" />
+    <column name="shipping_company" var="shipping_company" />
+    <column name="shipping_invoice" var="shipping_invoice" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="order_srl" var="order_srl" notnull="notnull" />
+  </conditions>
+</query>

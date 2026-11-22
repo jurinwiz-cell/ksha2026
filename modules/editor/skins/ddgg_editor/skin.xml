@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">딱따고기 에디터</title>
+	<title xml:lang="en">DDGG Editor</title>
+	<description xml:lang="ko">ProseMirror 기반 TipTap 위지윅 에디터. CKEditor4 대체용 모던 에디터.</description>
+	<description xml:lang="en">Modern TipTap (ProseMirror) WYSIWYG editor as a CKEditor4 replacement.</description>
+	<version>0.3.0</version>
+	<date>2026-06-03</date>
+	<author link="https://ddgglabs.org">
+		<name xml:lang="ko">딱따고기</name>
+	</author>
+	<colorset>
+		<color name="auto">
+			<title xml:lang="ko">자동 (레이아웃 따름)</title>
+			<title xml:lang="en">Auto (follow layout)</title>
+		</color>
+		<color name="light">
+			<title xml:lang="ko">라이트</title>
+			<title xml:lang="en">Light</title>
+		</color>
+		<color name="dark">
+			<title xml:lang="ko">다크</title>
+			<title xml:lang="en">Dark</title>
+		</color>
+	</colorset>
+</skin>

@@ -1,0 +1,13 @@
+<table name="ddggshop_payment_log">
+  <column name="log_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="order_srl" type="bignumber" default="0" index="idx_order" />
+  <column name="order_code" type="varchar" size="30" />
+  <column name="gateway" type="varchar" size="20" />
+  <column name="action" type="varchar" size="20" />
+  <column name="request_data" type="text" />
+  <column name="response_data" type="text" />
+  <column name="result" type="char" size="1" />
+  <column name="pg_tid" type="varchar" size="100" />
+  <column name="amount" type="number" default="0" />
+  <column name="regdate" type="datetime" index="idx_regdate" />
+</table>

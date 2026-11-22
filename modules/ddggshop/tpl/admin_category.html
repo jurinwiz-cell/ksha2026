@@ -1,0 +1,70 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead"><h1>카테고리 관리</h1><span class="sub">최대 3단계까지 구성할 수 있습니다</span></div>
+
+<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
+  <div style="flex:1;min-width:340px;">
+    <table class="x_table">
+      <thead><tr><th style="width:60px;">순서</th><th>카테고리명</th><th style="width:70px;">상태</th><th style="width:130px;text-align:right;">관리</th></tr></thead>
+      <tbody>
+        <tr cond="!count($categories)"><td colspan="4" class="dga-empty">카테고리가 없습니다.</td></tr>
+        <tr loop="$categories=>$c">
+          <td>{$c->list_order}</td>
+          <td><span style="padding-left:{$c->depth * 22}px;color:{$c->depth>0 ? '#6b7280' : '#181d27'};">{$c->depth>0 ? '└ ' : ''}{$c->category_name}</span></td>
+          <td style="text-align:center;">{$c->status=='Y' ? '노출' : '숨김'}</td>
+          <td style="text-align:right;">
+            <a href="#" class="x_btn x_btn-mini" onclick="ddggEditCat({$c->category_srl},'{escape($c->category_name)}',{$c->list_order},'{$c->status}',{$c->parent_srl});return false;">수정</a>
+            <a href="#" class="x_btn x_btn-mini" onclick="ddggDelCat({$c->category_srl});return false;">삭제</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="flex:0 0 320px;">
+    <div class="dga-card">
+      <h3 id="cat-form-title">카테고리 추가</h3>
+      <form action="./" method="post">
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act" value="procDdggshopAdminInsertCategory" />
+        <input type="hidden" name="category_srl" id="cat-srl" value="" />
+        <div style="margin-bottom:10px;"><label>카테고리명</label><input type="text" name="category_name" id="cat-name" class="x_input-block-level" required="required" /></div>
+        <div style="margin-bottom:10px;"><label>상위 카테고리</label>
+          <select name="parent_srl" id="cat-parent" class="x_input-block-level">
+            <option value="0">최상위 (1단계)</option>
+            <option loop="$parent_categories=>$pc" value="{$pc->category_srl}">{$pc->depth>0 ? '— ' : ''}{$pc->category_name}</option>
+          </select>
+        </div>
+        <div style="margin-bottom:10px;display:flex;gap:8px;">
+          <span style="flex:1;"><label>정렬</label><input type="number" name="list_order" id="cat-order" value="0" class="x_input-block-level" /></span>
+          <span style="flex:1;"><label>상태</label><select name="status" id="cat-status" class="x_input-block-level"><option value="Y">노출</option><option value="N">숨김</option></select></span>
+        </div>
+        <div style="margin-top:6px;"><button type="submit" class="x_btn x_btn-primary">저장</button>
+        <button type="button" class="x_btn" onclick="ddggResetCat()">초기화</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function ddggEditCat(srl,name,order,status,parent){
+  document.getElementById('cat-srl').value = srl;
+  document.getElementById('cat-name').value = name;
+  document.getElementById('cat-order').value = order;
+  document.getElementById('cat-status').value = status;
+  document.getElementById('cat-parent').value = parent;
+  document.getElementById('cat-form-title').innerText = '카테고리 수정';
+}
+function ddggResetCat(){
+  document.getElementById('cat-srl').value = '';
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-order').value = '0';
+  document.getElementById('cat-status').value = 'Y';
+  document.getElementById('cat-parent').value = '0';
+  document.getElementById('cat-form-title').innerText = '카테고리 추가';
+}
+function ddggDelCat(srl){
+  if(!confirm('이 카테고리를 삭제할까요? (하위 카테고리는 남으며, 상품은 미분류로 남습니다)')) return;
+  exec_json('ddggshop.procDdggshopAdminDeleteCategory', {category_srl: srl}, function(){ location.reload(); });
+}
+</script>
+
+<include target="_admin_foot.html" />

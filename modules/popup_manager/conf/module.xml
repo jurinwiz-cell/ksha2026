@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<actions>
+		<!-- Admin view actions -->
+		<action name="dispPopup_managerAdminList" type="view" admin_index="true" menu_name="popup_manager" menu_index="true" />
+		<action name="dispPopup_managerAdminEdit" type="view" menu_name="popup_manager" />
+
+		<!-- Admin controller actions -->
+		<action name="procPopup_managerAdminInsertPopup" type="controller" />
+		<action name="procPopup_managerAdminUpdatePopup" type="controller" />
+		<action name="procPopup_managerAdminDeletePopup" type="controller" />
+		<action name="procPopup_managerAdminDeletePopups" type="controller" />
+		<action name="procPopup_managerAdminToggleStatus" type="controller" />
+	</actions>
+	<menus>
+		<menu name="popup_manager" type="all">
+			<title xml:lang="ko">팝업 관리</title>
+			<title xml:lang="en">Popup Manage</title>
+		</menu>
+	</menus>
+</module>

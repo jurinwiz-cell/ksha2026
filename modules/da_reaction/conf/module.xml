@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+    <classes>
+        <class type="default" name="Src\ModuleBase" />
+        <class type="install" name="Src\ModuleBase" />
+    </classes>
+
+    <actions>
+        <action name="procDa_reactionReact"
+            class="Src\Controllers\RequestHandler" />
+
+
+        <!-- ADMIN ========================================================= -->
+        <!-- index -->
+        <action name="dispDa_reactionAdminConfig"
+            class="Src\Controllers\AdminRequestHandler"
+            admin-index="true"
+            menu-name="daReactionConfig" />
+        <!-- 모듈 설정 저장 -->
+        <action name="procDa_reactionAdminSaveConfig"
+            class="Src\Controllers\AdminRequestHandler" />
+        <action name="procDa_reactionAdminSaveModuleConfig"
+            class="Src\Controllers\AdminRequestHandler" />
+    </actions>
+
+    <!-- 이벤트 핸들러 등록 -->
+    <eventHandlers>
+        <eventHandler after="moduleHandler.proc"
+            class="Src\EventHandler"
+            method="listenerAfterModuleHandlerProc" />
+        <eventHandler before="module.dispAdditionSetup"
+            class="Src\EventHandler"
+            method="listenerBeforeModuleDispAdditionSetup" />
+        <!-- 글 이동 -->
+        <eventHandler after="document.moveDocumentModule"
+            class="Src\EventHandler"
+            method="listenerAfterDocumentMoveDocumentModule" />
+        <!-- 글 삭제 -->
+        <eventHandler after="document.deleteDocument"
+            class="Src\EventHandler"
+            method="listenerAfterDocumentDeleteDocument" />
+        <!-- 댓글 삭제 -->
+        <eventHandler after="comment.deleteComment"
+            class="Src\EventHandler"
+            method="listenerAfterCommentDeleteComment" />
+    </eventHandlers>
+
+    <!-- 관리페이지용 메뉴 -->
+    <menus>
+        <menu name="daReactionConfig" type="all">
+            <title xml:lang="ko">daReactionConfig</title>
+        </menu>
+    </menus>
+</module>

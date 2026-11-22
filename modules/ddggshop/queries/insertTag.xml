@@ -1,0 +1,17 @@
+<query id="insertTag" action="insert">
+  <tables>
+    <table name="ddggshop_tag" />
+  </tables>
+  <columns>
+    <column name="tag_srl" var="tag_srl" notnull="notnull" />
+    <column name="title" var="title" notnull="notnull" />
+    <column name="auto_source" var="auto_source" default="manual" />
+    <column name="badge_color" var="badge_color" />
+    <column name="show_on_home" var="show_on_home" default="Y" />
+    <column name="show_badge" var="show_badge" default="Y" />
+    <column name="home_count" var="home_count" default="8" />
+    <column name="list_order" var="list_order" notnull="notnull" />
+    <column name="status" var="status" default="Y" />
+    <column name="regdate" var="regdate" default="curdate()" />
+  </columns>
+</query>

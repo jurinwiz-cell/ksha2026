@@ -1,0 +1,435 @@
+{@
+$oController = getAdminController('elkhatalk3');
+$checkTables = $oController->checkTables();
+$checkTriggers = $oController->checkTriggers();
+
+$oModel = getAdminModel('elkhatalk3');
+$all_plugin_vars = $oModel->allPluginVars();
+}
+
+<load target="config.min.js" />
+<config autoescape="on" />
+
+<div class="x_page-header">
+	<h1>RXE 채팅 솔루션</h1>
+</div>
+
+<form class="x_form-horizontal" action="./" method="post" id="elkhatalk3" onsubmit="if(!confirm('{$lang->confirm_submit}')) return false;">
+	<input type="hidden" name="module" value="elkhatalk3" />
+	<input type="hidden" name="act" value="procElkhatalk3AdminInsertConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input type="hidden" name="xe_validator_id" value="modules/elkhatalk3/tpl/config/1" />
+
+	<div class="message {$XE_VALIDATOR_MESSAGE_TYPE}" cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/elkhatalk3/tpl/config/1'">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+
+	<section class="section">
+		<div class="x_control-group">
+			<div class="x_controls">
+				{@
+				$steps = 0;
+				if($config->secret_key_send == 'Y')
+					$steps = 1;
+				if(!$checkTables && $checkTriggers)
+					$steps = 2;
+				if(!$checkTables && !$checkTriggers)
+					$steps = 3;
+
+				$classess = [ $steps => ' x_btn-primary'];
+				}
+				<!--@if($config->secret_key_send != 'Y')-->
+				<button type="button" class="x_btn{@ echo $classess[0] ?? ''; }" onclick="window.procElkhatalk3AdminGetAuthKey(0);">1 get key</button>
+				<!--@else-->
+				<button type="button" class="x_btn" onclick="window.procElkhatalk3AdminGetAuthKey(1);">renew key</button>
+				<!--@endif-->
+				<button disabled="disabled"|cond="!$checkTables" type="button" class="x_btn{@ echo $classess[1] ?? ''; }" onclick="window.procElkhatalk3AdminInstall2();">2 {$lang->cmd_install} Tables</button>
+
+				<button disabled="disabled"|cond="$checkTables || !$checkTriggers" type="button" class="x_btn{@ echo $classess[2] ?? ''; }" onclick="window.procElkhatalk3AdminInstall();">3 {$lang->cmd_install} Triggers</button>
+
+				<button disabled="disabled"|cond="$checkTriggers" type="button" class="x_btn" onclick="window.procElkhatalk3AdminUninstall();">{$lang->cmd_delete} Triggers</button>
+			</div>
+
+			<!--@if($config->secret_key_send == 'Y')-->
+			<div class="x_controls">
+				{@
+				$config_web = $oController->config_web();
+				Context::addHtmlHeader('<script>window.elkhatalk_config='.json_encode($config_web).';</script>');
+				echo $oController->public_iframe('public1', 'public1', '320px', '480px');
+				}
+			</div>
+			<!--@endif-->
+
+		</div>
+
+		<div class="x_control-group">
+			<!--//<label class="x_control-label" for="test">test (or private address)</label>
+			<div class="x_controls">
+				<input type="checkbox" id="test" name="test" value="Y" checked="checked"|cond="$config->test == 'Y'" />
+			</div>
+
+			<div class="x_controls" style="color:blue;font-weight:bold;">
+				<label for="secret_key_send">
+					<input id="secret_key_send" type="checkbox" name="secret_key_send" value="Y" />
+					get secret key
+				</label>
+			</div>-->
+
+			<div>
+				<label class="x_control-label" for="example_host">socket server host</label>
+				<div class="x_controls">
+					<input id="example_host" type="text" name="host" value="{$config->host}" />
+				</div>
+			</div>
+
+			<div>
+				<label class="x_control-label" for="example_port">socket server http port</label>
+				<div class="x_controls">
+					<input id="example_port" type="text" name="http_port" value="{$config->http_port}" />
+				</div>
+			</div>
+
+			<div>
+				<label class="x_control-label" for="example_port2">socket server https port</label>
+				<div class="x_controls">
+					<input id="example_port2" type="text" name="https_port" value="{$config->https_port}" />
+				</div>
+			</div>
+
+			<div>
+				<!--//<label class="x_control-label" for="secret_key">secret random key</label>
+				<div class="x_controls">
+					<input id="secret_key" type="text" name="secret_key" value="{@
+					if(isset($config->secret_key) && strlen($config->secret_key) && $config->secret_key != 'test')
+						echo $config->secret_key;
+					else
+						echo substr(str_shuffle(str_repeat($x='@-_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(50/strlen($x)) )),1,50);
+				}" maxlength="50" disabled="disabled"|cond="$config->test == 'Y'" />
+				</div>-->
+				<label class="x_control-label" for="your_host">your host</label>
+				<div class="x_controls">
+					<input type="text" id="your_host" name="your_host" value="{$config->your_host}" />
+				</div>
+				<!--//<label class="x_control-label" for="your_scheme">your scheme</label>
+				<div class="x_controls">
+					<input type="text" id="your_scheme" name="your_scheme" value="{$config->your_scheme}" />
+				</div>-->
+				<label class="x_control-label" for="xe_path">your path</label>
+				<div class="x_controls">
+					<input type="text" id="xe_path" value="{parse_url(getFullUrl(), PHP_URL_PATH)}" />
+				</div>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="cdn_path">cdn (js, css, json)</label>
+			<div class="x_controls">
+				<input id="cdn_path" type="text" name="cdn_path" value="{$config->cdn_path}" placeholder="{\Context::getDefaultUrl()}" />
+			</div>
+		</div>
+
+		<!--//<div class="x_control-group">
+			<label class="x_control-label" for="is_admin">admin member_srl</label>
+			<div class="x_controls">
+				<input id="is_admin" type="text" name="is_admin" value="{implode(',',$config->is_admin)}" placeholder="{$logged_info->member_srl}" />
+			</div>
+		</div>-->
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="skin">skin</label>
+			{@
+			$readDir = FileHandler::readDir(_XE_PATH_.'modules/elkhatalk3/skins');
+			}
+			<div class="x_controls">
+				<select id="skin" name="skin">
+					<option loop="$readDir=>$val" value="{$val}" selected="selected"|cond="$config->skin==$val">{$val}</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="logo">profile default</label>
+			<div class="x_controls">
+				<input id="logo" type="text" name="logo" value="{$config->logo}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="font_family">font family</label>
+			<div class="x_controls">
+				<input id="font_family" type="text" name="font_family" value="{$config->font_family}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="notify_mp3">notify mp3 url</label>
+			<div class="x_controls">
+				<input id="notify_mp3" type="text" name="notify_mp3" value="{$config->notify_mp3}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="popup_size">popup size</label>
+			<div class="x_controls">
+				<input id="popup_size" type="text" name="popup_size" value="{implode(',',$config->popup_size)}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="server_time_auth">server time auth</label>
+			<div class="x_controls">
+				<select id="server_time_auth" name="server_time_auth">
+					<option value="Y" selected="selected"|cond="$config->server_time_auth=='Y'">enabled</option>
+					<option value="N" selected="selected"|cond="$config->server_time_auth=='N'">disabled</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="dark_mode">dark mode</label>
+			<div class="x_controls">
+				<select id="dark_mode" name="dark_mode">
+					<option value="N" selected="selected"|cond="$config->dark_mode=='N'">disabled (only light)</option>
+					<option value="A" selected="selected"|cond="$config->dark_mode=='A'">auto (light or dark)</option>
+					<option value="F" selected="selected"|cond="$config->dark_mode=='F'">always (only dark)</option>
+				</select>
+			</div>
+		</div>
+
+		<!--//<div class="x_control-group">
+			<label class="x_control-label" for="max_blind_hours">max blind hours</label>
+			<div class="x_controls">
+				<input id="max_blind_hours" type="number" name="max_blind_hours" value="{$config->max_blind_hours}" />
+				<label for="max_blind_hours">
+					* required blind plugin
+				</label>
+			</div>
+		</div>-->
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="use_communication_friends">use communication friends</label>
+			<div class="x_controls">
+				<select id="use_communication_friends" name="use_communication_friends">
+					<option value="default">default (auto)</option>
+					<option value="disabled" selected="selected"|cond="$config->use_communication_friends == 'disabled'">disabled</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="talk_list_count">talk list count</label>
+			<div class="x_controls">
+				<input id="talk_list_count" type="number" name="talk_list_count" value="{$config->talk_list_count}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">plugins (common)</label>
+			<div class="x_controls">
+				<!--@foreach($all_plugins as $key => $val)-->
+				<!--@if((strpos(implode(', ', $val), '#')===FALSE && strpos(implode(', ', $val), '@')===FALSE) || (strpos(implode(', ', $val), '#')!==FALSE && strpos(implode(', ', $val), '@')!==FALSE))-->
+				<label for="plugin_{$key}">
+					<input id="plugin_{$key}" type="checkbox" name="plugins[]" value="{$key}" {@
+						if(isset($config->plugins) && is_array($config->plugins)):
+							foreach($config->plugins as $v):
+								if(!in_array($key, $v)) continue;
+								echo 'checked="checked"';
+							endforeach;
+						endif;
+					} />
+					{$key} ({@ echo implode(', ', $val); })
+					{@
+					if(FileHandler::exists($filename = "modules/elkhatalk3/plugins/$key/readme.txt")):
+					echo '<br /><span style="display:inline-block;margin-left:20px;">';
+						echo nl2br(htmlspecialchars(FileHandler::readFile($filename)));
+						echo '</span>';
+					endif;
+					}
+				</label>
+				<include target="config.plugin_vars.html" />
+				<!--@endif-->
+				<!--@endforeach-->
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">plugins (1:1)</label>
+			<div class="x_controls">
+				<!--@foreach($all_plugins as $key => $val)-->
+				<!--@if(strpos(implode(', ', $val), '@')!==FALSE && strpos(implode(', ', $val), '#')===FALSE)-->
+				<label for="plugin_{$key}">
+					<input id="plugin_{$key}" type="checkbox" name="plugins[]" value="{$key}" {@
+						if(isset($config->plugins) && is_array($config->plugins)):
+							foreach($config->plugins as $v):
+								if(!in_array($key, $v)) continue;
+								echo 'checked="checked"';
+							endforeach;
+						endif;
+					} />
+					{$key} ({@ echo implode(', ', $val); })
+					{@
+					if(FileHandler::exists($filename = "modules/elkhatalk3/plugins/$key/readme.txt")):
+						echo '<br /><span style="display:inline-block;margin-left:20px;">';
+						echo nl2br(htmlspecialchars(FileHandler::readFile($filename)));
+						echo '</span>';
+					endif;
+					}
+				</label>
+				<include target="config.plugin_vars.html" />
+				<!--@endif-->
+				<!--@endforeach-->
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">plugins (1:n)</label>
+			<div class="x_controls">
+				<!--@foreach($all_plugins as $key => $val)-->
+				<!--@if(strpos(implode(', ', $val), '@')===FALSE && strpos(implode(', ', $val), '#')!==FALSE)-->
+				<label for="plugin_{$key}">
+					<input id="plugin_{$key}" type="checkbox" name="plugins[]" value="{$key}" {@
+						   if(isset($config->plugins) && is_array($config->plugins)):
+					foreach($config->plugins as $v):
+					if(!in_array($key, $v)) continue;
+					echo 'checked="checked"';
+					endforeach;
+					endif;
+					} />
+					{$key} ({@ echo implode(', ', $val); })
+					{@
+					if(FileHandler::exists($filename = "modules/elkhatalk3/plugins/$key/readme.txt")):
+					echo '<br /><span style="display:inline-block;margin-left:20px;">';
+						echo nl2br(htmlspecialchars(FileHandler::readFile($filename)));
+						echo '</span>';
+					endif;
+					}
+				</label>
+				<include target="config.plugin_vars.html" />
+				<!--@endif-->
+				<!--@endforeach-->
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">menu list (1:n)</label>
+			<div class="x_controls">
+				{@
+				$config->public_chat_menu_list[] = array('room'=>'','text'=>'','href'=>'','regex'=>'N');
+				}
+				<block loop="$config->public_chat_menu_list=>$key,$val">
+				<input type="text" name="public_chat_menu_list_room[{$key}]" value="{$val['room']}" placeholder="room" />
+				<input type="text" name="public_chat_menu_list_text[{$key}]" value="{$val['text']}" placeholder="text" />
+				<input type="text" name="public_chat_menu_list_href[{$key}]" value="{$val['href']}" placeholder="href (optional)" />
+
+				<label for="public_chat_menu_list_regex_{$key}">
+					<input id="public_chat_menu_list_regex_{$key}" type="checkbox" name="public_chat_menu_list_regex[{$key}]" value="Y" checked="checked"|cond="$val['regex']=='Y'" />
+					use regex
+				</label>
+				</block>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="public_chat_list_count">latest chat log (1:n)<br />min: 0, max: 20</label>
+			<div class="x_controls">
+				{@
+				$config->public_chat_list_count[] = array('room'=>'','list_count'=>20,'regex'=>'N');
+				}
+				<block loop="$config->public_chat_list_count=>$key,$val">
+				<input type="text" name="public_chat_list_count_room[{$key}]" value="{$val['room']}" placeholder="room" />
+				<input type="number" name="public_chat_list_count[{$key}]" value="{$val['list_count']}" placeholder="list count" />
+
+				<label for="public_chat_list_count_regex_{$key}">
+					<input id="public_chat_list_count_regex_{$key}" type="checkbox" name="public_chat_list_count_regex[{$key}]" value="Y" checked="checked"|cond="$val['regex']=='Y'" />
+					use regex
+				</label>
+				</block>
+			</div>
+		</div>
+
+
+		<!--//
+		<div class="x_control-group">
+			<label class="x_control-label" for="post_host_callback" style="color:red;">post host callback (pro)</label>
+			<div class="x_controls">
+				<input id="post_host_callback" type="text" name="post_host_callback" value="{$config->post_host_callback}" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="post_host_callback_rooms" style="color:red;">post host callback - rooms (pro)</label>
+			<div class="x_controls">
+				<input id="post_host_callback_rooms" type="text" name="post_host_callback_rooms" value="{$config->post_host_callback_rooms}" />
+			</div>
+		</div>
+		-->
+
+	</section>
+
+	<!--//<section class="section">
+		<div class="x_control-group">
+			<label class="x_control-label" for="example_config">{$lang->cmd_elkhatalk3_example_config}</label>
+			<div class="x_controls">
+				<select name="example_config" id="example_config">
+					<option value="Y" selected="selected"|cond="$elkhatalk3_config->example_config !== 'N'">{$lang->cmd_yes}</option>
+					<option value="N" selected="selected"|cond="$elkhatalk3_config->example_config === 'N'">{$lang->cmd_no}</option>
+				</select>
+			</div>
+		</div>
+	</section>-->
+
+	<div class="btnArea x_clearfix">
+		<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_registration}</button>
+	</div>
+
+</form>
+
+
+<div class="x_page-header">
+	<h1>embed html</h1>
+</div>
+
+<div class="x_form-horizontal html_embed">
+	<section class="section">
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed_iframe">use iframe (=none js)</label>
+			<div class="x_controls">
+				<input type="checkbox" name="html_embed_iframe" value="Y" id="html_embed_iframe" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed_room_number">room number</label>
+			<div class="x_controls">
+				<input id="html_embed_room_number" name="room" type="number" min="0" max="255" value="{$room = 1}" placeholder="(0~255)" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed_room_name">room name</label>
+			<div class="x_controls">
+				<input id="html_embed_room_name" name="title" type="text" value="{$title = $site_module_info->browser_title}" placeholder="{$site_module_info->browser_title}" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed_width">width (px, %)</label>
+			<div class="x_controls">
+				<input id="html_embed_width" name="width" type="text" value="{$width = '100%'}" placeholder="100%" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed_height">height (px, %)</label>
+			<div class="x_controls">
+				<input id="html_embed_height" name="height" type="text" value="{$height = '480px'}" placeholder="480px" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="html_embed">html</label>
+			<div class="x_controls">
+				<textarea rows="10" id="html_embed">{@
+				$oElkhatalk3AdminModel = getAdminModel('elkhatalk3');
+				$oElkhatalk3AdminModel->getElkhatalk3AdminEmbedHtml();
+				echo $oElkhatalk3AdminModel->get('html');
+				}</textarea>
+			</div>
+		</div>
+	</section>
+</div>

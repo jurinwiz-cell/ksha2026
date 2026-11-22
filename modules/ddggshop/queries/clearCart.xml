@@ -1,0 +1,9 @@
+<query id="clearCart" action="delete">
+  <tables>
+    <table name="ddggshop_cart" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="member_srl" var="member_srl" />
+    <condition operation="equal" column="session_key" var="session_key" />
+  </conditions>
+</query>

@@ -1,0 +1,11 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_content" />
+	</tables>
+	<conditions>
+		<condition operation="in" column="no" var="no" filter="number" notnull="notnull" pipe="and" />
+	</conditions>
+	<navigation>
+		<list_count var="list_count" default="1" />
+	</navigation>
+</query>

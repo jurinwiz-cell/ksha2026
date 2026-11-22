@@ -1,0 +1,10 @@
+<table name="commerce_shipfee">
+	<column name="shipfee_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="seller_srl" type="bigint" notnull="notnull" default="0" index="idx_seller_srl" />
+	<column name="title" type="varchar" size="120" />
+	<column name="fee_type" type="varchar" size="12" notnull="notnull" default="fixed" />
+	<column name="fee" type="bigint" notnull="notnull" default="0" />
+	<column name="free_over" type="bigint" notnull="notnull" default="0" />
+	<column name="is_default" type="char" size="1" notnull="notnull" default="Y" />
+	<column name="regdate" type="char" size="14" />
+</table>

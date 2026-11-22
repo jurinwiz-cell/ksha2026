@@ -1,0 +1,91 @@
+<include target="_head.html" />
+
+<!--@if($pay_fail)-->
+<div class="ds-result">
+  <div class="ds-result-ico fail">!</div>
+  <h1>{$L['or_fail_title']}</h1>
+  <p class="ds-result-sub">{$L['or_fail_sub']}</p>
+  <div class="ds-result-btns">
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopCart')}" class="ds-btn">{$L['cart']}</a>
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}" class="ds-btn primary">{$L['continue_shopping']}</a>
+  </div>
+</div>
+<!--@else-->
+<div class="ds-result">
+  <!--@if($approve_error)-->
+  <div class="ds-result-ico fail">!</div>
+  <h1>{$L['or_approve_fail']}</h1>
+  <p class="ds-result-sub">{$approve_error}</p>
+  <!--@elseif($order->status=='pending' && $order->pay_method=='banktransfer')-->
+  <div class="ds-result-ico wait">&#8226;</div>
+  <h1>{$L['or_received_title']}</h1>
+  <p class="ds-result-sub">{$L['or_bank_sub']}</p>
+  <!--@else-->
+  <div class="ds-result-ico ok"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+  <h1>{$L['or_done_title']}</h1>
+  <p class="ds-result-sub">{$L['or_done_sub']}</p>
+  <!--@end-->
+
+  <div class="ds-ordcard">
+    <div class="ds-ordcard-head">
+      <span>{$L['ol_order_no']} <b>{$order->order_code}</b></span>
+      <span class="ds-status {$order->status}">{$status_label}</span>
+    </div>
+
+    <!--@if(!$is_cancelled)-->
+    <div class="ds-ordsec">
+      <div class="ds-steps">
+        <div class="ds-step {$s->done ? 'done' : ''}" loop="$order_steps=>$s"><span class="dot">{$s->icon}</span><span class="lb">{$s->label}</span></div>
+      </div>
+    </div>
+    <!--@end-->
+
+    <!--@if($order->status=='pending' && $order->pay_method=='banktransfer' && $bank_info)-->
+    <div class="ds-deposit">
+      <div class="ds-deposit-amt">{$L['or_deposit_amt']} <b>{number_format($order->payment_price)}{$L['won']}</b></div>
+      <div class="ds-deposit-acc">{nl2br(escape($bank_info))}</div>
+    </div>
+    <!--@end-->
+
+    <div class="ds-ordsec">
+      <h4>{$L['order_products']}</h4>
+      <div class="ds-ordrow" loop="$order_items=>$oi">
+        <!--@if($oi->thumb)--><img src="{$oi->thumb}" alt="" /><!--@else--><div class="ds-ordrow-noimg"></div><!--@end-->
+        <div class="ds-ordrow-info"><div class="nm">{$oi->item_name}</div><!--@if($oi->option_name)--><div class="qt" style="color:var(--ds-sub);">{$oi->option_name}</div><!--@end--><div class="qt">{number_format($oi->price)}{$L['won']} · {$oi->qty}{$L['unit_count']}</div></div>
+        <div class="ds-ordrow-amt">{number_format($oi->subtotal)}{$L['won']}</div>
+      </div>
+    </div>
+
+    <div class="ds-ordsec ds-ordsum">
+      <div class="ds-srow"><span>{$L['item_total']}</span><span>{number_format($order->total_price)}{$L['won']}</span></div>
+      <div class="ds-srow"><span>{$L['shipping']}</span><span>{$order->delivery_fee ? '+'.number_format($order->delivery_fee).$L['won'] : $L['free']}</span></div>
+      <div class="ds-srow total"><span>{$L['order_paid_label']}</span><b>{number_format($order->payment_price)}{$L['won']}</b></div>
+      <div class="ds-srow"><span>{$L['pay_method']}</span><span>{$pay_method_label}</span></div>
+    </div>
+
+    <!--@if($address)-->
+    <div class="ds-ordsec">
+      <h4>{$L['shipping_addr']}</h4>
+      <div class="ds-ordaddr">
+        <b>{$address->receiver_name}</b> <span class="ph">{$address->receiver_phone}</span><br />
+        ({$address->zipcode}) {$address->addr1} {$address->addr2}
+        <!--@if($address->delivery_memo)--><div class="memo">{$L['or_memo']} {$address->delivery_memo}</div><!--@end-->
+      </div>
+    </div>
+    <!--@end-->
+    <!--@if($order->shipping_invoice)-->
+    <div class="ds-ordsec"><h4>{$L['shipping_label']}</h4><div class="ds-ordaddr">{$order->shipping_company} · {$L['or_invoice']} <b>{$order->shipping_invoice}</b></div></div>
+    <!--@end-->
+  </div>
+
+  <div class="ds-result-btns">
+    <a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}" class="ds-btn">{$L['continue_shopping']}</a>
+    <a cond="$tracking_url" href="{$tracking_url}" target="_blank" rel="noopener" class="ds-btn">{$L['track_delivery']}</a>
+    <button type="button" class="ds-btn danger" cond="$cancellable" onclick="ddggCancelOrder('{$order->order_code}')">{$L['cancel_order']}</button>
+    <!--@if($is_logged)--><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyPage')}" class="ds-btn dark">{$L['mypage']}</a><!--@end-->
+  </div>
+  <p class="ds-rev-login" cond="$cancellable" style="margin-top:14px;">{$L['or_cancel_note']}<!--@if($order->status=='paid' && $order->pay_method=='toss')-->{$L['or_refund_note']}<!--@end--></p>
+</div>
+<!--@end-->
+
+<include target="_foot.html" />

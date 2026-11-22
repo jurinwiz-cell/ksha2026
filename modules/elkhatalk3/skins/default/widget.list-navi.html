@@ -1,0 +1,11 @@
+<!--@if($mpage ?? FALSE)-->
+<div class="list-member-navi">
+	<!--@if($mpage > 1)-->
+	<a class="prev" href="{getUrl('mpage', $mpage - 1, 'friends', $friends ?? '')}" onclick="window.getElkhatalk3('getElkhatalk3MemberList', this.href, true);return false;">{$lang->cmd_prev}</a>
+	<!--@endif-->
+	<strong>{$mpage}</strong>
+	<!--@if(($member_list_count ?? FALSE) && $member_list_count == count($member_list ?? []))-->
+	<a class="next" href="{getUrl('mpage', $mpage + 1, 'friends', $friends ?? '')}" onclick="window.getElkhatalk3('getElkhatalk3MemberList', this.href, true);return false;">{$lang->cmd_next}</a>
+	<!--@endif-->
+</div>
+<!--@endif-->

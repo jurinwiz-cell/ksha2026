@@ -1,0 +1,12 @@
+<query id="getLastLog" action="select">
+	<tables>
+		<table name="pullup_logs" />
+	</tables>
+	<columns>
+		<column name="count(*)" alias="log_count" />
+		<column name="max(regdate)" alias="last_regdate" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="document_srl" var="document_srl" required="true" />
+	</conditions>
+</query>

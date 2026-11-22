@@ -1,0 +1,65 @@
+<button type="button" id="ds-edit-toggle" class="ds-edit-toggle" onclick="ddgHbToggleMode()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> 홈 편집</button>
+
+<div id="ds-edit-bar" class="ds-edit-bar">
+  <span class="ds-edit-bar-msg">🛠 홈 편집 모드 — 블록을 드래그해 순서를 바꾸거나 수정·숨김·삭제하세요.</span>
+  <span class="ds-edit-bar-acts">
+    <button type="button" class="add" onclick="ddgHbEdit(0)">+ 블록 추가</button>
+    <button type="button" onclick="ddgHbToggleMode()">완료</button>
+  </span>
+</div>
+
+<div id="ds-hb-drawer" class="ds-hb-drawer">
+  <div class="ds-hb-dim" onclick="ddgHbClose()"></div>
+  <div class="ds-hb-panel">
+    <div class="ds-hb-head"><b id="ds-hb-title">블록 추가</b><button type="button" class="ds-hb-x" onclick="ddgHbClose()">✕</button></div>
+    <div class="ds-hb-body">
+      <input type="hidden" id="hb-srl" value="" />
+      <input type="hidden" id="hb-img-existing" value="" />
+      <div class="ds-hb-field"><label>블록 종류</label>
+        <div class="ds-hb-radios">
+          <label><input type="radio" name="hbtype" value="products" checked="checked" onclick="ddgHbType()" /> 상품 블록</label>
+          <label><input type="radio" name="hbtype" value="promo" onclick="ddgHbType()" /> 프로모션 이미지</label>
+        </div>
+      </div>
+      <div class="ds-hb-field"><label>블록 제목</label><input type="text" id="hb-title" placeholder="예: 이번 주 신상품" /></div>
+
+      <div id="hb-products">
+        <div class="ds-hb-field"><label>노출 기준</label>
+          <select id="hb-source" onchange="ddgHbSource()">
+            <option loop="$source_list=>$sk,$sv" value="{$sk}">{$sv}</option>
+          </select>
+        </div>
+        <div class="ds-hb-field" id="hb-manual">
+          <label>상품 선택 (선택 순서대로 노출)</label>
+          <div class="ds-hb-row"><input type="text" id="hb-kw" placeholder="상품명 검색" onkeydown="if(event.keyCode==13){event.preventDefault();ddgHbSearch();}" /><button type="button" class="ds-btn" onclick="ddgHbSearch()">검색</button></div>
+          <div id="hb-results" class="ds-hb-results"></div>
+          <div id="hb-chips" class="ds-hb-chips"></div>
+        </div>
+        <div class="ds-hb-field" id="hb-category"><label>카테고리</label>
+          <select id="hb-cat"><option value="">선택</option><option loop="$hb_categories=>$c" value="{$c->category_srl}">{$c->depth>0 ? '— ' : ''}{$c->category_name}</option></select>
+        </div>
+        <div class="ds-hb-field" id="hb-tag"><label>태그</label>
+          <select id="hb-tagsel"><option value="">선택</option><option loop="$hb_tags=>$t" value="{$t->tag_srl}">{$t->title}</option></select>
+        </div>
+        <div class="ds-hb-row">
+          <div class="ds-hb-field" style="flex:1;"><label>노출 개수</label><input type="number" id="hb-count" value="8" min="1" max="40" /></div>
+          <div class="ds-hb-field" style="flex:1;"><label>레이아웃</label><select id="hb-layout"><option value="grid">그리드</option><option value="scroll">가로 스크롤</option></select></div>
+        </div>
+        <div class="ds-hb-field"><label>‘더보기’ 링크 (선택)</label><input type="text" id="hb-link" placeholder="비우면 카테고리는 자동, 그 외 미표시" /></div>
+      </div>
+
+      <div id="hb-promo">
+        <div class="ds-hb-field"><label>이미지</label><div id="hb-img-prev" class="ds-hb-imgprev"></div><input type="file" id="hb-img" accept="image/*" /></div>
+        <div class="ds-hb-field"><label>연결 링크 (선택)</label><input type="text" id="hb-promolink" placeholder="클릭 시 이동할 주소" /></div>
+      </div>
+
+      <div class="ds-hb-field"><label class="ds-hb-check"><input type="checkbox" id="hb-status" checked="checked" /> 홈에 노출</label></div>
+    </div>
+    <div class="ds-hb-foot">
+      <button type="button" class="ds-btn primary" onclick="ddgHbSave()">저장</button>
+      <button type="button" class="ds-btn" onclick="ddgHbClose()">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>window.DDG_HB = {$hb_editor_json};</script>

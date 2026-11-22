@@ -1,0 +1,73 @@
+@version(2)
+@load('css/shop.css')
+@php
+$shp_mk_status = $my_seller ? (string)$my_seller->status : '';
+$shp_mk_form = $apply_open && $is_member && empty($apply_is_staff) && !empty($apply_fields) && ($shp_mk_status === '' || $shp_mk_status === 'rejected');
+$shp_mk_rate = rtrim(rtrim(number_format((float)$apply_rate, 2, '.', ''), '0'), '.');
+$shp_mk_status_label = $shp_mk_status !== '' ? lang('commerce.mk_st_' . $shp_mk_status) : '';
+@endphp
+<div class="shp shp-narrow shp-seller-apply">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->mk_apply_title }}</h2></div>
+	<p class="shp-detail-summary">{{ sprintf($lang->mk_apply_desc, $shp_mk_rate) }}</p>
+
+	@if ($my_seller)
+	<div class="shp-summary">
+		<div class="shp-summary-row"><span>{{ $lang->mk_f_shop_name }}</span><span><strong>{{ $my_seller->shop_name }}</strong></span></div>
+		<div class="shp-summary-row"><span>{{ $lang->mk_apply_status }}</span><span><strong class="shp-accent">{{ $shp_mk_status_label }}</strong></span></div>
+		<div class="shp-summary-row"><span>{{ $lang->mk_applied_at }}</span><span>{{ $my_seller->regdate_text }}</span></div>
+		@if ($shp_mk_status === 'rejected' && trim((string)$my_seller->reject_reason) !== '')
+		<div class="shp-summary-row"><span>{{ $lang->mk_reject_reason }}</span><span>{{ $my_seller->reject_reason }}</span></div>
+		@endif
+	</div>
+	@if ($shp_mk_status === 'pending')<p class="shp-detail-summary">{{ $lang->mk_apply_pending }}</p>@endif
+	@if ($shp_mk_status === 'suspended')<p class="shp-detail-summary">{{ $lang->mk_apply_suspended }}</p>@endif
+	@if ($shp_mk_status === 'approved')
+	<p class="shp-detail-summary">{{ $lang->mk_apply_approved }}</p>
+	<p><a class="shp-btn shp-btn-primary" href="{{ $console_url }}" target="_blank">{{ $lang->mk_go_console }}</a></p>
+	@endif
+	@if ($shp_mk_status === 'rejected')<p class="shp-detail-summary">{{ $lang->mk_apply_again }}</p>@endif
+	@endif
+
+	@if (!empty($apply_is_staff))
+	<p class="shp-empty">{{ $lang->ss_msg_staff_cannot_apply }}</p>
+	@elseif (!$is_member)
+	<p class="shp-empty">{{ $lang->mk_apply_login }}</p>
+	@elseif (!$apply_open && !$my_seller)
+	<p class="shp-empty">{{ $lang->mk_apply_closed }}</p>
+	@endif
+
+	@if ($shp_mk_form)
+	<form action="{{ getUrl('') }}" method="post" class="shp-form" enctype="multipart/form-data">
+		<input type="hidden" name="act" value="procCommerceSellerApply" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		@foreach ($apply_fields as $shp_af_sec => $shp_af_list)
+		<fieldset>
+			<legend>{{ $shp_af_sec === 'bank' ? $lang->mk_f_bank : ($shp_af_sec === 'intro' ? $lang->mk_f_intro : $lang->mk_profile_biz) }}</legend>
+			<div class="shp-form-grid">
+				@foreach ($shp_af_list as $shp_af)
+				<div class="shp-row{{ $shp_af->type === 'textarea' ? ' shp-row-wide' : '' }}">
+					@if ($shp_af->type !== 'textarea' || $shp_af_sec !== 'intro')<label>{{ $shp_af->label }}@if ($shp_af->required) *@endif</label>@endif
+					@if ($shp_af->type === 'textarea')
+					<textarea name="{{ $shp_af->name }}" rows="4" maxlength="{{ $shp_af->max }}" @if ($shp_af->required) required @endif style="width:100%;box-sizing:border-box">{{ $shp_af->value }}</textarea>
+					@elseif ($shp_af->type === 'select')
+					<select name="{{ $shp_af->name }}" @if ($shp_af->required) required @endif>
+						<option value="">{{ $lang->af_choose }}</option>
+						@foreach ($shp_af->options as $shp_af_opt)<option value="{{ $shp_af_opt }}" @if ($shp_af->value === $shp_af_opt) selected @endif>{{ $shp_af_opt }}</option>@endforeach
+					</select>
+					@elseif ($shp_af->type === 'file')
+					<input type="file" name="{{ $shp_af->name }}" accept=".pdf,.jpg,.jpeg,.png,.webp" @if ($shp_af->required && $shp_af->value === '') required @endif />
+					@if ($shp_af->value !== '')<small>{{ $lang->af_file_kept }}</small>@endif
+					@else
+					<input type="{{ in_array($shp_af->input, ['tel', 'email'], true) ? $shp_af->input : 'text' }}" name="{{ $shp_af->name }}" maxlength="{{ $shp_af->max }}" value="{{ $shp_af->value }}" @if ($shp_af->key === 'shop_id') minlength="3" autocapitalize="off" @endif @if ($shp_af->type === 'number') inputmode="decimal" @endif @if ($shp_af->required) required @endif />
+					@endif
+					@if ($shp_af->help !== '')<small>{{ $shp_af->help }}</small>@endif
+				</div>
+				@endforeach
+			</div>
+		</fieldset>
+		@endforeach
+		<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 16px;font-size:14px"><input type="checkbox" name="agree" value="Y" required /> <span>{{ sprintf($lang->mk_apply_agree, $shp_mk_rate) }}</span></label>
+		<button type="submit" class="shp-btn shp-btn-primary">{{ $lang->mk_do_apply }}</button>
+	</form>
+	@endif
+</div>

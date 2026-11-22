@@ -1,0 +1,12 @@
+<table name="ddggshop_qna">
+  <column name="qna_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="item_srl" type="bignumber" notnull="notnull" index="idx_item" />
+  <column name="member_srl" type="bignumber" default="0" index="idx_member" />
+  <column name="member_name" type="varchar" size="100" />
+  <column name="content" type="text" />
+  <column name="is_secret" type="char" size="1" default="N" notnull="notnull" />
+  <column name="answer" type="text" />
+  <column name="answered_date" type="date" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+  <column name="regdate" type="date" index="idx_regdate" />
+</table>

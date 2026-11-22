@@ -1,0 +1,38 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_members" alias="emembers" />
+		<table name="elkhatalk_content" alias="econtent" type="left join">
+			<conditions>
+				<condition operation="equal" column="econtent.room_no" default="emembers.room_no" />
+			</conditions>
+		</table>
+		<table name="member" alias="member" type="left join">
+			<conditions>
+				<condition operation="equal" column="member.member_srl" default="emembers.member_srl2" />
+			</conditions>
+		</table>
+	</tables>
+	<columns>
+		<column name="emembers.room_no" alias="room_no" />
+		<column name="MAX(emembers.status)" alias="count" />
+		<column name="emembers.member_srl2" alias="target_srl" />
+		<column name="MAX(emembers.last_update)" alias="last_update" />
+		<column name="member.nick_name" alias="nick_name" />
+		<column name="MAX(econtent.no)" alias="content_no" />
+		<!--
+		<column name="status" alias="status" />
+		<column name="room_no" alias="room_no" />
+		-->
+	</columns>
+	<conditions>
+		<condition operation="more" column="emembers.status" filter="number" default="1" pipe="and" />
+		<condition operation="equal" column="emembers.member_srl" var="member_srl" notnull="notnull" pipe="and" />
+	</conditions>
+	<groups>
+		<group column="room_no" />
+		<group column="target_srl" />
+	</groups>
+	<navigation>
+		<list_count var="list_count" />
+	</navigation>
+</query>

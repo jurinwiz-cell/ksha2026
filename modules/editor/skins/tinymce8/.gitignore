@@ -1,0 +1,4 @@
+node_modules/
+
+# Local TinyMCE configuration
+/config.user.blade.php

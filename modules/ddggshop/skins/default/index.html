@@ -1,0 +1,81 @@
+<include target="_head.html" />
+<!--@if($is_shop_admin)--><load target="css/home_edit.css" /><load target="js/home_edit.js" /><!--@end-->
+
+<!--@if(count($banners))-->
+<div class="ds-slider" id="dsSlider" data-count="{count($banners)}">
+  <div class="ds-slider-track">
+    <a loop="$banners=>$b" class="ds-slide" href="{$b->link ?: 'javascript:void(0)'}" <!--@if($b->link && $b->link_target=='blank')-->target="_blank" rel="noopener noreferrer"<!--@end--> style="font-family:{$b->font_family};">
+      <img src="{$b->image}" alt="{$b->title}" />
+      <!--@if($b->title || $b->content)-->
+      <div class="ds-slide-cap al-{$b->text_align ?: 'left'} va-{$b->text_valign ?: 'middle'}{$b->overlay=='Y' ? ' ov' : ''}">
+        <div cond="$b->title" class="ds-slide-title" style="color:{$b->title_color ?: '#ffffff'};font-size:{$b->title_size ?: 30}px;">{$b->title}</div>
+        <div cond="$b->content" class="ds-slide-text" style="color:{$b->content_color ?: '#ffffff'};font-size:{$b->content_size ?: 16}px;">{$b->content}</div>
+      </div>
+      <!--@end-->
+    </a>
+  </div>
+  <!--@if(count($banners) > 1)-->
+  <button type="button" class="ds-slider-nav prev" aria-label="{$L['prev_short']}">‹</button>
+  <button type="button" class="ds-slider-nav next" aria-label="{$L['next_short']}">›</button>
+  <div class="ds-slider-dots"></div>
+  <!--@end-->
+</div>
+<!--@else-->
+<div class="ds-hero">
+  <h1>{$shop_name}</h1>
+  <p>{$L['hero_tagline']}</p>
+</div>
+<!--@end-->
+
+<!--@if(count($home_blocks))-->
+<div id="ds-home" class="ds-home">
+<div loop="$home_blocks=>$blk" class="ds-homeblock {$blk->block->status=='N' ? 'is-hidden' : ''}" data-srl="{$blk->block->block_srl}" data-type="{$blk->type}">
+  <div class="ds-blk-bar" cond="$is_shop_admin && $blk->block->block_srl">
+    <span class="ds-blk-grip" title="드래그하여 이동">⠿</span>
+    <span class="ds-blk-tag">{$blk->type=='promo' ? '프로모션' : '상품 블록'}<!--@if($blk->block->status=='N')--> · 숨김<!--@end--></span>
+    <span class="ds-blk-btns">
+      <button type="button" onclick="ddgHbEdit({$blk->block->block_srl})">수정</button>
+      <button type="button" onclick="ddgHbToggle({$blk->block->block_srl})">{$blk->block->status=='N' ? '노출' : '숨김'}</button>
+      <button type="button" class="del" onclick="ddgHbDelete({$blk->block->block_srl})">삭제</button>
+    </span>
+  </div>
+  <!--@if($blk->type=='promo')-->
+  <a class="ds-promo" href="{$blk->block->link ?: '#'}"><img src="{$blk->block->image}" alt="{$blk->block->title}" loading="lazy" /></a>
+  <!--@else-->
+  <section class="ds-section">
+    <h2>{$blk->block->title}<!--@if($blk->more_url)--> <a class="more" href="{$blk->more_url}">{$L['more']}</a><!--@end--></h2>
+    <!--@if($blk->block->layout=='scroll')-->
+    <div class="ds-mini-row">
+      <a loop="$blk->items=>$item" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$item->item_srl)}" class="ds-mini-card">
+        <div class="ds-mini-thumb"><!--@if($item->thumb)--><img src="{$item->thumb}" alt="{$item->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end--></div>
+        <div class="ds-mini-name">{$item->item_name}</div>
+        <!--@if($item->can_view_price)--><div class="ds-mini-price"><span class="ds-oldprice" cond="!empty($item->discounted)">{number_format($item->price)}{$L['won']}</span>{number_format(!empty($item->discounted) ? $item->member_price : $item->price)}{$L['won']}</div><!--@else--><div class="ds-mini-price lock">🔒 {$price_hidden_text}</div><!--@end-->
+      </a>
+    </div>
+    <!--@else-->
+    <div class="ds-grid cols-4">
+      <a loop="$blk->items=>$item" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$item->item_srl)}" class="ds-card">
+        <div class="ds-thumb">
+          <!--@if($item->thumb)--><img src="{$item->thumb}" alt="{$item->item_name}" loading="lazy" /><!--@else--><div class="ph">{$L['no_image']}</div><!--@end-->
+          <div class="ds-badge"><span loop="$item->tags=>$tg" cond="$tg->show_badge=='Y'" style="background:{$tg->badge_color ?: 'rgba(0,0,0,.72)'};">{$tg->title}</span></div>
+          <div class="ds-soldout" cond="$item->status=='soldout' || ($item->use_stock=='Y' && $item->stock<=0)">{$L['soldout']}</div>
+        </div>
+        <div class="ds-info">
+          <div class="ds-name">{$item->item_name}</div>
+          <!--@if($item->can_view_price)--><div class="ds-price"><span class="ds-oldprice" cond="!empty($item->discounted)">{number_format($item->price)}{$L['won']}</span>{number_format(!empty($item->discounted) ? $item->member_price : $item->price)}<small>{$L['won']}</small></div><!--@else--><div class="ds-price" style="font-size:13px;color:var(--ds-sub);font-weight:600;">🔒 {$price_hidden_text}</div><!--@end-->
+        </div>
+      </a>
+    </div>
+    <!--@end-->
+    <div class="ds-blk-empty" cond="$is_shop_admin && !count($blk->items)">표시할 상품이 없습니다 — ‘수정’에서 소스/조건을 확인하세요.</div>
+  </section>
+  <!--@end-->
+</div>
+</div>
+<!--@else-->
+<div class="ds-empty">{$L['index_empty']}</div>
+<!--@end-->
+
+<!--@if($is_shop_admin)--><include target="_home_editor.html" /><!--@end-->
+
+<include target="_foot.html" />

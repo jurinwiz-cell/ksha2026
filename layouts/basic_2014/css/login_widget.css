@@ -1,0 +1,104 @@
+@charset "utf-8";
+/*
+ * Original design/markup: Copyright (C) NAVER <http://www.navercorp.com>
+ * (XE Contest 2014 Template A / Basic)
+ *
+ * Rhymix layout port: Copyright (C) YJSoft
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * NOTE (7단계): 원본 basic/css/widget.login.css를 옮기며 고친 부분.
+ *  1) .login_widget에 display:none 추가 — 원본 데모는 정적 미리보기라
+ *     항상 보이게 돼 있었지만, 실제로는 JS로 열기 전까지 숨겨야 한다.
+ *  2) .blind{{...}} 이중 중괄호 오타를 .blind{...}로 수정.
+ *  3) .login-social i{...color#rrr}의 콜론 빠진 오타(원본 저장소 자체
+ *     오타)를 제거 — 어차피 아래 4)로 이 셀렉터 자체를 안 쓴다.
+ *  4) .login-social a/.login-social i/.lg-naver/.lg-facebook/.lg-twitter
+ *     제거 — 실제 소셜로그인 버튼은 라이믹스 sociallogin 모듈이
+ *     .sociallogin_login/.loginBtn 클래스로 직접 그려주고 그 모듈
+ *     자신의 CSS로 스타일링되므로(RHYMIX_LAYOUT_PLAN.md 5.5절), 데모의
+ *     .lg-naver 같은 손수 만든 버튼용 스타일은 대응하는 마크업이 없어
+ *     불필요.
+ */
+
+.login_widget{display:none;position:fixed;top:0;left:0;z-index:999999;width:100%;height:100%;font-size:13px}
+.login_widget .btn_close{position:absolute;top:-31px;right:0;width:26px;height:26px;font-size:26px;line-height:26px;text-align:center;color:#fafafa}
+.login_widget .blind{overflow:hidden;position:absolute;top:0;left:0;width:1px;height:1px;font-size:0;line-height:0}
+.login_widget .ly_dimmed{position:fixed;top:0;left:0;width:100%;height:100%;background-color:#000;filter:alpha(opacity=50);opacity:.5}
+.login_widget input{font-size:13px}
+.login_widget .signin{position:absolute;top:50%;margin-top:-350px;left:50%;width:400px;margin-left:-200px;background-color:#fafafa}
+.login_widget .signin>.login-header{padding:32px 40px}
+.login_widget .signin>.login-header>h1{font-size:16px;line-height:1.4;font-weight:600;color:#666;text-align:center}
+.login_widget .signin>.login-body{padding:0 40px}
+.login_widget .signin>.login-footer{padding:11px 0 34px;margin:20px 40px 0;text-align:center;border-top:1px solid #ccc;color:#888}
+.login_widget .signin>.login-footer>a{text-decoration:none;font-size:12px;color:#888}
+.login_widget .signin>.login-footer>a:hover,
+.login_widget .signin>.login-footer>a:active,
+.login_widget .signin>.login-footer>a:focus{text-decoration:underline}
+.login_widget .signin>.login-footer>.bar{display:inline-block;margin:0 8px}
+.login_widget .signin .control-group{position:relative;padding:0;margin:0;clear:both}
+.login_widget .signin .control-group:before{content:"";display:block;clear:both}
+.login_widget .signin form{margin:0}
+.login_widget .signin fieldset{margin:0}
+.login_widget .signin label{cursor:pointer;display:inline-block;margin:-1px 0 0;color:#333;line-height:14px}
+.login_widget .signin input[type="text"],
+.login_widget .signin input[type="email"],
+.login_widget .signin input[type="password"]{font-size:14px;width:100%;height:48px;margin-bottom:10px;padding:12px 6px 12px 10px;border:1px solid #ccc;background-color:#fff;line-height:14px;box-sizing:border-box}
+.login_widget .signin input[type="checkbox"]{margin:0 6px 0 0;width:13px;height:13px;vertical-align:top}
+.login_widget .signin input[type="submit"]{font-size:15px;color:#fafafa;border:1px solid #3f5ac9;background-color:#455ede;width:100%;margin:19px 0 0 0;padding:14px 0px;cursor:pointer}
+.login_widget .signin input[type="email"]:focus,
+.login_widget .signin input[type="password"]:focus,
+.login_widget .signin input[type="text"]:focus{border:1px solid #4669cd}
+.login_widget .signin .error{margin:1px 0 13px;background:none;color:#f00}
+.login_widget .signin #warning>p{margin:9px 0 -7px;color:#888;font-size:12px;line-height:18px}
+.login_widget .signin .login-social{padding-bottom:8px}
+.login_widget .signin .login-social p{height:16px;padding:10px 0;font-size:13px;font-weight:bold;color:#888;text-align:center;line-height:16px}
+
+/* sociallogin 모듈의 실제 CSS(modules/sociallogin/skins/default/css/
+   default.css, 소스로 직접 확인)는 서비스마다 .loginBtn{display:inline-
+   block;width:200px;border-radius:5px;text-align:left}와 .icon(또는
+   chzzk/tiktok의 <img>) span.icon{display:inline-block;vertical-align:
+   middle;width:43px;height:40px}처럼 "아이콘=인라인블록 43x40, 텍스트와
+   vertical-align:middle로 나란히" 방식을 쓴다. 이전 시도(position:
+   absolute로 아이콘을 강제 배치)는 이 inline-block 흐름과 안 맞아서
+   치지직만 아이콘이 왼쪽에 붙어보이는 등 더 어긋났다(실기 스크린샷으로
+   확인) — 그래서 모듈이 원래 쓰는 방식(inline-block + vertical-align:
+   middle)을 그대로 따르되 폭/높이만 !important로 통일하는 쪽으로
+   다시 짰다. background-color(서비스별 브랜드 색상)는 모듈 자체 CSS가
+   정하도록 건드리지 않는다. */
+.login_widget .signin .sociallogin_login{margin:0;padding:0;list-style:none}
+.login_widget .signin .sociallogin_login li{margin:0 0 8px;text-align:left}
+.login_widget .signin .sociallogin_login li:last-child{margin-bottom:0}
+.login_widget .signin .sociallogin_login .loginBtn{
+	display:block !important;
+	box-sizing:border-box !important;
+	width:100% !important;
+	height:48px !important;
+	line-height:48px !important;
+	margin:0 !important;
+	padding:0 !important;
+	font-size:15px !important;
+	text-align:left !important;
+	text-decoration:none !important;
+	border-radius:4px;
+	overflow:hidden;
+}
+/* 모듈이 .icon 스팬으로 그리는 8개 서비스는 이미 43x40 inline-block이라
+   손댈 필요가 없다. chzzk/tiktok만 <img>로 내려주면서 인라인 style
+   (width:32px 등)까지 붙어 있어 같은 43x40 inline-block 슬롯에 맞춘다. */
+.login_widget .signin .sociallogin_chzzk .loginBtn img,
+.login_widget .signin .sociallogin_tiktok .loginBtn img{
+	display:inline-block !important;
+	vertical-align:middle !important;
+	position:static !important;
+	width:26px !important;
+	height:26px !important;
+	margin:0 10px 0 10px !important;
+}
+.login_widget .signin .sociallogin_login .loginBtn .buttonText{
+	display:inline-block !important;
+	vertical-align:middle !important;
+}

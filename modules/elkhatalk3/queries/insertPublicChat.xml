@@ -1,0 +1,12 @@
+<query action="insert">
+	<tables>
+		<table name="elkhatalk_public" />
+	</tables>
+	<columns>
+		<column name="room" var="room" filter="number" notnull="notnull" />
+		<column name="member_srl" var="member_srl" />
+		<column name="nick_name" var="nick_name" />
+		<column name="msg" var="msg" notnull="notnull" />
+		<column name="option" var="option" />
+	</columns>
+</query>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin>
+    <title xml:lang="ko">버튼 출력 스킨</title>
+    <title xml:lang="en">Button Display Skin</title>
+    <maker email_address="vhain6512@gmail.com" link="http://teamlava.ip.or.kr" date="2007. 8. 17">
+        <name xml:lang="ko">VHAIN</name>
+        <name xml:lang="en">VHAIN</name>
+        <description xml:lang="ko">Lavalic Music 플레이어의 기본 스킨입니다. 버튼을 클릭하여 플레이어를 띄웁니다.</description>
+        <description xml:lang="en">Default skin of Lavalic Music Player. Click button to popup player.</description>
+    </maker>
+    <colorset>
+        <color name="default">
+            <title xml:lang="ko">기본</title>
+            <title xml:lang="en">Normal</title>
+        </color>
+    </colorset>
+</skin>

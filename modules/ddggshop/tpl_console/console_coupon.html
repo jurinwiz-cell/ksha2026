@@ -1,0 +1,212 @@
+<include target="_console_head.html" />
+
+<div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+  <div class="cs-card" style="flex:1;min-width:420px;">
+    <div class="cs-card-head" style="gap:11px;align-items:center;">
+      <button type="button" class="cs-toggle {$use_coupon=='Y' ? 'on' : ''}" id="cs-coupon-toggle" onclick="csCouponToggle()" title="쿠폰 시스템 사용 여부"></button>
+      <h3 style="margin:0;">쿠폰 시스템 <span id="cs-coupon-state" style="color:#8a9099;font-weight:500;font-size:13px;">{$use_coupon=='Y' ? '사용 중' : '사용 안 함'}</span></h3>
+      <span style="margin-left:auto;color:#8a9099;font-weight:500;font-size:13px;">{count($coupons)}개</span>
+    </div>
+    <div cond="$use_coupon!='Y'" class="cs-hint" style="display:block;background:#FFF7ED;border:1px solid #fed7aa;border-radius:3px;padding:10px 12px;margin-bottom:12px;color:#9a5b1e;">쿠폰 시스템이 꺼져 있어 주문서·마이페이지에 쿠폰 기능이 표시되지 않습니다. 아래 쿠폰은 보존되며, 토글을 켜면 다시 사용됩니다.</div>
+    <table class="cs-table">
+      <thead><tr><th>코드</th><th>이름</th><th class="cs-right">할인</th><th>최소주문</th><th>사용기간</th><th class="cs-center">사용/제한</th><th></th></tr></thead>
+      <tbody>
+        <tr cond="!count($coupons)"><td colspan="7" class="cs-empty">등록된 쿠폰이 없습니다.</td></tr>
+        <tr loop="$coupons=>$c">
+          <td><span class="cs-id" style="font-weight:700;">{$c->code}</span></td>
+          <td>{$c->title}</td>
+          <td class="cs-right cs-num" style="font-weight:700;color:#e03e48;">{$c->disc_label}</td>
+          <td class="cs-num cs-muted">{$c->min_order ? number_format($c->min_order).'원' : '-'}</td>
+          <td class="cs-muted" style="font-size:12px;">{$c->period_label}</td>
+          <td class="cs-center cs-num">{$c->limit_label}<!--@if($c->auto_signup=='Y')--><br /><span class="cs-st on" style="font-size:10px;">가입발급</span><!--@end--></td>
+          <td class="cs-right" style="white-space:nowrap;">
+            <select id="ig-{$c->coupon_srl}" class="cs-select" style="width:96px;height:30px;font-size:12px;display:inline-block;padding:0 6px;">
+              <option value="0">전체회원</option>
+              <option loop="$member_groups=>$g" value="{$g->group_srl}">{$g->title}</option>
+            </select>
+            <button type="button" class="cs-btn ghost sm" onclick="csCpIssue({$c->coupon_srl})">발급</button>
+            <button type="button" class="cs-btn ghost sm" onclick="csCpIssueMember({$c->coupon_srl})">개별발급</button>
+            <button type="button" class="cs-btn ghost sm" onclick="csCpEdit({$c->coupon_srl})">수정</button>
+            <button type="button" class="cs-btn danger sm" onclick="csCpDel({$c->coupon_srl})">삭제</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cs-card" style="flex:0 0 340px;">
+    <div class="cs-card-head" style="align-items:center;"><h3 id="cp-form-title" style="margin:0;">쿠폰 생성</h3><button type="button" id="cp-cancel" class="cs-btn ghost sm" style="margin-left:auto;display:none;" onclick="csCpReset()">취소</button></div>
+    <div class="cs-card-p">
+      <div class="cs-field"><label>쿠폰 코드 *</label><div class="cs-row"><input type="text" id="cp-code" class="cs-input" placeholder="WELCOME10" style="text-transform:uppercase;" /><button type="button" class="cs-btn ghost sm" onclick="csCpGen()">자동</button></div></div>
+      <div class="cs-field"><label>쿠폰 이름</label><input type="text" id="cp-title" class="cs-input" placeholder="신규가입 환영 쿠폰" /></div>
+      <div class="cs-row">
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>할인 유형</label><select id="cp-type" class="cs-select" onchange="csCpType()"><option value="amount">정액(원)</option><option value="percent">정률(%)</option></select></div>
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>할인 값</label><input type="number" id="cp-value" class="cs-input" value="0" /></div>
+      </div>
+      <div class="cs-field" id="cp-max-wrap" style="display:none;margin-top:14px;margin-bottom:14px;"><label>최대 할인액(원)</label><input type="number" id="cp-max" class="cs-input" value="0" placeholder="0 = 무제한" /></div>
+      <div class="cs-field" style="margin-top:14px;"><label>최소 주문금액(원)</label><input type="number" id="cp-min" class="cs-input" value="0" /></div>
+      <div class="cs-row">
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>시작일</label><input type="date" id="cp-start" class="cs-input" /></div>
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>종료일</label><input type="date" id="cp-end" class="cs-input" /></div>
+      </div>
+      <div class="cs-row" style="margin-top:14px;">
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>총 발급수량</label><input type="number" id="cp-limit" class="cs-input" value="0" placeholder="0=무제한" /></div>
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>1인 사용횟수</label><input type="number" id="cp-per" class="cs-input" value="1" placeholder="0=무제한" /></div>
+      </div>
+      <div class="cs-field" style="margin-top:14px;"><label class="cs-row" style="gap:7px;"><input type="checkbox" id="cp-auto" style="width:auto;"> 신규 가입 시 자동발급</label></div>
+      <button type="button" id="cp-save-btn" class="cs-btn" style="margin-top:16px;" onclick="csCpSave()">쿠폰 생성</button>
+      <p class="cs-hint" style="margin-top:8px;">생성한 코드를 고객에게 제공하면, 주문서에서 입력해 사용합니다. 수정 시 사용횟수·발급내역은 유지됩니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 쿠폰 개별발급 모달 -->
+<div id="cm-overlay" style="display:none;position:fixed;inset:0;z-index:5000;background:rgba(20,22,28,.45);">
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:480px;max-width:calc(100vw - 32px);max-height:calc(100vh - 64px);display:flex;flex-direction:column;background:#fff;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.3);overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:8px;padding:15px 18px;border-bottom:1px solid #ececf0;">
+      <h3 style="margin:0;font-size:15.5px;">쿠폰 개별 발급</h3>
+      <span id="cm-coupon-label" style="color:#8a9099;font-size:12.5px;"></span>
+      <button type="button" onclick="cmClose()" style="margin-left:auto;border:0;background:none;font-size:22px;line-height:1;color:#9aa0a8;cursor:pointer;">&times;</button>
+    </div>
+    <div style="padding:14px 18px 0;">
+      <div style="display:flex;gap:6px;">
+        <input type="text" id="cm-search" class="cs-input" placeholder="아이디 · 닉네임 · 이메일로 검색" style="flex:1;" onkeydown="if(event.keyCode==13){event.preventDefault();cmSearch();}" />
+        <button type="button" class="cs-btn" onclick="cmSearch()">검색</button>
+      </div>
+      <div id="cm-results" style="margin-top:10px;max-height:230px;overflow:auto;border:1px solid #ececf0;border-radius:8px;">
+        <div style="padding:22px 12px;text-align:center;color:#aeb3bb;font-size:13px;">회원을 검색해 주세요.</div>
+      </div>
+    </div>
+    <div style="padding:12px 18px;">
+      <div style="font-size:12px;color:#8a9099;margin-bottom:6px;">발급 대상 <span id="cm-count" style="color:#e03e48;font-weight:700;">0</span>명</div>
+      <div id="cm-selected" style="display:flex;flex-wrap:wrap;gap:6px;min-height:30px;align-content:flex-start;"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;padding:13px 18px;border-top:1px solid #ececf0;background:#fafafb;">
+      <button type="button" class="cs-btn ghost" onclick="cmClose()">취소</button>
+      <button type="button" class="cs-btn" id="cm-issue-btn" onclick="cmIssue()">발급</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DDG_COUPONS = {$coupons_json};
+var cpEditSrl = 0;
+function csCpVal(id,v){ document.getElementById(id).value = (v==null?'':v); }
+function csCpEdit(srl){
+  var c = DDG_COUPONS[srl]; if(!c){ return; }
+  cpEditSrl = srl;
+  csCpVal('cp-code', c.code); csCpVal('cp-title', c.title);
+  csCpVal('cp-type', c.discount_type); csCpType();
+  csCpVal('cp-value', c.discount_value); csCpVal('cp-max', c.max_discount);
+  csCpVal('cp-min', c.min_order);
+  csCpVal('cp-start', c.start_date); csCpVal('cp-end', c.end_date);
+  csCpVal('cp-limit', c.usage_limit); csCpVal('cp-per', c.per_member);
+  document.getElementById('cp-auto').checked = (c.auto_signup === 'Y');
+  document.getElementById('cp-form-title').textContent = '쿠폰 수정 (' + c.code + ')';
+  document.getElementById('cp-save-btn').textContent = '수정 저장';
+  document.getElementById('cp-cancel').style.display = '';
+  document.getElementById('cp-code').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function csCpReset(){
+  cpEditSrl = 0;
+  csCpVal('cp-code',''); csCpVal('cp-title',''); csCpVal('cp-type','amount'); csCpType();
+  csCpVal('cp-value','0'); csCpVal('cp-max','0'); csCpVal('cp-min','0');
+  csCpVal('cp-start',''); csCpVal('cp-end',''); csCpVal('cp-limit','0'); csCpVal('cp-per','1');
+  document.getElementById('cp-auto').checked = false;
+  document.getElementById('cp-form-title').textContent = '쿠폰 생성';
+  document.getElementById('cp-save-btn').textContent = '쿠폰 생성';
+  document.getElementById('cp-cancel').style.display = 'none';
+}
+function csCouponToggle(){
+  exec_json('ddggshop.procDdggshopAdminToggleCoupon', {}, function(ret){
+    var on = ret.use_coupon === 'Y';
+    var t = document.getElementById('cs-coupon-toggle'); if(t) t.classList.toggle('on', on);
+    var s = document.getElementById('cs-coupon-state'); if(s) s.textContent = on ? '사용 중' : '사용 안 함';
+    location.reload();
+  });
+}
+function csCpType(){ document.getElementById('cp-max-wrap').style.display = (document.getElementById('cp-type').value=='percent')?'':'none'; }
+function csCpGen(){ var s='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', o=''; for(var i=0;i<8;i++) o+=s.charAt(Math.floor(Math.random()*s.length)); document.getElementById('cp-code').value=o; }
+function csCpSave(){
+  var code=document.getElementById('cp-code').value.replace(/^\s+|\s+$/g,''); if(!code){ alert('쿠폰 코드를 입력하세요.'); return; }
+  exec_json('ddggshop.procDdggshopAdminSaveCoupon',{
+    coupon_srl:cpEditSrl, code:code, title:document.getElementById('cp-title').value,
+    discount_type:document.getElementById('cp-type').value, discount_value:document.getElementById('cp-value').value,
+    min_order:document.getElementById('cp-min').value, max_discount:document.getElementById('cp-max').value,
+    start_date:document.getElementById('cp-start').value, end_date:document.getElementById('cp-end').value,
+    usage_limit:document.getElementById('cp-limit').value, per_member:document.getElementById('cp-per').value,
+    auto_signup:document.getElementById('cp-auto').checked?'Y':'N'
+  },function(){ location.reload(); });
+}
+function csCpDel(srl){ if(!confirm('이 쿠폰을 삭제할까요?')) return; exec_json('ddggshop.procDdggshopAdminDeleteCoupon',{coupon_srl:srl},function(){ location.reload(); }); }
+function csCpIssue(srl){ var g=document.getElementById('ig-'+srl).value; if(!confirm('선택한 대상에게 이 쿠폰을 발급할까요? (이미 보유한 회원은 제외)')) return; exec_json('ddggshop.procDdggshopAdminIssueCoupon',{coupon_srl:srl,group_srl:g},function(ret){ if(ret&&ret.message) alert(ret.message); }); }
+/* ===== 쿠폰 개별발급 모달 ===== */
+var cmCouponSrl = 0, cmSelected = {};
+function cmEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function csCpIssueMember(srl){
+  var c = DDG_COUPONS[srl];
+  cmCouponSrl = srl; cmSelected = {};
+  document.getElementById('cm-coupon-label').textContent = c ? ('· ' + c.code) : '';
+  document.getElementById('cm-search').value = '';
+  document.getElementById('cm-results').innerHTML = '<div style="padding:22px 12px;text-align:center;color:#aeb3bb;font-size:13px;">회원을 검색해 주세요.</div>';
+  cmRenderChips();
+  document.getElementById('cm-overlay').style.display = 'block';
+  setTimeout(function(){ document.getElementById('cm-search').focus(); }, 50);
+}
+function cmClose(){ document.getElementById('cm-overlay').style.display = 'none'; }
+function cmSearch(){
+  var kw = document.getElementById('cm-search').value.replace(/^\s+|\s+$/g,'');
+  var box = document.getElementById('cm-results');
+  if(!kw){ box.innerHTML = '<div style="padding:22px 12px;text-align:center;color:#aeb3bb;font-size:13px;">검색어를 입력하세요.</div>'; return; }
+  box.innerHTML = '<div style="padding:22px 12px;text-align:center;color:#aeb3bb;font-size:13px;">검색 중…</div>';
+  exec_json('ddggshop.procDdggshopAdminSearchMember',{keyword:kw},function(ret){
+    var list = (ret && ret.members) ? ret.members : [];
+    if(!list.length){ box.innerHTML = '<div style="padding:22px 12px;text-align:center;color:#aeb3bb;font-size:13px;">검색 결과가 없습니다.</div>'; return; }
+    var h = '';
+    for(var i=0;i<list.length;i++){
+      var m = list[i], sel = !!cmSelected[m.member_srl];
+      h += '<div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f1f1f4;">'
+        + '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:#23262e;">'+cmEsc(m.nick_name||m.user_id)+' <span style="color:#aeb3bb;font-weight:400;">@'+cmEsc(m.user_id)+'</span></div>'
+        + '<div style="font-size:11.5px;color:#9aa0a8;">'+cmEsc(m.email||'')+'</div></div>'
+        + '<button type="button" class="cs-btn ghost sm" data-srl="'+m.member_srl+'" onclick="cmAdd('+m.member_srl+',this)"'+(sel?' disabled style="opacity:.5;"':'')+'>'+(sel?'추가됨':'추가')+'</button>'
+        + '</div>';
+    }
+    box.innerHTML = h;
+  });
+}
+function cmAdd(srl, btn){
+  var row = btn.parentNode;
+  var nick = row.querySelector('div div').textContent.replace(/\s*@.*$/,'').replace(/^\s+|\s+$/g,'');
+  cmSelected[srl] = nick || ('#'+srl);
+  btn.disabled = true; btn.style.opacity = '.5'; btn.textContent = '추가됨';
+  cmRenderChips();
+}
+function cmRemove(srl){
+  delete cmSelected[srl];
+  cmRenderChips();
+  var b = document.querySelector('#cm-results button[data-srl="'+srl+'"]');
+  if(b){ b.disabled=false; b.style.opacity=''; b.textContent='추가'; }
+}
+function cmRenderChips(){
+  var wrap = document.getElementById('cm-selected'), keys = Object.keys(cmSelected), h = '';
+  for(var i=0;i<keys.length;i++){
+    h += '<span style="display:inline-flex;align-items:center;gap:5px;background:#fbe9ea;color:#c5343d;border-radius:14px;padding:4px 6px 4px 11px;font-size:12px;font-weight:600;">'
+      + cmEsc(cmSelected[keys[i]])
+      + '<button type="button" onclick="cmRemove('+keys[i]+')" style="border:0;background:none;color:#c5343d;font-size:15px;line-height:1;cursor:pointer;padding:0 2px;">&times;</button></span>';
+  }
+  wrap.innerHTML = h || '<span style="color:#c2c6cd;font-size:12.5px;">검색 후 발급할 회원을 추가하세요.</span>';
+  document.getElementById('cm-count').textContent = keys.length;
+}
+function cmIssue(){
+  var keys = Object.keys(cmSelected);
+  if(!keys.length){ alert('발급할 회원을 추가하세요.'); return; }
+  var btn = document.getElementById('cm-issue-btn'); btn.disabled = true; btn.textContent = '발급 중…';
+  exec_json('ddggshop.procDdggshopAdminIssueCouponMember',{coupon_srl:cmCouponSrl,members:keys.join(',')},function(ret){
+    btn.disabled = false; btn.textContent = '발급';
+    if(ret&&ret.message) alert(ret.message);
+    cmClose();
+  },function(){ btn.disabled=false; btn.textContent='발급'; });
+}
+</script>
+
+<include target="_console_foot.html" />

@@ -1,0 +1,14 @@
+<query action="update">
+	<tables>
+		<table name="elkhatalk_content" />
+	</tables>
+	<columns>
+		<column name="read" default="0" var="read" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="room_no" var="room_no" filter="number" notnull="notnull" />
+		<condition operation="in" column="member_srl" var="target_srls" notnull="notnull" pipe="and" />
+		<condition operation="in" column="no" var="no" filter="number" pipe="and" />
+		<condition operation="less" column="no" var="no_max" pipe="and" />
+	</conditions>
+</query>

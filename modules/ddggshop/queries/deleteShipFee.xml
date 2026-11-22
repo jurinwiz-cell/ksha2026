@@ -1,0 +1,8 @@
+<query id="deleteShipFee" action="delete">
+  <tables>
+    <table name="ddggshop_shipfee" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="fee_srl" var="fee_srl" notnull="notnull" />
+  </conditions>
+</query>

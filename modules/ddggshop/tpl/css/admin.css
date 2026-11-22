@@ -1,0 +1,208 @@
+/* ddggshop 관리자 — Enterprise UI */
+.ddgg-admin{
+  --da-accent:#2c5cdc;--da-accent-d:#234bc0;
+  --da-ink:#181d27;--da-ink2:#374151;--da-sub:#6b7280;
+  --da-line:#e5e7eb;--da-line2:#eef0f3;--da-bg:#f8f9fb;--da-card:#fff;
+  font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--da-ink);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.ddgg-admin *{box-sizing:border-box;}
+.ddgg-admin a{color:inherit;text-decoration:none;}
+
+/* 상단 브랜드 바 */
+.dga-top{display:flex;align-items:center;gap:10px;padding:2px 0 0;}
+.dga-brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.2px;color:var(--da-ink);}
+.dga-brand .logo{width:26px;height:26px;border-radius:6px;background:var(--da-ink);display:flex;align-items:center;justify-content:center;color:#fff;}
+.dga-brand .logo svg{width:15px;height:15px;}
+.dga-brand .sep{width:1px;height:14px;background:var(--da-line);margin:0 2px;}
+.dga-brand .env{font-size:11px;font-weight:600;color:var(--da-sub);border:1px solid var(--da-line);border-radius:5px;padding:2px 7px;}
+
+/* 탭 */
+.dga-tabs{display:flex;gap:2px;flex-wrap:wrap;margin:14px 0 24px;border-bottom:1px solid var(--da-line);}
+.dga-tab{display:inline-flex;align-items:center;gap:7px;padding:11px 14px;font-size:13.5px;font-weight:600;color:var(--da-sub);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s,border-color .12s;}
+.dga-tab svg{width:16px;height:16px;opacity:.85;}
+.dga-tab:hover{color:var(--da-ink);}
+.dga-tab.on{color:var(--da-accent);border-bottom-color:var(--da-accent);}
+.dga-tab.on svg{opacity:1;}
+
+/* 페이지 헤더 */
+.dga-phead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 18px;flex-wrap:wrap;}
+.dga-phead h1,.ddgg-admin h1{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:0;}
+.dga-phead .sub,.ddgg-admin .dga-sub{color:var(--da-sub);font-size:12.5px;font-weight:500;}
+.ddgg-admin h2{font-size:14.5px;font-weight:700;margin:26px 0 12px;letter-spacing:-.2px;}
+.ddgg-admin h3{font-size:13.5px;font-weight:700;margin:0 0 12px;color:var(--da-ink2);}
+.ddgg-admin .x_clearfix{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
+.ddgg-admin .x_pull-right{margin:0 !important;}
+
+/* 카드 */
+.dga-card{background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;padding:18px;}
+.dga-card+.dga-card{margin-top:12px;}
+
+/* 통계 카드 */
+.dga-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:4px 0 6px;}
+.dga-stat{background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;padding:16px 18px;position:relative;}
+.dga-stat .label{color:var(--da-sub);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.dga-stat .num{font-size:23px;font-weight:700;letter-spacing:-.5px;margin-top:8px;color:var(--da-ink);}
+.dga-stat .sub{color:var(--da-sub);font-size:12px;margin-top:3px;}
+.dga-stat.primary{border-color:#cdd9f7;background:#f5f8ff;}
+.dga-stat.primary .num{color:var(--da-accent-d);}
+.dga-stat.warn{border-color:#f0dcc0;background:#fff9f0;}
+.dga-stat.warn .num{color:#b9750f;}
+.dga-stat.warn a{color:#b9750f;font-weight:600;}
+
+/* 테이블 */
+.ddgg-admin .x_table,.dga-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;overflow:hidden;font-size:13px;}
+.ddgg-admin .x_table thead th,.dga-table thead th{background:#fbfbfc;color:var(--da-sub);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;text-align:left;padding:11px 14px;border:0;border-bottom:1px solid var(--da-line);}
+.ddgg-admin .x_table td,.ddgg-admin .x_table th,.dga-table td{padding:12px 14px;border:0;border-bottom:1px solid var(--da-line2);vertical-align:middle;}
+.ddgg-admin .x_table tbody tr:last-child td,.dga-table tbody tr:last-child td{border-bottom:0;}
+.ddgg-admin .x_table tbody tr:hover{background:#fafbfc;}
+
+/* 버튼 */
+.x .ddgg-admin .x_btn,.dga-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:7px;border:1px solid var(--da-line);background:#fff;color:var(--da-ink2);font-size:12.5px;font-weight:600;cursor:pointer;line-height:1;transition:background .12s,border-color .12s;}
+.x .ddgg-admin .x_btn:hover,.dga-btn:hover{background:#f5f6f8;border-color:#d4d8df;}
+.x .ddgg-admin .x_btn-primary,.dga-btn.primary{background:var(--da-accent);border-color:var(--da-accent);color:#fff;}
+.x .ddgg-admin .x_btn-primary:hover,.dga-btn.primary:hover{background:var(--da-accent-d);border-color:var(--da-accent-d);}
+.x .ddgg-admin .x_btn-mini{height:28px;padding:0 10px;font-size:11.5px;border-radius:6px;}
+.x .ddgg-admin .x_btn-large{height:42px;padding:0 22px;font-size:14px;border-radius:8px;}
+
+/* 폼 */
+.ddgg-admin .x_form-horizontal{background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;padding:6px 22px;}
+.ddgg-admin .x_form-horizontal .x_control-group{display:flex;gap:20px;margin:0 !important;padding:16px 0;border-bottom:1px solid var(--da-line2);align-items:flex-start;}
+.ddgg-admin .x_form-horizontal .x_control-group:last-of-type{border-bottom:0;}
+.ddgg-admin .x_form-horizontal .x_control-label{float:none !important;width:150px !important;flex:none;margin:0 !important;padding-top:9px !important;font-size:13px;font-weight:600;color:var(--da-ink2);text-align:left !important;line-height:1.4;}
+.ddgg-admin .x_form-horizontal .x_controls{margin:0 !important;padding:0 !important;flex:1;min-width:0;}
+.ddgg-admin .x_form-horizontal .x_controls > input,.ddgg-admin .x_form-horizontal .x_controls > select{vertical-align:middle;}
+.x .ddgg-admin input[type=text],.x .ddgg-admin input[type=number],.x .ddgg-admin input[type=password],
+.x .ddgg-admin textarea,.x .ddgg-admin select{
+  border:1px solid var(--da-line);border-radius:7px;padding:9px 11px;font-size:13px;outline:none;background:#fff;color:var(--da-ink);transition:border-color .12s,box-shadow .12s;max-width:100%;font-family:inherit;
+}
+.x .ddgg-admin input:focus,.x .ddgg-admin textarea:focus,.x .ddgg-admin select:focus{border-color:var(--da-accent);box-shadow:0 0 0 3px rgba(44,92,220,.1);}
+.x .ddgg-admin .x_input-large{width:320px;}
+.x .ddgg-admin .x_input-xlarge{width:440px;}
+.x .ddgg-admin .x_input-xxlarge{width:100%;max-width:700px;}
+.x .ddgg-admin .x_input-block-level{width:100%;}
+.x .ddgg-admin input[type=text],.x .ddgg-admin input[type=number],.x .ddgg-admin input[type=password]{height:38px;}
+.x .ddgg-admin select{height:38px;line-height:1.5;padding:0 28px 0 11px;}
+.ddgg-admin .x_form-horizontal .x_form-actions{margin:18px -22px 0 !important;padding:18px 22px 6px 22px !important;border-top:1px solid var(--da-line);text-align:left;background:transparent !important;}
+.ddgg-admin label{font-size:13px;color:var(--da-ink2);}
+.x .ddgg-admin .x_controls label{display:inline-flex;align-items:center;gap:7px;margin:0 20px 0 0;font-weight:500;}
+.x .ddgg-admin .x_controls input[type=checkbox],.x .ddgg-admin .x_controls input[type=radio]{width:auto;height:auto;min-height:0;margin:0;box-shadow:none;vertical-align:middle;}
+
+/* 상태 뱃지 */
+.dga-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;border-radius:6px;padding:3px 9px;background:#eef1f5;color:#52607a;border:1px solid transparent;}
+.dga-badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.9;}
+.dga-badge.paid{background:#e9f6ef;color:#1c8a4e;}
+.dga-badge.pending{background:#fdf2e3;color:#b9750f;}
+.dga-badge.shipping,.dga-badge.preparing{background:#e9f0fd;color:#2459d6;}
+.dga-badge.delivered{background:#eef1f5;color:#52607a;}
+.dga-badge.cancelled,.dga-badge.refunded{background:#fcebeb;color:#c83a3a;}
+
+.dga-thumb{width:42px;height:42px;border-radius:7px;object-fit:cover;background:#f1f2f5;border:1px solid var(--da-line2);}
+.dga-pager{display:flex;justify-content:center;align-items:center;gap:14px;margin:20px 0;font-size:12.5px;color:var(--da-sub);}
+.dga-muted{color:var(--da-sub);}
+.dga-empty{text-align:center;color:var(--da-sub);padding:40px 20px;}
+
+/* 주문 필터 */
+.dga-filter{background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;padding:6px 16px;margin:0 0 18px;}
+.dga-frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 2px;border-bottom:1px solid var(--da-line2);}
+.dga-frow:last-child{border-bottom:0;}
+.dga-flabel{width:62px;flex:none;font-size:12.5px;font-weight:700;color:var(--da-ink2);}
+.dga-frow .dga-flabel ~ .dga-flabel{width:auto;margin-left:18px;}
+.dga-period{display:inline-flex;border:1px solid var(--da-line);border-radius:8px;overflow:hidden;}
+.ddgg-admin .dga-pbtn{height:32px;padding:0 13px;border:0;border-right:1px solid var(--da-line);background:#fff;font-size:12.5px;font-weight:600;color:var(--da-sub);cursor:pointer;border-radius:0;}
+.ddgg-admin .dga-pbtn:last-child{border-right:0;}
+.ddgg-admin .dga-pbtn:hover{background:#f5f6f8;color:var(--da-ink);}
+.ddgg-admin .dga-pbtn.on{background:var(--da-ink);color:#fff;}
+.dga-tilde{color:var(--da-sub);}
+.ddgg-admin .dga-filter input[type=date]{height:38px;border:1px solid var(--da-line);border-radius:7px;padding:0 10px;font-size:13px;background:#fff;color:var(--da-ink);font-family:inherit;}
+
+/* 필터칩 (주문 상태 탭) */
+.dga-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px;}
+.dga-chip{height:30px;padding:0 13px;display:inline-flex;align-items:center;border:1px solid var(--da-line);border-radius:16px;font-size:12.5px;font-weight:600;color:var(--da-sub);background:#fff;}
+.dga-chip:hover{border-color:#cfd4dc;color:var(--da-ink2);}
+.dga-chip.on{background:var(--da-ink);border-color:var(--da-ink);color:#fff;}
+
+/* 우측 사이드 패널 (주문 상세) */
+.dga-side{flex:0 0 320px;display:flex;flex-direction:column;gap:12px;}
+.dga-side .dga-card h3{margin-top:0;}
+.dga-kv{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;}
+.dga-kv .k{color:var(--da-sub);}
+
+/* 카드 타이틀 / 도움말 (설정 홈화면) */
+.dga-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 6px;}
+.dga-card-title h2{margin:0;font-size:15px;font-weight:800;}
+.dga-help{font-size:12.5px;color:var(--da-sub);line-height:1.6;margin:0 0 16px;}
+.dga-help b{color:var(--da-ink2);font-weight:700;}
+.dga-tagpv{display:inline-block;font-size:12px;font-weight:700;color:#fff;border-radius:6px;padding:3px 10px;}
+.dga-dot{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;}
+.dga-dot::before{content:"";width:6px;height:6px;border-radius:50%;}
+.dga-dot.on{color:#1c8a4e;}
+.dga-dot.on::before{background:#1c8a4e;}
+.dga-dot.off{color:var(--da-sub);}
+.dga-dot.off::before{background:#c4cad3;}
+
+/* 인라인 서브폼 (태그/배너 추가) */
+.dga-subform{margin-top:16px;padding:18px;border:1px solid var(--da-line);border-radius:10px;background:#fbfcfe;}
+.dga-subform h3{margin:0 0 14px;}
+.dga-formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 18px;}
+.dga-formgrid .fcell{display:flex;flex-direction:column;gap:6px;}
+.dga-formgrid .fcell-wide{grid-column:1 / -1;}
+.dga-formgrid .fcell > label{font-size:12px;font-weight:600;color:var(--da-ink2);}
+.ddgg-admin .dga-formgrid input:not([type=checkbox]):not([type=radio]),.ddgg-admin .dga-formgrid select{width:100%;}
+.dga-formgrid .fchecks{display:flex;gap:22px;align-items:center;flex-wrap:wrap;padding-top:4px;}
+.dga-formgrid .fchecks label{display:inline-flex;align-items:center;gap:7px;font-weight:500;white-space:nowrap;margin:0;}
+.ddgg-admin .dga-formgrid .fchecks input[type=checkbox]{width:auto;min-height:0;margin:0;}
+.dga-subform-actions{margin-top:16px;display:flex;gap:8px;}
+
+/* 기본 색상(Primary) 선택 */
+.dga-swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.dga-swatch{width:32px;height:32px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 1px #d1d5db;cursor:pointer;padding:0;transition:transform .1s;}
+.dga-swatch:hover{transform:scale(1.08);}
+.dga-colorrow{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.ddgg-admin .dga-colorrow input[type=color]{width:46px;height:38px;padding:2px;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;}
+.dga-colorprev{display:inline-flex;align-items:center;gap:8px;}
+.dga-colorprev #pc-dot{width:22px;height:22px;border-radius:6px;display:inline-block;}
+.dga-colorprev b{color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;}
+
+/* 판매 공개 설정 라디오/체크 */
+.ddgg-admin .dga-radio{display:inline-flex;align-items:center;gap:6px;margin:0 18px 8px 0;font-weight:500;}
+.ddgg-admin .dga-checkline{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-weight:500;}
+.ddgg-admin .x_controls input[type=checkbox],.ddgg-admin .x_controls input[type=radio]{width:auto;min-height:0;margin:0;}
+
+/* 상품 옵션 그룹 입력 */
+.dga-optgroup-row{display:flex;gap:8px;margin-bottom:8px;}
+.ddgg-admin .dga-optgroup-row input[name="opt_gname[]"]{width:170px;flex:none;}
+.ddgg-admin .dga-optgroup-row input[name="opt_gvalues[]"]{flex:1;}
+
+/* 배너 그리드 */
+.dga-bannergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:0 0 18px;}
+.dga-bannercard{border:1px solid var(--da-line);border-radius:10px;overflow:hidden;position:relative;background:#fff;}
+.dga-bannerimg{aspect-ratio:16/6;background:#f1f2f5;}
+.dga-bannerimg img{width:100%;height:100%;object-fit:cover;display:block;}
+.dga-bannermeta{padding:10px 12px;}
+.dga-bannermeta .t{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dga-bannermeta .l{font-size:11px;color:var(--da-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.dga-banneracts{position:absolute;top:8px;right:8px;display:flex;gap:6px;}
+.dga-bannerbtn{height:26px;padding:0 10px;border:0;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:600;cursor:pointer;}
+.dga-bannerbtn:hover{background:rgba(0,0,0,.85);}
+.dga-bannerbtn.del:hover{background:#c83a3a;}
+
+@media (max-width:760px){.dga-formgrid{grid-template-columns:1fr;}}
+
+/* 계단식 카테고리 선택 */
+.dga-cascade{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+/* 상품 추가정보(속성) 행 */
+.attr-row{display:flex;gap:8px;margin-bottom:8px;}
+.ddgg-admin .attr-row input{flex:1;}
+.ddgg-admin .attr-row .x_btn{flex:none;}
+
+/* 상품 문의 관리 */
+.dga-qnalist{display:flex;flex-direction:column;gap:12px;}
+.dga-qna{background:var(--da-card);border:1px solid var(--da-line);border-radius:10px;padding:18px;}
+.dga-qna-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.dga-qna-item{font-weight:700;font-size:14px;margin-right:8px;}
+.dga-qna-meta{font-size:12px;color:var(--da-sub);}
+.dga-qna-q{font-size:13.5px;color:var(--da-ink2);line-height:1.6;background:#f8f9fb;border-radius:8px;padding:12px 14px;margin-bottom:12px;white-space:pre-line;}
+.ddgg-admin .dga-qna-answer textarea{width:100%;min-height:64px;resize:vertical;}
+.dga-qna-actions{margin-top:8px;display:flex;gap:8px;}

@@ -1,0 +1,106 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead">
+  <h1>주문 상세 <span class="sub">{$order->order_code}</span></h1>
+  <a href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList')}" class="x_btn">목록</a>
+</div>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;">
+  <div style="flex:1;min-width:420px;">
+    <table class="x_table x_table-bordered">
+      <thead><tr><th>상품</th><th style="width:80px;text-align:right;">단가</th><th style="width:60px;text-align:center;">수량</th><th style="width:100px;text-align:right;">합계</th></tr></thead>
+      <tbody>
+        <tr loop="$order_items=>$oi">
+          <td><!--@if($oi->item_srl)--><a href="{getUrl('','module','admin','act','dispDdggshopAdminItemForm','item_srl',$oi->item_srl)}">{$oi->item_name}</a><!--@else-->{$oi->item_name}<!--@end--><!--@if($oi->option_name)--> <small style="color:#999;">{$oi->option_name}</small><!--@end--></td>
+          <td style="text-align:right;">{number_format($oi->price)}</td>
+          <td style="text-align:center;">{$oi->qty}</td>
+          <td style="text-align:right;">{number_format($oi->subtotal)}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="x_table" style="margin-top:6px;">
+      <tr><td style="text-align:right;color:#666;">상품금액</td><td style="text-align:right;width:140px;">{number_format($order->total_price)}원</td></tr>
+      <tr><td style="text-align:right;color:#666;">배송비</td><td style="text-align:right;">{number_format($order->delivery_fee)}원</td></tr>
+      <tr><td style="text-align:right;font-weight:800;">결제금액</td><td style="text-align:right;font-weight:800;">{number_format($order->payment_price)}원</td></tr>
+    </table>
+
+    <h3>배송지</h3>
+    <table class="x_table x_table-bordered" cond="$address">
+      <tr><th style="width:100px;">받는분</th><td>{$address->receiver_name} / {$address->receiver_phone}</td></tr>
+      <tr><th>주소</th><td>({$address->zipcode}) {$address->addr1} {$address->addr2}</td></tr>
+      <tr cond="$address->delivery_memo"><th>요청사항</th><td>{$address->delivery_memo}</td></tr>
+    </table>
+
+    <h3>결제 로그</h3>
+    <table class="x_table x_table-bordered">
+      <thead><tr><th>일시</th><th>동작</th><th>결과</th><th>거래번호</th><th style="text-align:right;">금액</th></tr></thead>
+      <tbody>
+        <tr cond="!count($logs)"><td colspan="5" style="text-align:center;color:#999;padding:14px;">로그 없음</td></tr>
+        <tr loop="$logs=>$lg">
+          <td>{zdate($lg->regdate,'Y.m.d H:i:s')}</td>
+          <td>{$lg->action}</td>
+          <td>{$lg->result=='S' ? '성공' : '실패'}</td>
+          <td style="font-size:11px;word-break:break-all;">{$lg->pg_tid}</td>
+          <td style="text-align:right;">{number_format($lg->amount)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dga-side">
+    <div class="dga-card">
+      <h3>주문 정보</h3>
+      <div class="dga-kv"><span class="k">주문자</span><span>{$order->orderer_name}<!--@if(!$order->member_srl)--> <span style="color:#9aa0ae;font-size:11px;">비회원</span><!--@end--></span></div>
+      <div class="dga-kv"><span class="k">연락처</span><span>{$order->orderer_phone}</span></div>
+      <div class="dga-kv"><span class="k">이메일</span><span>{$order->orderer_email}</span></div>
+      <div class="dga-kv"><span class="k">결제수단</span><span>{$order->pay_method_label}</span></div>
+      <div class="dga-kv"><span class="k">상태</span><span class="dga-badge {$order->status}">{$order->status_label}</span></div>
+      <div class="dga-kv" cond="$order->paid_date"><span class="k">결제일</span><span>{zdate($order->paid_date,'Y.m.d H:i')}</span></div>
+    </div>
+
+    <!--@if($order->status=='pending' && $order->pay_method=='banktransfer')-->
+    <div class="dga-card" style="border-color:#f0dcc0;background:#fff9f0;">
+      <p style="margin:0 0 12px;color:#b9750f;font-weight:700;font-size:13px;">무통장 입금 대기</p>
+      <button type="button" class="x_btn x_btn-primary" onclick="ddggConfirmDeposit({$order->order_srl})">입금 확인 → 결제완료</button>
+    </div>
+    <!--@end-->
+
+    <div class="dga-card">
+      <h3>상태 변경</h3>
+      <form action="./" method="post">
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act" value="procDdggshopAdminUpdateOrderStatus" />
+        <input type="hidden" name="order_srl" value="{$order->order_srl}" />
+        <select name="status" class="x_input-block-level">
+          <option loop="$status_options=>$code,$label" value="{$code}" selected="selected"|cond="$order->status==$code">{$label}</option>
+        </select>
+        <textarea name="admin_memo" rows="2" class="x_input-block-level" placeholder="관리자 메모" style="margin-top:8px;">{$order->admin_memo}</textarea>
+        <button type="submit" class="x_btn x_btn-primary" style="margin-top:8px;">상태 저장</button>
+      </form>
+    </div>
+
+    <div class="dga-card">
+      <h3>배송 정보</h3>
+      <form action="./" method="post">
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act" value="procDdggshopAdminUpdateShipping" />
+        <input type="hidden" name="order_srl" value="{$order->order_srl}" />
+        <select name="shipping_company" class="x_input-block-level" style="margin-bottom:6px;">
+          <option value="">택배사 선택</option>
+          <option loop="$carriers=>$cr" value="{$cr}" selected="selected"|cond="($order->shipping_company ? $order->shipping_company : $default_carrier)==$cr">{$cr}</option>
+        </select>
+        <input type="text" name="shipping_invoice" value="{$order->shipping_invoice}" placeholder="송장번호" class="x_input-block-level" />
+        <button type="submit" class="x_btn x_btn-primary" style="margin-top:8px;">배송 저장(배송중 처리)</button>
+        <a cond="$tracking_url" href="{$tracking_url}" target="_blank" rel="noopener" class="x_btn" style="margin-top:8px;">배송조회 ↗</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function ddggConfirmDeposit(srl){
+  if(!confirm('입금을 확인하고 결제완료로 처리할까요? (회원이면 포인트가 적립됩니다)')) return;
+  exec_json('ddggshop.procDdggshopAdminConfirmDeposit', {order_srl: srl}, function(){ location.reload(); });
+}
+</script>
+
+<include target="_admin_foot.html" />

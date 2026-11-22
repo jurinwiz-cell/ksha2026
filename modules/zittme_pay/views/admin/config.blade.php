@@ -1,0 +1,225 @@
+@include('_tabs')
+
+<section class="section">
+	<h2>{{ $lang->zpay_tab_config }}</h2>
+	<p class="x_help-block">{{ $lang->about_zpay_config }}</p>
+
+	<form action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="zittme_pay" />
+		<input type="hidden" name="act" value="procZittme_payAdminInsertConfig" />
+		<input type="hidden" name="tab" value="config" />
+		<input type="hidden" name="success_return_url" value="{{ getUrl('', 'module', 'admin', 'act', $act) }}" />
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_enabled }}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="enabled" value="Y" @if($pay_config->enabled === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_enabled_help }}
+				</label>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_test_mode }}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="test_mode" value="Y" @if($pay_config->test_mode === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_test_mode_help }}
+				</label>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_currency">{{ $lang->zpay_currency }}</label>
+			<div class="x_controls">
+				<select id="zpay_currency" name="currency">
+					@foreach (\Zittme\Modules\Zittme_pay\Models\Currency::MAJOR_CURRENCIES as $zpc_code => $zpc_name)
+					<option value="{{ $zpc_code }}" @if (strtoupper((string)$pay_config->currency ?: 'KRW') === $zpc_code) selected @endif>{{ $zpc_code }} - {{ $zpc_name }}</option>
+					@endforeach
+					@if (!isset(\Zittme\Modules\Zittme_pay\Models\Currency::MAJOR_CURRENCIES[strtoupper((string)$pay_config->currency ?: 'KRW')]))
+					<option value="{{ strtoupper((string)$pay_config->currency) }}" selected>{{ strtoupper((string)$pay_config->currency) }}</option>
+					@endif
+				</select>
+				<p class="x_help-block">{{ $lang->zpay_currency_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_extra_currencies }}</label>
+			<div class="x_controls">
+				@php
+					$zpc_base = strtoupper((string)$pay_config->currency ?: 'KRW');
+					$zpc_extra = is_array($pay_config->extra_currencies ?? null) ? $pay_config->extra_currencies : [];
+				@endphp
+				<div style="display:flex;flex-wrap:wrap;gap:6px 14px;max-width:720px">
+					@foreach (\Zittme\Modules\Zittme_pay\Models\Currency::MAJOR_CURRENCIES as $zpc_code => $zpc_name)
+					@if ($zpc_code !== $zpc_base)
+					<label class="x_inline" style="font-weight:400">
+						<input type="checkbox" name="extra_currencies[]" value="{{ $zpc_code }}" @if (in_array($zpc_code, $zpc_extra, true)) checked @endif />
+						{{ $zpc_code }} <span style="color:#8b95a1">{{ $zpc_name }}</span>
+					</label>
+					@endif
+					@endforeach
+				</div>
+				<p class="x_help-block">{{ $lang->zpay_extra_currencies_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_order_prefix">{{ $lang->zpay_order_prefix }}</label>
+			<div class="x_controls">
+				<input type="text" id="zpay_order_prefix" name="order_prefix" value="{{ $pay_config->order_prefix }}" maxlength="8" />
+				<p class="x_help-block">{{ $lang->zpay_order_prefix_help }}</p>
+			</div>
+		</div>
+
+		<h3>{{ $lang->zpay_group_cancel }}</h3>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_allow_partial_cancel }}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="allow_partial_cancel" value="Y" @if($pay_config->allow_partial_cancel === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_allow_partial_cancel_help }}
+				</label>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_cancel_reasons">{{ $lang->zpay_cancel_reasons }}</label>
+			<div class="x_controls">
+				<textarea id="zpay_cancel_reasons" name="cancel_reasons" rows="4" class="x_full-width">{{ $pay_config->cancel_reasons }}</textarea>
+				<p class="x_help-block">{{ $lang->zpay_cancel_reasons_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_auto_cancel_days">{{ $lang->zpay_auto_cancel_days }}</label>
+			<div class="x_controls">
+				<input type="number" id="zpay_auto_cancel_days" name="auto_cancel_days" value="{{ $pay_config->auto_cancel_days }}" min="0" max="365" />
+				<p class="x_help-block">{{ $lang->zpay_auto_cancel_days_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_allow_force_cancel }}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="allow_force_cancel" value="Y" @if($pay_config->allow_force_cancel === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_allow_force_cancel_help }}
+				</label>
+			</div>
+		</div>
+
+		<h3>{{ $lang->zpay_group_notify }}</h3>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_notify_admin_email">{{ $lang->zpay_notify_admin_email }}</label>
+			<div class="x_controls">
+				<input type="text" id="zpay_notify_admin_email" name="notify_admin_email" value="{{ $pay_config->notify_admin_email }}" class="x_full-width" />
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{{ $lang->zpay_notify_events }}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="notify_on_paid" value="Y" @if($pay_config->notify_on_paid === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_notify_on_paid }}
+				</label>
+				<label class="x_inline">
+					<input type="checkbox" name="notify_on_cancel" value="Y" @if($pay_config->notify_on_cancel === 'Y') checked="checked" @endif />
+					{{ $lang->zpay_notify_on_cancel }}
+				</label>
+			</div>
+		</div>
+
+		<h3>{{ $lang->zpay_group_security }}</h3>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_log_retention_days">{{ $lang->zpay_log_retention_days }}</label>
+			<div class="x_controls">
+				<input type="number" id="zpay_log_retention_days" name="log_retention_days" value="{{ $pay_config->log_retention_days }}" min="0" max="3650" />
+				<p class="x_help-block">{{ $lang->zpay_log_retention_days_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_webhook_ip_whitelist">{{ $lang->zpay_webhook_ip_whitelist }}</label>
+			<div class="x_controls">
+				<textarea id="zpay_webhook_ip_whitelist" name="webhook_ip_whitelist" rows="3" class="x_full-width">{{ $pay_config->webhook_ip_whitelist }}</textarea>
+				<p class="x_help-block">{{ $lang->zpay_webhook_ip_whitelist_help }}</p>
+			</div>
+		</div>
+
+		<h3>{{ $lang->zpay_group_notice }}</h3>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="zpay_biz_notice">{{ $lang->zpay_biz_notice }}</label>
+			<div class="x_controls">
+				<textarea id="zpay_biz_notice" name="biz_notice" rows="4" class="x_full-width">{{ $pay_config->biz_notice }}</textarea>
+				<p class="x_help-block">{{ $lang->zpay_biz_notice_help }}</p>
+			</div>
+		</div>
+
+		<div class="x_clearfix">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{{ $lang->cmd_save }}</button>
+			</div>
+		</div>
+	</form>
+
+	<div class="section" style="margin-top:18px">
+		<h1>화면 설정</h1>
+		<form action="./" method="post">
+			<input type="hidden" name="module" value="zittme_pay" />
+			<input type="hidden" name="act" value="procZittme_payAdminUpdateSkin" />
+			<div class="x_control-group">
+				<label class="x_control-label" for="zpay_skin">결제 화면 스킨</label>
+				<div class="x_controls">
+					<select id="zpay_skin" name="skin">
+						<option value="/USE_DEFAULT/" @if (($zpay_instance->skin ?? '') === '/USE_DEFAULT/' || ($zpay_instance->skin ?? '') === '') selected @endif>기본 디자인 따름 (현재: {{ $zpay_default_skin }})</option>
+						@foreach ($zpay_skins as $zpay_sk_name => $zpay_sk)
+						<option value="{{ $zpay_sk_name }}" @if (($zpay_instance->skin ?? '') === $zpay_sk_name) selected @endif>{{ $zpay_sk->title ?: $zpay_sk_name }}</option>
+						@endforeach
+					</select>
+					<p class="x_help-block">기본 디자인 따름으로 두면 사이트 디자인 설정(테마 적용 포함)의 스킨을 그대로 씁니다.</p>
+				</div>
+			</div>
+
+			<div class="x_control-group">
+				<label class="x_control-label" for="zpay_layout">레이아웃 (PC)</label>
+				<div class="x_controls">
+					<select id="zpay_layout" name="layout_srl">
+						<option value="-1" @if ((int)($zpay_instance->layout_srl ?? -1) === -1) selected @endif>사이트 기본 레이아웃 따름</option>
+						@foreach ($zpay_layouts as $zpay_lo)
+						<option value="{{ $zpay_lo->layout_srl }}" @if ((int)($zpay_instance->layout_srl ?? -1) === (int)$zpay_lo->layout_srl) selected @endif>{{ $zpay_lo->title ?: $zpay_lo->layout }}</option>
+						@endforeach
+					</select>
+					<p class="x_help-block">결제 화면에 씌울 레이아웃입니다. 결제 주소에는 게시판 같은 주소값이 없어 코어가 레이아웃을 자동으로 붙이지 못하므로, 여기서 고른 값을 씁니다.</p>
+				</div>
+			</div>
+
+			<div class="x_control-group">
+				<label class="x_control-label" for="zpay_mlayout">레이아웃 (모바일)</label>
+				<div class="x_controls">
+					<select id="zpay_mlayout" name="mlayout_srl">
+						<option value="-1" @if ((int)($zpay_instance->mlayout_srl ?? -1) === -1) selected @endif>사이트 기본 레이아웃 따름</option>
+						<option value="-2" @if ((int)($zpay_instance->mlayout_srl ?? -1) === -2) selected @endif>PC 설정을 그대로 사용</option>
+						@foreach ($zpay_mlayouts as $zpay_mlo)
+						<option value="{{ $zpay_mlo->layout_srl }}" @if ((int)($zpay_instance->mlayout_srl ?? -1) === (int)$zpay_mlo->layout_srl) selected @endif>{{ $zpay_mlo->title ?: $zpay_mlo->layout }}</option>
+						@endforeach
+					</select>
+					<p class="x_help-block">반응형 레이아웃을 쓰신다면 "PC 설정을 그대로 사용"으로 두시면 됩니다.</p>
+				</div>
+			</div>
+
+			<div class="x_clearfix">
+				<div class="x_pull-right">
+					<button type="submit" class="x_btn x_btn-primary">화면 설정 저장</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>

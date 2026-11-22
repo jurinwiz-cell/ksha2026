@@ -1,0 +1,73 @@
+@version(2)
+@load ("css/styles.css")
+@load ("js/script.js")
+@load ("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap")
+
+<?php $widget_id = 'heatmap_vertical_' . uniqid(); ?>
+<section class="heatmap-vertical-section"
+        data-widget-id="{{ $widget_id }}"
+        data-output-data="@json($hm_data->output_data)"
+        data-posts-level="@json($hm_data->posts_level)"
+        data-first-date="{{ $hm_data->first_date }}"
+        data-last-date="{{ $hm_data->last_date }}">
+    <header class="heatmap-vertical-head">
+        @if ($widget_info->title)
+        <div class="heatmap-vertical-title">{{ $widget_info->title }}</div>
+        @else
+        <div class="heatmap-vertical-title">{{ array_sum($hm_data->output_data ?? []) }} posts</div>
+        @endif
+
+        @auth
+        <div class="heatmap-vertical-year">
+            <span class="heatmap-vertical-year-button">
+                {{ $hm_data->search_year ? $hm_data->search_year : "365 days" }}
+                <div class="dropdown-caret"></div>
+            </span>
+            <div class="heatmap-vertical-year-list">    
+                @foreach(range($hm_data->this_year, $hm_data->reg_year) as $year)
+                <a href="#" data-search-year="{{ $year }}">{{ $year }}</a>
+                @endforeach
+            </div>
+        </div>
+        @endauth
+    </header>
+    <div class="heatmap-vertical-wrapper">
+        @guest
+        <div class="heatmap-overlay"></div>
+        <div class="heatmap-login">
+            <a href="{{ getUrl('act','dispMemberLoginForm') }}">{{ $lang->cmd_login }}</a>
+        </div>
+        @endguest
+        <div class="heatmap-vertical-container" data-role="heatmap-container">
+            <div class="heatmap-vertical" data-role="heatmap-vertical"></div>
+        </div>
+        <div class="color-label-container">
+            <div class="color-label-text">Less</div>
+            @foreach(range(0, 4) as $i)
+            <div class="color-label-cell day level-{$i}">
+                <span class="tooltip">{$hm_data->posts_level[$i]} posts</span>
+            </div>
+            @endforeach
+            <div class="color-label-text">More</div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    const heatmapVerticalSection = document.querySelector('.heatmap-vertical-section[data-widget-id="{{ $widget_id }}"]');
+    if (!heatmapVerticalSection || heatmapVerticalSection.dataset.initialized === 'true') return;
+    
+    heatmapVerticalSection.dataset.initialized = 'true';
+    
+    const outputDataVertical = JSON.parse(heatmapVerticalSection.dataset.outputData);
+    const postsLevelVertical = JSON.parse(heatmapVerticalSection.dataset.postsLevel);
+    const firstDateVertical = heatmapVerticalSection.dataset.firstDate;
+    const lastDateVertical = heatmapVerticalSection.dataset.lastDate;
+    
+    const heatmapElement = heatmapVerticalSection.querySelector('[data-role="heatmap-vertical"]');
+    if (heatmapElement) {
+        window.HeatmapVertical.createHeatmap(heatmapElement, outputDataVertical, postsLevelVertical, firstDateVertical, lastDateVertical);
+    }
+})();
+</script>

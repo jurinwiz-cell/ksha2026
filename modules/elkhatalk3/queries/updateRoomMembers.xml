@@ -1,0 +1,13 @@
+<query action="update">
+	<tables>
+		<table name="elkhatalk_members" />
+	</tables>
+	<columns>
+		<column name="blind" var="blind" />
+		<column name="hide" var="hide" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" filter="number" notnull="notnull" />
+		<condition operation="equal" column="member_srl2" var="member_srl2" filter="number" notnull="notnull" pipe="and" />
+	</conditions>
+</query>

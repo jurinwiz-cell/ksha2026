@@ -1,0 +1,13 @@
+<query id="updateDocumentOrder" action="update">
+	<tables>
+		<table name="documents" />
+	</tables>
+	<columns>
+		<column name="list_order" var="list_order" />
+		<column name="update_order" var="update_order" />
+		<column name="regdate" var="regdate" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="document_srl" var="document_srl" required="true" />
+	</conditions>
+</query>

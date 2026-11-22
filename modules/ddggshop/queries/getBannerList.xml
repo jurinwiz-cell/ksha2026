@@ -1,0 +1,14 @@
+<query id="getBannerList" action="select">
+  <tables>
+    <table name="ddggshop_banner" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="status" var="status" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="list_order" order="asc" />
+  </navigation>
+</query>

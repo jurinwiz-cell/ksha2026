@@ -1,0 +1,183 @@
+<include target="_console_head.html" />
+
+<div class="cs-pagehead">
+  <div><span class="sub">홈 화면에 노출할 블록 · 드래그하여 순서 변경</span></div>
+  <div style="display:flex;gap:8px;">
+    <a class="cs-btn ghost" href="{$shop_home_url}" target="_blank" rel="noopener">홈 화면 보기 ↗</a>
+    <a class="cs-btn" href="{$u_homeblockform}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> 블록 추가</a>
+  </div>
+</div>
+
+<div class="cs-card cs-card-p" style="max-width:760px;">
+  <div cond="!count($blocks)" class="cs-empty">홈 블록이 없습니다. ‘블록 추가’로 시작하세요.</div>
+  <div class="cs-blk-list" id="cs-blk-list">
+    <div class="cs-blk-row" loop="$blocks=>$b" draggable="true" data-srl="{$b->block_srl}">
+      <span class="cs-blk-handle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg></span>
+      <div class="cs-blk-main">
+        <div class="cs-blk-title">{$b->title ?: '(제목 없음)'}</div>
+        <div class="cs-blk-meta">{$b->type_label}<!--@if($b->source_label)--> · {$b->source_label} · {$b->list_count}개<!--@end--><!--@if($b->layout=='scroll')--> · 가로스크롤<!--@end--></div>
+      </div>
+      <span class="cs-st {$b->status=='Y' ? 'on' : 'off'}">{$b->status=='Y' ? '노출' : '숨김'}</span>
+      <span class="cs-blk-acts">
+        <a class="cs-icbtn" title="수정" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleHomeBlockForm','block_srl',$b->block_srl)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></a>
+        <button type="button" class="cs-icbtn del" title="삭제" onclick="csBlkDel({$b->block_srl})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+      </span>
+    </div>
+  </div>
+  <p class="cs-hint" style="margin-top:12px;">≡ 핸들을 드래그해 홈에 표시될 순서를 바꿀 수 있습니다. 위에 있을수록 홈 상단.</p>
+</div>
+
+<div class="cs-card" style="max-width:760px;margin-top:16px;">
+  <div class="cs-card-head"><h3>메인 배너</h3><span class="sub">홈 최상단 배너 슬라이드 (제목·내용 오버레이)</span></div>
+  <div class="cs-card-p">
+    <div class="cs-row" style="gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <div cond="!count($banners)" class="cs-hint">등록된 배너가 없습니다.</div>
+      <div loop="$banners=>$b" style="position:relative;width:150px;">
+        <img src="{$b->image}" style="width:150px;height:74px;object-fit:cover;border-radius:3px;border:1px solid #EAECEF;{$b->status=='N' ? 'opacity:.4;' : ''}" alt="" />
+        <div style="position:absolute;top:4px;left:4px;display:flex;gap:4px;">
+          <button type="button" class="cs-btn sm" style="padding:0 7px;height:24px;" onclick="csBanEdit({$b->banner_srl})">수정</button>
+          <button type="button" class="cs-btn danger sm" style="padding:0 7px;height:24px;" onclick="csBanDel({$b->banner_srl})">×</button>
+        </div>
+        <div style="font-size:11px;color:#8a9099;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{$b->title ?: '(제목 없음)'}<!--@if($b->status=='N')--> · 숨김<!--@end--></div>
+      </div>
+    </div>
+
+    <form method="post" action="./" enctype="multipart/form-data" id="cs-ban-form" style="border-top:1px solid #EAECEF;padding-top:16px;">
+      <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveBanner" /><input type="hidden" name="console_return" value="{$console_return}" />
+      <input type="hidden" name="banner_srl" id="ban-srl" value="" />
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <strong id="ban-form-title" style="font-size:13.5px;">새 배너 추가</strong>
+        <button type="button" class="cs-btn ghost sm" id="ban-cancel" style="display:none;margin-left:auto;" onclick="csBanReset()">+ 새 배너로 전환</button>
+      </div>
+
+      <div class="cs-field" style="margin-bottom:10px;"><label>이미지 <span id="ban-img-req">*</span></label>
+        <input type="file" name="banner_image" accept="image/*" id="ban-img" />
+        <div id="ban-img-cur" style="display:none;margin-top:6px;"><img id="ban-img-prev" src="" alt="" style="height:54px;border-radius:3px;border:1px solid #EAECEF;" /> <span class="cs-hint" style="display:inline;">현재 이미지 · 변경할 때만 새로 업로드하세요.</span></div>
+      </div>
+
+      <div class="cs-formgrid">
+        <div class="cs-field"><label>제목</label><input type="text" name="title" id="ban-title" class="cs-input" placeholder="배너 제목(선택)" /></div>
+        <div class="cs-field"><label>링크 URL / 열기</label>
+          <div class="cs-row" style="gap:8px;">
+            <input type="text" name="link" id="ban-link" class="cs-input" style="flex:1;" placeholder="클릭 시 이동(선택)" />
+            <select name="link_target" id="ban-target" class="cs-select" style="width:110px;"><option value="self">현재창</option><option value="blank">새창</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="cs-field"><label>내용</label><textarea name="content" id="ban-content" class="cs-input" rows="2" placeholder="배너 설명 문구(선택)"></textarea></div>
+
+      <div class="cs-formgrid">
+        <div class="cs-field"><label>가로 정렬</label>
+          <div class="cs-row" style="gap:14px;">
+            <label style="display:inline-flex;gap:5px;"><input type="radio" name="text_align" value="left" id="ban-al-l" style="width:auto;" checked="checked" /> 좌측</label>
+            <label style="display:inline-flex;gap:5px;"><input type="radio" name="text_align" value="center" id="ban-al-c" style="width:auto;" /> 중앙</label>
+            <label style="display:inline-flex;gap:5px;"><input type="radio" name="text_align" value="right" id="ban-al-r" style="width:auto;" /> 우측</label>
+          </div>
+        </div>
+        <div class="cs-field"><label>세로 정렬</label>
+          <select name="text_valign" id="ban-valign" class="cs-select" style="width:130px;">
+            <option value="top">상단</option>
+            <option value="middle" selected="selected">중앙</option>
+            <option value="bottom">하단</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cs-formgrid">
+        <div class="cs-field"><label>글꼴</label>
+          <select name="font_family" id="ban-font" class="cs-select">
+            <option value="">기본 글꼴</option>
+            <option value="'Noto Sans KR',sans-serif">고딕 (Noto Sans)</option>
+            <option value="'Nanum Gothic',sans-serif">나눔고딕</option>
+            <option value="'Nanum Myeongjo',serif">나눔명조</option>
+            <option value="'Black Han Sans',sans-serif">검은고딕 (임팩트)</option>
+            <option value="'Gowun Dodum',sans-serif">고운돋움</option>
+            <option value="Georgia,serif">Georgia (영문)</option>
+          </select>
+        </div>
+        <div class="cs-field"><label>가독성 배경</label>
+          <label style="display:inline-flex;gap:6px;align-items:center;height:38px;"><input type="checkbox" name="overlay" value="Y" id="ban-overlay" style="width:auto;" /> 어두운 반투명 배경 깔기</label>
+        </div>
+      </div>
+
+      <div class="cs-formgrid">
+        <div class="cs-field"><label>제목 색상 / 크기(px)</label>
+          <div class="cs-row" style="gap:8px;"><input type="color" name="title_color" id="ban-tcolor" value="#ffffff" style="width:46px;height:38px;padding:2px;" /><input type="number" name="title_size" id="ban-tsize" class="cs-input" value="30" min="10" max="120" style="width:90px;" /></div>
+        </div>
+        <div class="cs-field"><label>내용 색상 / 크기(px)</label>
+          <div class="cs-row" style="gap:8px;"><input type="color" name="content_color" id="ban-ccolor" value="#ffffff" style="width:46px;height:38px;padding:2px;" /><input type="number" name="content_size" id="ban-csize" class="cs-input" value="16" min="8" max="80" style="width:90px;" /></div>
+        </div>
+      </div>
+
+      <div class="cs-formgrid">
+        <div class="cs-field"><label>상태</label>
+          <select name="status" id="ban-status" class="cs-select" style="width:130px;"><option value="Y">노출</option><option value="N">숨김</option></select>
+        </div>
+        <div class="cs-field"><label>정렬값 (선택)</label><input type="number" name="list_order" id="ban-order" class="cs-input" placeholder="작을수록 먼저" /></div>
+      </div>
+
+      <div style="text-align:right;margin-top:10px;"><button type="submit" class="cs-btn" id="ban-submit">배너 추가</button></div>
+    </form>
+  </div>
+</div>
+
+<script>
+function csBanDel(srl){ if(!confirm('이 배너를 삭제할까요?'))return; exec_json('ddggshop.procDdggshopAdminDeleteBanner',{banner_srl:srl},function(){location.reload();}); }
+var DDG_BANNERS = {$banners_json};
+function csBanVal(id,v){ var e=document.getElementById(id); if(e!=null) e.value=v; }
+function csBanReset(){
+  document.getElementById('cs-ban-form').reset();
+  csBanVal('ban-srl','');
+  document.getElementById('ban-form-title').textContent='새 배너 추가';
+  document.getElementById('ban-submit').textContent='배너 추가';
+  document.getElementById('ban-cancel').style.display='none';
+  document.getElementById('ban-img-cur').style.display='none';
+  document.getElementById('ban-img-req').style.display='';
+}
+function csBanEdit(srl){
+  var b=null; for(var i=0;i<DDG_BANNERS.length;i++){ if(parseInt(DDG_BANNERS[i].banner_srl,10)===parseInt(srl,10)){ b=DDG_BANNERS[i]; break; } }
+  if(!b) return;
+  csBanVal('ban-srl', b.banner_srl);
+  csBanVal('ban-title', b.title||'');
+  csBanVal('ban-content', b.content||'');
+  csBanVal('ban-link', b.link||'');
+  csBanVal('ban-target', b.link_target||'self');
+  var al=(b.text_align||'left'); var alm={left:'ban-al-l',center:'ban-al-c',right:'ban-al-r'}; var alr=document.getElementById(alm[al]||'ban-al-l'); if(alr) alr.checked=true;
+  csBanVal('ban-valign', b.text_valign||'middle');
+  csBanVal('ban-font', b.font_family||'');
+  document.getElementById('ban-overlay').checked = (b.overlay==='Y');
+  csBanVal('ban-tcolor', b.title_color||'#ffffff');
+  csBanVal('ban-ccolor', b.content_color||'#ffffff');
+  csBanVal('ban-tsize', parseInt(b.title_size,10)||30);
+  csBanVal('ban-csize', parseInt(b.content_size,10)||16);
+  csBanVal('ban-status', b.status||'Y');
+  csBanVal('ban-order', b.list_order||'');
+  var prev=document.getElementById('ban-img-prev'); if(prev){ prev.src=b.image; }
+  document.getElementById('ban-img-cur').style.display='';
+  document.getElementById('ban-img-req').style.display='none';
+  document.getElementById('ban-form-title').textContent='배너 수정 (#'+b.banner_srl+')';
+  document.getElementById('ban-submit').textContent='수정 저장';
+  document.getElementById('ban-cancel').style.display='';
+  document.getElementById('cs-ban-form').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function csBlkDel(srl){ if(!confirm('이 블록을 삭제할까요?')) return; exec_json('ddggshop.procDdggshopAdminDeleteHomeBlock',{block_srl:srl},function(){ location.reload(); }); }
+(function(){
+  var dragEl=null;
+  function saveOrder(){ var s=[]; document.querySelectorAll('#cs-blk-list .cs-blk-row').forEach(function(r){ s.push(r.getAttribute('data-srl')); }); exec_json('ddggshop.procDdggshopAdminReorderHomeBlocks',{srls:s.join(',')},function(){}); }
+  function bind(r){
+    r.addEventListener('dragstart',function(e){ dragEl=r; r.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain','x');}catch(_){} });
+    r.addEventListener('dragend',function(){ r.classList.remove('dragging'); document.querySelectorAll('.cs-blk-row').forEach(function(x){x.classList.remove('dragover');}); });
+    r.addEventListener('dragover',function(e){ if(!dragEl||dragEl===r) return; e.preventDefault(); r.classList.add('dragover'); });
+    r.addEventListener('dragleave',function(){ r.classList.remove('dragover'); });
+    r.addEventListener('drop',function(e){ e.preventDefault(); r.classList.remove('dragover'); if(!dragEl||dragEl===r) return;
+      var rect=r.getBoundingClientRect(); var after=(e.clientY-rect.top)>rect.height/2;
+      var list=document.getElementById('cs-blk-list');
+      list.insertBefore(dragEl, after ? r.nextElementSibling : r);
+      saveOrder();
+    });
+  }
+  document.querySelectorAll('#cs-blk-list .cs-blk-row').forEach(bind);
+})();
+</script>
+
+<include target="_console_foot.html" />

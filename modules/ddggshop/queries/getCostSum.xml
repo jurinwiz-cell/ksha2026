@@ -1,0 +1,17 @@
+<query id="getCostSum" action="select">
+  <tables>
+    <table name="ddggshop_order" alias="o" />
+    <table name="ddggshop_order_item" alias="oi" />
+    <table name="ddggshop_item" alias="i" />
+  </tables>
+  <columns>
+    <column name="sum(i.cost_price * oi.qty)" alias="total_cost" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="o.order_srl" default="oi.order_srl" />
+    <condition operation="equal" column="oi.item_srl" default="i.item_srl" pipe="and" />
+    <condition operation="in" column="o.status" var="status_list" pipe="and" />
+    <condition operation="more" column="o.regdate" var="from_date" pipe="and" />
+    <condition operation="less" column="o.regdate" var="to_date" pipe="and" />
+  </conditions>
+</query>

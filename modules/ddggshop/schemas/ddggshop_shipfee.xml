@@ -1,0 +1,9 @@
+<table name="ddggshop_shipfee">
+  <column name="fee_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="region" type="varchar" size="60" />
+  <column name="zip_start" type="varchar" size="6" notnull="notnull" />
+  <column name="zip_end" type="varchar" size="6" notnull="notnull" />
+  <column name="extra_fee" type="number" default="0" notnull="notnull" />
+  <column name="list_order" type="number" default="0" />
+  <column name="status" type="char" size="1" default="Y" notnull="notnull" />
+</table>

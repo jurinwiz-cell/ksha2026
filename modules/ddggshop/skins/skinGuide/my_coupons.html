@@ -1,0 +1,21 @@
+<include target="_head.html" />
+
+<include target="_mypage_tabs.html" />
+
+<!--@if(count($coupons))-->
+<div class="ds-coupon-list">
+  <div class="ds-coupon-card" loop="$coupons=>$c">
+    <div class="ds-coupon-disc"><b>{$c->disc_label}</b><span cond="$c->discount_type=='amount'">{$L['coupon_discount']}</span></div>
+    <div class="ds-coupon-info">
+      <div class="ds-coupon-title">{$c->title ?: $L['coupon_default_title']}</div>
+      <div class="ds-coupon-meta">{$L['coupon_code']} <b>{$c->code}</b><!--@if($c->min_order)--> · {str_replace('%s', number_format($c->min_order), $L['coupon_min'])}<!--@end--></div>
+      <div class="ds-coupon-meta">{$c->period_label}</div>
+    </div>
+  </div>
+</div>
+<p style="font-size:13px;color:var(--ds-sub);margin-top:14px;">{$L['coupon_use_note']}</p>
+<!--@else-->
+<div class="ds-empty">{$L['coupon_empty']}</div>
+<!--@end-->
+
+<include target="_foot.html" />

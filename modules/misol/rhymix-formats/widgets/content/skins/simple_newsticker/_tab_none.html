@@ -1,0 +1,7 @@
+<h1 class="rx_sr_nt_top" cond="count($widget_info->modules_info) === 1">
+{@$soo_module_info = current($widget_info->modules_info);}
+	<a href="{getUrl('','mid',$soo_module_info->mid)}" target="_blank"|cond="$widget_info->new_window" class="rx_sr_nt_a">{$soo_module_info->browser_title} <i class="rx_sr_nt sr_right"></i></a>
+</h1>
+<div class="rx_sr_nt">
+	<!--#include("./normal.html")-->
+</div>

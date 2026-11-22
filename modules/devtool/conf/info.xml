@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="ko">개발자 도구</title>
+    <description xml:lang="ko">개발할 때 사용할 자동화툴</description>
+    <version>0.1.0</version>
+    <date>2026-01-06</date>
+    <category>service</category>
+    <author email_address="waterticket@potatosoft.kr" link="https://potatosoft.kr">
+        <name xml:lang="ko">Waterticket</name>
+    </author>
+</module>

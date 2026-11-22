@@ -1,0 +1,14 @@
+<query id="useCouponIssueIf" action="update">
+	<tables>
+		<table name="commerce_coupon_issue" />
+	</tables>
+	<columns>
+		<column name="order_srl" var="order_srl" notnull="notnull" />
+		<column name="used_date" var="used_date" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="issue_srl" var="issue_srl" required="true" />
+		<condition operation="equal" column="member_srl" var="member_srl" pipe="and" required="true" />
+		<condition operation="equal" column="order_srl" var="from_order_srl" pipe="and" required="true" />
+	</conditions>
+</query>

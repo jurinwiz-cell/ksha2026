@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스도쿠 해결사</title>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --container-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-light: #d1d5db;
+            --border-dark: #374151;
+            --btn-solve: #10b981;
+            --btn-solve-hover: #059669;
+            --btn-generate: #3b82f6;
+            --btn-generate-hover: #2563eb;
+            --btn-clear: #ef4444;
+            --btn-clear-hover: #dc2626;
+            --cell-focus: #e0f2fe;
+            --cell-solved-text: #10b981;
+            --cell-fixed-text: #2563eb;
+            --cell-completed-text: #ec4899; 
+            --cell-highlight-bg: #fef08a; 
+            --cell-size: clamp(30px, 10vw, 45px); 
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+        }
+
+        .container {
+            text-align: center;
+            background: var(--container-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        #sudoku-board {
+            display: grid;
+            grid-template-columns: repeat(9, var(--cell-size));
+            grid-template-rows: repeat(9, var(--cell-size));
+            gap: 0;
+            border: 3px solid var(--border-dark);
+            margin: 0 auto 1.5rem;
+            width: max-content;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .cell {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border-light);
+            box-sizing: border-box;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            -webkit-user-select: none;
+            user-select: none; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cell-value {
+            font-size: clamp(16px, 5vw, 22px);
+            font-weight: 600;
+            color: var(--text-color);
+            pointer-events: none;
+        }
+
+        .cell-memo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            pointer-events: none;
+        }
+
+        .memo-num {
+            font-size: clamp(8px, 2.5vw, 11px);
+            color: #6b7280;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .border-right { border-right: 2px solid var(--border-dark) !important; }
+        .border-bottom { border-bottom: 2px solid var(--border-dark) !important; }
+
+        .cell.selected {
+            background-color: var(--cell-focus);
+            outline: 2px solid var(--btn-generate);
+            outline-offset: -2px;
+            z-index: 10;
+        }
+
+        .solved-text .cell-value { color: var(--cell-solved-text) !important; }
+        
+        .fixed-text { background-color: #f8fafc; }
+        .fixed-text .cell-value { color: var(--cell-fixed-text) !important; }
+
+        .completed-text .cell-value { color: var(--cell-completed-text) !important; }
+        .highlight-bg { background-color: var(--cell-highlight-bg) !important; }
+
+        .numpad-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .numpad-btn {
+            flex: 1 1 calc(10% - 5px);
+            max-width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: #e5e7eb;
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .numpad-btn:hover { background-color: #d1d5db; }
+
+        #memo-toggle-btn {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+            font-size: 0.9rem;
+            padding: 0;
+        }
+
+        #memo-toggle-btn.active {
+            background-color: #ef4444;
+            color: white;
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .controls button, .controls select {
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            flex: 1 1 40%;
+            max-width: 200px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .controls button { color: white; }
+        .controls select {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-light);
+            text-align: center;
+        }
+        .controls select:focus {
+            border-color: var(--btn-generate);
+            outline: none;
+        }
+
+        #generate-btn { background-color: var(--btn-generate); }
+        #generate-btn:hover { background-color: var(--btn-generate-hover); }
+        #solve-btn { background-color: var(--btn-solve); }
+        #solve-btn:hover { background-color: var(--btn-solve-hover); }
+        #clear-btn { background-color: var(--btn-clear); }
+        #clear-btn:hover { background-color: var(--btn-clear-hover); }
+
+        #message-box {
+            min-height: 24px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
+
+        .memo-container {
+            margin-top: 1.5rem;
+            text-align: left;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1rem;
+        }
+        .memo-container h3 {
+            font-size: 1rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        #memo-pad {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            background-color: var(--container-bg);
+        }
+        #memo-pad:focus { border-color: var(--btn-generate); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>스도쿠 해결사</h1>
+        
+        <div id="sudoku-board"></div>
+        
+        <!-- 숫자 입력판 -->
+        <div class="numpad-container">
+            <button class="numpad-btn num-btn" data-val="1">1</button>
+            <button class="numpad-btn num-btn" data-val="2">2</button>
+            <button class="numpad-btn num-btn" data-val="3">3</button>
+            <button class="numpad-btn num-btn" data-val="4">4</button>
+            <button class="numpad-btn num-btn" data-val="5">5</button>
+            <button class="numpad-btn num-btn" data-val="6">6</button>
+            <button class="numpad-btn num-btn" data-val="7">7</button>
+            <button class="numpad-btn num-btn" data-val="8">8</button>
+            <button class="numpad-btn num-btn" data-val="9">9</button>
+            <button class="numpad-btn" id="memo-toggle-btn">메모</button>
+        </div>
+
+        <div class="controls">
+            <select id="difficulty-select">
+                <option value="easy">초급</option>
+                <option value="medium" selected>중급</option>
+                <option value="hard">고급</option>
+            </select>
+            <button id="generate-btn">문제 생성</button>
+            <button id="solve-btn">자동 풀기</button>
+            <button id="clear-btn">초기화</button>
+        </div>
+
+        <div id="message-box">빈칸을 선택하고 아래 숫자를 눌러보세요.</div>
+
+        <div class="memo-container">
+            <h3>메모장</h3>
+            <textarea id="memo-pad" placeholder="여기에 스도쿠 풀이 메모를 자유롭게 작성하세요..."></textarea>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardElement = document.getElementById('sudoku-board');
+            const solveBtn = document.getElementById('solve-btn');
+            const generateBtn = document.getElementById('generate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const messageBox = document.getElementById('message-box');
+            const memoToggleBtn = document.getElementById('memo-toggle-btn');
+            const numBtns = document.querySelectorAll('.num-btn');
+
+            let selectedCell = null;
+            let isMemoMode = false;
+
+            for (let i = 0; i < 81; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.dataset.value = ''; 
+                
+                const valueSpan = document.createElement('span');
+                valueSpan.classList.add('cell-value');
+                cell.appendChild(valueSpan);
+
+                const memoDiv = document.createElement('div');
+                memoDiv.classList.add('cell-memo');
+                for (let m = 1; m <= 9; m++) {
+                    const mNum = document.createElement('span');
+                    mNum.classList.add('memo-num');
+                    mNum.dataset.memoVal = m;
+                    mNum.textContent = ''; 
+                    memoDiv.appendChild(mNum);
+                }
+                cell.appendChild(memoDiv);
+
+                const row = Math.floor(i / 9);
+                const col = i % 9;
+                
+                if (col === 2 || col === 5) cell.classList.add('border-right');
+                if (row === 2 || row === 5) cell.classList.add('border-bottom');
+
+                // 셀 클릭 이벤트
+                cell.addEventListener('mousedown', function(e) {
+                    if (selectedCell) selectedCell.classList.remove('selected');
+                    selectedCell = this;
+                    selectedCell.classList.add('selected');
+                    highlightSameNumbers(this.dataset.value);
+                });
+
+                boardElement.appendChild(cell);
+            }
+
+            // 바탕 클릭 시 선택 해제
+            document.addEventListener('mousedown', (e) => {
+                if (!e.target.closest('#sudoku-board') && !e.target.closest('.numpad-container')) {
+                    if (selectedCell) {
+                        selectedCell.classList.remove('selected');
+                        selectedCell = null;
+                        highlightSameNumbers('');
+                    }
+                }
+            });
+
+            // 키보드 입력 처리
+            document.addEventListener('keydown', (e) => {
+                if (!selectedCell) return;
+                
+                if (e.key >= '1' && e.key <= '9') {
+                    handleInput(e.key);
+                } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                    handleInput('');
+                } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                    moveSelection(e.key);
+                }
+            });
+
+            // 메모 모드 토글
+            memoToggleBtn.addEventListener('click', () => {
+                isMemoMode = !isMemoMode;
+                memoToggleBtn.classList.toggle('active', isMemoMode);
+            });
+
+            // 숫자패드 클릭 처리
+            numBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    handleInput(this.dataset.val);
+                });
+            });
+
+            function handleInput(val) {
+                if (!selectedCell || selectedCell.classList.contains('fixed-text')) return;
+
+                const valueSpan = selectedCell.querySelector('.cell-value');
+                const memoDiv = selectedCell.querySelector('.cell-memo');
+
+                if (isMemoMode && val !== '') {
+                    // 메모 모드: 셀에 확정된 값이 없을 때만 작동
+                    if (selectedCell.dataset.value === '') {
+                        const mNum = memoDiv.querySelector(`[data-memo-val="${val}"]`);
+                        if (mNum.textContent === val) {
+                            mNum.textContent = '';
+                        } else {
+                            mNum.textContent = val;
+                        }
+                    }
+                } else {
+                    // 일반 입력 모드
+                    if (val === '') {
+                        selectedCell.dataset.value = '';
+                        valueSpan.textContent = '';
+                    } else {
+                        // 같은 숫자를 입력하면 지워짐 (토글)
+                        if (selectedCell.dataset.value === val) {
+                            selectedCell.dataset.value = '';
+                            valueSpan.textContent = '';
+                        } else {
+                            selectedCell.dataset.value = val;
+                            valueSpan.textContent = val;
+                            // 확정 값이 입력되면 해당 셀의 메모는 모두 지움
+                            memoDiv.querySelectorAll('.memo-num').forEach(m => m.textContent = '');
+                        }
+                    }
+                    
+                    selectedCell.classList.remove('solved-text');
+                    showMessage("", "");
+                    checkCompletedNumbers();
+                    highlightSameNumbers(selectedCell.dataset.value);
+                }
+            }
+
+            function moveSelection(key) {
+                const idx = parseInt(selectedCell.dataset.index);
+                let newIdx = idx;
+                
+                if (key === 'ArrowUp' && idx >= 9) newIdx -= 9;
+                if (key === 'ArrowDown' && idx < 72) newIdx += 9;
+                if (key === 'ArrowLeft' && idx % 9 > 0) newIdx -= 1;
+                if (key === 'ArrowRight' && idx % 9 < 8) newIdx += 1;
+
+                if (newIdx !== idx) {
+                    selectedCell.classList.remove('selected');
+                    selectedCell = document.querySelector(`.cell[data-index="${newIdx}"]`);
+                    selectedCell.classList.add('selected');
+                    highlightSameNumbers(selectedCell.dataset.value);
+                }
+            }
+
+            function highlightSameNumbers(targetValue) {
+                document.querySelectorAll('.cell').forEach(cell => {
+                    if (targetValue && targetValue !== '' && cell.dataset.value === targetValue) {
+                        cell.classList.add('highlight-bg');
+                    } else {
+                        cell.classList.remove('highlight-bg');
+                    }
+                });
+            }
+
+            function checkCompletedNumbers() {
+                const counts = {};
+                const cells = document.querySelectorAll('.cell');
+                
+                cells.forEach(cell => {
+                    const val = cell.dataset.value;
+                    if (val && val !== '') {
+                        counts[val] = (counts[val] || 0) + 1;
+                    }
+                });
+
+                cells.forEach(cell => {
+                    const val = cell.dataset.value;
+                    cell.classList.remove('completed-text');
+                    if (val && counts[val] === 9) {
+                        cell.classList.add('completed-text');
+                    }
+                });
+            }
+
+            function showMessage(msg, type) {
+                messageBox.textContent = msg;
+                messageBox.className = type; 
+            }
+
+            function getBoard() {
+                const cells = document.querySelectorAll('.cell');
+                let board = [];
+                let rowArray = [];
+                cells.forEach((cell, index) => {
+                    const val = cell.dataset.value;
+                    rowArray.push(val === '' ? 0 : parseInt(val));
+                    if ((index + 1) % 9 === 0) {
+                        board.push(rowArray);
+                        rowArray = [];
+                    }
+                });
+                return board;
+            }
+
+            function setBoard(board, originalBoard) {
+                const cells = document.querySelectorAll('.cell');
+                cells.forEach((cell, index) => {
+                    const r = Math.floor(index / 9);
+                    const c = index % 9;
+                    const valueSpan = cell.querySelector('.cell-value');
+                    const memoDiv = cell.querySelector('.cell-memo');
+                    
+                    if (board[r][c] !== 0) {
+                        if (!cell.classList.contains('fixed-text')) {
+                            cell.dataset.value = board[r][c].toString();
+                            valueSpan.textContent = board[r][c];
+                            memoDiv.querySelectorAll('.memo-num').forEach(m => m.textContent = '');
+                            
+                            if (originalBoard && originalBoard[r][c] === 0) {
+                                cell.classList.add('solved-text');
+                            }
+                        }
+                    } else {
+                        if (!cell.classList.contains('fixed-text')) {
+                            cell.dataset.value = '';
+                            valueSpan.textContent = '';
+                        }
+                    }
+                });
+            }
+
+            function valid(bo, num, pos) {
+                for (let i = 0; i < 9; i++) {
+                    if (bo[pos[0]][i] === num && pos[1] !== i) return false;
+                    if (bo[i][pos[1]] === num && pos[0] !== i) return false;
+                }
+                const box_x = Math.floor(pos[1] / 3);
+                const box_y = Math.floor(pos[0] / 3);
+                for (let i = box_y * 3; i < box_y * 3 + 3; i++) {
+                    for (let j = box_x * 3; j < box_x * 3 + 3; j++) {
+                        if (bo[i][j] === num && (i !== pos[0] || j !== pos[1])) return false;
+                    }
+                }
+                return true;
+            }
+
+            function isInitialBoardValid(bo) {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (bo[i][j] !== 0) {
+                            const temp = bo[i][j];
+                            bo[i][j] = 0;
+                            const isValid = valid(bo, temp, [i, j]);
+                            bo[i][j] = temp;
+                            if (!isValid) return false; 
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function findEmpty(bo) {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (bo[i][j] === 0) return [i, j];
+                    }
+                }
+                return null;
+            }
+
+            function solve(bo) {
+                const find = findEmpty(bo);
+                if (!find) return true;
+                
+                const [row, col] = find;
+                for (let i = 1; i <= 9; i++) {
+                    if (valid(bo, i, [row, col])) {
+                        bo[row][col] = i;
+                        if (solve(bo)) return true;
+                        bo[row][col] = 0;
+                    }
+                }
+                return false;
+            }
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function fillBoardRandomly(bo) {
+                const find = findEmpty(bo);
+                if (!find) return true;
+                
+                const [row, col] = find;
+                const numbers = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+                
+                for (let i of numbers) {
+                    if (valid(bo, i, [row, col])) {
+                        bo[row][col] = i;
+                        if (fillBoardRandomly(bo)) return true;
+                        bo[row][col] = 0;
+                    }
+                }
+                return false;
+            }
+
+            solveBtn.addEventListener('click', () => {
+                const board = getBoard();
+                
+                const isEmpty = board.every(row => row.every(cell => cell === 0));
+                if (isEmpty) {
+                    showMessage("숫자를 최소한 하나 이상 입력해 주세요.", "error");
+                    return;
+                }
+
+                if (!isInitialBoardValid(board)) {
+                    showMessage("입력된 숫자에 오류가 있습니다. 중복된 숫자가 없는지 확인하세요.", "error");
+                    return;
+                }
+
+                const originalBoard = board.map(row => [...row]);
+                showMessage("문제를 푸는 중입니다...", "");
+                
+                setTimeout(() => {
+                    if (solve(board)) {
+                        setBoard(board, originalBoard);
+                        showMessage("성공적으로 스도쿠를 해결했습니다!", "success");
+                        checkCompletedNumbers();
+                        if(selectedCell) highlightSameNumbers(selectedCell.dataset.value);
+                    } else {
+                        showMessage("해결할 수 없는 스도쿠 문제입니다.", "error");
+                    }
+                }, 50);
+            });
+
+            generateBtn.addEventListener('click', () => {
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.dataset.value = '';
+                    cell.querySelector('.cell-value').textContent = '';
+                    cell.querySelector('.cell-memo').querySelectorAll('.memo-num').forEach(m => m.textContent = '');
+                    cell.classList.remove('solved-text', 'fixed-text', 'completed-text', 'highlight-bg');
+                });
+                
+                let newBoard = Array.from({length: 9}, () => Array(9).fill(0));
+                fillBoardRandomly(newBoard);
+                
+                const difficulty = document.getElementById('difficulty-select').value;
+                let emptyCount = 45; 
+                
+                if (difficulty === 'easy') emptyCount = Math.floor(Math.random() * 11) + 30; 
+                else if (difficulty === 'medium') emptyCount = Math.floor(Math.random() * 11) + 45; 
+                else if (difficulty === 'hard') emptyCount = Math.floor(Math.random() * 10) + 56; 
+                
+                let removed = 0;
+                while (removed < emptyCount) {
+                    const r = Math.floor(Math.random() * 9);
+                    const c = Math.floor(Math.random() * 9);
+                    if (newBoard[r][c] !== 0) {
+                        newBoard[r][c] = 0;
+                        removed++;
+                    }
+                }
+                
+                const cells = document.querySelectorAll('.cell');
+                cells.forEach((cell, index) => {
+                    const r = Math.floor(index / 9);
+                    const c = index % 9;
+                    if (newBoard[r][c] !== 0) {
+                        cell.dataset.value = newBoard[r][c].toString();
+                        cell.querySelector('.cell-value').textContent = newBoard[r][c];
+                        cell.classList.add('fixed-text');
+                    }
+                });
+                
+                showMessage("새로운 문제가 생성되었습니다! 직접 풀거나 자동 풀기를 눌러보세요.", "success");
+                checkCompletedNumbers();
+                highlightSameNumbers('');
+            });
+
+            clearBtn.addEventListener('click', () => {
+                document.querySelectorAll('.cell').forEach(cell => {
+                    if(!cell.classList.contains('fixed-text')) {
+                        cell.dataset.value = '';
+                        cell.querySelector('.cell-value').textContent = '';
+                        cell.querySelector('.cell-memo').querySelectorAll('.memo-num').forEach(m => m.textContent = '');
+                        cell.classList.remove('solved-text');
+                    }
+                    cell.classList.remove('completed-text', 'highlight-bg');
+                });
+                document.getElementById('memo-pad').value = ''; 
+                showMessage("초기화 되었습니다.", "");
+                checkCompletedNumbers();
+                if(selectedCell) highlightSameNumbers(selectedCell.dataset.value);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+  <title xml:lang="ko">쇼핑몰</title>
+  <title xml:lang="en">Shop</title>
+  <description xml:lang="ko">상품(옵션·배송비)·계층형 카테고리·장바구니·주문·결제(토스페이먼츠/무통장)·리뷰·상품문의·쿠폰·회원공개설정을 갖춘 단일 쇼핑몰 모듈입니다. 별도 레이아웃의 관리자 콘솔과, 스킨으로 커스터마이즈 가능한 반응형 스토어프론트를 제공합니다.</description>
+  <description xml:lang="en">A full single-module shopping mall: products (options/shipping), hierarchical categories, cart, orders, payments (Toss Payments / bank transfer), reviews, product Q&amp;A, coupons and member-only pricing. Includes a standalone admin console and a responsive, skinnable storefront.</description>
+  <version>1.18.0</version>
+  <date>2026-08-28</date>
+  <category>service</category>
+  <author link="https://ddgglabs.org">
+    <name xml:lang="ko">딱따고기</name>
+    <name xml:lang="en">DDGG</name>
+  </author>
+</module>

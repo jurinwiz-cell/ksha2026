@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="ko">DB Adminer</title>
+    <title xml:lang="en">DB Adminer</title>
+    <description xml:lang="ko">Adminer를 사용해 라이믹스 DB를 관리합니다.</description>
+    <description xml:lang="en">Manage Rhymix database using Adminer.</description>
+    <version>0.3.0</version>
+    <date>2026-04-09</date>
+    <category>utility</category>
+
+    <author email_address="contact@headercat.com" link="https://richrix.com">
+        <name xml:lang="ko">Headercat Inc.</name>
+        <name xml:lang="en">Headercat Inc.</name>
+    </author>
+</module>

@@ -1,0 +1,21 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_members" />
+	</tables>
+	<conditions>
+		<group>
+			<condition operation="equal" column="member_srl" var="member_srl" filter="number" />
+			<condition operation="equal" column="member_srl2" var="member_srl2" filter="number" pipe="and" />
+		</group>
+		<!--<group pipe="or">
+			<condition operation="equal" column="member_srl" var="member_srl2" filter="number" />
+			<condition operation="equal" column="member_srl2" var="member_srl" filter="number" pipe="and" />
+		</group>-->
+	</conditions>
+	<!--<groups>
+		<group column="room_no" />
+	</groups>-->
+	<navigation>
+		<list_count var="list_count" default="100" />
+	</navigation>
+</query>

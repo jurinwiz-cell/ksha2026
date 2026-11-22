@@ -1,0 +1,79 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead">
+  <h1>주문 내역 <span class="sub">{number_format($total_count)}건</span></h1>
+  <a href="{getUrl('','module','admin','act','dispDdggshopAdminPayment')}" class="x_btn">결제 로그</a>
+</div>
+
+<form action="./" method="get" class="dga-filter">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="dispDdggshopAdminOrderList" />
+
+  <div class="dga-frow">
+    <span class="dga-flabel">기간</span>
+    <div class="dga-period">
+      <button type="submit" name="period" value="" class="dga-pbtn {$cur_period=='' ? 'on' : ''}">전체</button>
+      <button type="submit" name="period" value="today" class="dga-pbtn {$cur_period=='today' ? 'on' : ''}">오늘</button>
+      <button type="submit" name="period" value="yesterday" class="dga-pbtn {$cur_period=='yesterday' ? 'on' : ''}">어제</button>
+      <button type="submit" name="period" value="7" class="dga-pbtn {$cur_period=='7' ? 'on' : ''}">7일</button>
+      <button type="submit" name="period" value="15" class="dga-pbtn {$cur_period=='15' ? 'on' : ''}">15일</button>
+      <button type="submit" name="period" value="30" class="dga-pbtn {$cur_period=='30' ? 'on' : ''}">1개월</button>
+      <button type="submit" name="period" value="90" class="dga-pbtn {$cur_period=='90' ? 'on' : ''}">3개월</button>
+    </div>
+    <input type="date" name="date_from" value="{$date_from}" />
+    <span class="dga-tilde">~</span>
+    <input type="date" name="date_to" value="{$date_to}" />
+    <button type="submit" name="period" value="custom" class="x_btn">기간 조회</button>
+  </div>
+
+  <div class="dga-frow">
+    <span class="dga-flabel">상태</span>
+    <select name="status">
+      <option value="">전체 상태</option>
+      <option loop="$status_options=>$code,$label" value="{$code}" selected="selected"|cond="$cur_status==$code">{$label}</option>
+    </select>
+    <span class="dga-flabel">결제수단</span>
+    <select name="pay_method">
+      <option value="">전체</option>
+      <option value="toss" selected="selected"|cond="$cur_pay_method=='toss'">토스페이먼츠</option>
+      <option value="banktransfer" selected="selected"|cond="$cur_pay_method=='banktransfer'">무통장입금</option>
+    </select>
+  </div>
+
+  <div class="dga-frow">
+    <span class="dga-flabel">검색</span>
+    <select name="search_target">
+      <option value="order_code" selected="selected"|cond="$search_target=='order_code'">주문번호</option>
+      <option value="orderer_name" selected="selected"|cond="$search_target=='orderer_name'">주문자명</option>
+      <option value="orderer_phone" selected="selected"|cond="$search_target=='orderer_phone'">연락처</option>
+      <option value="orderer_email" selected="selected"|cond="$search_target=='orderer_email'">이메일</option>
+      <option value="item_name" selected="selected"|cond="$search_target=='item_name'">상품명</option>
+    </select>
+    <input type="text" name="search_keyword" value="{$search_keyword}" placeholder="검색어 입력" style="width:220px;" />
+    <button type="submit" name="period" value="{$cur_period}" class="x_btn x_btn-primary">검색</button>
+    <a href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList')}" class="x_btn">초기화</a>
+  </div>
+</form>
+
+<table class="x_table x_table-bordered">
+  <thead><tr><th>주문번호</th><th>주문자</th><th style="text-align:right;">결제금액</th><th>결제수단</th><th>상태</th><th>주문일시</th><th></th></tr></thead>
+  <tbody>
+    <tr cond="!count($orders)"><td colspan="7" class="dga-empty">조건에 맞는 주문이 없습니다.</td></tr>
+    <tr loop="$orders=>$o">
+      <td><b>{$o->order_code}</b></td>
+      <td>{$o->orderer_name}<!--@if(!$o->member_srl)--> <span class="dga-muted" style="font-size:11px;">비회원</span><!--@end--></td>
+      <td style="text-align:right;font-weight:700;">{number_format($o->payment_price)}원</td>
+      <td>{$o->pay_method_label}</td>
+      <td><span class="dga-badge {$o->status}">{$o->status_label}</span></td>
+      <td class="dga-muted">{zdate($o->regdate,'Y.m.d H:i')}</td>
+      <td><a href="{getUrl('','module','admin','act','dispDdggshopAdminOrderView','order_srl',$o->order_srl)}" class="x_btn x_btn-mini">상세</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="dga-pager" cond="$total_page > 1">
+  <a class="x_btn x_btn-mini" cond="$cur_page>1" href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList','status',$cur_status,'pay_method',$cur_pay_method,'period',$cur_period,'date_from',$date_from,'date_to',$date_to,'search_target',$search_target,'search_keyword',$search_keyword,'page',$cur_page-1)}">이전</a>
+  <span>{$cur_page} / {$total_page}</span>
+  <a class="x_btn x_btn-mini" cond="$cur_page<$total_page" href="{getUrl('','module','admin','act','dispDdggshopAdminOrderList','status',$cur_status,'pay_method',$cur_pay_method,'period',$cur_period,'date_from',$date_from,'date_to',$date_to,'search_target',$search_target,'search_keyword',$search_keyword,'page',$cur_page+1)}">다음</a>
+</div>
+
+<include target="_admin_foot.html" />

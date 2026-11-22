@@ -1,0 +1,138 @@
+<include target="_console_head.html" />
+
+<div class="cs-pagehead">
+  <div><span class="sub"><a href="{$u_homeblocks}" style="color:inherit;">홈 화면 구성</a> · {$block ? '블록 수정' : '새 블록'}</span></div>
+  <a class="cs-btn ghost" href="{$u_homeblocks}">‹ 목록</a>
+</div>
+
+<form method="post" action="./" enctype="multipart/form-data" class="cs-card cs-card-p" style="max-width:680px;" onsubmit="return hbSubmit();">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminSaveHomeBlock" />
+  <input type="hidden" name="block_srl" value="{$block->block_srl}" />
+  <input type="hidden" name="console_return" value="{$console_return}" />
+  <input type="hidden" name="item_srls" id="hb-item-srls" value="" />
+
+  <div class="cs-field"><label>블록 종류</label>
+    <label class="cs-row" style="gap:6px;display:inline-flex;margin-right:18px;"><input type="radio" name="block_type" value="products" checked="checked"|cond="!$block || $block->block_type!='promo'" onclick="hbType()" style="width:auto;"> 상품 블록</label>
+    <label class="cs-row" style="gap:6px;display:inline-flex;"><input type="radio" name="block_type" value="promo" checked="checked"|cond="$block && $block->block_type=='promo'" onclick="hbType()" style="width:auto;"> 프로모션 이미지</label>
+  </div>
+
+  <div class="cs-field"><label>블록 제목</label><input type="text" name="title" value="{$block->title}" class="cs-input" placeholder="예: 이번 주 신상품" /></div>
+
+  <!-- 상품 블록 -->
+  <div id="hb-products">
+    <div class="cs-field"><label>노출 기준 (소스)</label>
+      <select name="source_type" class="cs-select" onchange="hbSource()" id="hb-source">
+        <option loop="$source_list=>$sk,$sv" value="{$sk}" selected="selected"|cond="$block && $block->source_type==$sk">{$sv}</option>
+      </select>
+      <div class="cs-muted" style="font-size:12px;margin-top:5px;">직접 선택 = 원하는 상품을 골라 노출 / 그 외 = 기준에 맞는 상품을 자동 노출</div>
+    </div>
+
+    <!-- 직접 선택(manual): 상품 검색·선택 -->
+    <div class="cs-field" id="hb-manual">
+      <label>상품 선택</label>
+      <div class="cs-row" style="margin-bottom:8px;"><input type="text" id="hb-kw" class="cs-input" placeholder="상품명 검색" onkeydown="if(event.keyCode==13){event.preventDefault();hbSearch();}" /><button type="button" class="cs-btn ghost" onclick="hbSearch()">검색</button></div>
+      <div id="hb-results" class="hb-results"></div>
+      <div class="cs-muted" style="font-size:12px;margin:6px 0;">선택된 상품 (드래그 불가, 노출 순서 = 선택 순서):</div>
+      <div id="hb-chips" class="hb-chips">
+        <span class="hb-chip" loop="$selected_items=>$si" data-srl="{$si->item_srl}"><!--@if($si->thumb)--><img src="{$si->thumb}" alt="" /><!--@end-->{$si->item_name}<button type="button" onclick="hbRemove(this)">×</button></span>
+      </div>
+    </div>
+
+    <!-- 카테고리 -->
+    <div class="cs-field" id="hb-category">
+      <label>카테고리</label>
+      <select name="category_srl" class="cs-select">
+        <option value="">선택</option>
+        <option loop="$categories=>$c" value="{$c->category_srl}" selected="selected"|cond="$block && $block->source_type=='category' && $block->source_value==$c->category_srl">{$c->depth>0 ? '— ' : ''}{$c->category_name}</option>
+      </select>
+    </div>
+
+    <!-- 태그 -->
+    <div class="cs-field" id="hb-tag">
+      <label>태그</label>
+      <select name="tag_srl" class="cs-select">
+        <option value="">선택</option>
+        <option loop="$tags=>$t" value="{$t->tag_srl}" selected="selected"|cond="$block && $block->source_type=='tag' && $block->source_value==$t->tag_srl">{$t->title}</option>
+      </select>
+    </div>
+
+    <div class="cs-row">
+      <div class="cs-field" style="flex:1;"><label>노출 개수</label><input type="number" name="list_count" value="{$block ? $block->list_count : 8}" class="cs-input" style="width:100px;" min="1" max="40" /></div>
+      <div class="cs-field" style="flex:1;"><label>레이아웃</label>
+        <select name="layout" class="cs-select">
+          <option value="grid" selected="selected"|cond="!$block || $block->layout!='scroll'">그리드</option>
+          <option value="scroll" selected="selected"|cond="$block && $block->layout=='scroll'">가로 스크롤</option>
+        </select>
+      </div>
+    </div>
+    <div class="cs-field"><label>‘더보기’ 링크 (선택)</label><input type="text" name="link" value="{$block->link}" class="cs-input" placeholder="비우면 카테고리 소스는 자동, 그 외는 미표시" /></div>
+  </div>
+
+  <!-- 프로모션 이미지 블록 -->
+  <div id="hb-promo">
+    <div class="cs-field"><label>이미지</label>
+      <!--@if($block && $block->image)--><div style="margin-bottom:8px;"><img src="{$block->image}" alt="" style="max-width:100%;border-radius:2px;" /></div><input type="hidden" name="image" value="{$block->image}" /><!--@end-->
+      <input type="file" name="image_file" accept="image/*" class="cs-input" />
+    </div>
+    <div class="cs-field"><label>연결 링크 (선택)</label><input type="text" name="promo_link" value="{$block && $block->block_type=='promo' ? $block->link : ''}" class="cs-input" placeholder="클릭 시 이동할 주소" /></div>
+  </div>
+
+  <div class="cs-field"><label>상태</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="status" value="Y" checked="checked"|cond="!$block || $block->status=='Y'" style="width:auto;"> 홈에 노출</label></div>
+
+  <div class="cs-row" style="margin-top:8px;">
+    <button type="submit" class="cs-btn">저장</button>
+    <a class="cs-btn ghost" href="{$u_homeblocks}">취소</a>
+  </div>
+</form>
+
+<script>
+function hbType(){
+  var t=document.querySelector('input[name=block_type]:checked').value;
+  document.getElementById('hb-products').style.display = (t=='promo') ? 'none' : '';
+  document.getElementById('hb-promo').style.display = (t=='promo') ? '' : 'none';
+}
+function hbSource(){
+  var s=document.getElementById('hb-source').value;
+  document.getElementById('hb-manual').style.display = (s=='manual') ? '' : 'none';
+  document.getElementById('hb-category').style.display = (s=='category') ? '' : 'none';
+  document.getElementById('hb-tag').style.display = (s=='tag') ? '' : 'none';
+}
+function hbSearch(){
+  var kw=document.getElementById('hb-kw').value;
+  exec_json('ddggshop.procDdggshopAdminSearchItems',{keyword:kw},function(ret){
+    var box=document.getElementById('hb-results'); box.innerHTML='';
+    var items=ret.items||[]; if(!items.length){ box.innerHTML='<div class="cs-muted" style="font-size:12.5px;padding:8px;">검색 결과가 없습니다.</div>'; return; }
+    items.forEach(function(it){
+      var d=document.createElement('div'); d.className='hb-result';
+      var nm=document.createElement('span'); nm.className='hb-rname'; nm.textContent=it.item_name;
+      var bt=document.createElement('button'); bt.type='button'; bt.className='cs-btn ghost sm'; bt.textContent='추가';
+      if(it.thumb){ var im=document.createElement('img'); im.src=it.thumb; d.appendChild(im); } else { var ph=document.createElement('span'); ph.className='hb-noimg'; d.appendChild(ph); }
+      d.appendChild(nm); d.appendChild(bt);
+      bt.addEventListener('click',function(){ hbAdd(it.item_srl,it.item_name,it.thumb); });
+      box.appendChild(d);
+    });
+  });
+}
+function hbAdd(srl,name,thumb){
+  if(document.querySelector('#hb-chips .hb-chip[data-srl="'+srl+'"]')) return;
+  var c=document.createElement('span'); c.className='hb-chip'; c.setAttribute('data-srl',srl);
+  if(thumb){ var im=document.createElement('img'); im.src=thumb; c.appendChild(im); }
+  var nm=document.createElement('span'); nm.textContent=name; c.appendChild(nm);
+  var bt=document.createElement('button'); bt.type='button'; bt.textContent='×'; c.appendChild(bt);
+  bt.addEventListener('click',function(){ hbRemove(bt); });
+  document.getElementById('hb-chips').appendChild(c);
+}
+function hbRemove(btn){ var c=btn.closest('.hb-chip'); if(c) c.parentNode.removeChild(c); }
+function hbSubmit(){
+  var srls=[]; document.querySelectorAll('#hb-chips .hb-chip').forEach(function(c){ srls.push(c.getAttribute('data-srl')); });
+  document.getElementById('hb-item-srls').value=srls.join(',');
+  return true;
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('#hb-chips .hb-chip button').forEach(function(b){ b.addEventListener('click',function(){ hbRemove(b); }); });
+  hbType(); hbSource();
+});
+</script>
+
+<include target="_console_foot.html" />

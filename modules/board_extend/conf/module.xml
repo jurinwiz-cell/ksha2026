@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <grants />
+    <permissions />
+    <actions>
+        <action name="dispBoard_extendAdminBoardList" type="view" admin_index="true" />
+        <action name="dispBoard_extendAdminBoardModify" type="view" />
+        <action name="procBoard_extendAdminWithOrder" type="controller" />
+        <action name="procBoard_extendAdminBoardModify" type="controller" />
+        <action name="procBoard_extendAdminFileDownload" type="controller" />
+        <action name="procBoard_extendAdminSaveExtensions" type="controller" />
+        <action name="procBoard_extendAdminSaveMediaExtensions" type="controller" />
+    </actions>
+</module>

@@ -1,0 +1,9 @@
+<table name="ddggshop_coupon_issue">
+  <column name="issue_srl" type="bignumber" notnull="notnull" primary_key="primary_key" />
+  <column name="coupon_srl" type="bignumber" notnull="notnull" index="idx_coupon" />
+  <column name="member_srl" type="bignumber" notnull="notnull" index="idx_member" />
+  <column name="used" type="char" size="1" default="N" notnull="notnull" />
+  <column name="order_srl" type="bignumber" default="0" />
+  <column name="regdate" type="date" />
+  <column name="used_date" type="date" />
+</table>

@@ -1,0 +1,40 @@
+{@
+$popup = preg_match('/^[A-Z]$/', (STRING)$popup)? $popup : '';
+$oClass = getClass('elkhatalk3');
+$_act = isset($act) && is_string($act) ? $act : '';
+}
+<a href="{$oClass->getUrl(['act'=>$_act,'popup'=>$popup])}" class="close-talk" title="{$lang->cmd_close}" onclick="window.getElkhatalk3('getElkhatalk3MemberList', this.href, true);return false;">{$lang->cmd_close}</a>
+<div class="list-talk overlayScrollbars" data-overlayscrollbars-initialize>
+
+<div class="talk talk-{$room_no} talk-member-{$target_srl}" data-room_no="{$room_no}" data-target_srl="{$target_srl}">
+	<include target="widget.list-talk-message.html" />
+</div>
+</div>
+
+{@
+$id = "target_srl-$target_srl";
+
+$components = array();
+$plugins = $oClass->getPlugin('components@');
+foreach($plugins as $key => $val):
+	$plugins[$key]($components);
+endforeach;
+}
+<div class="send-talk send-talk{count($components)}">
+	<div class="send-talk-table">
+		<div class="components" cond="count($components)">
+			<span cond="count($components) > 1" class="component more"><button type="button" title="{$lang->more}" onclick="jQuery(this).parent().next('.component-layer').toggleClass('on');" class="component-btn">{$lang->more}</button></span>
+			{@
+			ksort($components);
+			if(count($components) > 1) echo '<div class="component-layer">';
+			foreach($components as $val) echo $val;
+			if(count($components) > 1) echo '</div>';
+			}
+		</div>
+		<div class="input">
+			<textarea id="{$id}" data-target_srl="{$target_srl}" class="iText" placeholder="{$lang->elkhatalk3_shift_enter}" rows="1" cols="20"></textarea>
+			<span class="clear"><button type="button" title="{$lang->cmd_delete}" tabindex="-1">{$lang->cmd_delete}</button></span>
+		</div>
+		<span class="submit"><button type="button" title="{$lang->cmd_submit}" onclick="window.procElkhatalk3Say(jQuery('#{$id}'));">{$lang->cmd_submit}</button></span>
+	</div>
+</div>

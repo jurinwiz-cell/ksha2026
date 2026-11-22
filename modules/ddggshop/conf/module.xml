@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <grants />
+  <permissions />
+  <actions>
+    <!-- ===== Front: View (disp) ===== -->
+    <action name="dispDdggshopIndex" type="view" standalone="false" index="true" />
+    <action name="dispDdggshopProductList" type="view" standalone="false">
+      <route route="category/$category_srl:int" priority="40" />
+      <route route="category/$category_srl:int/page/$page:int" priority="40" />
+    </action>
+    <action name="dispDdggshopProductDetail" type="view" standalone="false">
+      <route route="product/$item_srl:int" priority="100" />
+    </action>
+    <action name="dispDdggshopCart" type="view" standalone="false" />
+    <action name="dispDdggshopOrder" type="view" standalone="false" />
+    <action name="dispDdggshopOrderResult" type="view" standalone="false" />
+    <action name="dispDdggshopOrderLookup" type="view" standalone="false" />
+    <action name="dispDdggshopMyPage" type="view" permission="member" standalone="false" />
+    <action name="dispDdggshopMyOrders" type="view" permission="member" standalone="false" />
+    <action name="dispDdggshopMyAddresses" type="view" permission="member" standalone="false" />
+    <action name="dispDdggshopMyCoupons" type="view" permission="member" standalone="false" />
+    <action name="dispDdggshopMyWishlist" type="view" permission="member" standalone="false" />
+
+    <!-- ===== 관리자 콘솔 (별도 레이아웃, 권한은 코드에서 체크) ===== -->
+    <action name="dispDdggshopConsole" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleOrders" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleOrderView" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleOrderPrint" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleOrdersExcel" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleStats" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleStatsExcel" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleQna" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleCategory" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleBadges" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleClaims" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleHomeBlocks" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleHomeBlockForm" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleItems" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleItemsExcel" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleItemForm" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleConfig" type="view" standalone="false" />
+    <action name="dispDdggshopConsoleCoupon" type="view" standalone="false" />
+
+    <!-- ===== Front: Controller (proc) ===== -->
+    <action name="procDdggshopAddCart" type="controller" standalone="true" />
+    <action name="procDdggshopUpdateCart" type="controller" standalone="true" />
+    <action name="procDdggshopDeleteCart" type="controller" standalone="true" />
+    <action name="procDdggshopValidateCoupon" type="controller" standalone="true" />
+    <action name="procDdggshopCreateOrder" type="controller" standalone="true" />
+    <action name="procDdggshopPaymentWebhook" type="controller" standalone="true" check_csrf="false" />
+    <action name="procDdggshopCancelOrder" type="controller" standalone="true" />
+    <action name="procDdggshopOrderLookup" type="controller" standalone="true" />
+    <action name="procDdggshopWriteReview" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopToggleWishlist" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopDeleteReview" type="controller" standalone="true" />
+    <action name="procDdggshopWriteQna" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopDeleteQna" type="controller" standalone="true" />
+    <action name="procDdggshopCancelMyOrder" type="controller" standalone="true" />
+    <action name="procDdggshopSetLang" type="controller" standalone="true" check_csrf="false" method="GET|POST" />
+    <action name="procDdggshopRequestClaim" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopSaveAddress" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopDeleteAddress" type="controller" permission="member" standalone="true" />
+    <action name="procDdggshopSetDefaultAddress" type="controller" permission="member" standalone="true" />
+
+    <!-- ===== Admin: View (disp) ===== -->
+    <action name="dispDdggshopAdminDashboard" type="view" admin_index="true" menu_name="ddggshop" menu_index="true" />
+    <action name="dispDdggshopAdminItemList" type="view" />
+    <action name="dispDdggshopAdminItemForm" type="view" />
+    <action name="dispDdggshopAdminCategory" type="view" />
+    <action name="dispDdggshopAdminOrderList" type="view" />
+    <action name="dispDdggshopAdminOrderView" type="view" />
+    <action name="dispDdggshopAdminPayment" type="view" />
+    <action name="dispDdggshopAdminQna" type="view" />
+    <action name="dispDdggshopAdminConfig" type="view" />
+
+    <!-- ===== Admin: Controller (proc) ===== -->
+    <action name="procDdggshopAdminInsertItem" type="controller" />
+    <action name="procDdggshopAdminDeleteItem" type="controller" />
+    <action name="procDdggshopAdminImportItems" type="controller" />
+    <action name="procDdggshopAdminInsertCategory" type="controller" />
+    <action name="procDdggshopAdminDeleteCategory" type="controller" />
+    <action name="procDdggshopAdminReorderCategory" type="controller" />
+    <action name="procDdggshopAdminReorderItem" type="controller" />
+    <action name="procDdggshopAdminSaveHomeBlock" type="controller" />
+    <action name="procDdggshopAdminDeleteHomeBlock" type="controller" />
+    <action name="procDdggshopAdminToggleHomeBlock" type="controller" />
+    <action name="procDdggshopAdminToggleCoupon" type="controller" />
+    <action name="procDdggshopAdminToggleCategoryCount" type="controller" />
+    <action name="procDdggshopAdminProcessClaim" type="controller" />
+    <action name="procDdggshopAdminReorderHomeBlocks" type="controller" />
+    <action name="procDdggshopAdminSearchItems" type="controller" />
+    <action name="procDdggshopAdminUpdateOrderStatus" type="controller" />
+    <action name="procDdggshopAdminUpdateShipping" type="controller" />
+    <action name="procDdggshopAdminConfirmDeposit" type="controller" />
+    <action name="procDdggshopAdminSaveConfig" type="controller" />
+    <action name="procDdggshopAdminSaveTag" type="controller" />
+    <action name="procDdggshopAdminDeleteTag" type="controller" />
+    <action name="procDdggshopAdminSaveBanner" type="controller" />
+    <action name="procDdggshopAdminDeleteBanner" type="controller" />
+    <action name="procDdggshopAdminSaveShipFee" type="controller" />
+    <action name="procDdggshopAdminDeleteShipFee" type="controller" />
+    <action name="procDdggshopAdminSaveCoupon" type="controller" />
+    <action name="procDdggshopAdminDeleteCoupon" type="controller" />
+    <action name="procDdggshopAdminIssueCoupon" type="controller" />
+    <action name="procDdggshopAdminIssueCouponMember" type="controller" />
+    <action name="procDdggshopAdminSearchMember" type="controller" />
+    <action name="procDdggshopAdminAnswerQna" type="controller" />
+    <action name="procDdggshopAdminDeleteQna" type="controller" />
+  </actions>
+  <eventHandlers>
+    <eventHandler after="menu.getModuleListInSitemap" class="controller" method="triggerMenuModuleList" />
+    <eventHandler after="member.insertMember" class="controller" method="triggerDdggshopMemberJoin" />
+  </eventHandlers>
+  <menus>
+    <menu name="ddggshop" type="all">
+      <title xml:lang="ko">쇼핑몰</title>
+      <title xml:lang="en">Shop</title>
+    </menu>
+  </menus>
+</module>

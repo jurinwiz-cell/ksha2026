@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query id="insertPopup" action="insert">
+	<tables>
+		<table name="popups" />
+	</tables>
+	<columns>
+		<column name="popup_srl" var="popup_srl" filter="number" notnull="notnull" />
+		<column name="module_srl" var="module_srl" filter="number" default="0" />
+		<column name="popup_type" var="popup_type" default="html" />
+		<column name="title" var="title" notnull="notnull" />
+		<column name="content" var="content" />
+		<column name="image_url" var="image_url" />
+		<column name="image_link" var="image_link" />
+		<column name="link_target" var="link_target" default="_self" />
+		<column name="position_top" var="position_top" filter="number" default="100" />
+		<column name="position_left" var="position_left" filter="number" default="100" />
+		<column name="width" var="width" filter="number" default="400" />
+		<column name="height" var="height" filter="number" default="0" />
+		<column name="target_type" var="target_type" default="include" />
+		<column name="start_date" var="start_date" />
+		<column name="end_date" var="end_date" />
+		<column name="is_enabled" var="is_enabled" default="Y" />
+		<column name="cookie_days" var="cookie_days" filter="number" default="1" />
+		<column name="display_order" var="display_order" filter="number" default="0" />
+		<column name="member_srl" var="member_srl" filter="number" default="0" />
+		<column name="regdate" var="regdate" default="date('YmdHis')" />
+		<column name="last_update" var="last_update" default="date('YmdHis')" />
+	</columns>
+</query>

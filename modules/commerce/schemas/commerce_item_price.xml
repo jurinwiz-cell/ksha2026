@@ -1,0 +1,6 @@
+<table name="commerce_item_price">
+	<column name="item_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="currency" type="varchar" size="8" notnull="notnull" primarykey="primarykey" />
+	<column name="price" type="bigint" notnull="notnull" default="0" />
+	<column name="sale_price" type="bigint" notnull="notnull" default="0" />
+</table>

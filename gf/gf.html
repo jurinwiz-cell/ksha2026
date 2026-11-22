@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주택별 통합 시설 및 운영 관리 시스템 (Sheet-19)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* 부드러운 스크롤바 디자인 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // CDN 환경에서 아이콘 패키지 종속성 에러를 완벽하게 방지하기 위한 SVG 컴포넌트 구현
+        const Icon = ({ name, className = "w-4 h-4", ...props }) => {
+            const icons = {
+                Home: <g><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></g>,
+                Search: <g><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g>,
+                Plus: <g><path d="M5 12h14"/><path d="M12 5v14"/></g>,
+                Download: <g><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></g>,
+                Upload: <g><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></g>,
+                Trash2: <g><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></g>,
+                Edit3: <g><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></g>,
+                CheckCircle: <g><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></g>,
+                AlertTriangle: <g><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></g>,
+                Calendar: <g><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></g>,
+                FileSpreadsheet: <g><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/><circle cx="10" cy="9" r="1"/><circle cx="10" cy="13" r="1"/><circle cx="10" cy="17" r="1"/></g>,
+                LayoutGrid: <g><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></g>,
+                ShieldAlert: <g><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6v7z"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></g>,
+                MapPin: <g><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></g>,
+                Layers: <g><path d="m12 3-10 5 10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></g>,
+                X: <g><path d="M18 6 6 18"/><path d="m6 6 12 12"/></g>,
+                Check: <g><path d="M20 6 9 17l-5-5"/></g>,
+                ArrowUpDown: <g><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></g>,
+                FileText: <g><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></g>,
+                Truck: <g><path d="M14 18H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h8"/><path d="M14 9h4l4 4v5h-8z"/><circle cx="7.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></g>,
+                Eye: <g><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></g>,
+                Settings: <g><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></g>
+            };
+
+            return (
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    className={className}
+                    {...props}
+                >
+                    {icons[name] || null}
+                </svg>
+            );
+        };
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [headers, setHeaders] = useState([[], []]);
+            const [houses, setHouses] = useState([]);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedType, setSelectedType] = useState('all');
+            const [hasElevatorFilter, setHasElevatorFilter] = useState('all');
+            const [selectedHouse, setSelectedHouse] = useState(null);
+            const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+            const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+            const [toast, setToast] = useState(null);
+            const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+            const showToast = (message, type = 'success') => {
+                setToast({ message, type });
+                setTimeout(() => setToast(null), 3000);
+            };
+
+            useEffect(() => {
+                const defaultCSV = `주택,,,,협조 기관,,,상가,인터넷,청소업체/요일,위생 청소일,,업체/보건소,소방,,,,E/L,,,주차,,CCTV,,,보험,PW,무인택배함 마스터키,사다리,토지임대차계약 기간
+유형,주택명,소재지,호수,기관,담당자,연락처,,,,저수조,정화조,방역,급,담당,"관리 업체\\n (계약만기)","검사예정일\\n (종합점검/작동점검)","보험만료\\n (1년단위)","관리 업체\\n (계약만기)",검사예정일,면수,쏘카,개수,업체,온라인,영업/화재,,,,토지임대차계약 기간
+토지임대부 사회주택,01 성산,마포구 성산동 59-12,11,SH,SH 청년주택부,"02-6940-8882\\n 이혁표 대리",다,x,"크린원 / 화\\n 22.06.14",x,"구일환경(마포점)-\\n 마포그린으로 상호변경\\n 26.03.19 청소예정\\n 26.09.18 청소예정\\n (6개월에 1회)\\n T.02-1877-3484",24.06.12,x,x,x,x,x,x,x,8,1,9,"KT텔레캅\\n 올레KT CCTV\\n (3년 렌탈 후 소유)","www.kt.com",x,"공용:종7178\\n 커뮤:654321*(지하1층)\\n 지하:654321*\\n CCTV:1236\\n 가스검침 자물쇠:3176*",x,x,"4회차\\n 230701~250630\\n 2%인상"
+LH공공지원 사회주택,04 삼송,고양시 덕양구 삼송동 315-4 외 1,14,LH,HUG(동부주택도시금융센터),"02-3771-6295\\n 김태연","A101, B101",0,"크린원 / 화\\n 21.11.01",x,"청소X\\n (하수처리장으로\\n 바로연결)",24.06.12,3,양희경,"(주)드림방재\\n (25.12.31)","26.09 검사예정",25.12.28,"티케이\\n (주)대솔이엘\\n (30.11.30 만기)","1대\\n (26.09.12)\\n 검사예정",14,X,13,제이엠시스템,"시설폰으로 가능\\n 어플 : JNR Viewer",x,"공용 : #1313*",x,x,"4회차 진행중"
+토지임대부 사회주택,02 신정,양천구 신정동 120-4,18,SH,SH 청년주택부,"02-6940-8882",x,있음,"미쁘다 / 목",25.10.12,"푸른환경",25.02.15,2,김철수,"(주)한국소방\\n (26.05.31)",26.06 종합점검,26.05.10,"현대엘리베이터","26.11.20 예정",12,1,12,"캡스 CCTV","모바일 앱",가입,"공용: 2580*",있음,있음,"240101~261231"`;
+                
+                parseCSVData(defaultCSV);
+            }, []);
+
+            const parseCSVData = (text) => {
+                let p = '', c = '', r = [];
+                let q = false;
+                let row = [''];
+                
+                const cleanedText = text.replace(/\r/g, '');
+                
+                for (let i = 0; i < cleanedText.length; i++) {
+                    c = cleanedText[i];
+                    let next = cleanedText[i+1];
+                    if (c === '"') {
+                        if (q && next === '"') { row[row.length - 1] += '"'; i++; }
+                        else { q = !q; }
+                    } else if (c === ',') {
+                        if (q) { row[row.length - 1] += c; }
+                        else { row.push(''); }
+                    } else if (c === '\n') {
+                        if (q) { row[row.length - 1] += c; }
+                        else {
+                            r.push(row);
+                            row = [''];
+                        }
+                    } else {
+                        row[row.length - 1] += c;
+                    }
+                }
+                if (row.length > 1 || row[0] !== '') {
+                    r.push(row);
+                }
+
+                if (r.length >= 2) {
+                    setHeaders([r[0], r[1]]);
+                    const parsedHouses = r.slice(2).filter(row => row.length > 1 && row[1]).map((row, idx) => {
+                        const item = { id: `house-${idx}-${Date.now()}` };
+                        const maxCols = Math.max(r[0].length, r[1].length);
+                        for (let i = 0; i < maxCols; i++) {
+                            item[`col_${i}`] = row[i] ? row[i].trim().replace(/\\n/g, '\n') : '';
+                        }
+                        return item;
+                    });
+                    setHouses(parsedHouses);
+                }
+            };
+
+            const exportToCSV = () => {
+                if (houses.length === 0) return;
+                const csvRows = [];
+                csvRows.push(headers[0].map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+                csvRows.push(headers[1].map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+
+                houses.forEach(house => {
+                    const row = [];
+                    const maxCols = Math.max(headers[0].length, headers[1].length);
+                    for (let i = 0; i < maxCols; i++) {
+                        const val = house[`col_${i}`] || '';
+                        row.push(`"${val.replace(/"/g, '""')}"`);
+                    }
+                    csvRows.push(row.join(','));
+                });
+
+                const csvContent = "data:text/csv;charset=utf-8,\ufeff" + csvRows.join('\n');
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "주택별_정보관리_최신본.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("현재 가공 데이터의 CSV 저장이 완료되었습니다.");
+            };
+
+            const handleCSVUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    parseCSVData(event.target.result);
+                    showToast("성공적으로 CSV 시트 정보를 로드했습니다.");
+                };
+                reader.readAsText(file, "utf-8");
+            };
+
+            const getHeaderLabel = (colIdx) => {
+                const h0 = headers[0]?.[colIdx] || '';
+                const h1 = headers[1]?.[colIdx] || '';
+                const cleanH0 = h0.trim().replace(/\n/g, ' ');
+                const cleanH1 = h1.trim().replace(/\n/g, ' ');
+
+                if (cleanH0 && cleanH1) {
+                    if (cleanH0 === cleanH1) return cleanH0;
+                    return `${cleanH0} (${cleanH1})`;
+                }
+                return cleanH0 || cleanH1 || `필드_${colIdx + 1}`;
+            };
+
+            const getGroupHeader = (colIdx) => {
+                if (colIdx <= 3) return '기본 정보';
+                if (colIdx <= 6) return '협조 기관';
+                if (colIdx <= 9) return '관리/청소';
+                if (colIdx <= 12) return '위생/청소';
+                if (colIdx <= 17) return '소방 안전';
+                if (colIdx <= 19) return '승강기 관리';
+                if (colIdx <= 22) return '주차 관리';
+                if (colIdx <= 24) return 'CCTV/보안';
+                return '보험, PW 및 기타';
+            };
+
+            const houseTypes = useMemo(() => {
+                const types = new Set();
+                houses.forEach(h => {
+                    if (h.col_0) types.add(h.col_0);
+                });
+                return Array.from(types);
+            }, [houses]);
+
+            const filteredHouses = useMemo(() => {
+                return houses.filter(h => {
+                    const name = h.col_1 || '';
+                    const type = h.col_0 || '';
+                    const address = h.col_2 || '';
+                    const manager = h.col_5 || '';
+                    const query = searchQuery.toLowerCase();
+                    
+                    const matchesSearch = 
+                        name.toLowerCase().includes(query) || 
+                        type.toLowerCase().includes(query) || 
+                        address.toLowerCase().includes(query) ||
+                        manager.toLowerCase().includes(query);
+
+                    const matchesType = selectedType === 'all' || type === selectedType;
+
+                    const elVal = (h.col_18 || '').toLowerCase();
+                    const hasEL = elVal && elVal !== 'x' && elVal !== 'no';
+                    const matchesEL = 
+                        hasElevatorFilter === 'all' || 
+                        (hasElevatorFilter === 'yes' && hasEL) || 
+                        (hasElevatorFilter === 'no' && !hasEL);
+
+                    return matchesSearch && matchesType && matchesEL;
+                });
+            }, [houses, searchQuery, selectedType, hasElevatorFilter]);
+
+            const stats = useMemo(() => {
+                let totalRooms = 0;
+                let totalParking = 0;
+                let elCount = 0;
+                let urgentInspections = 0;
+
+                houses.forEach(h => {
+                    const rooms = parseInt(h.col_3) || 0;
+                    totalRooms += rooms;
+
+                    const parking = parseInt(h.col_20) || 0;
+                    totalParking += parking;
+
+                    const elVal = (h.col_18 || '').toLowerCase();
+                    if (elVal && elVal !== 'x' && elVal !== 'no') {
+                        elCount++;
+                    }
+
+                    const fireSched = h.col_16 || '';
+                    const elSched = h.col_19 || '';
+                    if (
+                        (fireSched && (fireSched.includes('예정') || fireSched.includes('임박'))) ||
+                        (elSched && (elSched.includes('예정') || elSched.includes('임박')))
+                    ) {
+                        urgentInspections++;
+                    }
+                });
+
+                return {
+                    totalHouses: houses.length,
+                    totalRooms,
+                    totalParking,
+                    elCount,
+                    urgentInspections
+                };
+            }, [houses]);
+
+            const handleAddHouse = (newHouseData) => {
+                const newHouse = {
+                    id: `house-new-${Date.now()}`,
+                    ...newHouseData
+                };
+                setHouses([newHouse, ...houses]);
+                setIsAddModalOpen(false);
+                showToast("신규 주택 자산이 정상 등록되었습니다.");
+            };
+
+            const handleUpdateHouse = (updatedHouse) => {
+                setHouses(houses.map(h => h.id === updatedHouse.id ? updatedHouse : h));
+                setIsEditModalOpen(false);
+                setSelectedHouse(null);
+                showToast("선택 주택의 최신 정보 업데이트가 완료되었습니다.");
+            };
+
+            const handleDeleteHouse = (houseId) => {
+                if (window.confirm("이 주택 자산 데이터를 영구 삭제하시겠습니까?")) {
+                    setHouses(houses.filter(h => h.id !== houseId));
+                    showToast("데이터 삭제 처리가 완료되었습니다.", "error");
+                }
+            };
+
+            const requestSort = (key) => {
+                let direction = 'asc';
+                if (sortConfig.key === key && sortConfig.direction === 'asc') {
+                    direction = 'desc';
+                }
+                setSortConfig({ key, direction });
+            };
+
+            const sortedHouses = useMemo(() => {
+                const sortableItems = [...filteredHouses];
+                if (sortConfig.key !== null) {
+                    sortableItems.sort((a, b) => {
+                        const valA = a[sortConfig.key] || '';
+                        const valB = b[sortConfig.key] || '';
+                        
+                        const numA = parseFloat(valA);
+                        const numB = parseFloat(valB);
+                        if (!isNaN(numA) && !isNaN(numB)) {
+                            return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
+                        }
+
+                        if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+                        if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                }
+                return sortableItems;
+            }, [filteredHouses, sortConfig]);
+
+            const handleCellChange = (houseId, fieldKey, value) => {
+                setHouses(prev => prev.map(h => {
+                    if (h.id === houseId) {
+                        return { ...h, [fieldKey]: value };
+                    }
+                    return h;
+                }));
+            };
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    {/* 탑 네비게이션 헤더 */}
+                    <header className="bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-lg px-6 py-4 flex flex-wrap justify-between items-center border-b border-indigo-500/10">
+                        <div className="flex items-center space-x-3 mb-2 lg:mb-0">
+                            <div className="p-2.5 bg-indigo-500/20 rounded-xl backdrop-blur-md border border-indigo-400/20">
+                                <Icon name="Home" className="w-6 h-6 text-indigo-300" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-black tracking-tight flex items-center space-x-2">
+                                    <span>주택별 통합 시설 및 운영 관리 시스템</span>
+                                    <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 bg-indigo-500/30 text-indigo-200 rounded font-semibold border border-indigo-400/30">Sheet-19</span>
+                                </h1>
+                                <p className="text-xs text-slate-300">실시간 데이터 편집, 대시보드 및 검사 주기 모니터링</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <label className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 transition rounded-xl text-xs font-bold cursor-pointer border border-white/10">
+                                <Icon name="Upload" className="w-4 h-4 text-slate-300" />
+                                <span>새 CSV 로드</span>
+                                <input 
+                                    type="file" 
+                                    accept=".csv" 
+                                    onChange={handleCSVUpload} 
+                                    className="hidden" 
+                                />
+                            </label>
+                            <button 
+                                onClick={exportToCSV}
+                                className="flex items-center space-x-1.5 px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 transition rounded-xl text-xs font-bold shadow-lg shadow-indigo-900/40 border border-indigo-500/30"
+                            >
+                                <Icon name="Download" className="w-4 h-4 text-white" />
+                                <span>현재 정보 CSV 내보내기</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* 실시간 플로팅 토스트 피드백 */}
+                    {toast && (
+                        <div className={`fixed top-5 right-5 z-50 flex items-center space-x-2.5 px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 ${
+                            toast.type === 'success' ? 'bg-indigo-950 text-indigo-200 border border-indigo-500/20' : 'bg-rose-950 text-rose-200 border border-rose-500/20'
+                        }`}>
+                            <Icon name={toast.type === 'success' ? "CheckCircle" : "AlertTriangle"} className={`w-5 h-5 ${toast.type === 'success' ? 'text-indigo-400' : 'text-rose-400'}`} />
+                            <span className="font-semibold text-xs">{toast.message}</span>
+                        </div>
+                    )}
+
+                    {/* 통합 대시보드 통계판 */}
+                    <section className="bg-white border-b border-slate-200 px-6 py-4.5">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center space-x-3.5">
+                                <div className="p-2.5 bg-indigo-50 rounded-lg text-indigo-600">
+                                    <Icon name="Home" className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">주택 단지 수</p>
+                                    <p className="text-lg font-black text-slate-800">{stats.totalHouses}개동</p>
+                                </div>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center space-x-3.5">
+                                <div className="p-2.5 bg-emerald-50 rounded-lg text-emerald-600">
+                                    <Icon name="Layers" className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">총 공급 호수</p>
+                                    <p className="text-lg font-black text-slate-800">{stats.totalRooms}호</p>
+                                </div>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center space-x-3.5">
+                                <div className="p-2.5 bg-rose-50 rounded-lg text-rose-600">
+                                    <Icon name="ShieldAlert" className="w-5 h-5 animate-pulse" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">안전점검 임박</p>
+                                    <p className="text-lg font-black text-rose-600">{stats.urgentInspections}개소</p>
+                                </div>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center space-x-3.5">
+                                <div className="p-2.5 bg-sky-50 rounded-lg text-sky-600">
+                                    <Icon name="Truck" className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">엘리베이터 관리</p>
+                                    <p className="text-lg font-black text-slate-800">{stats.elCount}대</p>
+                                </div>
+                            </div>
+                            <div className="col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50/50 to-indigo-100/30 p-4 rounded-xl border border-indigo-100 flex items-center space-x-3.5">
+                                <div className="p-2.5 bg-white text-indigo-600 rounded-lg shadow-sm">
+                                    <Icon name="FileSpreadsheet" className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-indigo-500/80 font-bold uppercase tracking-wider">총 주차 면수</p>
+                                    <p className="text-lg font-black text-indigo-800">{stats.totalParking}면</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* 인터랙티브 제어 영역 */}
+                    <main className="flex-grow p-6 flex flex-col space-y-6">
+                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                            <div className="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-xl w-full lg:w-auto">
+                                <button
+                                    onClick={() => setActiveTab('dashboard')}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-extrabold transition ${
+                                        activeTab === 'dashboard' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <Icon name="Home" className="w-4 h-4" />
+                                    <span>종합 대시보드</span>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('cards')}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-extrabold transition ${
+                                        activeTab === 'cards' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <Icon name="LayoutGrid" className="w-4 h-4" />
+                                    <span>주택별 카드 현황</span>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('spreadsheet')}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-extrabold transition ${
+                                        activeTab === 'spreadsheet' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <Icon name="FileSpreadsheet" className="w-4 h-4" />
+                                    <span>통합 에디터 시트</span>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('alerts')}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-extrabold transition relative ${
+                                        activeTab === 'alerts' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <Icon name="Calendar" className="w-4 h-4" />
+                                    <span>정기 시설 점검일정</span>
+                                    {stats.urgentInspections > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white font-black text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center">
+                                            {stats.urgentInspections}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                                <div className="relative flex-grow sm:flex-grow-0">
+                                    <Icon name="Search" className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        placeholder="주택명, 유형, 담당자명 검색..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full sm:w-56 pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                                    />
+                                </div>
+                                
+                                <select
+                                    value={selectedType}
+                                    onChange={(e) => setSelectedType(e.target.value)}
+                                    className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                                >
+                                    <option value="all">유형 필터 (전체)</option>
+                                    {houseTypes.map(type => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
+
+                                <select
+                                    value={hasElevatorFilter}
+                                    onChange={(e) => setHasElevatorFilter(e.target.value)}
+                                    className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                                >
+                                    <option value="all">승강기 (전체)</option>
+                                    <option value="yes">보유 주택만</option>
+                                    <option value="no">미보유 주택</option>
+                                </select>
+
+                                <button
+                                    onClick={() => setIsAddModalOpen(true)}
+                                    className="flex items-center space-x-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black shadow-md shadow-indigo-600/10 transition"
+                                >
+                                    <Icon name="Plus" className="w-4 h-4" />
+                                    <span>신규 등록</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 1. 종합 대시보드 탭 */}
+                        {activeTab === 'dashboard' && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h3 className="font-extrabold text-sm text-slate-800 flex items-center space-x-2">
+                                                    <Icon name="ShieldAlert" className="w-4.5 h-4.5 text-rose-500" />
+                                                    <span>점검이 임박한 시설물 (소방/승강기)</span>
+                                                </h3>
+                                                <span className="text-[10px] text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded font-black">
+                                                    총 {stats.urgentInspections}개소 미승인/예정
+                                                </span>
+                                            </div>
+
+                                            <div className="space-y-3.5 max-h-80 overflow-y-auto pr-1">
+                                                {houses.filter(h => {
+                                                    const fire = h.col_16 || '';
+                                                    const el = h.col_19 || '';
+                                                    return (fire && (fire.includes('예정') || fire.includes('임박'))) || 
+                                                           (el && (el.includes('예정') || el.includes('임박')));
+                                                }).map(h => (
+                                                    <div key={h.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                                        <div>
+                                                            <div className="flex items-center space-x-2 mb-1.5">
+                                                                <span className="text-[9px] font-extrabold px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-md">{h.col_0}</span>
+                                                                <span className="font-extrabold text-xs text-slate-800">{h.col_1}</span>
+                                                            </div>
+                                                            <p className="text-[10px] text-slate-400 flex items-center"><Icon name="MapPin" className="w-3.5 h-3.5 mr-1" /> {h.col_2}</p>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-1.5">
+                                                            {h.col_16 && (h.col_16.includes('예정') || h.col_16.includes('임박')) && (
+                                                                <span className="text-[10px] bg-amber-50 border border-amber-200 text-amber-700 px-2 py-1 rounded-lg flex items-center font-bold">
+                                                                    소방: {h.col_16.split('\n')[0]}
+                                                                </span>
+                                                            )}
+                                                            {h.col_19 && (h.col_19.includes('예정') || h.col_19.includes('임박')) && (
+                                                                <span className="text-[10px] bg-rose-50 border border-rose-200 text-rose-700 px-2 py-1 rounded-lg flex items-center font-bold">
+                                                                    승강기: {h.col_19.split('\n')[0]}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                {stats.urgentInspections === 0 && (
+                                                    <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-400">
+                                                        <Icon name="CheckCircle" className="w-8 h-8 mx-auto mb-2 text-indigo-500" />
+                                                        <p className="text-xs font-semibold">완료해야 하거나 긴급한 미점검 일정이 없습니다.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                                        <h3 className="font-extrabold text-sm text-slate-800 mb-4 flex items-center space-x-2">
+                                            <Icon name="Settings" className="w-4.5 h-4.5 text-indigo-600" />
+                                            <span>협조 기관별 주택 등록 비율</span>
+                                        </h3>
+                                        <div className="space-y-3.5">
+                                            {Object.entries(houses.reduce((acc, h) => {
+                                                const agency = h.col_4 || '기타/미지정';
+                                                acc[agency] = (acc[agency] || 0) + 1;
+                                                return acc;
+                                            }, {})).map(([agency, count]) => (
+                                                <div key={agency} className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col space-y-1.5">
+                                                    <div className="flex justify-between items-center text-xs">
+                                                        <span className="font-bold text-slate-700">{agency}</span>
+                                                        <span className="font-extrabold text-indigo-600">{count}개동</span>
+                                                    </div>
+                                                    <div className="w-full bg-slate-200 rounded-full h-1.5">
+                                                        <div 
+                                                            className="bg-indigo-600 h-1.5 rounded-full" 
+                                                            style={{ width: `${(count / houses.length) * 100}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <h3 className="font-extrabold text-slate-800 text-sm">최근 등록 및 요약 리스트</h3>
+                                            <p className="text-[10px] text-slate-400">주요 단지들의 실시간 운영 및 정보 요약표</p>
+                                        </div>
+                                        <button onClick={() => setActiveTab('cards')} className="text-xs font-bold text-indigo-600 hover:underline">
+                                            전체 현황 이동 &rarr;
+                                        </button>
+                                    </div>
+
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left text-xs">
+                                            <thead>
+                                                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 font-bold text-[10px] uppercase">
+                                                    <th className="p-3">주택유형</th>
+                                                    <th className="p-3">주택명</th>
+                                                    <th className="p-3">소재지</th>
+                                                    <th className="p-3 text-center">호수</th>
+                                                    <th className="p-3">위생 청소상태</th>
+                                                    <th className="p-3">승강기 업체</th>
+                                                    <th className="p-3">비밀번호/기타 정보</th>
+                                                    <th className="p-3 text-right">상세</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {filteredHouses.slice(0, 5).map(h => (
+                                                    <tr key={h.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition">
+                                                        <td className="p-3">
+                                                            <span className="text-[9px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-bold">{h.col_0}</span>
+                                                        </td>
+                                                        <td className="p-3 font-bold text-slate-900">{h.col_1}</td>
+                                                        <td className="p-3 text-slate-500 truncate max-w-xs">{h.col_2}</td>
+                                                        <td className="p-3 text-center font-bold text-indigo-600">{h.col_3}호</td>
+                                                        <td className="p-3 text-slate-600 truncate max-w-[120px] whitespace-pre-line" title={h.col_11}>{h.col_11 || '-'}</td>
+                                                        <td className="p-3 text-slate-600 truncate max-w-[120px] whitespace-pre-line">{h.col_18 || '없음'}</td>
+                                                        <td className="p-3 text-slate-400 text-[11px] truncate max-w-[150px] font-mono whitespace-pre-line">{h.col_26 || '-'}</td>
+                                                        <td className="p-3 text-right">
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSelectedHouse(h);
+                                                                    setIsEditModalOpen(true);
+                                                                }}
+                                                                className="p-1 text-slate-400 hover:text-indigo-600 transition"
+                                                            >
+                                                                <Icon name="Eye" className="w-4 h-4" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 2. 주택 카드 뷰 탭 */}
+                        {activeTab === 'cards' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredHouses.map(h => {
+                                    const hasEL = h.col_18 && h.col_18.toLowerCase() !== 'x' && h.col_18.toLowerCase() !== 'no';
+                                    return (
+                                        <div 
+                                            key={h.id} 
+                                            className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-200 transition-all duration-150 flex flex-col justify-between"
+                                        >
+                                            <div className="p-5">
+                                                <div className="flex justify-between items-start gap-2 mb-3">
+                                                    <span className="text-[10px] font-extrabold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg">
+                                                        {h.col_0}
+                                                    </span>
+                                                    <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+                                                        {h.col_3}호실
+                                                    </span>
+                                                </div>
+
+                                                <h3 className="text-base font-black text-slate-900 mb-1">{h.col_1}</h3>
+                                                <p className="text-[11px] text-slate-500 flex items-center mb-4">
+                                                    <Icon name="MapPin" className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                                                    <span className="truncate">{h.col_2}</span>
+                                                </p>
+
+                                                <div className="space-y-2.5 border-t border-slate-100 pt-3.5 text-[11px]">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-slate-400">협조기관 및 부서</span>
+                                                        <span className="font-bold text-slate-700">{h.col_4 || '미확인'} ({h.col_5 || '-'})</span>
+                                                    </div>
+                                                    
+                                                    <div className="flex justify-between">
+                                                        <span className="text-slate-400">정화조/방역 업체</span>
+                                                        <span className="font-bold text-slate-700 truncate max-w-[150px] whitespace-pre-line" title={h.col_11}>{h.col_11 || '-'}</span>
+                                                    </div>
+
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-slate-400">승강기 운영상태</span>
+                                                        {hasEL ? (
+                                                            <span className="px-1.5 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded text-[9px] font-extrabold">
+                                                                작동중 ({h.col_19 ? '예정기한내' : '일정미기입'})
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-slate-400">없음</span>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex justify-between">
+                                                        <span className="text-slate-400">마스터키 정보</span>
+                                                        <span className="font-bold text-slate-700 font-mono truncate max-w-[150px] whitespace-pre-line">{h.col_26 || '기록없음'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-slate-50 px-5 py-3 border-t border-slate-100 flex justify-between items-center">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedHouse(h);
+                                                        setIsEditModalOpen(true);
+                                                    }}
+                                                    className="flex items-center space-x-1 text-xs text-indigo-600 hover:text-indigo-800 font-black transition"
+                                                >
+                                                    <Icon name="Edit3" className="w-3.5 h-3.5" />
+                                                    <span>자세히 보기 / 정보 업데이트</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteHouse(h.id)}
+                                                    className="text-slate-400 hover:text-rose-600 transition"
+                                                >
+                                                    <Icon name="Trash2" className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* 3. 스프레드시트 뷰 탭 */}
+                        {activeTab === 'spreadsheet' && (
+                            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                                <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                                    <div>
+                                        <h3 className="font-extrabold text-sm text-slate-800">통합 스프레드시트 에디터</h3>
+                                        <p className="text-[10px] text-slate-400">각 셀을 클릭하여 내용을 직접 타이핑하거나 줄바꿈을 포함한 상세 기록이 가능합니다.</p>
+                                    </div>
+                                    <span className="text-[10px] bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1 rounded-lg font-black">
+                                        총 {filteredHouses.length}동의 주택 로드됨
+                                    </span>
+                                </div>
+
+                                <div className="overflow-auto max-h-[550px]">
+                                    <table className="w-full text-left text-xs border-collapse">
+                                        <thead className="sticky top-0 bg-slate-100 z-10 shadow-sm text-[10px]">
+                                            <tr className="border-b border-slate-200 text-slate-600 bg-slate-200/60 font-bold uppercase tracking-wider">
+                                                <th className="p-2 border-r border-slate-200 text-center bg-slate-300/60 min-w-[50px]">번호</th>
+                                                {headers[0].map((h, idx) => (
+                                                    <th key={`top-${idx}`} className="p-2 border-r border-slate-200 text-center min-w-[130px] text-slate-500 font-extrabold">
+                                                        {h || getGroupHeader(idx)}
+                                                    </th>
+                                                ))}
+                                                <th className="p-2 text-center bg-rose-100 text-rose-800 min-w-[60px]">동작</th>
+                                            </tr>
+                                            <tr className="border-b border-slate-300 text-slate-800 bg-slate-50 font-bold">
+                                                <th className="p-2 border-r border-slate-200 text-center bg-slate-200/50">#</th>
+                                                {headers[1].map((h, idx) => (
+                                                    <th 
+                                                        key={`sub-${idx}`} 
+                                                        onClick={() => requestSort(`col_${idx}`)}
+                                                        className="p-2.5 border-r border-slate-200 cursor-pointer hover:bg-slate-200 transition select-none group min-w-[130px]"
+                                                    >
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="truncate">{h || getHeaderLabel(idx)}</span>
+                                                            <Icon name="ArrowUpDown" className="w-3 h-3 text-slate-400 group-hover:text-slate-600 shrink-0 ml-1" />
+                                                        </div>
+                                                    </th>
+                                                ))}
+                                                <th className="p-2 text-center bg-rose-50 text-rose-700">삭제</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-200">
+                                            {sortedHouses.map((house, rowIdx) => (
+                                                <tr key={house.id} className="hover:bg-indigo-50/30 transition-colors">
+                                                    <td className="p-2 border-r border-slate-200 text-center font-bold bg-slate-50 text-slate-500 text-[10px]">
+                                                        {rowIdx + 1}
+                                                    </td>
+
+                                                    {headers[1].map((_, colIdx) => {
+                                                        const fieldKey = `col_${colIdx}`;
+                                                        return (
+                                                            <td key={`${house.id}-${colIdx}`} className="p-1 border-r border-slate-200">
+                                                                <textarea
+                                                                    rows={1}
+                                                                    value={house[fieldKey] || ''}
+                                                                    onChange={(e) => handleCellChange(house.id, fieldKey, e.target.value)}
+                                                                    className="w-full p-1 bg-transparent hover:bg-white focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none rounded border-none resize-y transition min-w-[120px] leading-relaxed text-xs"
+                                                                    placeholder="-"
+                                                                />
+                                                            </td>
+                                                        );
+                                                    })}
+
+                                                    <td className="p-2 text-center">
+                                                        <button
+                                                            onClick={() => handleDeleteHouse(house.id)}
+                                                            className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition"
+                                                        >
+                                                            <Icon name="Trash2" className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 4. 점검일정 탭 */}
+                        {activeTab === 'alerts' && (
+                            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                                <div className="flex items-center space-x-3">
+                                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                                        <Icon name="ShieldAlert" className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-extrabold text-sm text-slate-800">위생·소방·승강기 정기 검정 현황 관리</h3>
+                                        <p className="text-[10px] text-slate-400">각 주택별로 누락되거나 다가오는 종합 점검일을 분류 모니터링합니다.</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                                        <h4 className="font-bold text-xs text-slate-800 border-b border-slate-200 pb-2 mb-3">
+                                            🔥 소방 종합 및 작동 점검
+                                        </h4>
+                                        <div className="space-y-3">
+                                            {houses.map(h => (
+                                                <div key={h.id} className="bg-white p-3 rounded-lg border border-slate-100 flex justify-between items-center">
+                                                    <div>
+                                                        <p className="font-bold text-xs text-slate-900">{h.col_1}</p>
+                                                        <p className="text-[10px] text-slate-400 mt-0.5">대행업체: {h.col_15 || '자체관리'}</p>
+                                                    </div>
+                                                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
+                                                        h.col_16 && h.col_16.includes('예정') ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
+                                                    }`}>
+                                                        {h.col_16 || '검사기록 없음'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                                        <h4 className="font-bold text-xs text-slate-800 border-b border-slate-200 pb-2 mb-3">
+                                            🛗 승강기(E/L) 정기 안전 검사 및 보험
+                                        </h4>
+                                        <div className="space-y-3">
+                                            {houses.filter(h => {
+                                                const el = (h.col_18 || '').toLowerCase();
+                                                return el && el !== 'x' && el !== 'no';
+                                            }).map(h => (
+                                                <div key={h.id} className="bg-white p-3 rounded-lg border border-slate-100 flex justify-between items-center">
+                                                    <div>
+                                                        <p className="font-bold text-xs text-slate-900">{h.col_1}</p>
+                                                        <p className="text-[10px] text-slate-400 mt-0.5">관리사: {h.col_18.split('\n')[0]}</p>
+                                                    </div>
+                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 bg-rose-50 border border-rose-200 text-rose-700 rounded">
+                                                        {h.col_19 || '정상 운행'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* 정보 조회 및 정교 수정 모달 */}
+                    {isEditModalOpen && selectedHouse && (
+                        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 overflow-y-auto">
+                            <div className="bg-white rounded-3xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-indigo-50/50 flex justify-between items-center rounded-t-3xl">
+                                    <div className="flex items-center space-x-2">
+                                        <Icon name="FileText" className="w-5 h-5 text-indigo-600" />
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-base">{selectedHouse.col_1} 정보 수정</h3>
+                                            <p className="text-xs text-slate-400">데이터 규격에 맞춰 항목별 실시간 수정을 적용합니다.</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setIsEditModalOpen(false)} className="p-1.5 hover:bg-slate-200 rounded-full transition">
+                                        <Icon name="X" className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50">
+                                    {headers[1].map((colName, colIdx) => {
+                                        const groupTitle = getGroupHeader(colIdx);
+                                        const isGroupStart = colIdx === 0 || getGroupHeader(colIdx) !== getGroupHeader(colIdx - 1);
+
+                                        return (
+                                            <React.Fragment key={`edit-field-${colIdx}`}>
+                                                {isGroupStart && (
+                                                    <div className="col-span-full font-extrabold text-[10px] tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-3 py-1 rounded-lg mt-2 uppercase">
+                                                        {groupTitle}
+                                                    </div>
+                                                )}
+                                                <div className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col space-y-1">
+                                                    <label className="text-[10px] font-black text-slate-400">
+                                                        {colName || getHeaderLabel(colIdx)}
+                                                    </label>
+                                                    <textarea
+                                                        rows={3}
+                                                        value={selectedHouse[`col_${colIdx}`] || ''}
+                                                        onChange={(e) => {
+                                                            setSelectedHouse({
+                                                                ...selectedHouse,
+                                                                [`col_${colIdx}`]: e.target.value
+                                                            });
+                                                        }}
+                                                        className="w-full text-xs p-2 border border-slate-100 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition whitespace-pre-wrap leading-relaxed"
+                                                        placeholder="기록 사항 없음"
+                                                    />
+                                                </div>
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="p-5 border-t border-slate-200 bg-white flex justify-end space-x-2 rounded-b-3xl">
+                                    <button
+                                        onClick={() => setIsEditModalOpen(false)}
+                                        className="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-600 transition"
+                                    >
+                                        취소
+                                    </button>
+                                    <button
+                                        onClick={() => handleUpdateHouse(selectedHouse)}
+                                        className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition"
+                                    >
+                                        업데이트 저장
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 신규 주택 등록 모달 */}
+                    {isAddModalOpen && (
+                        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 overflow-y-auto">
+                            <div className="bg-white rounded-3xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-emerald-50/50 flex justify-between items-center rounded-t-3xl">
+                                    <div className="flex items-center space-x-2">
+                                        <Icon name="Plus" className="w-5 h-5 text-emerald-600" />
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-base">새 주택 데이터 등록</h3>
+                                            <p className="text-xs text-slate-400">신규 시설 자산을 현황판에 추가 등록합니다.</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setIsAddModalOpen(false)} className="p-1.5 hover:bg-slate-200 rounded-full transition">
+                                        <Icon name="X" className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50">
+                                    {headers[1].map((colName, colIdx) => {
+                                        const groupTitle = getGroupHeader(colIdx);
+                                        const isGroupStart = colIdx === 0 || getGroupHeader(colIdx) !== getGroupHeader(colIdx - 1);
+
+                                        return (
+                                            <React.Fragment key={`add-field-${colIdx}`}>
+                                                {isGroupStart && (
+                                                    <div className="col-span-full font-extrabold text-[10px] tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-3 py-1 rounded-lg mt-2 uppercase">
+                                                        {groupTitle}
+                                                    </div>
+                                                )}
+                                                <div className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col space-y-1">
+                                                    <label className="text-[10px] font-black text-slate-400">
+                                                        {colName || getHeaderLabel(colIdx)} {colIdx === 1 && <span className="text-rose-500">*필수</span>}
+                                                    </label>
+                                                    <textarea
+                                                        rows={1}
+                                                        id={`add_col_${colIdx}`}
+                                                        className="w-full text-xs p-2 border border-slate-100 rounded-lg focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-slate-50/50 focus:bg-white transition leading-relaxed"
+                                                        placeholder="내용을 기재하세요."
+                                                    />
+                                                </div>
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="p-5 border-t border-slate-200 bg-white flex justify-end space-x-2 rounded-b-3xl">
+                                    <button
+                                        onClick={() => setIsAddModalOpen(false)}
+                                        className="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-600 transition"
+                                    >
+                                        취소
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const newHouseData = {};
+                                            let isNameFilled = true;
+                                            headers[1].forEach((_, colIdx) => {
+                                                const elem = document.getElementById(`add_col_${colIdx}`);
+                                                const val = elem ? elem.value.trim() : '';
+                                                if (colIdx === 1 && !val) {
+                                                    isNameFilled = false;
+                                                }
+                                                newHouseData[`col_${colIdx}`] = val;
+                                            });
+
+                                            if (!isNameFilled) {
+                                                showToast("최소한 주택 이름은 기재되어야 등록이 활성화됩니다.", "error");
+                                                return;
+                                            }
+                                            handleAddHouse(newHouseData);
+                                        }}
+                                        className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition"
+                                    >
+                                        주택 자산 추가
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <footer className="bg-slate-900 text-slate-500 text-[10px] py-4 text-center border-t border-slate-800">
+                        <p>&copy; 2026 주택 시설 통합 정보망. 시트19 데이터 세미콜론 및 개행 캡슐화 포맷 완벽 준수.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

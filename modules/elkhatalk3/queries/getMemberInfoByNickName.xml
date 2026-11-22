@@ -1,0 +1,17 @@
+<query action="select">
+	<tables>
+		<table name="member" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="nick_name" var="nick_name" />
+		<group pipe="and">
+			<condition operation="like_prefix" column="nick_name" var="nick_name_like" />
+			<condition operation="like_tail" column="nick_name" var="nick_name_like" pipe="or" />
+		</group>
+		<condition operation="notequal" column="nick_name" var="nick_name_like" pipe="and" />
+	</conditions>
+	<navigation>
+		<index default="list_order" order="desc" />
+		<list_count var="list_count" default="1" />
+	</navigation>
+</query>

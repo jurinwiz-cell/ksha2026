@@ -1,0 +1,183 @@
+<include target="_head.html" />
+
+<div class="ds-flow"><span class="s">{$L['flow_cart']}</span><span class="sep">›</span><span class="s on">{$L['flow_order']}</span><span class="sep">›</span><span class="s">{$L['flow_done']}</span></div>
+
+<!--@if(!count($cart->rows))-->
+<div class="ds-empty">
+  {$L['order_empty']}
+  <div style="margin-top:18px;"><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductList')}" class="ds-btn primary">{$L['go_shopping']}</a></div>
+</div>
+<!--@else-->
+<form id="ds-order-form" onsubmit="return false;">
+<input type="hidden" id="ds-shop-mid" value="{$shop_mid}" />
+<input type="hidden" id="ds-buy-item" value="{$buy_mode ? $buy_item_srl : ''}" />
+<input type="hidden" id="ds-buy-option" value="{$buy_mode ? $buy_option_srl : ''}" />
+<input type="hidden" id="ds-buy-qty" value="{$buy_mode ? $buy_qty : ''}" />
+<div class="ds-cols">
+  <div class="main">
+    <div class="ds-box">
+      <h3>{$L['order_products']}</h3>
+      <table class="ds-table">
+        <tbody>
+          <tr loop="$cart->rows=>$row">
+            <td>
+              <div class="ds-citem">
+                <!--@if($row->thumb)--><img src="{$row->thumb}" alt="" /><!--@end-->
+                <div><b>{$row->item_name}</b><!--@if($row->option_label)--><div style="font-size:12px;color:var(--ds-sub);">{$row->option_label}</div><!--@end--><div style="font-size:12px;color:var(--ds-sub);"><span class="ds-oldprice" cond="!empty($row->discounted)">{number_format($row->orig_price)}{$L['won']}</span>{number_format($row->price)}{$L['won']} &times; {$row->qty}{$L['unit_count']}</div></div>
+              </div>
+            </td>
+            <td style="text-align:right;font-weight:700;">{number_format($row->subtotal)}{$L['won']}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ds-box">
+      <h3>{$L['orderer_info']}</h3>
+      <div class="ds-field"><label>{$L['orderer_name']} *</label><input type="text" id="ds-orderer-name" value="{$prefill->name}" /></div>
+      <div class="ds-field"><label>{$L['phone']} *</label><input type="text" id="ds-orderer-phone" value="{$prefill->phone}" placeholder="010-0000-0000" /></div>
+      <div class="ds-field"><label>{$L['email']}</label><input type="text" id="ds-orderer-email" value="{$prefill->email}" /></div>
+      <!--@if(!$is_logged)-->
+      <div class="ds-field"><label>{$L['order_pw']} * <small style="color:var(--ds-sub);font-weight:400;">{$L['order_pw_note']}</small></label><input type="password" id="ds-order-pw" /></div>
+      <!--@end-->
+    </div>
+
+    <!--@if($needs_address)-->
+    <div class="ds-box" id="ds-addr-box">
+      <h3>{$L['shipping_addr']}</h3>
+      <div class="ds-field" style="margin-bottom:12px;"><label class="ds-check"><input type="checkbox" id="ds-same-orderer" onchange="ddggSameAsOrderer(this)" /> {$L['same_as_orderer']} <span style="color:var(--ds-sub);font-weight:400;">{$L['same_as_orderer_note']}</span></label></div>
+      <!--@if(count($address_books))-->
+      <div class="ds-addrbook">
+        <button type="button" class="ds-addrchip" loop="$address_books=>$ab" onclick="ddggFillAddr(this)" data-name="{escape($ab->receiver_name)}" data-phone="{escape($ab->receiver_phone)}" data-zip="{$ab->zipcode}" data-a1="{escape($ab->addr1)}" data-a2="{escape($ab->addr2)}">
+          <b>{$ab->receiver_name}</b> <span class="ds-def" cond="$ab->is_default=='Y'">{$L['default_short']}</span><br /><span class="ds-addrchip-addr">{$ab->addr1} {$ab->addr2}</span>
+        </button>
+      </div>
+      <!--@end-->
+      <div class="ds-field"><label>{$L['receiver']} *</label><input type="text" id="ds-receiver-name" value="{$default_addr ? $default_addr->receiver_name : $prefill->name}" /></div>
+      <div class="ds-field"><label>{$L['phone']} *</label><input type="text" id="ds-receiver-phone" value="{$default_addr ? $default_addr->receiver_phone : $prefill->phone}" /></div>
+      <!--@if($address_input_mode == 'manual')-->
+      <div class="ds-field"><label>{$L['zip_manual']}</label><input type="text" id="ds-zipcode" placeholder="{$L['zip_manual_ph']}" value="{$default_addr ? $default_addr->zipcode : ''}" /></div>
+      <div class="ds-field"><label>{$L['address']} *</label><input type="text" id="ds-addr1" placeholder="{$L['addr_manual_ph']}" value="{$default_addr ? $default_addr->addr1 : ''}" /></div>
+      <div class="ds-field"><input type="text" id="ds-addr2" placeholder="{$L['addr2_manual_ph']}" value="{$default_addr ? $default_addr->addr2 : ''}" /></div>
+      <!--@else-->
+      <div class="ds-field"><label>{$L['zipcode']} *</label>
+        <div class="ds-zip-row">
+          <input type="text" id="ds-zipcode" placeholder="{$L['zipcode']}" value="{$default_addr ? $default_addr->zipcode : ''}" readonly="readonly" />
+          <button type="button" class="ds-btn sm" onclick="ddggPostcode()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            {$L['zip_search']}
+          </button>
+        </div>
+      </div>
+      <div class="ds-field"><label>{$L['address']} *</label><input type="text" id="ds-addr1" placeholder="{$L['addr1_search_ph']}" value="{$default_addr ? $default_addr->addr1 : ''}" readonly="readonly" /></div>
+      <div class="ds-field"><input type="text" id="ds-addr2" placeholder="{$L['addr2_ph']}" value="{$default_addr ? $default_addr->addr2 : ''}" /></div>
+      <!--@end-->
+      <!--@if(count($region_rules))-->
+      <div class="ds-field"><label>{$L['ship_region_label']}</label>
+        <select id="ds-ship-region" onchange="ddggApplyShipRegion()">
+          <option value="">{$L['ship_region_none']}</option>
+          <option loop="$region_rules=>$rr" value="{$rr['srl']}" data-fee="{$rr['fee']}">{$rr['region']} (+{number_format($rr['fee'])}{$L['won']})</option>
+        </select>
+      </div>
+      <!--@end-->
+      <!--@if($show_delivery_memo)-->
+      <div class="ds-field"><label>{$L['delivery_memo']}</label><input type="text" id="ds-delivery-memo" placeholder="{$L['delivery_memo_ph']}" /></div>
+      <!--@end-->
+      <!--@if($is_logged)-->
+      <div class="ds-field"><label class="ds-check"><input type="checkbox" id="ds-save-addr" /> {$L['save_addr_book']}</label></div>
+      <!--@end-->
+    </div>
+    <!--@else-->
+    <input type="hidden" id="ds-no-address" value="1" />
+    <!--@end-->
+
+    <div class="ds-box">
+      <h3>{$L['pay_method']}</h3>
+      <div class="ds-pay-methods">
+        <label loop="$pay_methods=>$i,$pm">
+          <input type="radio" name="pay_method" value="{$pm->code}" checked="checked"|cond="$i==0" onchange="ddggPayMethod('{$pm->code}')" /> {$pm->label}
+        </label>
+      </div>
+      <div id="ds-bank-info" class="ds-bankbox" style="display:none;">
+        <b>{$L['bank_account']}</b><br />{nl2br(escape($bank_info))}
+        <div style="margin-top:6px;font-size:12px;color:var(--ds-sub);">{$L['bank_note']}</div>
+      </div>
+      <div id="ds-point-note-full" class="ds-bankbox" style="display:none;">
+        {$L['point_full_note']}
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-summary">
+    <h3>{$L['final_pay']}</h3>
+    <div class="ds-coupon-box" cond="$use_coupon=='Y'">
+      <div class="ds-coupon-row"><input type="text" id="ds-coupon" placeholder="{$L['coupon_ph']}" style="text-transform:uppercase;" /><button type="button" class="ds-btn sm" onclick="ddggApplyCoupon()">{$L['apply']}</button></div>
+      <div class="ds-mycoupons" cond="count($my_coupons)"><button type="button" class="ds-mycoupon" loop="$my_coupons=>$mc" onclick="ddggUseMyCoupon('{$mc->code}')">{$mc->disc_label} · {$mc->code}</button></div>
+      <div id="ds-coupon-applied" style="font-size:12px;color:#16a34a;font-weight:600;margin-top:5px;"></div>
+    </div>
+    <div class="ds-coupon-box" cond="$use_point && $is_logged">
+      <div class="ds-coupon-row"><input type="number" id="ds-point" placeholder="{$L['point_use_ph']}" min="0" /><button type="button" class="ds-btn sm" onclick="ddggApplyPoint()">{$L['use']}</button></div>
+      <div style="font-size:12px;color:var(--ds-sub);margin-top:5px;">{$L['point_balance']} <b>{number_format($my_point)}P</b> <a href="#" onclick="ddggAllPoint();return false;" style="color:var(--ds-accent);">{$L['use_all']}</a></div>
+      <script>window.DDG_MYPOINT={$my_point};</script>
+    </div>
+    <div class="ds-srow"><span>{$L['item_total']}</span><span>{number_format($totals->item_total)}{$L['won']}</span></div>
+    <div class="ds-srow"><span>{$L['shipping']}</span><span id="ds-ship-amt">{$totals->delivery_fee ? '+'.number_format($totals->delivery_fee).$L['won'] : $L['free']}</span></div>
+    <div class="ds-srow" id="ds-extra-row" style="display:none;"><span id="ds-extra-label">{$L['extra_shipping']}</span><span id="ds-extra-amt"></span></div>
+    <div class="ds-srow" id="ds-discount-row" cond="$use_coupon=='Y'" style="display:none;color:#d63939;"><span>{$L['coupon_discount_label']} <a href="#" onclick="ddggRemoveCoupon();return false;" style="font-size:11px;color:var(--ds-sub);">{$L['cancel']}</a></span><span id="ds-discount-amt"></span></div>
+    <div class="ds-srow" id="ds-point-row" style="display:none;color:#d63939;"><span>{$L['point_used']}</span><span id="ds-point-amt"></span></div>
+    <div class="ds-srow total"><span>{$L['order_paid_label']}</span><b id="ds-total-amt">{number_format($totals->payment_price)}{$L['won']}</b></div>
+    <div class="ds-point-note" cond="$totals->point_earn">{str_replace('%s', number_format($totals->point_earn), $L['order_point_earn'])}</div>
+    <button type="button" id="ds-pay-btn" class="ds-btn primary block" style="margin-top:18px;" onclick="ddggshopCheckout()">{str_replace('%s', '<span id="ds-pay-amt">'.number_format($totals->payment_price).'</span>', $L['pay_now'])}</button>
+    <script>window.DDG_SHIP={$totals->delivery_fee};window.DDG_PAY={$totals->payment_price};window.DDG_SHIPRULES={$ship_rules_json};</script>
+    <p style="font-size:11px;color:var(--ds-sub);margin-top:10px;">{$L['pay_agree']}</p>
+  </div>
+</div>
+</form>
+
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+window.DDGSHOP_TOSS_CLIENT = "{$toss_client_key}";
+function ddggFillAddr(btn){
+  document.getElementById('ds-receiver-name').value = btn.getAttribute('data-name') || '';
+  document.getElementById('ds-receiver-phone').value = btn.getAttribute('data-phone') || '';
+  document.getElementById('ds-zipcode').value = btn.getAttribute('data-zip') || '';
+  document.getElementById('ds-addr1').value = btn.getAttribute('data-a1') || '';
+  document.getElementById('ds-addr2').value = btn.getAttribute('data-a2') || '';
+  var chips = document.querySelectorAll('.ds-addrchip');
+  for(var i=0;i<chips.length;i++) chips[i].classList.remove('on');
+  btn.classList.add('on');
+  if(window.ddggApplyShipExtra) ddggApplyShipExtra();
+}
+function ddggPostcode(){
+  var P = (window.kakao && kakao.Postcode) ? kakao.Postcode : ((window.daum && daum.Postcode) ? daum.Postcode : null);
+  if(!P){ alert('{$L['js_postcode_fail']}'); return; }
+  new P({
+    oncomplete: function(data){
+      var addr = data.roadAddress || data.jibunAddress;
+      if(data.buildingName){ addr += ' (' + data.buildingName + ')'; }
+      document.getElementById('ds-zipcode').value = data.zonecode;
+      document.getElementById('ds-addr1').value = addr;
+      var d = document.getElementById('ds-addr2'); if(d) d.focus();
+      if(window.ddggApplyShipExtra) ddggApplyShipExtra();
+    }
+  }).open();
+}
+function ddggPayMethod(code){
+  var box = document.getElementById('ds-bank-info');
+  if(box) box.style.display = (code === 'banktransfer') ? 'block' : 'none';
+  var pn = document.getElementById('ds-point-note-full');
+  if(pn) pn.style.display = (code === 'point') ? '' : 'none';
+  // 포인트 전액결제: 보유 적립금으로 전액 자동 사용
+  if(code === 'point' && window.ddggAllPoint) window.ddggAllPoint();
+}
+function ddggToggleBank(code){ ddggPayMethod(code); } // 하위호환
+(function(){
+  var checked = document.querySelector('input[name="pay_method"]:checked');
+  if(checked) ddggPayMethod(checked.value);
+  if(window.ddggApplyShipExtra) ddggApplyShipExtra();
+})();
+</script>
+<!--@end-->
+
+<include target="_foot.html" />

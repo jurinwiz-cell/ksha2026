@@ -1,0 +1,18 @@
+<query id="getItemsByTag" action="select">
+  <tables>
+    <table name="ddggshop_item_tag" />
+    <table name="ddggshop_item" />
+  </tables>
+  <columns>
+    <column name="ddggshop_item.*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="ddggshop_item.item_srl" default="ddggshop_item_tag.item_srl" />
+    <condition operation="equal" column="ddggshop_item_tag.tag_srl" var="tag_srl" notnull="notnull" pipe="and" />
+    <condition operation="equal" column="ddggshop_item.status" var="status" pipe="and" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="ddggshop_item.list_order" order="desc" />
+    <list_count var="list_count" default="8" />
+  </navigation>
+</query>

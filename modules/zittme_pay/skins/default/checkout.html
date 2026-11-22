@@ -1,0 +1,128 @@
+@version(2)
+
+{{-- 결제 화면. 주문 내역을 보여 주고 결제수단을 고르게 한다. --}}
+
+<div class="zpay" id="zpay-checkout" data-state="{{ $pay_state }}" data-order-code="{{ $order->order_code }}">
+
+	<header class="zpay-head">
+		<h1 class="zpay-title">{{ $lang->zpay_checkout_title }}</h1>
+		@php $zpay_src = Context::get('source_order_code'); @endphp
+		@if (!empty($zpay_src))
+		<p class="zpay-order-code">주문번호 <span>{{ $zpay_src }}</span></p>
+		@else
+		<p class="zpay-order-code">{{ $lang->zpay_order_code }} <span>{{ $order->order_code }}</span></p>
+		@endif
+	</header>
+
+	<section class="zpay-summary">
+		<h2 class="zpay-section-title">{{ $lang->zpay_order_summary }}</h2>
+		<dl class="zpay-summary-list">
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_product }}</dt>
+				<dd>{{ Context::replaceUserLang((string)$order->title) }}</dd>
+			</div>
+			@if($order->payer_name)
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_payer }}</dt>
+				<dd>{{ $order->payer_name }}</dd>
+			</div>
+			@endif
+			@if($order->payer_phone)
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_payer_phone }}</dt>
+				<dd>{{ $order->payer_phone }}</dd>
+			</div>
+			@endif
+			<div class="zpay-summary-row zpay-summary-total">
+				<dt>{{ $lang->zpay_amount }}</dt>
+				<dd><strong>{{ $amount_text }}</strong></dd>
+			</div>
+		</dl>
+	</section>
+
+	{{-- 구매자 정보는 주문을 만든 모듈이 받는 것이 원칙이다. --}}
+	{{-- 이름·휴대폰이 비어 온 주문에만 여기서 받아 채운다 (PG 가 휴대폰 번호를 요구한다). --}}
+	@if(!$order->payer_name || !$order->payer_phone)
+	<section class="zpay-buyer">
+		<h2 class="zpay-section-title">{{ $lang->zpay_buyer_info }}</h2>
+		<p class="zpay-field">
+			<label for="zpay-payer-name">{{ $lang->zpay_payer }} <em class="zpay-req">*</em></label>
+			<input type="text" id="zpay-payer-name" name="payer_name" value="{{ $order->payer_name }}" maxlength="80" autocomplete="name">
+		</p>
+		<p class="zpay-field">
+			<label for="zpay-payer-phone">{{ $lang->zpay_payer_phone }} <em class="zpay-req">*</em></label>
+			<input type="tel" id="zpay-payer-phone" name="payer_phone" value="{{ $order->payer_phone }}" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000">
+		</p>
+		<p class="zpay-field">
+			<label for="zpay-payer-email">{{ $lang->zpay_payer_email }}</label>
+			<input type="email" id="zpay-payer-email" name="payer_email" value="{{ $order->payer_email }}" maxlength="250" autocomplete="email">
+		</p>
+	</section>
+	@endif
+
+	<section class="zpay-methods">
+		<h2 class="zpay-section-title">{{ $lang->zpay_select_method }}</h2>
+
+		<div class="zpay-method-list">
+			@foreach($gateways as $gateway_name => $gateway)
+			<label class="zpay-method" for="zpay-method-{{ $gateway_name }}">
+				<input type="radio" name="zpay_gateway" id="zpay-method-{{ $gateway_name }}" value="{{ $gateway_name }}"
+					data-requires-client="{{ $gateway['requires_client'] ? 1 : 0 }}">
+				<span class="zpay-method-label">{{ $gateway['title'] }}</span>
+			</label>
+			@endforeach
+		</div>
+
+		{{-- 무통장입금을 고르면 계좌와 입금자명을 받는다. --}}
+		@if(isset($gateways['banktransfer']))
+		<div class="zpay-bank" id="zpay-bank" hidden>
+			<h3 class="zpay-sub-title">{{ $lang->zpay_bank_accounts }}</h3>
+
+			<ul class="zpay-bank-list">
+				@foreach($gateways['banktransfer']['request']['accounts'] as $bank_index => $account)
+				<li class="zpay-bank-item">
+					<label>
+						<input type="radio" name="zpay_bank_index" value="{{ $bank_index }}" @if($bank_index === 0) checked @endif>
+						<span class="zpay-bank-name">{{ $account['bank'] }}</span>
+						<span class="zpay-bank-account">{{ $account['account'] }}</span>
+						@if($account['holder'])
+						<span class="zpay-bank-holder">{{ $account['holder'] }}</span>
+						@endif
+						@foreach($account['extra'] ?? [] as $zpay_ex)
+						<span class="zpay-bank-extra">{{ $zpay_ex['label'] }} {{ $zpay_ex['value'] }}</span>
+						@endforeach
+					</label>
+				</li>
+				@endforeach
+			</ul>
+
+			<p class="zpay-field">
+				<label for="zpay-depositor">{{ $lang->zpay_depositor_name }}</label>
+				<input type="text" id="zpay-depositor" name="depositor_name" value="{{ $order->payer_name }}" maxlength="80">
+			</p>
+
+			<p class="zpay-notice">
+				{{ sprintf($lang->zpay_bank_due_notice, $gateways['banktransfer']['request']['due_days']) }}
+			</p>
+		</div>
+		@endif
+	</section>
+
+	<p class="zpay-error" id="zpay-error" hidden></p>
+
+	<div class="zpay-actions">
+		<button type="button" class="zpay-btn zpay-btn-primary" id="zpay-submit" disabled>
+			{{ sprintf($lang->zpay_pay_button, $amount_text) }}
+		</button>
+	</div>
+
+	@if($pay_config->biz_notice)
+	<footer class="zpay-foot">
+		<p class="zpay-biz-notice">{!! nl2br(escape($pay_config->biz_notice)) !!}</p>
+	</footer>
+	@endif
+</div>
+
+<script>
+	window.ZPAY_BOOT = {!! $pay_boot_json !!};
+</script>

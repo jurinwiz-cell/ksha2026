@@ -1,0 +1,28 @@
+<!--#include("./header.html")-->
+
+<table class="x_table x_table-striped x_table-hover">
+	<thead>
+		<tr>
+			<th scope="col">{$lang->pullup_log_document}</th>
+			<th scope="col">{$lang->pullup_log_member}</th>
+			<th scope="col">{$lang->pullup_log_point}</th>
+			<th scope="col">{$lang->pullup_log_date}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!--@if(!count($log_list))-->
+		<tr>
+			<td colspan="4">{$lang->pullup_no_log}</td>
+		</tr>
+		<!--@else-->
+		<!--@foreach($log_list as $log)-->
+		<tr>
+			<td>{$log->title}</td>
+			<td>{$log->nick_name}</td>
+			<td>{number_format($log->point)} P</td>
+			<td>{zdate($log->regdate, 'Y-m-d H:i:s')}</td>
+		</tr>
+		<!--@end-->
+		<!--@end-->
+	</tbody>
+</table>

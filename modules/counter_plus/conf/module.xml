@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+    <permissions>
+        <permission action="dispCounter_plusAdminStats"         target="manager" />
+        <permission action="dispCounter_plusAdminConfig"        target="manager" />
+        <permission action="dispCounter_plusAdminOAuthCallback" target="manager" />
+        <permission action="procCounter_plusAdminConfig"        target="manager" />
+        <permission action="procCounter_plusAdminOAuthRevoke"   target="manager" />
+    </permissions>
+    <actions>
+        <action name="dispCounter_plusAdminStats"         type="view" admin_index="true" />
+        <action name="dispCounter_plusAdminConfig"        type="view" />
+        <action name="dispCounter_plusAdminOAuthCallback" type="view" />
+        <action name="procCounter_plusAdminConfig"        type="controller" />
+        <action name="procCounter_plusAdminOAuthRevoke"   type="controller" />
+    </actions>
+    <eventHandlers>
+        <eventHandler after="document.updateReadedCount" class="controller" method="triggerRecordViewLog" />
+    </eventHandlers>
+</module>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title>알림센터 스킨</title>
+	<version>0.1</version>
+	<date>2021-08-29</date>
+
+	<author email_address="m@elkha.kr" link="http://elkha.kr/">
+		<name>엘카</name>
+	</author>
+
+	<colorset>
+		<color name="default">
+			<title>default</title>
+		</color>
+	</colorset>
+</skin>

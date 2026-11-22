@@ -1,0 +1,10 @@
+<table name="commerce_credit_log">
+	<column name="log_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="member_srl" type="bigint" notnull="notnull" index="idx_member_srl" />
+	<column name="order_srl" type="bigint" notnull="notnull" default="0" index="idx_order_srl" />
+	<column name="amount" type="bigint" notnull="notnull" default="0" />
+	<column name="balance_after" type="bigint" notnull="notnull" default="0" />
+	<column name="type" type="varchar" size="12" notnull="notnull" />
+	<column name="memo" type="varchar" size="250" />
+	<column name="regdate" type="char" size="14" index="idx_regdate" />
+</table>

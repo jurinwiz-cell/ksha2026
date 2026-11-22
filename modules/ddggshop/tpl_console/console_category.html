@@ -1,0 +1,123 @@
+<include target="_console_head.html" />
+
+<div class="cs-pagehead">
+  <div><span class="sub">상품 분류 · 드래그하여 순서 변경 (사용자 페이지 메뉴 구조)</span></div>
+  <button type="button" class="cs-btn" onclick="csCatNew(0)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> 대분류 추가</button>
+</div>
+
+<div class="cs-card cs-card-p" style="margin-bottom:14px;">
+  <div class="cs-card-head" style="gap:11px;align-items:center;margin:0;">
+    <button type="button" class="cs-toggle {$show_category_count=='Y' ? 'on' : ''}" id="cs-catcnt-toggle" onclick="csCatCountToggle()" title="카테고리 상품 개수 표시 여부"></button>
+    <h3 style="margin:0;">상품 개수 표시 <span id="cs-catcnt-state" style="color:#8a9099;font-weight:500;font-size:13px;">{$show_category_count=='Y' ? '표시 중' : '표시 안 함'}</span></h3>
+    <span style="margin-left:auto;color:#8a9099;font-weight:500;font-size:12.5px;">사용자 상품목록의 카테고리 옆에 상품 개수를 표시합니다(하위 분류 포함).</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+  <div class="cs-card cs-card-p" style="flex:1;min-width:360px;">
+    <div cond="!count($categories)" class="cs-empty">카테고리가 없습니다. ‘대분류 추가’로 시작하세요.</div>
+    <div class="cs-cat-list" id="cs-cat-list">
+      <div class="cs-cat-row {$c->depth>0 ? 'child' : ''}" loop="$categories=>$c" draggable="true" data-srl="{$c->category_srl}" data-parent="{$c->parent_srl}" data-depth="{$c->depth}" data-i18n="{escape($c->name_i18n)}" style="margin-left:{$c->depth*24}px;">
+        <span class="cs-cat-handle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg></span>
+        <span class="cs-cat-nm">{$c->category_name}</span>
+        <span class="cs-st {$c->status=='Y' ? 'on' : 'off'}">{$c->status=='Y' ? '노출' : '숨김'}</span>
+        <span class="cs-cat-acts">
+          <button type="button" class="cs-icbtn" cond="$c->depth<2" title="하위 추가" onclick="csCatNew({$c->category_srl})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" class="cs-icbtn" title="수정" onclick="csCatEdit({$c->category_srl},'{escape($c->category_name)}',{$c->list_order},'{$c->status}',{$c->parent_srl})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button type="button" class="cs-icbtn del" title="삭제" onclick="csCatDel({$c->category_srl})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+        </span>
+      </div>
+    </div>
+    <p class="cs-hint" style="margin-top:12px;">≡ 핸들을 드래그해 같은 단계 안에서 순서를 바꿀 수 있습니다.</p>
+  </div>
+
+  <div class="cs-card" style="flex:0 0 320px;" id="cs-cat-panel">
+    <div class="cs-card-head"><h3 id="cs-cat-title">카테고리 추가</h3></div>
+    <div class="cs-card-p">
+      <input type="hidden" id="cs-cat-srl" value="" />
+      <div class="cs-field"><label>카테고리명</label><input type="text" id="cs-cat-name" class="cs-input" placeholder="예: 신발" /></div>
+      <!--@if(count($cat_langs))-->
+      <div class="cs-field" style="border-top:1px dashed #E4E6EA;padding-top:12px;">
+        <label style="font-size:12px;color:#8a9099;">카테고리명 번역 (비우면 기본명 사용)</label>
+        <div loop="$cat_langs=>$cl" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <span style="font-size:12px;min-width:60px;color:#5a6069;">{$cl->name}</span>
+          <input type="text" id="cs-cat-i18n-{$cl->code}" data-lang="{$cl->code}" class="cs-input cs-cat-i18n" style="flex:1;" placeholder="{$cl->code}" />
+        </div>
+      </div>
+      <!--@end-->
+      <div class="cs-field"><label>상위 카테고리</label>
+        <select id="cs-cat-parent" class="cs-select">
+          <option value="0">최상위 (1단계)</option>
+          <option loop="$parent_categories=>$pc" value="{$pc->category_srl}">{$pc->depth>0 ? '— ' : ''}{$pc->category_name}</option>
+        </select>
+      </div>
+      <div class="cs-row">
+        <div class="cs-field" style="flex:1;margin-bottom:0;"><label>상태</label><select id="cs-cat-status" class="cs-select"><option value="Y">노출</option><option value="N">숨김</option></select></div>
+        <input type="hidden" id="cs-cat-order" value="0" />
+      </div>
+      <div class="cs-row" style="margin-top:16px;">
+        <button type="button" class="cs-btn" onclick="csCatSave()">저장</button>
+        <button type="button" class="cs-btn ghost" onclick="csCatReset()">새로 입력</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 상품 개수 표시 토글 */
+function csCatCountToggle(){
+  exec_json('ddggshop.procDdggshopAdminToggleCategoryCount', {}, function(ret){
+    var on = ret.show_category_count === 'Y';
+    var t = document.getElementById('cs-catcnt-toggle'); if(t) t.classList.toggle('on', on);
+    var s = document.getElementById('cs-catcnt-state'); if(s) s.textContent = on ? '표시 중' : '표시 안 함';
+  });
+}
+/* 추가/수정 폼 */
+function csCatNew(parent){ csCatReset(); document.getElementById('cs-cat-parent').value=parent; document.getElementById('cs-cat-name').focus(); }
+function csCatSetI18n(map){
+  document.querySelectorAll('.cs-cat-i18n').forEach(function(inp){
+    var code=inp.getAttribute('data-lang'); inp.value=(map && map[code]) ? map[code] : '';
+  });
+}
+function csCatEdit(srl,name,order,status,parent){
+  document.getElementById('cs-cat-srl').value=srl; document.getElementById('cs-cat-name').value=name;
+  document.getElementById('cs-cat-order').value=order; document.getElementById('cs-cat-status').value=status;
+  document.getElementById('cs-cat-parent').value=parent; document.getElementById('cs-cat-title').innerText='카테고리 수정';
+  var row=document.querySelector('.cs-cat-row[data-srl="'+srl+'"]'); var map={};
+  if(row){ var raw=row.getAttribute('data-i18n'); if(raw){ try{ map=JSON.parse(raw)||{}; }catch(_){ map={}; } } }
+  csCatSetI18n(map);
+  document.getElementById('cs-cat-name').focus();
+}
+function csCatReset(){ document.getElementById('cs-cat-srl').value=''; document.getElementById('cs-cat-name').value=''; document.getElementById('cs-cat-order').value='0'; document.getElementById('cs-cat-status').value='Y'; document.getElementById('cs-cat-parent').value='0'; document.getElementById('cs-cat-title').innerText='카테고리 추가'; csCatSetI18n({}); }
+function csCatSave(){
+  var name=document.getElementById('cs-cat-name').value.replace(/^\s+|\s+$/g,''); if(!name){ alert('카테고리명을 입력하세요.'); return; }
+  var p={category_srl:document.getElementById('cs-cat-srl').value,category_name:name,parent_srl:document.getElementById('cs-cat-parent').value,list_order:document.getElementById('cs-cat-order').value,status:document.getElementById('cs-cat-status').value};
+  document.querySelectorAll('.cs-cat-i18n').forEach(function(inp){ p['cat_i18n['+inp.getAttribute('data-lang')+']']=inp.value.replace(/^\s+|\s+$/g,''); });
+  exec_json('ddggshop.procDdggshopAdminInsertCategory',p,function(){ location.reload(); });
+}
+function csCatDel(srl){ if(!confirm('이 카테고리를 삭제할까요? (하위는 남고 상품은 미분류)')) return; exec_json('ddggshop.procDdggshopAdminDeleteCategory',{category_srl:srl},function(){ location.reload(); }); }
+
+/* 드래그앤드롭 (하위 서브트리 포함 이동, 같은 상위 안에서) */
+(function(){
+  var dragEl=null;
+  function subtree(el){ var d=parseInt(el.getAttribute('data-depth'),10); var arr=[el]; var n=el.nextElementSibling; while(n && parseInt(n.getAttribute('data-depth'),10)>d){ arr.push(n); n=n.nextElementSibling; } return arr; }
+  function saveOrder(){ var s=[]; document.querySelectorAll('#cs-cat-list .cs-cat-row').forEach(function(r){ s.push(r.getAttribute('data-srl')); }); exec_json('ddggshop.procDdggshopAdminReorderCategory',{srls:s.join(',')},function(){}); }
+  function bind(r){
+    r.addEventListener('dragstart',function(e){ dragEl=r; r.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain','x');}catch(_){} });
+    r.addEventListener('dragend',function(){ r.classList.remove('dragging'); document.querySelectorAll('.cs-cat-row').forEach(function(x){x.classList.remove('dragover');}); });
+    r.addEventListener('dragover',function(e){ if(!dragEl||dragEl===r) return; if(r.getAttribute('data-parent')!==dragEl.getAttribute('data-parent')) return; var blk=subtree(dragEl); if(blk.indexOf(r)>=0) return; e.preventDefault(); r.classList.add('dragover'); });
+    r.addEventListener('dragleave',function(){ r.classList.remove('dragover'); });
+    r.addEventListener('drop',function(e){ e.preventDefault(); r.classList.remove('dragover'); if(!dragEl||dragEl===r) return; if(r.getAttribute('data-parent')!==dragEl.getAttribute('data-parent')) return;
+      var blk=subtree(dragEl); if(blk.indexOf(r)>=0) return;
+      var rect=r.getBoundingClientRect(); var after=(e.clientY-rect.top)>rect.height/2;
+      var ref = after ? (subtree(r)[subtree(r).length-1].nextElementSibling) : r;
+      var list=document.getElementById('cs-cat-list');
+      blk.forEach(function(b){ list.insertBefore(b, ref); });
+      saveOrder();
+    });
+  }
+  document.querySelectorAll('#cs-cat-list .cs-cat-row').forEach(bind);
+})();
+</script>
+
+<include target="_console_foot.html" />

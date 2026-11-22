@@ -1,0 +1,21 @@
+<table name="commerce_order_item">
+	<column name="order_item_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="order_seller_srl" type="bigint" notnull="notnull" index="idx_order_seller_srl" />
+	<column name="order_srl" type="bigint" notnull="notnull" index="idx_order_srl" />
+	<column name="item_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="option_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="item_name" type="varchar" size="250" notnull="notnull" />
+	<column name="option_name" type="varchar" size="250" />
+	<column name="sku" type="varchar" size="100" />
+	<column name="thumb" type="varchar" size="250" />
+	<column name="price" type="bigint" notnull="notnull" default="0" />
+	<column name="qty" type="int" notnull="notnull" default="1" />
+	<column name="subtotal" type="bigint" notnull="notnull" default="0" />
+	<column name="tax_type" type="varchar" size="10" notnull="notnull" default="taxable" />
+	<column name="claim_status" type="varchar" size="10" notnull="notnull" default="none" />
+	<column name="timesale_item_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="seller_srl" type="bigint" notnull="notnull" default="0" index="idx_seller_srl" />
+	<column name="commission_rate" type="decimal" size="6,2" notnull="notnull" default="0" />
+	<column name="commission" type="bigint" notnull="notnull" default="0" />
+	<column name="regdate" type="char" size="14" />
+</table>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<actions>
+		<!-- 관리자 액션 -->
+		<action name="dispElkhatalk3AdminConfig" type="view" menu_name="elkhatalk3" admin_index="true" />
+		<action name="procElkhatalk3AdminInsertConfig" type="controller" />
+		<action name="procElkhatalk3AdminInstall" type="controller" />
+		<action name="procElkhatalk3AdminUninstall" type="controller" />
+		<action name="procElkhatalk3AdminInstall2" type="controller" />
+		<action name="procElkhatalk3AdminGetAuthKey" type="controller" />
+		<action name="getElkhatalk3AdminEmbedHtml" type="model" />
+		<!--<action name="procElkhatalk3AdminUninstall2" type="controller" />-->
+		<!-- 일반 액션 -->
+		<action name="procElkhatalk3Say" type="controller" />
+		<action name="procElkhatalk3Say2" type="controller" />
+		<action name="procElkhatalk3Read" type="controller" />
+		<action name="procElkhatalk3Manage" type="controller" />
+		<action name="procElkhatalk3ManageDeleteNotice" type="controller" />
+		<action name="procElkhatalk3Delete2" type="controller" />
+		<action name="procElkhatalk3Custom" type="controller" />
+		<action name="procElkhatalk3MemberHide" type="controller" />
+		<action name="dispElkhatalk3Index" type="view" index="true" />
+		<action name="dispElkhatalk3SecretKey" type="view" />
+		<action name="dispElkhatalk3Manager" type="view" />
+		<action name="dispElkhatalk3Custom" type="view" />
+		<action name="dispElkhatalk3Popup" type="view" />
+		<action name="getElkhatalk3MemberList" type="model" />
+		<action name="getElkhatalk3TalkList" type="model" />
+		<action name="getElkhatalk3AllList" type="model" />
+		<action name="getElkhatalk3Member" type="model" />
+		<action name="getElkhatalk3RetryAuth" type="model" />
+		<action name="getElkhatalk3PublicMenu" type="model" />
+		<action name="getElkhatalk3MemberMenu" type="model" />
+		<action name="getElkhatalk3Message" type="model" />
+		<action name="getElkhatalk3NickName" type="model" />
+		<action name="getElkhatalk3Custom" type="model" />
+		<action name="getElkhatalk3HostCount" type="model" />
+		<action name="getElkhatalk3PingSession" type="model" />
+		<!--<action name="getElkhatalk3PublicChat" type="model" />-->
+	</actions>
+	<menus>
+		<menu name="elkhatalk3" type="all">
+			<title>RXE 채팅 솔루션</title>
+		</menu>
+	</menus>
+</module>

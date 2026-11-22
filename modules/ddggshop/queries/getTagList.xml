@@ -1,0 +1,15 @@
+<query id="getTagList" action="select">
+  <tables>
+    <table name="ddggshop_tag" />
+  </tables>
+  <columns>
+    <column name="*" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="show_on_home" var="show_on_home" />
+    <condition operation="equal" column="status" var="status" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="list_order" order="asc" />
+  </navigation>
+</query>

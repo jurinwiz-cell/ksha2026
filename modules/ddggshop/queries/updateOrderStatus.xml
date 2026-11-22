@@ -1,0 +1,12 @@
+<query id="updateOrderStatus" action="update">
+  <tables>
+    <table name="ddggshop_order" />
+  </tables>
+  <columns>
+    <column name="status" var="status" notnull="notnull" />
+    <column name="admin_memo" var="admin_memo" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="order_srl" var="order_srl" notnull="notnull" />
+  </conditions>
+</query>

@@ -1,0 +1,8 @@
+<query id="deleteOrder" action="delete">
+  <tables>
+    <table name="ddggshop_order" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="order_srl" var="order_srl" notnull="notnull" />
+  </conditions>
+</query>

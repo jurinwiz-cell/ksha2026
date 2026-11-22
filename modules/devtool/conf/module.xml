@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants>
+	</grants>
+	<actions>
+		<!-- 관리자 액션 -->
+		<action name="dispDevtoolAdminConfig" class="Controllers\Admin" menu-name="devtool" admin-index="true" />
+		<action name="procDevtoolAdminInsertConfig" class="Controllers\Admin" />
+		<!-- 메인 화면 예제 -->
+		<action name="dispDevtoolIndex" class="Controllers\Index" index="true" permission="root" />
+		<action name="dispDevtoolModuleIndex" class="Controllers\Module" route="modules" permission="root" />
+		<action name="dispDevtoolModule" class="Controllers\Module" route="module/$target_module" permission="root" />
+		<action name="dispDevtoolModuleInfo" class="Controllers\Module" route="module/$target_module/info" permission="root" />
+		<action name="procDevtoolModuleInfoSave" class="Controllers\Module" permission="root" />
+		<action name="procDevtoolModuleDownload" class="Controllers\Module" method="GET|POST" permission="root" />
+
+		<action name="dispDevtoolSchema" class="Controllers\Schema" route="module/$target_module/schema/$schema_name" permission="root" />
+		<action name="procDevtoolSchemaUpdate" class="Controllers\Schema" permission="root" />
+		<action name="procDevtoolSchemaDelete" class="Controllers\Schema" permission="root" />
+		<action name="procDevtoolSchemaApplyDto" class="Controllers\Schema" permission="root" />
+		<action name="procDevtoolSchemaTableCreate" class="Controllers\Schema" permission="root" />
+
+		<action name="dispDevtoolAction" class="Controllers\Action" route="module/$target_module/action/$action_name" permission="root" />
+		<action name="procDevtoolActionUpdate" class="Controllers\Action" permission="root" />
+		<action name="procDevtoolActionDelete" class="Controllers\Action" permission="root" />
+		<action name="getDevtoolActionClass" class="Controllers\Action" permission="root" />
+		<action name="procDevtoolActionClassSave" class="Controllers\Action" permission="root" />
+
+		<action name="dispDevtoolQuery" class="Controllers\Query" route="module/$target_module/query/$query_id" permission="root" />
+		<action name="getDevtoolQuery" class="Controllers\Query" permission="root" />
+		<action name="getDevtoolSchemaColumns" class="Controllers\Query" permission="root" />
+		<action name="procDevtoolQueryUpdate" class="Controllers\Query" permission="root" />
+		<action name="procDevtoolQueryDelete" class="Controllers\Query" permission="root" />
+		<action name="getDevtoolQueryExecute" class="Controllers\Query" permission="root" />
+		<action name="getDevtoolModelClasses" class="Controllers\Query" permission="root" />
+		<action name="getDevtoolQueryPhp" class="Controllers\Query" permission="root" />
+		<action name="procDevtoolQueryPhpSave" class="Controllers\Query" permission="root" />
+	</actions>
+	<!-- 이벤트 핸들러 (트리거) 선언 -->
+	<eventHandlers>
+	</eventHandlers>
+	<menus>
+		<menu name="devtool" type="all">
+			<title xml:lang="ko">개발자도구</title>
+		</menu>
+	</menus>
+</module>

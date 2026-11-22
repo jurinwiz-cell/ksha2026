@@ -1,0 +1,16 @@
+<query id="updateCategory" action="update">
+  <tables>
+    <table name="ddggshop_category" />
+  </tables>
+  <columns>
+    <column name="parent_srl" var="parent_srl" default="0" />
+    <column name="category_name" var="category_name" notnull="notnull" />
+    <column name="name_i18n" var="name_i18n" />
+    <column name="depth" var="depth" default="0" />
+    <column name="list_order" var="list_order" />
+    <column name="status" var="status" default="Y" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="category_srl" var="category_srl" notnull="notnull" />
+  </conditions>
+</query>

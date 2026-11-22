@@ -1,0 +1,12 @@
+<query id="decreaseItemOptionStockGuarded" action="update">
+  <tables>
+    <table name="ddggshop_item_option" />
+  </tables>
+  <columns>
+    <column name="stock" var="qty" operation="minus" notnull="notnull" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="option_srl" var="option_srl" notnull="notnull" />
+    <condition operation="more" column="stock" var="qty" notnull="notnull" pipe="and" />
+  </conditions>
+</query>

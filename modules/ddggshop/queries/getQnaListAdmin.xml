@@ -1,0 +1,26 @@
+<query id="getQnaListAdmin" action="select">
+  <tables>
+    <table name="ddggshop_qna" />
+    <table name="ddggshop_item" />
+  </tables>
+  <columns>
+    <column name="ddggshop_qna.*" />
+    <column name="ddggshop_item.item_name" />
+  </columns>
+  <conditions>
+    <condition operation="equal" column="ddggshop_item.item_srl" default="ddggshop_qna.item_srl" />
+    <condition operation="equal" column="ddggshop_qna.item_srl" var="item_srl" pipe="and" />
+    <condition operation="like" column="ddggshop_qna.content" var="search_keyword" pipe="and" />
+    <condition operation="more" column="ddggshop_qna.regdate" var="reg_from" pipe="and" />
+    <condition operation="less" column="ddggshop_qna.regdate" var="reg_to" pipe="and" />
+    <condition operation="in" column="ddggshop_item.category_srl" var="category_srls" pipe="and" />
+    <condition operation="notnull" column="ddggshop_qna.answer" if="answered_y" pipe="and" />
+    <condition operation="null" column="ddggshop_qna.answer" if="answered_n" pipe="and" />
+  </conditions>
+  <navigation>
+    <index var="sort_index" default="qna_srl" order="desc" />
+    <list_count var="list_count" default="20" />
+    <page_count var="page_count" default="10" />
+    <page var="page" default="1" />
+  </navigation>
+</query>

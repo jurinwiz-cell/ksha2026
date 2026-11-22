@@ -1,0 +1,280 @@
+<config autoescape="on" />
+
+<style>
+#popup_type_html, #popup_type_image { display: none; }
+#popup_type_html.active, #popup_type_image.active { display: block; }
+.popup_image_preview { max-width: 300px; max-height: 200px; margin-top: 10px; border: 1px solid #ddd; }
+.popup_image_preview_wrap { margin-top: 10px; }
+.popup_module_picker { max-height: 320px; overflow-y: auto; border: 1px solid #ddd; padding: 10px 15px; background: #fff; margin-top: 8px; }
+.popup_module_picker fieldset { border: none; border-bottom: 1px solid #eee; margin: 0 0 8px; padding: 0 0 8px; }
+.popup_module_picker fieldset:last-child { border-bottom: none; }
+.popup_module_picker legend { font-weight: bold; font-size: 13px; border: none; margin: 0; padding: 4px 0; width: auto; }
+.popup_module_picker label { display: inline-block; min-width: 240px; margin: 4px 10px 4px 0; }
+.popup_inline_unit { margin-left: 4px; color: #666; }
+.popup_edit_form table.x_table { table-layout: fixed; }
+.popup_edit_form table.x_table th[scope="row"] { width: 200px; white-space: nowrap; }
+</style>
+
+<div class="x_page-header">
+	<h1>{$lang->popup_manager} <small>{$popup->popup_srl ? $lang->cmd_update_popup : $lang->cmd_insert_popup}</small></h1>
+</div>
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form action="./" method="post" enctype="multipart/form-data" class="x_form-horizontal popup_edit_form">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="{$popup->popup_srl ? 'procPopup_managerAdminUpdatePopup' : 'procPopup_managerAdminInsertPopup'}" />
+	<input type="hidden" name="popup_srl" value="{$popup->popup_srl}" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispPopup_managerAdminList')}" />
+
+	<!-- Basic Info -->
+	<h2>{$lang->basic_info}</h2>
+	<table class="x_table x_table-striped x_table-hover">
+		<tbody>
+			<tr>
+				<th scope="row">{$lang->popup_title} <span style="color:#c00;">*</span></th>
+				<td>
+					<input type="text" id="title" name="title" value="{$popup->title}" class="x_form-control" required />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->popup_type}</th>
+				<td>
+					<label class="x_radio x_inline"><input type="radio" name="popup_type" value="html" checked="checked"|cond="!$popup->popup_srl || $popup->popup_type == 'html'" onchange="togglePopupType(this.value)" /> {$lang->popup_type_html}</label>
+					<label class="x_radio x_inline"><input type="radio" name="popup_type" value="image" checked="checked"|cond="$popup->popup_type == 'image'" onchange="togglePopupType(this.value)" /> {$lang->popup_type_image}</label>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->is_enabled}</th>
+				<td>
+					<label class="x_radio x_inline"><input type="radio" name="is_enabled" value="Y" checked="checked"|cond="!$popup->popup_srl || $popup->is_enabled == 'Y'" /> {$lang->enabled}</label>
+					<label class="x_radio x_inline"><input type="radio" name="is_enabled" value="N" checked="checked"|cond="$popup->is_enabled == 'N'" /> {$lang->disabled}</label>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->display_order}</th>
+				<td>
+					<input type="number" id="display_order" name="display_order" value="{$popup->display_order ?: 0}" class="x_form-control" style="width:120px;" />
+					<p class="x_help-block">{$lang->display_order_help}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- HTML Content -->
+	<section id="popup_type_html" class="{$popup->popup_type != 'image' ? 'active' : ''}">
+		<h2>{$lang->popup_content}</h2>
+		<table class="x_table x_table-striped x_table-hover">
+			<tbody>
+				<tr>
+					<td>
+						<input type="hidden" name="content" value="{htmlspecialchars($popup->content)}" />
+						{$editor|noescape}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<!-- Image Content -->
+	<section id="popup_type_image" class="{$popup->popup_type == 'image' ? 'active' : ''}">
+		<h2>{$lang->popup_image}</h2>
+		<table class="x_table x_table-striped x_table-hover">
+			<tbody>
+				<tr>
+					<th scope="row">{$lang->image_upload}</th>
+					<td>
+						<input type="hidden" name="current_image_url" value="{$popup->image_url}" />
+						<input type="file" name="image_file" accept="image/*" onchange="previewImage(this)" />
+						<p class="x_help-block">{$lang->image_upload_help}</p>
+						<div class="popup_image_preview_wrap" cond="$popup->image_url">
+							<p>{$lang->current_image}:</p>
+							<img src="{$popup->image_url}" class="popup_image_preview" id="current_image" />
+						</div>
+						<div class="popup_image_preview_wrap" id="new_image_preview" style="display:none;">
+							<p>{$lang->new_image}:</p>
+							<img src="" class="popup_image_preview" id="preview_img" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">{$lang->image_link}</th>
+					<td>
+						<input type="text" id="image_link" name="image_link" value="{$popup->image_link}" class="x_form-control" placeholder="https://" />
+						<p class="x_help-block">{$lang->image_link_help}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">{$lang->link_target}</th>
+					<td>
+						<label class="x_radio x_inline"><input type="radio" name="link_target" value="_self" checked="checked"|cond="!$popup->link_target || $popup->link_target == '_self'" /> {$lang->link_target_self}</label>
+						<label class="x_radio x_inline"><input type="radio" name="link_target" value="_blank" checked="checked"|cond="$popup->link_target == '_blank'" /> {$lang->link_target_blank}</label>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<!-- Position Settings -->
+	<h2>{$lang->position_settings}</h2>
+	<table class="x_table x_table-striped x_table-hover">
+		<tbody>
+			<tr>
+				<th scope="row">{$lang->position_top}</th>
+				<td><input type="number" id="position_top" name="position_top" value="{$popup->position_top ?: 100}" class="x_form-control" style="width:120px;" /> <span class="popup_inline_unit">px</span></td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->position_left}</th>
+				<td><input type="number" id="position_left" name="position_left" value="{$popup->position_left ?: 100}" class="x_form-control" style="width:120px;" /> <span class="popup_inline_unit">px</span></td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->popup_width}</th>
+				<td><input type="number" id="width" name="width" value="{$popup->width ?: 400}" class="x_form-control" style="width:120px;" /> <span class="popup_inline_unit">px</span></td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->popup_height}</th>
+				<td>
+					<input type="number" id="height" name="height" value="{$popup->height ?: 0}" class="x_form-control" style="width:120px;" /> <span class="popup_inline_unit">px</span>
+					<p class="x_help-block">{$lang->popup_height_help}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Date Settings -->
+	<h2>{$lang->date_settings}</h2>
+	<table class="x_table x_table-striped x_table-hover">
+		<tbody>
+			<tr>
+				<th scope="row">{$lang->start_date}</th>
+				<td>
+					<input type="date" id="start_date" name="start_date" value="{$popup->start_date ? zdate($popup->start_date, 'Y-m-d') : ''}" class="x_form-control" style="width:auto;display:inline-block;" />
+					<input type="time" id="start_time" name="start_time" value="{$popup->start_date ? zdate($popup->start_date, 'H:i') : ''}" class="x_form-control" style="width:auto;display:inline-block;" />
+					<p class="x_help-block">{$lang->date_empty_help}</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->end_date}</th>
+				<td>
+					<input type="date" id="end_date" name="end_date" value="{$popup->end_date ? zdate($popup->end_date, 'Y-m-d') : ''}" class="x_form-control" style="width:auto;display:inline-block;" />
+					<input type="time" id="end_time" name="end_time" value="{$popup->end_date ? zdate($popup->end_date, 'H:i') : ''}" class="x_form-control" style="width:auto;display:inline-block;" />
+					<p class="x_help-block">{$lang->end_time_help}</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->cookie_days}</th>
+				<td>
+					<input type="number" id="cookie_days" name="cookie_days" value="{$popup->cookie_days ?: 1}" class="x_form-control" style="width:120px;" min="1" /> <span class="popup_inline_unit">{$lang->days}</span>
+					<p class="x_help-block">{$lang->cookie_days_help}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Target Modules -->
+	<h2>{$lang->target_modules}</h2>
+	<table class="x_table x_table-striped x_table-hover">
+		<tbody>
+			<tr>
+				<th scope="row">{$lang->target_type}</th>
+				<td>
+					<select name="target_type" id="target_type" class="x_form-control" style="width:auto;">
+						<option value="include" selected="selected"|cond="!$popup->target_type || $popup->target_type == 'include'">{$lang->target_type_include}</option>
+						<option value="exclude" selected="selected"|cond="$popup->target_type == 'exclude'">{$lang->target_type_exclude}</option>
+					</select>
+					<p class="x_help-block">{$lang->target_type_help}</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">{$lang->target}</th>
+				<td>
+					<label class="x_checkbox x_inline" for="check_all"><input type="checkbox" id="check_all" /> {$lang->check_all}</label>
+					<div class="popup_module_picker">
+						<block loop="$mid_list => $module_category_srl, $modules">
+						<fieldset cond="is_array($mid_list) && count($mid_list) > 1">
+							<legend>{$modules->title ?: $lang->none_category}</legend>
+							<label class="x_checkbox" cond="!empty($modules->list)" loop="$modules->list => $module_srl, $module">
+								<input type="checkbox" name="target_modules[]" value="{$module_srl}" checked="checked"|cond="is_array($popup->target_modules) && in_array($module_srl, $popup->target_modules)" />
+								{$module->browser_title} <span style="color:#888;">({$module->mid})</span>
+							</label>
+						</fieldset>
+						<block cond="!is_array($mid_list) || count($mid_list) <= 1">
+							<label class="x_checkbox" cond="!empty($modules->list)" loop="$modules->list => $module_srl, $module">
+								<input type="checkbox" name="target_modules[]" value="{$module_srl}" checked="checked"|cond="is_array($popup->target_modules) && in_array($module_srl, $popup->target_modules)" />
+								{$module->browser_title} <span style="color:#888;">({$module->mid})</span>
+							</label>
+						</block>
+						</block>
+						<p cond="!$mid_list || !count($mid_list)" style="color:#999; text-align:center; padding:20px;">{$lang->no_modules}</p>
+					</div>
+					<p class="x_help-block">{$lang->target_modules_desc}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Action Buttons -->
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-left">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispPopup_managerAdminList')}" class="x_btn">{$lang->cmd_cancel}</a>
+		</span>
+		<span class="x_pull-right">
+			<button cond="$popup->popup_srl" type="button" class="x_btn x_btn-danger" onclick="popupManagerDelete()">{$lang->cmd_delete_popup}</button>
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</span>
+	</div>
+</form>
+
+<!-- Delete Form -->
+<form cond="$popup->popup_srl" id="popup_delete_form" action="./" method="post" style="display:none;">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procPopup_managerAdminDeletePopup" />
+	<input type="hidden" name="popup_srl" value="{$popup->popup_srl}" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispPopup_managerAdminList')}" />
+</form>
+
+<script>
+function togglePopupType(type) {
+	var htmlSection = document.getElementById('popup_type_html');
+	var imageSection = document.getElementById('popup_type_image');
+
+	if (type === 'image') {
+		htmlSection.classList.remove('active');
+		imageSection.classList.add('active');
+	} else {
+		imageSection.classList.remove('active');
+		htmlSection.classList.add('active');
+	}
+}
+
+function previewImage(input) {
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			document.getElementById('preview_img').src = e.target.result;
+			document.getElementById('new_image_preview').style.display = 'block';
+		};
+		reader.readAsDataURL(input.files[0]);
+	}
+}
+
+function popupManagerDelete() {
+	if (confirm('{$lang->msg_confirm_delete}')) {
+		document.getElementById('popup_delete_form').submit();
+	}
+}
+
+(function() {
+	var checkAll = document.getElementById('check_all');
+	if (checkAll) {
+		checkAll.addEventListener('change', function() {
+			var boxes = document.querySelectorAll('input[name="target_modules[]"]');
+			for (var i = 0; i < boxes.length; i++) {
+				boxes[i].checked = checkAll.checked;
+			}
+		});
+	}
+})();
+</script>

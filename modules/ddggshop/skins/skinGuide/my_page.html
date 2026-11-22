@@ -1,0 +1,58 @@
+<include target="_head.html" />
+<include target="_mypage_tabs.html" />
+
+<div class="ds-mp-grade">
+  <div>
+    <div class="who">{str_replace('%s', '<b>'.escape($nick).'</b>', $L['mp_welcome'])}</div>
+    <div class="sub">{str_replace('%s', number_format($order_total), $L['mp_membership'])}</div>
+  </div>
+  <!--@if($use_point)--><div class="pts"><div class="l">{$L['mp_points']}</div><div class="v">{number_format($my_point)}P</div></div><!--@end-->
+</div>
+
+<div class="ds-mp-stats">
+  <!--@if($use_point)-->
+  <div class="ds-mp-stat">
+    <span class="lb">{$L['mp_points']}</span>
+    <span class="nm">{number_format($my_point)}<small>P</small></span>
+  </div>
+  <!--@end-->
+  <a class="ds-mp-stat" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders')}">
+    <span class="lb">{$L['mp_total_orders']}</span>
+    <span class="nm">{number_format($order_total)}<small>{$L['unit_orders']}</small></span>
+  </a>
+  <a class="ds-mp-stat" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyAddresses')}">
+    <span class="lb">{$L['mp_addresses']}</span>
+    <span class="nm">{number_format($addr_count)}<small>{$L['unit_count']}</small></span>
+  </a>
+</div>
+
+<div class="ds-mp-grid">
+  <section class="ds-mp-card">
+    <div class="ds-mp-card-head"><h3>{$L['mp_recent_orders']}</h3><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyOrders')}">{$L['view_all']}</a></div>
+    <!--@if(count($recent_orders))-->
+    <a class="ds-mp-order" loop="$recent_orders=>$o" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopOrderResult','order_code',$o->order_code)}">
+      <div class="ds-mp-order-top"><span class="code">{$o->order_code}</span><span class="ds-status {$o->status}">{$o->status_label}</span></div>
+      <div class="ds-mp-order-body">
+        <span cond="count($o->items)">{$o->items[0]->item_name}<!--@if(count($o->items)>1)-->{str_replace('%s', count($o->items)-1, $L['mp_others_suffix'])}<!--@end--></span>
+        <b>{number_format($o->payment_price)}{$L['won']}</b>
+      </div>
+    </a>
+    <!--@else-->
+    <div class="ds-empty" style="padding:28px 20px;">{$L['mp_no_orders']}</div>
+    <!--@end-->
+  </section>
+
+  <section class="ds-mp-card">
+    <div class="ds-mp-card-head"><h3>{$L['mp_default_addr']}</h3><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyAddresses')}">{$L['manage']}</a></div>
+    <!--@if($default_addr)-->
+    <div class="ds-mp-addr">
+      <b>{$default_addr->receiver_name}</b> <span class="ph">{$default_addr->receiver_phone}</span><br />
+      ({$default_addr->zipcode}) {$default_addr->addr1} {$default_addr->addr2}
+    </div>
+    <!--@else-->
+    <div class="ds-empty" style="padding:28px 20px;">{$L['mp_no_addr']}<br /><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopMyAddresses')}" style="text-decoration:underline;">{$L['add_address']}</a></div>
+    <!--@end-->
+  </section>
+</div>
+
+<include target="_foot.html" />

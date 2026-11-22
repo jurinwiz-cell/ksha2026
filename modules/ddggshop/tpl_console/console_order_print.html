@@ -1,0 +1,97 @@
+<style>
+  .opr-wrap{max-width:760px;margin:0 auto;padding:28px 24px;color:#1a1d21;font-size:13px;line-height:1.6;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+  .opr-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a1d21;padding-bottom:14px;margin-bottom:6px;}
+  .opr-title{font-size:24px;font-weight:800;letter-spacing:8px;}
+  .opr-shop{text-align:right;font-size:12px;color:#444;line-height:1.7;}
+  .opr-shop b{font-size:14px;color:#1a1d21;}
+  .opr-meta{display:flex;justify-content:space-between;font-size:12px;color:#555;margin:10px 0 18px;}
+  .opr-sec{margin-bottom:18px;}
+  .opr-sec h2{font-size:13px;font-weight:700;margin:0 0 7px;padding-left:8px;border-left:3px solid #1a1d21;}
+  table.opr-tb{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.opr-tb th,table.opr-tb td{border:1px solid #d9dce1;padding:7px 9px;}
+  table.opr-tb th{background:#f4f5f7;font-weight:600;text-align:left;}
+  table.opr-tb td.r{text-align:right;}
+  table.opr-tb td.c{text-align:center;}
+  .opr-info{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .opr-info th{width:90px;background:#f4f5f7;border:1px solid #d9dce1;padding:7px 9px;text-align:left;font-weight:600;}
+  .opr-info td{border:1px solid #d9dce1;padding:7px 9px;}
+  .opr-sum{margin-left:auto;width:280px;font-size:12.5px;}
+  .opr-sum div{display:flex;justify-content:space-between;padding:4px 0;}
+  .opr-sum .tot{border-top:1.5px solid #1a1d21;margin-top:5px;padding-top:8px;font-size:15px;font-weight:800;}
+  .opr-foot{margin-top:26px;text-align:center;color:#888;font-size:11px;border-top:1px solid #e3e5e9;padding-top:12px;}
+  .opr-bar{max-width:760px;margin:14px auto 0;text-align:right;}
+  .opr-bar button{font-size:13px;padding:8px 18px;border:1px solid #1a1d21;background:#1a1d21;color:#fff;border-radius:4px;cursor:pointer;}
+  .opr-bar button.g{background:#fff;color:#1a1d21;margin-right:6px;}
+  @media print{.opr-bar{display:none;} body{background:#fff;}}
+</style>
+
+<div class="opr-bar">
+  <button type="button" class="g" onclick="window.close()">닫기</button>
+  <button type="button" onclick="window.print()">🖨 인쇄</button>
+</div>
+
+<!--@if(!$order)-->
+<div class="opr-wrap"><p style="text-align:center;padding:60px 0;color:#888;">주문을 찾을 수 없습니다.</p></div>
+<!--@else-->
+<div class="opr-wrap">
+  <div class="opr-top">
+    <div class="opr-title">주 문 서</div>
+    <div class="opr-shop">
+      <b>{$shop_config->company_name ?: $shop_name}</b>
+      <div cond="$shop_config->ceo_name">대표 {$shop_config->ceo_name}</div>
+      <div cond="$shop_config->biz_reg_no">사업자등록번호 {$shop_config->biz_reg_no}</div>
+      <div cond="$shop_config->biz_address">{$shop_config->biz_address}</div>
+      <div cond="$shop_config->biz_phone">Tel. {$shop_config->biz_phone}</div>
+    </div>
+  </div>
+  <div class="opr-meta">
+    <span>주문번호 <b>{$order->order_code}</b></span>
+    <span>주문일시 {zdate($order->regdate,'Y-m-d H:i')} · 상태 {$order->status_label}</span>
+  </div>
+
+  <div class="opr-sec">
+    <h2>주문자 / 배송지</h2>
+    <table class="opr-info">
+      <tr><th>주문자</th><td>{$order->orderer_name}</td><th>연락처</th><td>{$order->orderer_phone}</td></tr>
+      <tr><th>이메일</th><td colspan="3">{$order->orderer_email}</td></tr>
+      <!--@if($order_address)-->
+      <tr><th>받는분</th><td>{$order_address->receiver_name}</td><th>연락처</th><td>{$order_address->receiver_phone}</td></tr>
+      <tr><th>주소</th><td colspan="3">({$order_address->zipcode}) {$order_address->addr1} {$order_address->addr2}</td></tr>
+      <tr cond="$order_address->delivery_memo"><th>배송요청</th><td colspan="3">{escape($order_address->delivery_memo)}</td></tr>
+      <!--@end-->
+    </table>
+  </div>
+
+  <div class="opr-sec">
+    <h2>주문 상품</h2>
+    <table class="opr-tb">
+      <thead><tr><th>상품명</th><th style="width:110px;">상품코드</th><th style="width:90px;">옵션</th><th style="width:90px;" class="r">단가</th><th style="width:50px;" class="c">수량</th><th style="width:100px;" class="r">금액</th></tr></thead>
+      <tbody>
+        <tr loop="$order_items=>$oi">
+          <td>{$oi->item_name}</td>
+          <td>{$oi->item_code ?: '-'}</td>
+          <td>{$oi->option_name}</td>
+          <td class="r">{number_format($oi->price)}</td>
+          <td class="c">{$oi->qty}</td>
+          <td class="r">{number_format($oi->subtotal)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="opr-sum">
+    <div><span>상품금액</span><span>{number_format($order->total_price)}원</span></div>
+    <div><span>배송비</span><span>{number_format($order->delivery_fee)}원</span></div>
+    <div cond="$order->discount_price"><span>쿠폰 할인</span><span>-{number_format($order->discount_price)}원</span></div>
+    <div cond="$order->used_point"><span>적립금 사용</span><span>-{number_format($order->used_point)}원</span></div>
+    <div class="tot"><span>결제금액</span><span>{number_format($order->payment_price)}원</span></div>
+    <div style="color:#666;font-size:11.5px;justify-content:flex-end;">결제수단: {$order->pay_label}</div>
+  </div>
+
+  <div class="opr-foot">본 주문서는 {$shop_config->company_name ?: $shop_name} 에서 발행한 거래 명세입니다.</div>
+</div>
+<!--@end-->
+
+<script>
+(function(){ try{ window.print(); }catch(e){} })();
+</script>

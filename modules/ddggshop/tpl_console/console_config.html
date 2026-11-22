@@ -1,0 +1,396 @@
+<include target="_console_head.html" />
+
+<div class="cs-chips" style="margin-bottom:16px;">
+  <a class="cs-chip {$csub=='basic' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','basic')}">기본 설정</a>
+  <a class="cs-chip {$csub=='payment' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','payment')}">결제 설정</a>
+  <a class="cs-chip {$csub=='delivery' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','delivery')}">배송 설정</a>
+  <a class="cs-chip {$csub=='order' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','order')}">주문 설정</a>
+  <a class="cs-chip {$csub=='access' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','access')}">권한 설정</a>
+  <a class="cs-chip {$csub=='notify' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','notify')}">알림 설정</a>
+  <a class="cs-chip {$csub=='layout' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','layout')}">레이아웃 설정</a>
+  <a class="cs-chip {$csub=='etc' ? 'on' : ''}" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleConfig','sub','etc')}">기타 설정</a>
+</div>
+
+<!--@if($csub=='basic')-->
+<form method="post" action="./" enctype="multipart/form-data" class="cs-card cs-card-p" style="max-width:680px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="basic" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <div class="cs-field"><label>쇼핑몰 이름</label><input type="text" name="shop_name" value="{$config->shop_name}" class="cs-input" style="max-width:320px;" /></div>
+  <div class="cs-field"><label>기본 색상 (Primary)</label>
+    <div class="cs-row" style="margin-bottom:8px;">
+      <button type="button" class="cs-swatch" style="background:#e03e48" onclick="csCol('#e03e48')"></button>
+      <button type="button" class="cs-swatch" style="background:#ff4d2d" onclick="csCol('#ff4d2d')"></button>
+      <button type="button" class="cs-swatch" style="background:#5B4FE0" onclick="csCol('#5B4FE0')"></button>
+      <button type="button" class="cs-swatch" style="background:#2563eb" onclick="csCol('#2563eb')"></button>
+      <button type="button" class="cs-swatch" style="background:#16a34a" onclick="csCol('#16a34a')"></button>
+      <button type="button" class="cs-swatch" style="background:#dc2626" onclick="csCol('#dc2626')"></button>
+      <button type="button" class="cs-swatch" style="background:#db2777" onclick="csCol('#db2777')"></button>
+      <button type="button" class="cs-swatch" style="background:#0d9488" onclick="csCol('#0d9488')"></button>
+      <button type="button" class="cs-swatch" style="background:#111827" onclick="csCol('#111827')"></button>
+    </div>
+    <div class="cs-row">
+      <input type="color" id="cs-col" value="{$config->primary_color}" onchange="csCol(this.value)" style="width:46px;height:38px;padding:2px;border:1px solid #DCDFE3;border-radius:2px;" />
+      <input type="text" id="cs-hex" name="primary_color" value="{$config->primary_color}" class="cs-input" style="width:120px;" oninput="csHex(this.value)" />
+      <b id="cs-sample" style="background:{$config->primary_color};color:#fff;padding:6px 14px;border-radius:2px;font-size:12px;">버튼</b>
+    </div>
+  </div>
+  <div class="cs-field"><label>로고 이미지</label>
+    <!--@if($config->logo_image)--><div style="margin-bottom:8px;"><img src="{$config->logo_image}" style="height:34px;background:#222;padding:5px 9px;border-radius:2px;" alt="" /></div><!--@end-->
+    <input type="file" name="logo_file" accept="image/*" />
+    <div style="margin-top:6px;"><input type="text" name="logo_image" value="{$config->logo_image}" class="cs-input" placeholder="또는 로고 URL" /></div>
+    <label cond="$config->logo_image" style="margin-top:6px;display:inline-block;"><input type="checkbox" name="remove_logo" value="Y" style="width:auto;"> 로고 제거</label>
+  </div>
+
+  <h3 style="font-size:14px;margin:24px 0 6px;">다국어 (스토어프론트)</h3>
+  <div class="cs-field"><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_multilang" value="Y" checked="checked"|cond="($config->use_multilang ?? 'N')=='Y'" style="width:auto;"> 쇼핑몰 화면에 언어 선택기 표시(다국어 사용)</label>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">끄면 항상 기본 언어로만 표시됩니다. 언어 파일은 <code>modules/ddggshop/langs/</code> 에 <code>&lt;코드&gt;.php</code> 로 추가할 수 있습니다(예: <code>ja.php</code>).</div>
+  </div>
+  <div class="cs-field"><label>기본 언어</label>
+    <select name="default_lang" class="cs-select" style="max-width:220px;">
+      <option loop="$avail_langs=>$al" value="{$al->code}" selected="selected"|cond="($config->default_lang ?? 'ko')==$al->code">{$al->name} ({$al->code})</option>
+    </select>
+  </div>
+  <div class="cs-field"><label>노출 언어</label>
+    <div class="cs-row" style="flex-wrap:wrap;gap:12px;">
+      <label class="cs-row" style="gap:6px;" loop="$avail_langs=>$al"><input type="checkbox" name="enabled_langs[]" value="{$al->code}" checked="checked"|cond="in_array($al->code, $enabled_langs_arr)" style="width:auto;"> {$al->name} <span class="cs-muted">({$al->code})</span></label>
+    </div>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">체크한 언어만 선택기에 노출됩니다. 기본 언어는 자동 포함됩니다.</div>
+  </div>
+
+  <h3 style="font-size:14px;margin:24px 0 6px;">법적 필수정보 (사업자 표시사항)</h3>
+  <p class="cs-hint" style="margin:0 0 14px;">입력한 정보는 쇼핑몰 하단(푸터)에 표시됩니다. 전자상거래법상 통신판매업자의 신원정보 표시 의무 항목입니다.</p>
+  <div class="cs-formgrid">
+    <div class="cs-field"><label>상호 (회사명)</label><input type="text" name="company_name" value="{$config->company_name}" class="cs-input" placeholder="예: 딱따고기연구소" /></div>
+    <div class="cs-field"><label>대표자 성명</label><input type="text" name="ceo_name" value="{$config->ceo_name}" class="cs-input" placeholder="예: 홍길동" /></div>
+  </div>
+  <div class="cs-field"><label>사업장 주소</label><input type="text" name="biz_address" value="{$config->biz_address}" class="cs-input" placeholder="예: 서울특별시 ○○구 ○○로 00, 0층" /></div>
+  <div class="cs-formgrid">
+    <div class="cs-field"><label>연락처</label><input type="text" name="biz_phone" value="{$config->biz_phone}" class="cs-input" placeholder="예: 02-0000-0000" /></div>
+    <div class="cs-field"><label>사업자 등록번호</label><input type="text" name="biz_reg_no" value="{$config->biz_reg_no}" class="cs-input" placeholder="예: 000-00-00000" /></div>
+  </div>
+  <div class="cs-formgrid">
+    <div class="cs-field"><label>개인정보관리책임자</label><input type="text" name="privacy_officer" value="{$config->privacy_officer}" class="cs-input" placeholder="예: 홍길동 (privacy@example.com)" /></div>
+    <div class="cs-field"><label>통신판매업 신고번호</label><input type="text" name="mailorder_no" value="{$config->mailorder_no}" class="cs-input" placeholder="예: 제2026-서울○○-0000호" /></div>
+  </div>
+  <div class="cs-field"><label>이용약관 링크</label><input type="text" name="terms_url" value="{$config->terms_url}" class="cs-input" placeholder="예: https://example.com/terms (URL 또는 약관 페이지 주소)" /></div>
+  <div class="cs-field"><label>개인정보처리방침 링크</label><input type="text" name="privacy_url" value="{$config->privacy_url}" class="cs-input" placeholder="예: https://example.com/privacy" /></div>
+  <div class="cs-field"><label>사업자정보확인 링크</label><input type="text" name="bizinfo_url" value="{$config->bizinfo_url}" class="cs-input" placeholder="비우면 사업자등록번호로 공정위 조회 링크 자동생성" /></div>
+
+  <button type="submit" class="cs-btn" style="margin-top:6px;">저장</button>
+</form>
+<script>
+function csCS(c){document.getElementById('cs-col').value=c;document.getElementById('cs-hex').value=c;document.getElementById('cs-sample').style.background=c;}
+function csCol(c){csCS((c||'').toLowerCase());}
+function csHex(v){v=(v||'').replace(/\s/g,'');if(/^#?[0-9a-fA-F]{6}$/.test(v)){if(v[0]!=='#')v='#'+v;csCS(v);}}
+</script>
+<!--@end-->
+
+<!--@if($csub=='payment')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:640px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="payment" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <h3 style="font-size:14px;margin:0 0 16px;">토스페이먼츠</h3>
+  <div class="cs-field"><label><input type="checkbox" name="use_toss" value="Y" checked="checked"|cond="$config->use_toss=='Y'" style="width:auto;"> 토스페이먼츠 카드결제 사용</label></div>
+  <div class="cs-field"><label>클라이언트 키</label><input type="text" name="toss_client_key" value="{$config->toss_client_key}" class="cs-input" /></div>
+  <div class="cs-field"><label>시크릿 키</label><input type="text" name="toss_secret_key" value="{$config->toss_secret_key}" class="cs-input" /></div>
+  <div class="cs-field" cond="$webhook_url">
+    <label>웹훅(Webhook) URL</label>
+    <input type="text" value="{$webhook_url}" class="cs-input" readonly="readonly" onclick="this.select();" />
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">토스페이먼츠 개발자센터 → 웹훅에 위 URL을 등록하세요. 결제 직후 고객이 창을 닫아도 주문이 자동으로 결제완료 처리됩니다.</div>
+  </div>
+  <h3 style="font-size:14px;margin:22px 0 16px;">무통장입금</h3>
+  <div class="cs-field"><label><input type="checkbox" name="use_banktransfer" value="Y" checked="checked"|cond="$config->use_banktransfer=='Y'" style="width:auto;"> 무통장입금 사용</label></div>
+  <div class="cs-field"><label>입금 계좌 안내</label><textarea name="bank_info" class="cs-textarea" rows="3">{$config->bank_info}</textarea></div>
+
+  <h3 style="font-size:14px;margin:22px 0 16px;">포인트 결제</h3>
+  <div class="cs-field"><label><input type="checkbox" name="use_point_full" value="Y" checked="checked"|cond="($config->use_point_full ?? 'N')=='Y'" style="width:auto;"> 포인트(적립금) 전액결제 허용</label>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">보유 적립금만으로 결제금액 전체를 결제할 수 있도록 ‘포인트 결제’ 수단을 추가합니다. 결제금액이 0원(적립금이 전액 충당)일 때만 사용 가능하며, 외부 결제 없이 즉시 결제완료 처리됩니다. <b>※ ‘기타 설정 &gt; 적립금 사용 허용’이 함께 켜져 있어야 합니다.</b></div>
+  </div>
+  <button type="submit" class="cs-btn">저장</button>
+</form>
+<!--@end-->
+
+<!--@if($csub=='delivery')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:760px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="delivery" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <div class="cs-formgrid">
+    <div class="cs-field"><label>배송업체</label>
+      <select name="delivery_company" class="cs-select">
+        <option value="">선택 안 함</option>
+        <option loop="$delivery_companies=>$dc" value="{$dc}" selected="selected"|cond="$config->delivery_company==$dc">{$dc}</option>
+      </select>
+    </div>
+    <div class="cs-field"><label>배송비 유형</label>
+      <select name="delivery_fee_type" class="cs-select">
+        <option value="paid" selected="selected"|cond="$config->delivery_fee_type!='free'">유료배송</option>
+        <option value="free" selected="selected"|cond="$config->delivery_fee_type=='free'">무료배송</option>
+      </select>
+    </div>
+    <div class="cs-field"><label>기본 배송비(원)</label><input type="number" name="base_delivery_fee" value="{$config->base_delivery_fee}" class="cs-input" /></div>
+    <div class="cs-field"><label>무료배송 기준금액(원)</label><input type="number" name="free_threshold" value="{$config->free_threshold}" class="cs-input" /></div>
+  </div>
+  <div class="cs-field"><label>배송 안내</label>
+    <input type="hidden" name="delivery_info" value="{htmlspecialchars($config->delivery_info, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+    {$editor_delivery}
+  </div>
+  <div class="cs-field"><label>교환 / 반품 안내</label>
+    <input type="hidden" name="exchange_return" value="{htmlspecialchars($config->exchange_return, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+    {$editor_return}
+  </div>
+  <button type="submit" class="cs-btn">저장</button>
+</form>
+
+<div class="cs-card cs-card-p" style="max-width:760px;margin-top:14px;">
+  <h3 style="font-size:14px;margin:0 0 6px;">도서산간 / 지역별 추가배송비</h3>
+  <p class="cs-hint" style="margin-bottom:14px;">우편번호 구간을 넣으면 주문 시 받는분 우편번호에 따라 <b>자동 가산</b>됩니다. 우편번호를 비우고 <b>지역명만</b> 넣으면(해외 등) 주문 시 <b>배송 지역 선택 드롭다운</b>으로 표시됩니다.</p>
+  <table class="cs-table" style="border:1px solid #EAECEF;border-radius:2px;margin-bottom:14px;">
+    <thead><tr><th>지역명</th><th>우편번호 시작</th><th>우편번호 끝</th><th class="cs-right">추가배송비</th><th></th></tr></thead>
+    <tbody>
+      <tr cond="!count($ship_fees)"><td colspan="5" class="cs-empty">등록된 규칙이 없습니다.</td></tr>
+      <tr loop="$ship_fees=>$f">
+        <td>{$f->region}<span cond="!trim($f->zip_start.$f->zip_end)" class="cs-hint" style="margin-left:5px;">(지역선택)</span></td><td class="cs-num">{$f->zip_start ?: '—'}</td><td class="cs-num">{$f->zip_end ?: '—'}</td>
+        <td class="cs-right cs-num">+{number_format($f->extra_fee)}원</td>
+        <td class="cs-right"><button type="button" class="cs-btn danger sm" onclick="csShipDel({$f->fee_srl})">삭제</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cs-row" style="align-items:flex-end;">
+    <div class="cs-field" style="margin-bottom:0;"><label>지역명</label><input type="text" id="sf-region" class="cs-input" style="width:140px;" placeholder="예: 제주" /></div>
+    <div class="cs-field" style="margin-bottom:0;"><label>우편번호 시작 <span class="cs-hint">(선택)</span></label><input type="text" id="sf-start" class="cs-input" style="width:110px;" placeholder="63000" /></div>
+    <div class="cs-field" style="margin-bottom:0;"><label>우편번호 끝 <span class="cs-hint">(선택)</span></label><input type="text" id="sf-end" class="cs-input" style="width:110px;" placeholder="63644" /></div>
+    <div class="cs-field" style="margin-bottom:0;"><label>추가배송비</label><input type="number" id="sf-fee" class="cs-input" style="width:120px;" placeholder="3000" /></div>
+    <button type="button" class="cs-btn" onclick="csShipAdd()">규칙 추가</button>
+  </div>
+</div>
+<script>
+function csShipAdd(){ var s=document.getElementById('sf-start').value.replace(/[^0-9]/g,''), e=document.getElementById('sf-end').value.replace(/[^0-9]/g,''), rg=document.getElementById('sf-region').value.replace(/^\s+|\s+$/g,''); if(!s&&!e){ if(!rg){ alert('우편번호 구간 또는 지역명 중 하나 이상을 입력하세요.'); return; } } else if(!s||!e){ alert('우편번호는 시작/끝을 모두 입력하거나, 둘 다 비워 지역명만 입력하세요.'); return; } exec_json('ddggshop.procDdggshopAdminSaveShipFee',{region:rg,zip_start:s,zip_end:e,extra_fee:document.getElementById('sf-fee').value||0},function(){ location.reload(); }); }
+function csShipDel(srl){ if(!confirm('이 규칙을 삭제할까요?')) return; exec_json('ddggshop.procDdggshopAdminDeleteShipFee',{fee_srl:srl},function(){ location.reload(); }); }
+</script>
+<!--@end-->
+
+<!--@if($csub=='order')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:680px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="order" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <h3 style="font-size:14px;margin:0 0 4px;">배송 주소 수집</h3>
+  <p class="cs-hint" style="margin-bottom:14px;">기프트콘·콘텐츠 상품처럼 배송이 필요 없는 주문에서 주문서의 배송지 입력창을 숨길 수 있습니다.</p>
+  <div class="cs-field"><label>주소 수집 정책</label>
+    <label class="cs-row" style="gap:8px;margin-bottom:6px;"><input type="radio" name="address_policy" value="auto" checked="checked"|cond="($config->address_policy ?? 'auto')=='auto'" style="width:auto;"> <b>상품 설정에 따름 (권장)</b> — 배송이 필요한 상품이 담긴 주문에서만 주소를 받습니다</label>
+    <label class="cs-row" style="gap:8px;margin-bottom:6px;"><input type="radio" name="address_policy" value="always" checked="checked"|cond="($config->address_policy ?? 'auto')=='always'" style="width:auto;"> 항상 받기 — 모든 주문에서 배송지를 입력받습니다(기존 방식)</label>
+    <label class="cs-row" style="gap:8px;"><input type="radio" name="address_policy" value="never" checked="checked"|cond="($config->address_policy ?? 'auto')=='never'" style="width:auto;"> 받지 않기 — 배송을 사용하지 않는 쇼핑몰(기프트콘·콘텐츠 전용). 모든 주문에서 주소·배송비 없음</label>
+  </div>
+  <div class="cs-field"><label>신규 상품 기본값</label>
+    <select name="default_require_address" class="cs-select" style="max-width:280px;">
+      <option value="Y" selected="selected"|cond="($config->default_require_address ?? 'Y')!='N'">배송 주소 받기 (배송상품)</option>
+      <option value="N" selected="selected"|cond="($config->default_require_address ?? 'Y')=='N'">주소 받지 않기 (기프트콘·콘텐츠)</option>
+    </select>
+    <p class="cs-hint" style="margin-top:5px;">‘상품 설정에 따름’일 때, 새로 등록하는 상품의 주소 수집 기본값입니다. 상품별로 등록·수정 화면에서 개별 변경할 수 있습니다.</p>
+  </div>
+  <div class="cs-field"><label>주소 입력 방식</label>
+    <select name="address_input_mode" class="cs-select" style="max-width:320px;">
+      <option value="search" selected="selected"|cond="($config->address_input_mode ?? 'search')!='manual'">우편번호 검색 (기본)</option>
+      <option value="manual" selected="selected"|cond="($config->address_input_mode ?? 'search')=='manual'">직접 입력 (해외 주소 등)</option>
+    </select>
+    <p class="cs-hint" style="margin-top:5px;">‘우편번호 검색’은 국내 주소 검색 팝업으로 주소를 채웁니다. ‘직접 입력’은 우편번호·주소를 자유롭게 타이핑할 수 있어 해외 사용자에게 적합합니다.</p>
+  </div>
+  <div class="cs-field"><label>주문서 입력 항목</label>
+    <label class="cs-row" style="gap:7px;"><input type="checkbox" name="show_delivery_memo" value="Y" checked="checked"|cond="($config->show_delivery_memo ?? 'Y')=='Y'" style="width:auto;"> 배송 요청사항 입력란 표시</label>
+  </div>
+  <button type="submit" class="cs-btn">저장</button>
+</form>
+<!--@end-->
+
+<!--@if($csub=='access')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:680px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="access" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <h3 style="font-size:14px;margin:0 0 12px;">가격·구매 노출</h3>
+  <p class="cs-hint" style="margin-bottom:16px;">비공개 폐쇄몰·공동구매처럼 비회원에게 가격·구매 버튼을 숨길 때 사용합니다.</p>
+  <div class="cs-field"><label>가격·구매 노출 대상</label>
+    <div class="cs-row" style="gap:16px;">
+      <label><input type="radio" name="price_visibility" value="all" checked="checked"|cond="$config->price_visibility=='all'" onclick="csAcc()" style="width:auto;"> 전체 공개</label>
+      <label><input type="radio" name="price_visibility" value="member" checked="checked"|cond="$config->price_visibility=='member'" onclick="csAcc()" style="width:auto;"> 로그인 회원</label>
+      <label><input type="radio" name="price_visibility" value="group" checked="checked"|cond="$config->price_visibility=='group'" onclick="csAcc()" style="width:auto;"> 특정 그룹</label>
+    </div>
+  </div>
+  <div class="cs-field" id="cs-acc-groups" style="display:none;"><label>허용 회원그룹</label>
+    <div class="cs-row" style="gap:14px;"><label loop="$member_groups=>$g"><input type="checkbox" name="price_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl,$config->price_groups)" style="width:auto;"> {$g->title}</label></div>
+  </div>
+  <div class="cs-field"><label>적용 범위</label>
+    <div class="cs-row" style="gap:16px;">
+      <label><input type="radio" name="price_scope" value="whole" checked="checked"|cond="$config->price_scope!='category'" onclick="csAcc()" style="width:auto;"> 쇼핑몰 전체</label>
+      <label><input type="radio" name="price_scope" value="category" checked="checked"|cond="$config->price_scope=='category'" onclick="csAcc()" style="width:auto;"> 특정 카테고리</label>
+    </div>
+  </div>
+  <div class="cs-field" id="cs-acc-cats" style="display:none;"><label>제한 카테고리</label>
+    <label loop="$access_categories=>$c" cond="$c->status=='Y'" style="display:block;margin-bottom:4px;padding-left:{$c->depth*18}px;"><input type="checkbox" name="price_categories[]" value="{$c->category_srl}" checked="checked"|cond="in_array($c->category_srl,$config->price_categories)" style="width:auto;"> {$c->depth>0 ? '└ ' : ''}{$c->category_name}</label>
+  </div>
+  <div class="cs-field"><label>비공개 시 표시 문구 <span style="font-weight:400;color:#9aa0aa;">(비로그인)</span></label><input type="text" name="price_hidden_text" value="{$config->price_hidden_text}" class="cs-input" style="max-width:300px;" /><p class="cs-hint" style="margin-top:6px;">로그인하지 않은 사용자에게 가격 대신 표시됩니다. 예: 로그인 후 가격 확인</p></div>
+  <div class="cs-field"><label>권한 부족 시 표시 문구 <span style="font-weight:400;color:#9aa0aa;">(로그인했으나 권한 없음)</span></label><input type="text" name="price_denied_text" value="{$config->price_denied_text}" class="cs-input" style="max-width:420px;" placeholder="비우면 허용 그룹명으로 자동 생성 (예: VIP 회원만 가격을 확인할 수 있습니다.)" /><p class="cs-hint" style="margin-top:6px;">‘특정 그룹’ 노출 시, 로그인했지만 허용 그룹이 아닌 회원에게 표시됩니다. 비워두면 허용 그룹명으로 자동 안내합니다.</p></div>
+
+  <hr style="border:0;border-top:1px solid #EEF0F3;margin:24px 0;" />
+  <h3 style="font-size:14px;margin:0 0 14px;">작성 권한</h3>
+  <div class="cs-field"><label>상품 후기 작성</label>
+    <div class="cs-row" style="gap:16px;">
+      <label><input type="radio" name="review_perm" value="buyer" checked="checked"|cond="$config->review_perm=='buyer'" onclick="csAcc()" style="width:auto;"> 구매자만</label>
+      <label><input type="radio" name="review_perm" value="member" checked="checked"|cond="$config->review_perm=='member'" onclick="csAcc()" style="width:auto;"> 로그인 회원</label>
+      <label><input type="radio" name="review_perm" value="group" checked="checked"|cond="$config->review_perm=='group'" onclick="csAcc()" style="width:auto;"> 특정 그룹</label>
+    </div>
+  </div>
+  <div class="cs-field" id="cs-rv-groups" style="display:none;"><label>후기 허용 그룹</label>
+    <div class="cs-row" style="gap:14px;"><span cond="!count($member_groups)" class="cs-hint">회원그룹이 없습니다.</span><label loop="$member_groups=>$g"><input type="checkbox" name="review_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl,$config->review_groups)" style="width:auto;"> {$g->title}</label></div>
+  </div>
+  <div class="cs-field"><label>상품 문의 작성</label>
+    <div class="cs-row" style="gap:16px;">
+      <label><input type="radio" name="qna_perm" value="member" checked="checked"|cond="$config->qna_perm!='group'" onclick="csAcc()" style="width:auto;"> 로그인 회원</label>
+      <label><input type="radio" name="qna_perm" value="group" checked="checked"|cond="$config->qna_perm=='group'" onclick="csAcc()" style="width:auto;"> 특정 그룹</label>
+    </div>
+  </div>
+  <div class="cs-field" id="cs-qna-groups" style="display:none;"><label>문의 허용 그룹</label>
+    <div class="cs-row" style="gap:14px;"><span cond="!count($member_groups)" class="cs-hint">회원그룹이 없습니다.</span><label loop="$member_groups=>$g"><input type="checkbox" name="qna_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl,$config->qna_groups)" style="width:auto;"> {$g->title}</label></div>
+  </div>
+
+  <button type="submit" class="cs-btn">저장</button>
+</form>
+<script>
+function csAcc(){ var v=document.querySelector('input[name=price_visibility]:checked'); document.getElementById('cs-acc-groups').style.display=(v&&v.value=='group')?'':'none'; var s=document.querySelector('input[name=price_scope]:checked'); document.getElementById('cs-acc-cats').style.display=(s&&s.value=='category')?'':'none';
+  var rv=document.querySelector('input[name=review_perm]:checked'); var rg=document.getElementById('cs-rv-groups'); if(rg) rg.style.display=(rv&&rv.value=='group')?'':'none';
+  var qp=document.querySelector('input[name=qna_perm]:checked'); var qg=document.getElementById('cs-qna-groups'); if(qg) qg.style.display=(qp&&qp.value=='group')?'':'none'; }
+csAcc();
+</script>
+<!--@end-->
+
+<!--@if($csub=='notify')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:620px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="notify" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <div class="cs-field"><label>알림 전체 사용</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_order_notify" value="Y" checked="checked"|cond="$config->use_order_notify!='N'" style="width:auto;"> 알림센터 알림 사용 (끄면 아래 항목 모두 미발송)</label></div>
+  <h3 style="font-size:14px;margin:20px 0 10px;">이벤트별 알림</h3>
+  <p class="cs-hint" style="margin-bottom:12px;">발송할 알림만 체크하세요. (알림센터 기반 — 회원/관리자에게 전송)</p>
+  <label class="cs-row" style="gap:8px;margin-bottom:9px;" loop="$notify_events_list=>$ek,$el"><input type="checkbox" name="notify_events[{$ek}]" value="Y" checked="checked"|cond="!isset($config->notify_events[$ek]) || $config->notify_events[$ek]=='Y'" style="width:auto;"> {$el}</label>
+  <button type="submit" class="cs-btn" style="margin-top:16px;">저장</button>
+</form>
+<!--@end-->
+
+<!--@if($csub=='layout')-->
+<form method="post" action="./" class="cs-card cs-card-p" style="max-width:680px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="layout" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <div class="cs-field"><label>라이믹스 레이아웃 적용</label>
+    <p class="cs-hint" style="margin-bottom:12px;">메뉴에 지정한 사이트 레이아웃을 쇼핑몰에 적용할지 선택합니다.</p>
+
+    <label class="cs-row" style="gap:9px;align-items:flex-start;margin-bottom:6px;cursor:pointer;">
+      <input type="radio" name="layout_mode" value="standalone" checked="checked"|cond="($config->layout_mode ?: 'standalone')!='embedded'" style="width:auto;margin-top:3px;" />
+      <span><b>Standalone</b> — 레이아웃 미적용 <span class="cs-hint">(기본값)</span>
+        <span class="cs-hint" style="display:block;margin-top:2px;">쇼핑몰이 자체 헤더(로고·로그인)·푸터로 전체 화면을 구성합니다. 메뉴에 지정한 라이믹스 레이아웃은 무시됩니다.</span>
+      </span>
+    </label>
+
+    <label class="cs-row" style="gap:9px;align-items:flex-start;cursor:pointer;">
+      <input type="radio" name="layout_mode" value="embedded" checked="checked"|cond="($config->layout_mode ?: 'standalone')=='embedded'" style="width:auto;margin-top:3px;" />
+      <span><b>레이아웃 내장형 (Embedded)</b>
+        <span class="cs-hint" style="display:block;margin-top:2px;">메뉴에 지정한 라이믹스 레이아웃 안에 쇼핑몰이 들어갑니다. 쇼핑몰 자체 헤더(로고·로그인/로그아웃)와 푸터는 숨기고, <b>검색·장바구니·마이페이지·카테고리 내비</b>만 표시합니다.</span>
+      </span>
+    </label>
+  </div>
+
+  <div style="border-top:1px solid #EEF0F3;margin:18px 0 14px;"></div>
+  <div class="cs-field"><label>최근 본 상품 위젯</label>
+    <label class="cs-row" style="gap:7px;"><input type="checkbox" name="show_recent_widget" value="Y" checked="checked"|cond="($config->show_recent_widget ?? 'Y')=='Y'" style="width:auto;"> 화면 우측에 최근 본 상품 플로팅 위젯(리모콘) 표시</label>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">사용자 페이지 우측에 최근 본 상품 썸네일을 띄웁니다(좁은 화면에서는 자동 숨김).</div>
+    <label class="cs-row" style="gap:7px;margin-top:9px;">노출 개수
+      <input type="number" name="recent_widget_count" value="{$config->recent_widget_count ?? 5}" min="1" max="30" style="width:80px;"> 개
+    </label>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">위젯에 최대 몇 개까지 보여줄지 지정합니다(기본 5개, 1~30).</div>
+  </div>
+
+  <button type="submit" class="cs-btn" style="margin-top:6px;">저장</button>
+</form>
+<!--@end-->
+
+<!--@if($csub=='etc')-->
+<form method="post" action="./" enctype="multipart/form-data" class="cs-card cs-card-p" style="max-width:640px;">
+  <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminSaveConfig" /><input type="hidden" name="sub" value="etc" /><input type="hidden" name="console_return" value="{$console_return}" />
+  <div class="cs-field"><label>기본 적립률 (%)</label><input type="number" name="point_rate" value="{$config->point_rate}" class="cs-input" style="width:100px;" /></div>
+  <div class="cs-field"><label>등급(회원그룹)별 적립률 (%)</label>
+    <p class="cs-hint" style="margin:0 0 8px;">입력하면 해당 그룹 회원은 기본 적립률 대신(더 높은 값) 적용됩니다. 비우면 기본 적립률.</p>
+    <div class="cs-row" style="flex-wrap:wrap;gap:10px;">
+      <span loop="$member_groups=>$g" style="display:inline-flex;align-items:center;gap:6px;border:1px solid #E4E6EA;border-radius:2px;padding:6px 10px;">
+        <b style="font-size:12.5px;">{$g->title}</b>
+        <input type="number" name="grade_rate[{$g->group_srl}]" value="{$g->rate}" class="cs-input" style="width:70px;" placeholder="%" /> %
+      </span>
+      <span class="cs-hint" cond="!count($member_groups)">회원그룹이 없습니다.</span>
+    </div>
+  </div>
+  <div class="cs-field"><label>등급(회원그룹)별 가격 할인</label>
+    <p class="cs-hint" style="margin:0 0 8px;">회원이 속한 그룹에 할인을 지정하면 상품 가격에서 자동으로 할인됩니다. 할인율(%) 또는 할인금액(원) 중 선택하세요. 여러 그룹에 속하면 가장 큰 할인이 적용됩니다. 0 또는 비우면 할인 없음.</p>
+    <div class="cs-row" style="flex-wrap:wrap;gap:10px;">
+      <span loop="$member_groups=>$g" style="display:inline-flex;align-items:center;gap:6px;border:1px solid #E4E6EA;border-radius:2px;padding:6px 10px;">
+        <b style="font-size:12.5px;">{$g->title}</b>
+        <input type="number" name="grade_disc_value[{$g->group_srl}]" value="{$g->disc_value}" class="cs-input" style="width:80px;" placeholder="0" min="0" />
+        <select name="grade_disc_type[{$g->group_srl}]" class="cs-select" style="width:90px;">
+          <option value="percent" selected="selected"|cond="$g->disc_type=='percent'">% 할인</option>
+          <option value="amount" selected="selected"|cond="$g->disc_type=='amount'">원 할인</option>
+        </select>
+      </span>
+      <span class="cs-hint" cond="!count($member_groups)">회원그룹이 없습니다.</span>
+    </div>
+  </div>
+  <div class="cs-field"><label>적립금(포인트) 사용</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_point" value="Y" checked="checked"|cond="$config->use_point=='Y'" style="width:auto;"> 주문 시 보유 적립금 사용 허용</label></div>
+
+  <h3 style="font-size:14px;margin:22px 0 14px;">성장 기능</h3>
+  <div class="cs-field"><label>위시리스트(찜)</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_wishlist" value="Y" checked="checked"|cond="$config->use_wishlist!='N'" style="width:auto;"> 상품 찜하기 및 마이페이지 찜 목록 사용</label></div>
+  <div class="cs-field"><label>최근 본 상품</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_recent" value="Y" checked="checked"|cond="$config->use_recent!='N'" style="width:auto;"> 상품 상세에 최근 본 상품 노출(쿠키)</label></div>
+  <div class="cs-field"><label>연관/교차판매</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_related" value="Y" checked="checked"|cond="$config->use_related!='N'" style="width:auto;"> 상품 상세에 함께 구매한 상품·연관 상품 노출</label></div>
+  <div class="cs-field"><label>리뷰 적립금</label><label class="cs-row" style="gap:7px;"><input type="checkbox" name="use_review_point" value="Y" checked="checked"|cond="$config->use_review_point=='Y'" style="width:auto;"> 후기 작성 시 적립금 지급(상품당 1회)</label></div>
+  <div class="cs-field"><label>일반 후기 적립금 (원)</label><input type="number" name="review_point" value="{$config->review_point}" class="cs-input" style="width:140px;" min="0" /></div>
+  <div class="cs-field"><label>포토 후기 적립금 (원)</label><input type="number" name="photo_review_point" value="{$config->photo_review_point}" class="cs-input" style="width:140px;" min="0" /><div class="cs-muted" style="font-size:12px;margin-top:5px;">사진을 첨부한 후기에 지급할 적립금(일반 후기보다 높게 권장).</div></div>
+
+  <div style="border-top:1px solid #EEF0F3;margin:18px 0 14px;"></div>
+  <div class="cs-field"><label>알림 (알림센터)</label>
+    <label class="cs-row" style="gap:7px;"><input type="checkbox" name="notify_admin_qna" value="Y" checked="checked"|cond="($config->notify_admin_qna ?? 'Y')=='Y'" style="width:auto;"> 상품문의 등록 시 관리자에게 알림</label>
+    <label class="cs-row" style="gap:7px;margin-top:6px;"><input type="checkbox" name="notify_member_answer" value="Y" checked="checked"|cond="($config->notify_member_answer ?? 'Y')=='Y'" style="width:auto;"> 답변 등록 시 문의한 회원에게 알림</label>
+    <label class="cs-row" style="gap:7px;margin-top:6px;"><input type="checkbox" name="notify_soldout" value="Y" checked="checked"|cond="($config->notify_soldout ?? 'Y')=='Y'" style="width:auto;"> 상품·옵션 품절 시 관리자에게 알림</label>
+    <div class="cs-muted" style="font-size:12px;margin-top:5px;">알림센터(ncenterlite) 모듈이 설치되어 있어야 동작합니다. 회원별 수신 설정(웹/메일/푸시)은 알림센터 설정을 따릅니다.</div>
+  </div>
+
+  <div style="border-top:1px solid #EEF0F3;margin:18px 0 14px;"></div>
+  <div class="cs-field"><label>상품목록 가격대 필터</label>
+    <div class="cs-muted" style="font-size:12px;margin:0 0 9px;">상품 목록 좌측 필터에 노출할 가격대입니다. <b>상한 없음</b>(예: 10만원 이상)은 최대값을 <b>0 또는 비움</b>으로 두세요. 위에서부터 표시되며, 모두 비우면 가격대 버튼 없이 직접 입력만 노출됩니다.</div>
+    <div id="cs-band-list">
+      <div class="cs-band-row" loop="$price_band_rows=>$br">
+        <input type="number" name="band_min[]" class="cs-input" min="0" placeholder="최소" value="{$br->min ?: ''}" />
+        <span class="cs-band-sep">~</span>
+        <input type="number" name="band_max[]" class="cs-input" min="0" placeholder="최대(0=무제한)" value="{$br->max ?: ''}" />
+        <input type="text" name="band_label[]" class="cs-input" placeholder="표시 이름 (예: 2만원 이하)" value="{escape($br->label)}" />
+        <button type="button" class="cs-btn ghost sm" onclick="csBandDel(this)">삭제</button>
+      </div>
+    </div>
+    <button type="button" class="cs-btn ghost sm" style="margin-top:8px;" onclick="csBandAdd()">+ 가격대 추가</button>
+  </div>
+
+  <button type="submit" class="cs-btn">저장</button>
+</form>
+<script>
+function csBandRowHtml(){
+  return '<div class="cs-band-row">'
+    + '<input type="number" name="band_min[]" class="cs-input" min="0" placeholder="최소" />'
+    + '<span class="cs-band-sep">~</span>'
+    + '<input type="number" name="band_max[]" class="cs-input" min="0" placeholder="최대(0=무제한)" />'
+    + '<input type="text" name="band_label[]" class="cs-input" placeholder="표시 이름 (예: 2만원 이하)" />'
+    + '<button type="button" class="cs-btn ghost sm" onclick="csBandDel(this)">삭제</button>'
+    + '</div>';
+}
+function csBandAdd(){
+  var box=document.getElementById('cs-band-list');
+  box.insertAdjacentHTML('beforeend', csBandRowHtml());
+}
+function csBandDel(btn){
+  var row=btn.closest('.cs-band-row');
+  if(row) row.parentNode.removeChild(row);
+}
+</script>
+<style>
+.cs-band-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.cs-band-row .cs-input[type="number"]{width:130px;flex:0 0 auto;}
+.cs-band-row input[name="band_label[]"]{flex:1;min-width:140px;}
+.cs-band-sep{color:#9aa0aa;flex:0 0 auto;}
+@media(max-width:640px){.cs-band-row{flex-wrap:wrap;}.cs-band-row .cs-input[type="number"]{width:calc(50% - 18px);}}
+</style>
+<!--@end-->
+
+<include target="_console_foot.html" />

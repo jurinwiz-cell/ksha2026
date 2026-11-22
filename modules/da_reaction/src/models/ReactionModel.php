@@ -1,0 +1,479 @@
+<?php
+declare(strict_types=1);
+
+namespace Rhymix\Modules\Da_reaction\Src\Models;
+
+use Rhymix\Framework\DB;
+use Rhymix\Framework\Exception;
+use Rhymix\Framework\Exceptions\MustLogin;
+use Rhymix\Framework\Helpers\SessionHelper;
+use Rhymix\Framework\Session;
+use Rhymix\Modules\Da_reaction\Src\Exceptions\CannotReactToOwnTargetException;
+use Rhymix\Modules\Da_reaction\Src\Exceptions\DaException;
+use Rhymix\Modules\Da_reaction\Src\Exceptions\ReactionLimitExceededException;
+use Rhymix\Modules\Da_reaction\Src\ModuleBase;
+use Rhymix\Modules\Da_reaction\Src\ReactionHelper;
+
+/**
+ * @template TReactionItem of array{
+ *     reaction: string,
+ *     type: string,
+ *     id: string,
+ *     count: int,
+ *     choose: bool,
+ * }
+ */
+class ReactionModel extends ModuleBase
+{
+    /**
+     * @return string[]
+     */
+    public static function getLogs(string $targetId, int $memberSrl): array
+    {
+        $oDB = DB::getInstance();
+
+        try {
+            $table = ModuleBase::$tableReactionChoose;
+            $stmt = $oDB->query(
+                "SELECT `reaction` FROM `{$table}`
+                WHERE
+                    `member_srl` = ?
+                    AND `target_id` = ?
+                ",
+                $memberSrl,
+                $targetId,
+            );
+            if (!$stmt) {
+                throw new DaException('테이블이 생성되어있지 않습니다.');
+            }
+            $result = $stmt->fetchAll() ?: [];
+        } catch (\Exception $e) {
+            if (Session::isAdmin()) {
+                throw new DaException("getLogs관리페이지에서 모듈이 설치되어있는지 확인하세요. {$e->getMessage()}");
+            }
+            return [];
+        }
+
+        $reactions = [];
+        foreach ($result as $row) {
+            $reactions[] = $row->reaction;
+        }
+
+        return $reactions;
+    }
+
+    /**
+     * @return array<string,string[]>
+     */
+    public static function getLogsByParentId(string $parentId, int $memberSrl): array
+    {
+        $oDB = DB::getInstance();
+
+        try {
+            $table = ModuleBase::$tableReactionChoose;
+            $stmt = $oDB->query(
+                "SELECT `reaction`, `target_id` FROM `{$table}`
+                WHERE
+                    `member_srl` = ?
+                    AND `parent_id` = ?
+                ",
+                $memberSrl,
+                $parentId,
+            );
+            if (!$stmt) {
+                throw new Exception('테이블이 생성되어있지 않습니다.');
+            }
+            $result = $stmt->fetchAll() ?: [];
+        } catch (\Exception $e) {
+            if (Session::isAdmin()) {
+                throw new DaException("getLogsByParentId관리페이지에서 모듈이 설치되어있는지 확인하세요. {$e->getMessage()}");
+            }
+            return [];
+        }
+
+        $reactions = [];
+        foreach ($result as $row) {
+            $reactions[$row->target_id] ??= [];
+            $reactions[$row->target_id][] = $row->reaction;
+        }
+
+        return $reactions;
+    }
+
+    /**
+     * 대상의 리액션 목록 반환
+     *
+     * @return array<string,TReactionItem[]>
+     */
+    public static function getReactions(string $targetId, ?int $memberSrl): array
+    {
+        $reactions = [];
+
+        $db = DB::getInstance();
+        try {
+            $stmt = $db->query(
+                'SELECT `parent_id`, `target_id`, `reaction`, `reaction_count`
+                    FROM `da_reaction`
+                    WHERE `target_id` = ?
+                    ORDER BY `id` ASC
+                ',
+                $targetId
+            );
+            if (!$stmt) {
+                throw new Exception('테이블이 생성되어있지 않습니다.');
+            }
+            $result = $stmt->fetchAll() ?: [];
+        } catch (\Exception $e) {
+            if (Session::isAdmin()) {
+                throw new DaException("getReactions관리페이지에서 모듈이 설치되어있는지 확인하세요. {$e->getMessage()}");
+            }
+            return [];
+        }
+
+        $memberActions = [];
+        if ($memberSrl) {
+            $memberActions = self::getLogs($targetId, $memberSrl);
+        }
+
+        foreach ($result as $row) {
+            $reactionData = ReactionHelper::parseReaction($row->reaction, intval($row->reaction_count ?? 0));
+            if ($memberSrl && $memberActions) {
+                $reactionData['choose'] = in_array($reactionData['reaction'], $memberActions);
+            }
+            $reactions[$row->target_id] ??= [];
+            $reactions[$row->target_id][] = $reactionData;
+        }
+
+        // @phpstan-ignore return.type
+        return $reactions;
+    }
+
+    /**
+     * 대상의 리액션 목록 반환
+     * @return array<string,TReactionItem[]>
+     */
+    public static function getReactionsByParentId(string $parentId, ?int $memberSrl): array
+    {
+        /** @var array<string,TReactionItem[]> */
+        $reactions = [];
+
+        $db = DB::getInstance();
+        try {
+            $result = $db->query(
+                'SELECT `parent_id`, `target_id`, `reaction`, `reaction_count`
+                    FROM `da_reaction`
+                    WHERE `parent_id` = ?
+                ',
+                $parentId
+            );
+            $result = $result->fetchAll() ?: [];
+        } catch (\Exception $e) {
+            if (Session::isAdmin()) {
+                throw new DaException("관리페이지에서 모듈이 설치되어있는지 확인하세요. {$e->getMessage()}");
+            }
+            return $reactions;
+        }
+
+        $memberActions = [];
+        if ($memberSrl) {
+            $memberActions = self::getLogsByParentId($parentId, $memberSrl);
+        }
+
+        foreach ($result as $row) {
+            $reactionData = ReactionHelper::parseReaction($row->reaction, intval($row->reaction_count ?? 0));
+            if ($memberSrl && $memberActions) {
+                $reactionData['choose'] = in_array($reactionData['reaction'], $memberActions[$row->target_id] ?? []);
+            }
+            $reactions[$row->target_id] ??= [];
+            $reactions[$row->target_id][] = $reactionData;
+        }
+
+        // @phpstan-ignore return.type
+        return $reactions;
+    }
+
+    /**
+     * 리액션을 추가, 취소할 수 있는지 반환
+     *
+     * - 추가 및 취소 불가능: 0 (ModuleBase::NOT_REACTABLE)
+     * - 추가 가능: 1 (ModuleBase::REACTABLE_ADD)
+     * - 취소 가능: 2 (ModuleBase::REACTABLE_REVOKE)
+     * - 추가 및 취소 가능: 3 (ModuleBase::REACTABLE)
+     *
+     * @throws CannotReactToOwnTargetException
+     * @throws ReactionLimitExceededException
+     * @throws MustLogin
+     */
+    public static function reactable(ReactionConfig $config, SessionHelper $member, string $reactionMode, string $targetId, string $reaction): int
+    {
+        $reactable = ModuleBase::NOT_REACTABLE;
+
+        $reactionLimit = $config->reaction_limit;
+
+        if (!$member->isMember()) {
+            throw new MustLogin();
+        }
+
+        $db = DB::getInstance();
+        try {
+            // 리액션 횟수 제한 확인
+            $table = ModuleBase::$tableReaction;
+            $result = $db->query(
+                "SELECT COUNT(*) AS `reactionRows` FROM `{$table}` WHERE `target_id` = ?",
+                $targetId
+            );
+            $reactionRows = $result->fetch()->reactionRows ?? 0;
+            $result = null;
+
+            // 토글 모드일 때 취소할 수 있는지 확인
+            $table = ModuleBase::$tableReactionChoose;
+            $result = $db->query(
+                "SELECT COUNT(*) AS `count` FROM `{$table}` WHERE `member_srl` = ? AND `target_id` = ? AND `reaction` = ?",
+                $member->member_srl,
+                $targetId,
+                $reaction,
+            );
+            $choose = boolval($result->fetch()->count ?? 0);
+            $result = null;
+        } catch (\Exception $e) {
+            $message = $member->isAdmin() ? "관리페이지에서 모듈이 설치되었는지 확인하세요. {$e->getMessage()}" : '리액션을 추가할 수 없습니다.';
+            throw new Exception($message, 0, $e);
+        }
+
+        // 리액션 이력이 있으면 취소 허용
+        if ($choose) {
+            $reactable |= ModuleBase::REACTABLE_REVOKE;
+        } else if ($reactionRows < $reactionLimit) {
+            $reactable |= ModuleBase::REACTABLE_ADD;
+        } else if ($member->isAdmin()) {
+            $reactable |= ModuleBase::REACTABLE_ADD;
+        }
+
+        // 토글 모드일 때 다른 리액션에 추가 가능
+        if ($reactionMode === 'toggle') {
+            $reactable |= ModuleBase::REACTABLE_ADD;
+        }
+
+        if ($reactable === ModuleBase::NOT_REACTABLE) {
+            if ($reactionRows >= $reactionLimit) {
+                throw new ReactionLimitExceededException($reactionLimit);
+            }
+        }
+
+        return $reactable;
+    }
+
+    /**
+     * 리액션 추가
+     */
+    public static function addReaction(int $memberSrl, string $reaction, string $targetId, ?string $parentId): bool
+    {
+        ReactionHelper::validateReactionId($reaction);
+        ReactionHelper::validateTargetId($targetId);
+        if ($parentId !== null) {
+            ReactionHelper::validateTargetId($parentId);
+        }
+
+        $datetime = date('YmdHis');
+        $db = DB::getInstance();
+
+        try {
+            // 로그
+            $table = ModuleBase::$tableReactionChoose;
+            $db->query(
+                "INSERT INTO `{$table}`
+                    SET
+                        `member_srl` = ?,
+                        `reaction` = ?,
+                        `target_id` = ?,
+                        `parent_id` = ?,
+                        `regdate` = ?
+                ",
+                $memberSrl,
+                $reaction,
+                $targetId,
+                $parentId,
+                $datetime,
+            );
+        } catch (Exception $e) {
+            throw new Exception('리액션 기록에 실패했습니다.', 0, $e);
+        }
+
+        // 리액션 카운트 업데이트 및 추가
+        $table = ModuleBase::$tableReaction;
+        // 카운트 증가
+        $result = $db->query(
+            "UPDATE `{$table}`
+                SET
+                    `reaction_count` = `reaction_count` + 1
+                WHERE
+                    `reaction` = ?
+                    AND `target_id` = ?
+                    AND `parent_id` = ?
+            ",
+            $reaction,
+            $targetId,
+            $parentId,
+        );
+        // 없으면 추가
+        if (!$result->rowCount()) {
+            $result = $db->query(
+                "INSERT INTO `{$table}`
+                    SET
+                        `reaction` = ?,
+                        `target_id` = ?,
+                        `parent_id` = ?,
+                        `reaction_count` = 1
+                ",
+                $reaction,
+                $targetId,
+                $parentId,
+            );
+        }
+
+        return true;
+    }
+
+    public static function revokeReaction(int $memberSrl, string $reaction, string $targetId): bool
+    {
+        ReactionHelper::validateReactionId($reaction);
+        ReactionHelper::validateTargetId($targetId);
+
+        $db = DB::getInstance();
+
+        // choose 테이블에서 리액션 삭제
+        $table = ModuleBase::$tableReactionChoose;
+        $result = $db->query(
+            "DELETE FROM `{$table}` WHERE `member_srl` = ? AND `target_id` = ? AND `reaction` = ?",
+            $memberSrl,
+            $targetId,
+            $reaction,
+        );
+
+        if ($result->rowCount()) {
+            // reaction 테이블에서 카운트 감소
+            $table = ModuleBase::$tableReaction;
+            $result = $db->query(
+                "UPDATE `{$table}`
+                    SET
+                        `reaction_count` = `reaction_count` - 1
+                    WHERE
+                        `reaction` = ?
+                        AND `target_id` = ?
+                ",
+                $reaction,
+                $targetId,
+            );
+
+            // 리액션이 없는 경우 삭제
+            $db->query(
+                "DELETE FROM `{$table}`
+                    WHERE
+                        `target_id` = ?
+                        AND `reaction` = ?
+                        AND `reaction_count` <= 0
+                ",
+                $targetId,
+                $reaction,
+            );
+        }
+
+        return true;
+    }
+
+    public static function moveDocumentReaction(string $originTargetId, string $newTargetId, string $newParentId): void
+    {
+        $db = DB::getInstance();
+
+        // reaction 테이블에서 대상 변경
+        $table = ModuleBase::$tableReaction;
+        $db->query(
+            "UPDATE `{$table}`
+                SET
+                    `target_id` = ?,
+                    `parent_id` = ?
+                WHERE
+                    `target_id` = ?
+            ",
+            [
+                $newTargetId,
+                $newParentId,
+                $originTargetId,
+            ]
+        );
+
+        // reaction_choose 테이블에서 대상 변경
+        $table = ModuleBase::$tableReactionChoose;
+        $db->query(
+            "UPDATE `{$table}`
+                SET
+                    `target_id` = ?,
+                    `parent_id` = ?
+                WHERE
+                    `target_id` = ?
+            ",
+            [
+                $newTargetId,
+                $newParentId,
+                $originTargetId,
+            ]
+        );
+    }
+
+    public static function moveCommentReaction(string $originTargetId, string $newTargetId, string $newParentId): void
+    {
+        static::moveDocumentReaction($originTargetId, $newTargetId, $newParentId);
+    }
+
+    public static function deleteDocumentReaction(string $documentTargetId): void
+    {
+        $db = DB::getInstance();
+
+        // reaction 테이블에서 대상 삭제
+        $tableReaction = ModuleBase::$tableReaction;
+        $db->query(
+            "DELETE FROM `{$tableReaction}`
+            WHERE
+                `target_id` = ?
+                OR `parent_id` = ?
+            ",
+            $documentTargetId,
+            $documentTargetId
+        );
+
+        // reaction_choose 테이블에서 대상 삭제
+        $tableChoose = ModuleBase::$tableReactionChoose;
+        $db->query(
+            "DELETE FROM `{$tableChoose}`
+            WHERE
+                `parent_id` = ?
+            ",
+            $documentTargetId
+        );
+    }
+
+    public static function deleteCommentReaction(string $commentTargetId): void
+    {
+        $db = DB::getInstance();
+
+        // reaction 테이블에서 대상 삭제
+        $tableReaction = ModuleBase::$tableReaction;
+        $db->query(
+            "DELETE FROM `{$tableReaction}`
+            WHERE
+                `target_id` = ?
+            ",
+            $commentTargetId,
+        );
+
+        // reaction_choose 테이블에서 대상 삭제
+        $tableChoose = ModuleBase::$tableReactionChoose;
+        $db->query(
+            "DELETE FROM `{$tableChoose}`
+            WHERE
+                `target_id` = ?
+            ",
+            $commentTargetId
+        );
+    }
+}

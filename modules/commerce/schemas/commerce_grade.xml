@@ -1,0 +1,11 @@
+<table name="commerce_grade">
+	<column name="grade_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="title" type="varchar" size="80" notnull="notnull" />
+	<column name="min_spend" type="bigint" notnull="notnull" default="0" index="idx_min_spend" />
+	<column name="credit_rate" type="float" notnull="notnull" default="0" />
+	<column name="coupon_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="group_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="discount_type" type="varchar" size="10" default="" />
+	<column name="discount_value" type="float" notnull="notnull" default="0" />
+	<column name="regdate" type="char" size="14" />
+</table>

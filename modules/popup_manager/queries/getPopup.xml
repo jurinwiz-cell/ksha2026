@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query id="getPopup" action="select">
+	<tables>
+		<table name="popups" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="popup_srl" var="popup_srl" filter="number" notnull="notnull" />
+	</conditions>
+</query>

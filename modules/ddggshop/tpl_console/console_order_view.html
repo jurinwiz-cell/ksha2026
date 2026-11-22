@@ -1,0 +1,127 @@
+<include target="_console_head.html" />
+
+<!--@if(!$order)-->
+<div class="cs-card cs-card-p"><div class="cs-empty">주문을 찾을 수 없습니다.</div></div>
+<!--@else-->
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+  <a href="{$u_orders}" class="cs-btn ghost sm">‹ 목록</a>
+  <div style="font-size:16px;font-weight:700;">{$order->order_code}</div>
+  <span class="cs-st {$order->status}">{$order->status_label}</span>
+  <span class="cs-muted" style="font-size:12.5px;">{zdate($order->regdate,'Y.m.d H:i')}</span>
+  <a class="cs-btn ghost sm" style="margin-left:auto;" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleOrderPrint','order_srl',$order->order_srl)}" target="_blank" rel="noopener">🖨 주문서 출력</a>
+</div>
+
+<div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+  <div style="flex:1;min-width:380px;display:flex;flex-direction:column;gap:14px;">
+    <div class="cs-card">
+      <div class="cs-card-head"><h3>주문 상품</h3></div>
+      <table class="cs-table">
+        <thead><tr><th>상품</th><th class="cs-right">단가</th><th class="cs-center">수량</th><th class="cs-right">금액</th></tr></thead>
+        <tbody>
+          <tr loop="$order_items=>$oi">
+            <td><!--@if($oi->item_srl)--><a href="{getUrl('','mid',$shop_mid,'act','dispDdggshopConsoleItemForm','item_srl',$oi->item_srl)}" style="font-weight:600;color:#e03e48;">{$oi->item_name}</a><!--@else--><span style="font-weight:600;">{$oi->item_name}</span><!--@end--><div class="cs-muted" style="font-size:11.5px;" cond="$oi->item_code">코드: {$oi->item_code}</div><div class="cs-muted" style="font-size:11.5px;" cond="$oi->option_name">{$oi->option_name}</div></td>
+            <td class="cs-right cs-num">{number_format($oi->price)}원</td>
+            <td class="cs-center cs-num">{$oi->qty}</td>
+            <td class="cs-right cs-num">{number_format($oi->subtotal)}원</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="cs-card-p" style="border-top:1px solid #F0F1F3;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;margin-bottom:5px;"><span>상품금액</span><span class="cs-num">{number_format($order->total_price)}원</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;margin-bottom:5px;"><span>배송비</span><span class="cs-num">{number_format($order->delivery_fee)}원</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#E5484D;margin-bottom:5px;" cond="$order->discount_price"><span>쿠폰 할인<!--@if($order->coupon_code)--> ({$order->coupon_code})<!--@end--></span><span class="cs-num">-{number_format($order->discount_price)}원</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#E5484D;margin-bottom:5px;" cond="$order->used_point"><span>적립금 사용</span><span class="cs-num">-{number_format($order->used_point)}원</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding-top:7px;border-top:1px dashed #E4E6EA;"><span>결제금액</span><span class="cs-num" style="color:#e03e48;">{number_format($order->payment_price)}원</span></div>
+        <div class="cs-muted" style="font-size:12px;margin-top:8px;">결제수단: {$order->pay_label}<!--@if($order->pg_tid)--> · TID {$order->pg_tid}<!--@end--></div>
+      </div>
+    </div>
+
+    <div class="cs-card cs-card-p">
+      <h3 style="font-size:14px;margin:0 0 14px;">주문 처리</h3>
+      <form method="post" action="./" class="cs-row" style="margin-bottom:12px;">
+        <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminUpdateOrderStatus" />
+        <input type="hidden" name="order_srl" value="{$order->order_srl}" /><input type="hidden" name="console_return" value="{$console_return}" />
+        <select name="status" class="cs-select" style="width:150px;">
+          <option loop="$status_options=>$sc,$sl" value="{$sc}" selected="selected"|cond="$order->status==$sc">{$sl}</option>
+        </select>
+        <button type="submit" class="cs-btn">상태 변경</button>
+        <span class="cs-muted" style="font-size:12px;">입금대기 주문은 아래 ‘입금확인’으로 결제완료 처리하세요.</span>
+      </form>
+      <form method="post" action="./" class="cs-row" cond="$order->status=='pending'" style="margin-bottom:12px;">
+        <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminConfirmDeposit" />
+        <input type="hidden" name="order_srl" value="{$order->order_srl}" /><input type="hidden" name="console_return" value="{$console_return}" />
+        <button type="submit" class="cs-btn" style="background:#16a34a;">입금 확인 → 결제완료</button>
+      </form>
+      <form method="post" action="./">
+        <input type="hidden" name="module" value="admin" /><input type="hidden" name="act" value="procDdggshopAdminUpdateShipping" />
+        <input type="hidden" name="order_srl" value="{$order->order_srl}" /><input type="hidden" name="console_return" value="{$console_return}" />
+        <div class="cs-row">
+          <select name="shipping_company" class="cs-select" style="width:160px;">
+            <option value="">택배사 선택</option>
+            <option loop="$carriers=>$cr" value="{$cr}" selected="selected"|cond="($order->shipping_company ? $order->shipping_company : $default_carrier)==$cr">{$cr}</option>
+          </select>
+          <input type="text" name="shipping_invoice" class="cs-input" style="flex:1;min-width:150px;" value="{$order->shipping_invoice}" placeholder="송장번호" />
+          <button type="submit" class="cs-btn ghost">송장 저장(배송중)</button>
+          <a cond="$tracking_url" href="{$tracking_url}" target="_blank" rel="noopener" class="cs-btn ghost">배송조회 ↗</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div style="flex:0 0 320px;display:flex;flex-direction:column;gap:14px;">
+    <div class="cs-card cs-card-p">
+      <h3 style="font-size:14px;margin:0 0 12px;">주문자</h3>
+      <div style="font-size:13px;line-height:1.9;">
+        <div><span class="cs-muted">이름</span> &nbsp;{$order->orderer_name}</div>
+        <div><span class="cs-muted">연락처</span> &nbsp;{$order->orderer_phone}</div>
+        <div><span class="cs-muted">이메일</span> &nbsp;{$order->orderer_email}</div>
+      </div>
+    </div>
+    <div class="cs-card cs-card-p" cond="$order_address">
+      <h3 style="font-size:14px;margin:0 0 12px;">배송지</h3>
+      <div style="font-size:13px;line-height:1.9;">
+        <div><b>{$order_address->receiver_name}</b> &nbsp;<span class="cs-muted">{$order_address->receiver_phone}</span></div>
+        <div>({$order_address->zipcode}) {$order_address->addr1} {$order_address->addr2}</div>
+        <div class="cs-muted" cond="$order_address->delivery_memo" style="margin-top:6px;">요청: {$order_address->delivery_memo}</div>
+      </div>
+    </div>
+
+    <div class="cs-card cs-card-p" cond="count($order_claims)">
+      <h3 style="font-size:14px;margin:0 0 12px;">교환/반품 신청</h3>
+      <div loop="$order_claims=>$cl" style="border-top:1px solid #F0F1F3;padding:9px 0;font-size:13px;">
+        <div style="display:flex;align-items:center;gap:7px;"><b>{$cl->type_label}</b><span class="cs-st {$cl->status}">{$cl->status_label}</span><span class="cs-muted" style="margin-left:auto;font-size:11.5px;">{zdate($cl->regdate,'y.m.d')}</span></div>
+        <div style="margin-top:4px;color:#4b5563;">{escape($cl->reason)}</div>
+        <div cond="$cl->status=='requested' || $cl->status=='approved'" style="margin-top:7px;display:flex;gap:5px;">
+          <!--@if($cl->status=='requested')--><button type="button" class="cs-btn sm" onclick="csClaim({$cl->claim_srl},'approve')">승인</button><!--@else--><button type="button" class="cs-btn sm" onclick="csClaim({$cl->claim_srl},'complete')">완료처리</button><!--@end-->
+          <button type="button" class="cs-btn ghost sm" onclick="csClaim({$cl->claim_srl},'reject')">반려</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-card cs-card-p" cond="count($order_logs)">
+      <h3 style="font-size:14px;margin:0 0 12px;">처리 이력</h3>
+      <div class="cs-timeline">
+        <div loop="$order_logs=>$lg" class="cs-tl-row">
+          <span class="cs-tl-dot"></span>
+          <div class="cs-tl-body">
+            <div class="cs-tl-act">{$lg->action_label}<!--@if($lg->from_status || $lg->to_status)--> <span class="cs-muted">{$lg->from_status} → {$lg->to_status}</span><!--@end--></div>
+            <div class="cs-tl-meta">{$lg->actor_name} · {zdate($lg->regdate,'Y.m.d H:i')}<!--@if($lg->memo)--> · {escape($lg->memo)}<!--@end--></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function csClaim(srl, action){
+  var memo='';
+  if(action==='reject'){ memo=prompt('반려 사유(선택 입력):')||''; }
+  if(action==='complete' && !confirm('완료 처리할까요?\n반품이면 주문이 전체 환불됩니다.')) return;
+  exec_json('ddggshop.procDdggshopAdminProcessClaim',{claim_srl:srl,claim_action:action,admin_memo:memo},function(){ location.reload(); });
+}
+</script>
+<!--@end-->
+
+<include target="_console_foot.html" />

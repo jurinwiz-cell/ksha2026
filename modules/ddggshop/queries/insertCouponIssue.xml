@@ -1,0 +1,10 @@
+<query id="insertCouponIssue" action="insert">
+  <tables><table name="ddggshop_coupon_issue" /></tables>
+  <columns>
+    <column name="issue_srl" var="issue_srl" notnull="notnull" />
+    <column name="coupon_srl" var="coupon_srl" notnull="notnull" />
+    <column name="member_srl" var="member_srl" notnull="notnull" />
+    <column name="used" var="used" default="N" />
+    <column name="regdate" var="regdate" default="curdate()" />
+  </columns>
+</query>

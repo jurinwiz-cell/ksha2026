@@ -1,0 +1,375 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead"><h1>쇼핑몰 설정</h1><span class="sub">홈 화면, 결제, 배송, 기타 운영 설정</span></div>
+
+<div class="dga-chips">
+  <a class="dga-chip {$sub=='home' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig','sub','home')}">홈 화면</a>
+  <a class="dga-chip {$sub=='payment' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig','sub','payment')}">결제 설정</a>
+  <a class="dga-chip {$sub=='delivery' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig','sub','delivery')}">배송 설정</a>
+  <a class="dga-chip {$sub=='access' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig','sub','access')}">판매 공개</a>
+  <a class="dga-chip {$sub=='etc' ? 'on' : ''}" href="{getUrl('','module','admin','act','dispDdggshopAdminConfig','sub','etc')}">기타 설정</a>
+</div>
+
+<!--@if($sub=='home')-->
+<div class="dga-card">
+  <div class="dga-card-title">
+    <h2>상품 태그 · 홈 진열</h2>
+    <button type="button" class="x_btn x_btn-primary" onclick="ddggTagForm()">+ 태그 추가</button>
+  </div>
+  <p class="dga-help">홈 화면에 노출되는 상품 묶음입니다. <b>위에서부터 순서대로</b> 진열되며, 노출방식이 <b>수동지정</b>이면 상품 등록 화면에서 상품마다 지정하고 <b>인기순·최신순</b>은 자동으로 채워집니다.</p>
+  <table class="x_table">
+    <thead><tr><th style="width:54px;">순서</th><th>태그</th><th style="width:130px;">노출방식</th><th style="width:84px;">홈 노출</th><th style="width:64px;">뱃지</th><th style="width:120px;text-align:right;">관리</th></tr></thead>
+    <tbody>
+      <tr cond="!count($tags)"><td colspan="6" class="dga-empty">등록된 태그가 없습니다. ‘+ 태그 추가’로 만들어 보세요.</td></tr>
+      <tr loop="$tags=>$t">
+        <td>{$t->list_order}</td>
+        <td><span class="dga-tagpv" style="background:{$t->badge_color ?: '#8893a5'};">{$t->title}</span></td>
+        <td>{$t->auto_source=='popular' ? '인기순 (자동)' : ($t->auto_source=='new' ? '최신순 (자동)' : '수동지정')}</td>
+        <td><span class="dga-dot {$t->show_on_home=='Y' ? 'on' : 'off'}">{$t->show_on_home=='Y' ? '노출' : '숨김'}</span></td>
+        <td>{$t->show_badge=='Y' ? 'O' : '-'}</td>
+        <td style="text-align:right;">
+          <a href="#" class="x_btn x_btn-mini" onclick="ddggEditTag({$t->tag_srl},'{$t->title}','{$t->auto_source}','{$t->badge_color}','{$t->show_on_home}','{$t->show_badge}',{$t->home_count},{$t->list_order},'{$t->status}');return false;">수정</a>
+          <a href="#" class="x_btn x_btn-mini" onclick="ddggDelTag({$t->tag_srl});return false;">삭제</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="tag-form" class="dga-subform" style="display:none;">
+    <h3 id="tag-form-title">태그 추가</h3>
+    <input type="hidden" id="tag-srl" value="" />
+    <div class="dga-formgrid">
+      <div class="fcell"><label>태그명</label><input type="text" id="tag-title" placeholder="예: 베스트, 한정수량" /></div>
+      <div class="fcell"><label>노출방식</label><select id="tag-auto"><option value="manual">수동지정 (상품별 지정)</option><option value="popular">인기순 (자동)</option><option value="new">최신순 (자동)</option></select></div>
+      <div class="fcell"><label>뱃지 색상</label><input type="text" id="tag-color" placeholder="#ff4d2d" /></div>
+      <div class="fcell"><label>홈 노출 개수</label><input type="number" id="tag-count" value="8" /></div>
+      <div class="fcell"><label>진열 순서</label><input type="number" id="tag-order" value="0" /></div>
+      <div class="fcell"><label>상태</label><select id="tag-status"><option value="Y">사용</option><option value="N">사용안함</option></select></div>
+      <div class="fcell fcell-wide"><label>옵션</label><div class="fchecks"><label><input type="checkbox" id="tag-home" checked="checked" /> 홈 화면에 노출</label><label><input type="checkbox" id="tag-badge" checked="checked" /> 상품 뱃지 표시</label></div></div>
+    </div>
+    <div class="dga-subform-actions"><button type="button" class="x_btn x_btn-primary" onclick="ddggSaveTag()">저장</button><button type="button" class="x_btn" onclick="ddggTagCancel()">취소</button></div>
+  </div>
+</div>
+
+<div class="dga-card">
+  <div class="dga-card-title"><h2>메인 배너</h2></div>
+  <p class="dga-help">쇼핑몰 홈 상단에 노출되는 배너입니다. 이미지를 업로드하고, 클릭 시 이동할 링크를 지정할 수 있습니다.</p>
+  <!--@if(count($banners))-->
+  <div class="dga-bannergrid">
+    <div class="dga-bannercard" loop="$banners=>$b">
+      <div class="dga-bannerimg"><img src="{$b->image}" alt="" /></div>
+      <div class="dga-bannermeta">
+        <div class="t">{$b->title ?: '(제목 없음)'}</div>
+        <div class="l">{$b->link ?: '링크 없음'}</div>
+      </div>
+      <div class="dga-banneracts">
+        <button type="button" class="dga-bannerbtn" onclick="ddggEditBanner(this)" data-srl="{$b->banner_srl}" data-title="{escape($b->title)}" data-link="{escape($b->link)}" data-order="{$b->list_order}">수정</button>
+        <button type="button" class="dga-bannerbtn del" onclick="ddggDelBanner({$b->banner_srl})">삭제</button>
+      </div>
+    </div>
+  </div>
+  <!--@else-->
+  <div class="dga-empty">등록된 배너가 없습니다.</div>
+  <!--@end-->
+
+  <form action="./" method="post" enctype="multipart/form-data" class="dga-subform" id="bn-form">
+    <input type="hidden" name="module" value="admin" />
+    <input type="hidden" name="act" value="procDdggshopAdminSaveBanner" />
+    <input type="hidden" name="sub" value="home" />
+    <input type="hidden" name="banner_srl" id="bn-srl" value="" />
+    <h3 id="bn-form-title">배너 추가</h3>
+    <div class="dga-formgrid">
+      <div class="fcell fcell-wide"><label>이미지 파일 <span id="bn-img-req">*</span></label><input type="file" name="banner_image" accept="image/*" /><span class="dga-sub" id="bn-img-hint" style="display:none;">파일을 선택할 때만 이미지가 교체됩니다.</span></div>
+      <div class="fcell"><label>제목</label><input type="text" name="title" id="bn-title" /></div>
+      <div class="fcell"><label>링크 URL</label><input type="text" name="link" id="bn-link" placeholder="클릭 시 이동 (선택)" /></div>
+      <div class="fcell"><label>진열 순서</label><input type="number" name="list_order" id="bn-order" value="0" /></div>
+      <div class="fcell fcell-wide"><label>또는 이미지 URL</label><input type="text" name="image" id="bn-image-url" placeholder="파일 대신 외부 이미지 URL (선택)" /></div>
+    </div>
+    <div class="dga-subform-actions"><button type="submit" class="x_btn x_btn-primary" id="bn-submit">배너 추가</button><button type="button" class="x_btn" onclick="ddggBannerReset()">새로 입력</button></div>
+  </form>
+</div>
+
+<script>
+function ddggTagForm(){ ddggResetTag(); document.getElementById('tag-form').style.display='block'; }
+function ddggTagCancel(){ document.getElementById('tag-form').style.display='none'; }
+function ddggEditTag(srl,title,auto,color,home,badge,count,order,status){
+  document.getElementById('tag-srl').value=srl;
+  document.getElementById('tag-title').value=title;
+  document.getElementById('tag-auto').value=auto;
+  document.getElementById('tag-color').value=color;
+  document.getElementById('tag-count').value=count;
+  document.getElementById('tag-order').value=order;
+  document.getElementById('tag-home').checked=(home=='Y');
+  document.getElementById('tag-badge').checked=(badge=='Y');
+  document.getElementById('tag-status').value=status;
+  document.getElementById('tag-form-title').innerText='태그 수정';
+  document.getElementById('tag-form').style.display='block';
+}
+function ddggResetTag(){
+  document.getElementById('tag-srl').value='';
+  document.getElementById('tag-title').value='';
+  document.getElementById('tag-auto').value='manual';
+  document.getElementById('tag-color').value='';
+  document.getElementById('tag-count').value='8';
+  document.getElementById('tag-order').value='0';
+  document.getElementById('tag-home').checked=true;
+  document.getElementById('tag-badge').checked=true;
+  document.getElementById('tag-status').value='Y';
+  document.getElementById('tag-form-title').innerText='태그 추가';
+}
+function ddggSaveTag(){
+  var t=document.getElementById('tag-title').value;
+  if(!t){ alert('태그명을 입력해 주세요.'); return; }
+  var p={};
+  p.tag_srl=document.getElementById('tag-srl').value;
+  p.title=t;
+  p.auto_source=document.getElementById('tag-auto').value;
+  p.badge_color=document.getElementById('tag-color').value;
+  p.home_count=document.getElementById('tag-count').value;
+  p.list_order=document.getElementById('tag-order').value;
+  p.show_on_home=document.getElementById('tag-home').checked?'Y':'N';
+  p.show_badge=document.getElementById('tag-badge').checked?'Y':'N';
+  p.status=document.getElementById('tag-status').value;
+  exec_json('ddggshop.procDdggshopAdminSaveTag',p,function(){ location.reload(); });
+}
+function ddggDelTag(srl){
+  if(!confirm('이 태그를 삭제할까요? 상품에 지정된 태그도 함께 해제됩니다.')) return;
+  exec_json('ddggshop.procDdggshopAdminDeleteTag',{tag_srl:srl},function(){ location.reload(); });
+}
+function ddggDelBanner(srl){
+  if(!confirm('이 배너를 삭제할까요?')) return;
+  exec_json('ddggshop.procDdggshopAdminDeleteBanner',{banner_srl:srl},function(){ location.reload(); });
+}
+function ddggEditBanner(el){
+  document.getElementById('bn-srl').value=el.getAttribute('data-srl');
+  document.getElementById('bn-title').value=el.getAttribute('data-title')||'';
+  document.getElementById('bn-link').value=el.getAttribute('data-link')||'';
+  document.getElementById('bn-order').value=el.getAttribute('data-order')||'0';
+  document.getElementById('bn-image-url').value='';
+  document.getElementById('bn-form-title').innerText='배너 수정';
+  document.getElementById('bn-submit').innerText='수정 저장';
+  document.getElementById('bn-img-req').style.display='none';
+  document.getElementById('bn-img-hint').style.display='inline';
+  document.getElementById('bn-form').scrollIntoView({behavior:'smooth'});
+}
+function ddggBannerReset(){
+  document.getElementById('bn-srl').value='';
+  document.getElementById('bn-title').value='';
+  document.getElementById('bn-link').value='';
+  document.getElementById('bn-order').value='0';
+  document.getElementById('bn-image-url').value='';
+  document.getElementById('bn-form-title').innerText='배너 추가';
+  document.getElementById('bn-submit').innerText='배너 추가';
+  document.getElementById('bn-img-req').style.display='inline';
+  document.getElementById('bn-img-hint').style.display='none';
+}
+</script>
+<!--@end-->
+
+<!--@if($sub=='payment')-->
+<form action="./" method="post" class="x_form-horizontal">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminSaveConfig" />
+  <input type="hidden" name="sub" value="payment" />
+  <h2 style="margin-top:8px;">토스페이먼츠 (카드/간편결제)</h2>
+  <div class="x_control-group">
+    <label class="x_control-label">사용 여부</label>
+    <div class="x_controls"><label><input type="checkbox" name="use_toss" value="Y" checked="checked"|cond="$config->use_toss=='Y'" /> 토스페이먼츠 결제 사용</label></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">클라이언트 키</label>
+    <div class="x_controls"><input type="text" name="toss_client_key" value="{$config->toss_client_key}" class="x_input-xxlarge" /></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">시크릿 키</label>
+    <div class="x_controls"><input type="text" name="toss_secret_key" value="{$config->toss_secret_key}" class="x_input-xxlarge" /><p class="dga-sub">테스트 키가 기본 입력되어 있습니다. 운영 시 토스 개발자센터 발급 키로 교체하세요.</p></div>
+  </div>
+  <h2>무통장입금</h2>
+  <div class="x_control-group">
+    <label class="x_control-label">사용 여부</label>
+    <div class="x_controls"><label><input type="checkbox" name="use_banktransfer" value="Y" checked="checked"|cond="$config->use_banktransfer=='Y'" /> 무통장입금 사용</label></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">입금 계좌</label>
+    <div class="x_controls"><textarea name="bank_info" rows="3" class="x_input-xxlarge" placeholder="예: 국민은행 123-456-7890 (주)딱따고기">{$config->bank_info}</textarea></div>
+  </div>
+  <div class="x_form-actions"><button type="submit" class="x_btn x_btn-primary x_btn-large">저장</button></div>
+</form>
+<!--@end-->
+
+<!--@if($sub=='delivery')-->
+<form action="./" method="post" class="x_form-horizontal">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminSaveConfig" />
+  <input type="hidden" name="sub" value="delivery" />
+  <div class="x_control-group">
+    <label class="x_control-label">기본 배송업체</label>
+    <div class="x_controls">
+      <select name="delivery_company">
+        <option value="">없음</option>
+        <option loop="$delivery_companies=>$dc" value="{$dc}" selected="selected"|cond="$config->delivery_company==$dc">{$dc}</option>
+      </select>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">배송비 유형</label>
+    <div class="x_controls">
+      <label><input type="radio" name="delivery_fee_type" value="paid" checked="checked"|cond="$config->delivery_fee_type!='free'" /> 유료배송 (금액 지정)</label>
+      <label><input type="radio" name="delivery_fee_type" value="free" checked="checked"|cond="$config->delivery_fee_type=='free'" /> 무료배송</label>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">기본 배송비</label>
+    <div class="x_controls"><input type="number" name="base_delivery_fee" value="{$config->base_delivery_fee}" style="width:130px;" /> 원</div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">무료배송 기준</label>
+    <div class="x_controls"><input type="number" name="free_threshold" value="{$config->free_threshold}" style="width:130px;" /> 원 이상 <span class="dga-sub">(0 = 항상 배송비 부과)</span></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">배송 안내</label>
+    <div class="x_controls">
+      <input type="hidden" name="delivery_info" value="{htmlspecialchars($config->delivery_info, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+      {$editor_delivery}
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">교환/반품 안내</label>
+    <div class="x_controls">
+      <input type="hidden" name="exchange_return" value="{htmlspecialchars($config->exchange_return, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+      {$editor_return}
+    </div>
+  </div>
+  <div class="x_form-actions"><button type="submit" class="x_btn x_btn-primary x_btn-large">저장</button></div>
+</form>
+<!--@end-->
+
+<!--@if($sub=='access')-->
+<form action="./" method="post" class="x_form-horizontal">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminSaveConfig" />
+  <input type="hidden" name="sub" value="access" />
+
+  <p class="dga-help">비공개 폐쇄몰·공동구매처럼 비회원에게 가격과 구매 버튼을 숨기고 싶을 때 사용합니다.</p>
+
+  <div class="x_control-group">
+    <label class="x_control-label">가격·구매 노출 대상</label>
+    <div class="x_controls">
+      <label class="dga-radio"><input type="radio" name="price_visibility" value="all" checked="checked"|cond="$config->price_visibility=='all'" onclick="ddggAccessToggle()" /> 전체 공개 (비회원 포함)</label>
+      <label class="dga-radio"><input type="radio" name="price_visibility" value="member" checked="checked"|cond="$config->price_visibility=='member'" onclick="ddggAccessToggle()" /> 로그인 회원에게만</label>
+      <label class="dga-radio"><input type="radio" name="price_visibility" value="group" checked="checked"|cond="$config->price_visibility=='group'" onclick="ddggAccessToggle()" /> 특정 회원그룹에게만</label>
+    </div>
+  </div>
+
+  <div class="x_control-group" id="ac-groups" style="display:none;">
+    <label class="x_control-label">허용 회원그룹</label>
+    <div class="x_controls">
+      <label class="dga-radio" loop="$member_groups=>$g"><input type="checkbox" name="price_groups[]" value="{$g->group_srl}" checked="checked"|cond="in_array($g->group_srl,$config->price_groups)" /> {$g->title}</label>
+      <span class="dga-sub" cond="!count($member_groups)">등록된 회원그룹이 없습니다.</span>
+    </div>
+  </div>
+
+  <div class="x_control-group">
+    <label class="x_control-label">적용 범위</label>
+    <div class="x_controls">
+      <label class="dga-radio"><input type="radio" name="price_scope" value="whole" checked="checked"|cond="$config->price_scope!='category'" onclick="ddggAccessToggle()" /> 쇼핑몰 전체</label>
+      <label class="dga-radio"><input type="radio" name="price_scope" value="category" checked="checked"|cond="$config->price_scope=='category'" onclick="ddggAccessToggle()" /> 특정 카테고리만</label>
+    </div>
+  </div>
+
+  <div class="x_control-group" id="ac-cats" style="display:none;">
+    <label class="x_control-label">제한 카테고리</label>
+    <div class="x_controls">
+      <label class="dga-checkline" loop="$access_categories=>$c" cond="$c->status=='Y'" style="padding-left:{$c->depth*18}px;"><input type="checkbox" name="price_categories[]" value="{$c->category_srl}" checked="checked"|cond="in_array($c->category_srl,$config->price_categories)" /> {$c->depth>0 ? '└ ' : ''}{$c->category_name}</label>
+      <p class="dga-sub" style="margin-top:6px;">선택한 카테고리(하위 포함) 상품만 가격·구매가 숨겨집니다. 나머지는 모두 공개됩니다.</p>
+    </div>
+  </div>
+
+  <div class="x_control-group">
+    <label class="x_control-label">비공개 시 표시 문구 (비로그인)</label>
+    <div class="x_controls"><input type="text" name="price_hidden_text" value="{$config->price_hidden_text}" class="x_input-large" placeholder="예: 로그인 후 가격 확인" /></div>
+  </div>
+
+  <div class="x_control-group">
+    <label class="x_control-label">권한 부족 시 표시 문구 (로그인했으나 권한 없음)</label>
+    <div class="x_controls"><input type="text" name="price_denied_text" value="{$config->price_denied_text}" class="x_input-large" placeholder="비우면 허용 그룹명으로 자동 생성 (예: VIP 회원만 가격을 확인할 수 있습니다.)" /></div>
+  </div>
+
+  <div class="x_form-actions"><button type="submit" class="x_btn x_btn-primary x_btn-large">저장</button></div>
+</form>
+<script>
+function ddggAccessToggle(){
+  var vis=document.querySelector('input[name=price_visibility]:checked');
+  document.getElementById('ac-groups').style.display=(vis&&vis.value==='group')?'':'none';
+  var sc=document.querySelector('input[name=price_scope]:checked');
+  document.getElementById('ac-cats').style.display=(sc&&sc.value==='category')?'':'none';
+}
+ddggAccessToggle();
+</script>
+<!--@end-->
+
+<!--@if($sub=='etc')-->
+<form action="./" method="post" enctype="multipart/form-data" class="x_form-horizontal">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="procDdggshopAdminSaveConfig" />
+  <input type="hidden" name="sub" value="etc" />
+  <div class="x_control-group">
+    <label class="x_control-label">쇼핑몰 이름</label>
+    <div class="x_controls"><input type="text" name="shop_name" value="{$config->shop_name}" class="x_input-large" /></div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">기본 색상 (Primary)</label>
+    <div class="x_controls">
+      <div class="dga-swatches">
+        <button type="button" class="dga-swatch" style="background:#ff4d2d" onclick="ddggPickColor('#ff4d2d')" title="#ff4d2d"></button>
+        <button type="button" class="dga-swatch" style="background:#2563eb" onclick="ddggPickColor('#2563eb')" title="#2563eb"></button>
+        <button type="button" class="dga-swatch" style="background:#16a34a" onclick="ddggPickColor('#16a34a')" title="#16a34a"></button>
+        <button type="button" class="dga-swatch" style="background:#dc2626" onclick="ddggPickColor('#dc2626')" title="#dc2626"></button>
+        <button type="button" class="dga-swatch" style="background:#ea580c" onclick="ddggPickColor('#ea580c')" title="#ea580c"></button>
+        <button type="button" class="dga-swatch" style="background:#7c3aed" onclick="ddggPickColor('#7c3aed')" title="#7c3aed"></button>
+        <button type="button" class="dga-swatch" style="background:#db2777" onclick="ddggPickColor('#db2777')" title="#db2777"></button>
+        <button type="button" class="dga-swatch" style="background:#0d9488" onclick="ddggPickColor('#0d9488')" title="#0d9488"></button>
+        <button type="button" class="dga-swatch" style="background:#111827" onclick="ddggPickColor('#111827')" title="#111827"></button>
+      </div>
+      <div class="dga-colorrow">
+        <input type="color" id="pc-color" value="{$config->primary_color}" onchange="ddggPickColor(this.value)" />
+        <input type="text" id="pc-hex" name="primary_color" value="{$config->primary_color}" maxlength="7" oninput="ddggHexInput(this.value)" style="width:120px;" />
+        <span class="dga-colorprev"><span id="pc-dot" style="background:{$config->primary_color}"></span><b id="pc-sample" style="background:{$config->primary_color}">버튼 예시</b></span>
+      </div>
+      <p class="dga-sub" style="margin-top:6px;">쇼핑몰의 버튼·강조색·링크 색상에 적용됩니다.</p>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">로고 이미지</label>
+    <div class="x_controls">
+      <!--@if($config->logo_image)--><div style="margin-bottom:8px;"><img src="{$config->logo_image}" style="height:38px;background:#222;padding:6px 10px;border-radius:6px;" alt="logo" /></div><!--@end-->
+      <input type="file" name="logo_file" accept="image/*" />
+      <div style="margin-top:6px;"><input type="text" name="logo_image" value="{$config->logo_image}" class="x_input-xxlarge" placeholder="또는 로고 이미지 URL" /></div>
+      <label cond="$config->logo_image" style="margin-top:8px;"><input type="checkbox" name="remove_logo" value="Y" /> 로고 제거(쇼핑몰 이름 텍스트로 표시)</label>
+      <p class="dga-sub" style="margin-top:6px;">로고를 등록하면 헤더에 이름 대신 이미지가 표시됩니다.</p>
+    </div>
+  </div>
+  <div class="x_control-group">
+    <label class="x_control-label">기본 적립률</label>
+    <div class="x_controls"><input type="number" name="point_rate" value="{$config->point_rate}" style="width:90px;" /> % <span class="dga-sub">(회원 결제완료 시 적립)</span></div>
+  </div>
+  <div class="x_form-actions"><button type="submit" class="x_btn x_btn-primary x_btn-large">저장</button></div>
+</form>
+<script>
+function ddggApplyColorPreview(c){
+  var d=document.getElementById('pc-dot'), s=document.getElementById('pc-sample');
+  if(d) d.style.background=c; if(s) s.style.background=c;
+}
+function ddggPickColor(c){
+  c=(c||'').toLowerCase();
+  var cp=document.getElementById('pc-color'); if(cp) cp.value=c;
+  var hx=document.getElementById('pc-hex'); if(hx) hx.value=c;
+  ddggApplyColorPreview(c);
+}
+function ddggHexInput(v){
+  v=(v||'').replace(/\s/g,'');
+  if(/^#?[0-9a-fA-F]{6}$/.test(v)){ if(v[0]!=='#') v='#'+v; var cp=document.getElementById('pc-color'); if(cp) cp.value=v; ddggApplyColorPreview(v); }
+}
+</script>
+<!--@end-->
+
+<include target="_admin_foot.html" />

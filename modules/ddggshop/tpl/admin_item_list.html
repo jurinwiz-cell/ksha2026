@@ -1,0 +1,91 @@
+<include target="_admin_nav.html" />
+<div class="dga-phead">
+  <h1>상품 관리 <span class="sub">{number_format($total_count)}개</span></h1>
+  <a href="{getUrl('','module','admin','act','dispDdggshopAdminItemForm')}" class="x_btn x_btn-primary">+ 상품 등록</a>
+</div>
+
+<form action="./" method="get" class="dga-filter">
+  <input type="hidden" name="module" value="admin" />
+  <input type="hidden" name="act" value="dispDdggshopAdminItemList" />
+  <input type="hidden" name="category_srl" id="il-cat-value" value="{$category_srl}" />
+  <div class="dga-frow">
+    <span class="dga-flabel">카테고리</span>
+    <div id="il-cat-cascade" class="dga-cascade"></div>
+  </div>
+  <div class="dga-frow">
+    <span class="dga-flabel">상태</span>
+    <select name="status">
+      <option value="">전체</option>
+      <option value="sale" selected="selected"|cond="$cur_status=='sale'">판매중</option>
+      <option value="soldout" selected="selected"|cond="$cur_status=='soldout'">품절</option>
+      <option value="hidden" selected="selected"|cond="$cur_status=='hidden'">숨김</option>
+    </select>
+    <span class="dga-flabel">검색</span>
+    <input type="text" name="search_keyword" value="{$search_keyword}" placeholder="상품명" style="width:220px;" />
+    <button type="submit" class="x_btn x_btn-primary">검색</button>
+    <a href="{getUrl('','module','admin','act','dispDdggshopAdminItemList')}" class="x_btn">초기화</a>
+  </div>
+</form>
+
+<script>
+var IL_CATS = {$categories_json};
+var IL_CUR = {$category_srl};
+function ilCatsByParent(p){ var r=[]; for(var i=0;i<IL_CATS.length;i++){ if(IL_CATS[i].parent==p) r.push(IL_CATS[i]); } return r; }
+function ilCatPath(srl){ var map={},i; for(i=0;i<IL_CATS.length;i++) map[IL_CATS[i].srl]=IL_CATS[i]; var path=[],cur=srl; while(cur && map[cur]){ path.unshift(cur); cur=map[cur].parent; } return path; }
+function ilRender(path){
+  var box=document.getElementById('il-cat-cascade'); if(!box) return; box.innerHTML='';
+  document.getElementById('il-cat-value').value = path.length ? path[path.length-1] : '';
+  for(var level=0; ; level++){
+    var parent = level===0 ? 0 : path[level-1];
+    var opts = ilCatsByParent(parent);
+    if(opts.length===0) break;
+    var sel=document.createElement('select');
+    var def=document.createElement('option'); def.value=''; def.text=(level===0?'전체 카테고리':'세부분류 (전체)'); sel.appendChild(def);
+    for(var k=0;k<opts.length;k++){ var c=opts[k]; var o=document.createElement('option'); o.value=c.srl; o.text=c.name; if(path[level]==c.srl) o.selected=true; sel.appendChild(o); }
+    (function(lv){ sel.onchange=function(){ var np=path.slice(0,lv); var v=parseInt(this.value,10); if(v) np.push(v); ilRender(np); }; })(level);
+    box.appendChild(sel);
+    if(path[level]===undefined) break;
+  }
+}
+(function(){ ilRender(IL_CUR ? ilCatPath(IL_CUR) : []); })();
+</script>
+
+<table class="x_table x_table-bordered">
+  <thead>
+    <tr><th style="width:60px;">이미지</th><th>상품명</th><th style="width:120px;">카테고리</th><th style="width:110px;text-align:right;">가격</th><th style="width:70px;">재고</th><th style="width:80px;">상태</th><th style="width:140px;"></th></tr>
+  </thead>
+  <tbody>
+    <tr cond="!count($items)"><td colspan="7" style="text-align:center;color:#888;padding:24px;">등록된 상품이 없습니다.</td></tr>
+    <tr loop="$items=>$item">
+      <td><!--@if($item->thumb)--><img src="{$item->thumb}" style="width:44px;height:44px;object-fit:cover;border-radius:4px;" alt="" /><!--@else--><span style="color:#ccc;">-</span><!--@end--></td>
+      <td><b>{$item->item_name}</b><!--@if($item->item_code)--><br /><span style="color:#999;font-size:12px;">{$item->item_code}</span><!--@end--></td>
+      <td>{$category_map[$item->category_srl] ? $category_map[$item->category_srl]->category_name : '-'}</td>
+      <td style="text-align:right;">{number_format($item->price)}원</td>
+      <td style="text-align:center;">{$item->use_stock=='Y' ? number_format($item->stock) : '∞'}</td>
+      <td style="text-align:center;">
+        <!--@if($item->status=='sale')--><span style="color:#1a9c54;">판매중</span>
+        <!--@elseif($item->status=='soldout')--><span style="color:#d63939;">품절</span>
+        <!--@else--><span style="color:#999;">숨김</span><!--@end-->
+      </td>
+      <td>
+        <a href="{getUrl('','module','admin','act','dispDdggshopAdminItemForm','item_srl',$item->item_srl)}" class="x_btn x_btn-mini">수정</a>
+        <a href="#" class="x_btn x_btn-mini" onclick="ddggshopDeleteItem({$item->item_srl});return false;">삭제</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="text-align:center;margin-top:14px;" cond="$total_page > 1">
+  <a class="x_btn x_btn-mini" cond="$cur_page>1" href="{getUrl('','module','admin','act','dispDdggshopAdminItemList','category_srl',$category_srl,'search_keyword',$search_keyword,'page',$cur_page-1)}">이전</a>
+  <span style="margin:0 10px;">{$cur_page} / {$total_page}</span>
+  <a class="x_btn x_btn-mini" cond="$cur_page<$total_page" href="{getUrl('','module','admin','act','dispDdggshopAdminItemList','category_srl',$category_srl,'search_keyword',$search_keyword,'page',$cur_page+1)}">다음</a>
+</div>
+
+<script>
+function ddggshopDeleteItem(srl){
+  if(!confirm('이 상품을 삭제할까요?')) return;
+  exec_json('ddggshop.procDdggshopAdminDeleteItem', {item_srl: srl}, function(){ location.reload(); });
+}
+</script>
+
+<include target="_admin_foot.html" />

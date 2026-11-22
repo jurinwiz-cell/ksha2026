@@ -1,0 +1,8 @@
+<query id="deleteItemTagsByTag" action="delete">
+  <tables>
+    <table name="ddggshop_item_tag" />
+  </tables>
+  <conditions>
+    <condition operation="equal" column="tag_srl" var="tag_srl" notnull="notnull" />
+  </conditions>
+</query>

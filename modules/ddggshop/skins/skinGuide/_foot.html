@@ -1,0 +1,31 @@
+</div><!-- /ds-wrap -->
+<!--@if(!$shop_embedded)-->
+<footer style="border-top:1px solid var(--ds-line);margin-top:50px;padding:24px 0;color:var(--ds-sub);font-size:12px;">
+  <div class="ds-wrap">
+    <!--@if($shop_config->company_name)-->
+    <div style="line-height:1.75;margin-bottom:12px;">
+      <div><b style="font-weight:600;">{$shop_config->company_name}</b><!--@if($shop_config->ceo_name)--> · {$L['ceo']} {$shop_config->ceo_name}<!--@end--><!--@if($shop_config->biz_reg_no)--> · {$L['biz_reg_no']} {$shop_config->biz_reg_no}<!--@end--><!--@if($biz_info_link)--> · <a href="{$biz_info_link}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">{$L['biz_info_confirm']}</a><!--@end--></div>
+      <div cond="$shop_config->biz_address">{$L['foot_address']} {$shop_config->biz_address}</div>
+      <div><!--@if($shop_config->biz_phone)-->{$L['foot_phone']} {$shop_config->biz_phone}<!--@end--><!--@if($shop_config->privacy_officer)--> · {$L['privacy_officer']} {$shop_config->privacy_officer}<!--@end--><!--@if($shop_config->mailorder_no)--> · {$L['mailorder_no']} {$shop_config->mailorder_no}<!--@end--></div>
+      <div cond="$shop_config->terms_url || $shop_config->privacy_url" style="margin-top:6px;">
+        <a cond="$shop_config->terms_url" href="{$shop_config->terms_url}" target="_blank" rel="noopener noreferrer" style="color:inherit;font-weight:600;text-decoration:none;">{$L['terms']}</a><!--@if($shop_config->terms_url && $shop_config->privacy_url)--> · <!--@end--><a cond="$shop_config->privacy_url" href="{$shop_config->privacy_url}" target="_blank" rel="noopener noreferrer" style="color:inherit;font-weight:600;text-decoration:none;">{$L['privacy']}</a>
+      </div>
+    </div>
+    <!--@end-->
+    © {$shop_name} · powered by Rhymix · ddggshop
+  </div>
+</footer>
+<!--@end-->
+
+<!--@if(!$shop_embedded && count($recent_widget_items))-->
+<aside class="ds-recent-remote" id="ds-recent-remote">
+  <div class="ds-rr-head"><span>{$L['recent_products']}</span><button type="button" class="ds-rr-toggle" onclick="ddggRecentToggle()" aria-label="{$L['recent_products']}">−</button></div>
+  <div class="ds-rr-body" id="ds-rr-body">
+    <a class="ds-rr-item" loop="$recent_widget_items=>$it" href="{getUrl('','mid',$shop_mid,'act','dispDdggshopProductDetail','item_srl',$it->item_srl)}" title="{escape($it->item_name)}">
+      <!--@if($it->thumb)--><img src="{$it->thumb}" alt="{escape($it->item_name)}" loading="lazy" /><!--@else--><span class="ds-rr-noimg">{$L['no_img']}</span><!--@end-->
+    </a>
+  </div>
+  <button type="button" class="ds-rr-top" onclick="ddggScrollTop()" title="{$L['top']}">▲ {$L['top']}</button>
+</aside>
+<!--@end-->
+</div><!-- /ddggshop -->

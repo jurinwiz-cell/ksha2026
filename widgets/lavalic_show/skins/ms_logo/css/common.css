@@ -1,0 +1,8 @@
+.msplay_logo {
+    width:190px;
+    height:30px;
+    background-image:url(../images/msplay_bg.png);
+    background:position:bottom center;
+    _background-image:url(../images/msplay_bg.gif);
+    _background-position:bottom center;
+}

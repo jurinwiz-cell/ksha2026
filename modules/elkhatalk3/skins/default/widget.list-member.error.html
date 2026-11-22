@@ -1,0 +1,8 @@
+<div class="error">
+	{$message}
+</div>
+<div class="error error-logged" cond="!$is_logged">
+	<span class="li"><a href="{getUrl('','act','dispMemberLoginForm')}" target="_blank"|cond="$popup=='Y'" rel="noreferrer">{$lang->cmd_login}</a></span>
+	<span class="li"><a href="{getUrl('','act','dispMemberSignUpForm')}" target="_blank"|cond="$popup=='Y'" rel="noreferrer">{$lang->cmd_signup}</a></span>
+	<span class="li"><a href="{getUrl('','act','dispMemberFindAccount')}" target="_blank"|cond="$popup=='Y'" rel="noreferrer">{$lang->cmd_find_member_account}</a></span>
+</div>

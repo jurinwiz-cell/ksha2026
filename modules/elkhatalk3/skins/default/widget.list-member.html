@@ -1,0 +1,13 @@
+<!--// widget.html 의 view, ajax 대응 -->
+<ul class="ul1" style="display:none;"|cond="!count($member_list ?? [])"><include target="widget.list-member-li.html" /></ul>
+
+<block cond="!is_array($member_list) || !count($member_list)">
+<div class="error" cond="strlen($nick_name ?? '')">
+	{$lang->msg_no_result}
+	<br />
+	<a href="javascript:;" onclick="this.href=location.href.setQuery('nick_name','').setQuery('target_srl','');">{$lang->cmd_back}</a>
+</div>
+<div class="error" cond="!strlen($nick_name ?? '')">
+	{$lang->elkhatalk3_member_not_exists}
+</div>
+</block>

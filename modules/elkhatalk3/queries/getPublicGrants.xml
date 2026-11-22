@@ -1,0 +1,20 @@
+<query action="select">
+	<tables>
+		<table name="elkhatalk_public_grants" />
+	</tables>
+	<conditions>
+		<group>
+			<condition operation="in" column="room" var="rooms" />
+			<!--<condition operation="in" column="grants" var="grants" pipe="and" />-->
+			<condition operation="in" column="member_srl" var="member_srls" pipe="and" />
+		</group>
+		<group pipe="or">
+			<condition operation="in" column="room" var="rooms_0" />
+			<condition operation="in" column="grants_int" var="grants_int" pipe="and" />
+		</group>
+		<group pipe="or">
+			<condition operation="in" column="member_srl" var="group_srls" />
+			<condition operation="in" column="grants_int" var="grants_int_m" pipe="and" />
+		</group>
+	</conditions>
+</query>

@@ -1,0 +1,4 @@
+{@
+$room_number = (INT)preg_replace('/[^0-9]+/u', '', $widget_info->chat_no);
+echo getClass('elkhatalk3')->public_iframe("public$room_number", $widget_info->chat_title, $widget_info->chat_width, $widget_info->chat_height, $widget_info->is_popup);
+}

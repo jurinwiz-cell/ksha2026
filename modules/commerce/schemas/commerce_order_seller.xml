@@ -1,0 +1,22 @@
+<table name="commerce_order_seller">
+	<column name="order_seller_srl" type="bigint" notnull="notnull" primarykey="primarykey" />
+	<column name="order_srl" type="bigint" notnull="notnull" index="idx_order_srl" />
+	<column name="seller_srl" type="bigint" notnull="notnull" index="idx_seller_srl" />
+	<column name="item_total" type="bigint" notnull="notnull" default="0" />
+	<column name="delivery_fee" type="bigint" notnull="notnull" default="0" />
+	<column name="operator_fee" type="bigint" notnull="notnull" default="0" />
+	<column name="settle_refund" type="bigint" notnull="notnull" default="0" />
+	<column name="settle_refund_commission" type="bigint" notnull="notnull" default="0" />
+	<column name="discount" type="bigint" notnull="notnull" default="0" />
+	<column name="settle_amount" type="bigint" notnull="notnull" default="0" />
+	<column name="status" type="varchar" size="20" notnull="notnull" default="pending" index="idx_status" />
+	<column name="shipping_company" type="varchar" size="60" />
+	<column name="shipping_invoice" type="varchar" size="60" />
+	<column name="shipped_date" type="char" size="14" />
+	<column name="delivered_date" type="char" size="14" />
+	<column name="commission" type="bigint" notnull="notnull" default="0" />
+	<column name="settle_status" type="varchar" size="10" notnull="notnull" default="none" />
+	<column name="settle_date" type="char" size="14" />
+	<column name="settlement_srl" type="bigint" notnull="notnull" default="0" index="idx_settlement_srl" />
+	<column name="regdate" type="char" size="14" />
+</table>
