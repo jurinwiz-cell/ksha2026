@@ -35,7 +35,7 @@ EOD;
         
 		array_push($temp_arr, '	"'.$key.'" : "'.$val.'"'); // Push
 	}
-	$params = implode($temp_arr, ','.PHP_EOL); // Array to String
+	$params = implode(','.PHP_EOL, $temp_arr); // Array to String
 	$tags = sprintf($tags, $resize, $params);
 
 	Context::addHtmlFooter($tags);
