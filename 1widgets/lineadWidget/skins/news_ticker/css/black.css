@@ -1,0 +1,5 @@
+.lineadWidget_black ul { background:#333 }
+.lineadWidget_black ul li .title { color:#fff }
+.lineadWidget_black ul li .title a { color:#fff }
+.lineadWidget_black ul li strong { color:#fff }
+.lineadWidget_black ul li strong.notice { color:#ff0000 }

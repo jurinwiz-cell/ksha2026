@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <actions>
+        <!-- 관리자 메인 화면 -->
+        <action name="dispAutoopalAdminIndex" type="view" admin_index="true" />
+        
+        <!-- 문서 생성 처리 컨트롤러 -->
+        <action name="procAutoopalCreatePage" type="controller" method="POST" />
+    </actions>
+</module>

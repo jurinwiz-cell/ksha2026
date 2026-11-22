@@ -1,0 +1,21 @@
+<!--%import("css/widget.css")-->
+
+<!-- LNB 메뉴 -->
+<!--@if($widget_info->lnb_menu['list'])-->
+<img src="images/top.jpg" alt="" class="top flt" height="4" width="202">
+<div id="lnbBox" class="flt">
+	<ul class="menu flt">
+		{@ $idx = 1 }
+		<!--@foreach($widget_info->lnb_menu['list'] as $k2 => $v2)-->
+		<li class="<!--@if($v2['selected'])-->current_menu<!--@end-->">
+			<a href="{$v2['href']}" <!--@if($v2['open_window']=='Y')-->onclick="window.open(this.href);return false;"<!--@end-->>
+			{$v2['text']}
+			</a>
+		</li>
+		<!--@end-->
+	</ul>	
+</div>
+<img src="images/bot.jpg" alt="" class="bot flt" height="4" width="202">
+<!--@end-->
+<!-- LNB 하단 광고 -->
+<div>{$widget_info->advertise_lnb_menu_bottom}</div>

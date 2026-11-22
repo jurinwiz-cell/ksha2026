@@ -1,0 +1,14 @@
+<div id="memberPanel" class="{$layout_info->skin_colorset}">
+	<button type="button" class="close {$layout_info->skin_colorset}" onclick="jQuery('#memberPanel').toggleClass('active');" accesskey="X"><span>닫기</span></button>
+	{@ $oPointModel = &getModel('point'); $point = $oPointModel->getPoint($logged_info->member_srl); $oModuleModel = &getModel('module'); $config = $oModuleModel->getModuleConfig('point'); $level = $oPointModel->getLevel($point, $config->level_step); $level_count = $level+1; $nextPoint = $config->level_step[$level_count];}
+	<div class="point {$layout_info->skin_colorset}">Level : {$level} <br> {$config->point_name} : {$point}</div>
+	<ul class="{$layout_info->skin_colorset}">
+	<!--@if($logged_info->is_admin=='Y')-->
+	<!-- 관리자일 경우 관리메뉴표시 -->
+	<li><a href="{getUrl('','module','admin')}">관리자페이지</a></li>
+	<!--@end-->
+	<!--@foreach($logged_info->menu_list as $key => $val)-->
+	<li><a href="{getUrl('act',$key,'member_srl','')}">{Context::getLang($val)}</a></li>
+	<!--@end-->
+	</ul>
+</div>

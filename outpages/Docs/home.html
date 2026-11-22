@@ -1,0 +1,438 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국사회주택협회 | 더 나은 주거, 더 나은 삶</title>
+    
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/static/vendor/css/tailwind.min.css">
+    
+    <!-- Phosphor Icons -->
+    <script src="/static/vendor/js/phosphor-icons.js"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard Variable', 'sans-serif'],
+                    },
+                    colors: {
+                        social: {
+                            blue: '#005AAA', // 신뢰감을 주는 파란색
+                            green: '#00A859', // 지속가능성을 의미하는 초록색
+                            yellow: '#FFC82E', // 따뜻한 공동체 느낌
+                            dark: '#222222',
+                            light: '#F5F7FA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 헤더 트랜지션 */
+        #header { transition: all 0.3s ease-in-out; }
+        .header-scrolled { background-color: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); backdrop-filter: blur(8px); }
+        .header-scrolled .nav-link { color: #222222 !important; }
+        .header-scrolled .logo-text { color: #005AAA !important; }
+        
+        /* 카드 호버 효과 (아스펀 스타일) */
+        .card-zoom-image { transition: transform 0.5s ease; }
+        .group:hover .card-zoom-image { transform: scale(1.05); }
+    </style>
+</head>
+<body class="font-sans text-social-dark bg-social-light antialiased selection:bg-social-green selection:text-white">
+
+    <!-- Header / Navigation -->
+    <header id="header" class="fixed w-full top-0 z-50 py-4 px-6 md:px-12 text-white">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <i class="ph-fill ph-house-line text-3xl text-social-green group-hover:text-social-yellow transition-colors"></i>
+                <span class="logo-text text-xl font-bold tracking-tight text-white transition-colors">한국사회주택협회</span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8 font-medium">
+                <a href="http://socialhousing.kr/about" class="nav-link hover:text-social-green transition-colors">협회소개</a>
+                <a href="http://socialhousing.kr/sohaus" class="nav-link hover:text-social-green transition-colors">사회주택이란?</a>
+                <a href="http://socialhousing.kr/room" class="nav-link hover:text-social-green transition-colors">입주안내</a>
+                <a href="http://socialhousing.kr/press" class="nav-link hover:text-social-green transition-colors">소식·자료</a>
+                <a href="http://socialhousing.kr/policy_bbs" class="nav-link hover:text-social-green transition-colors">정책제안</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="hidden md:flex items-center gap-4">
+                <button class="nav-link hover:text-social-green transition-colors"><i class="ph ph-magnifying-glass text-xl"></i></button>
+                <a href="http://socialhousing.kr/signin" class="bg-social-green hover:bg-green-600 text-white px-5 py-2 rounded-full text-sm font-semibold transition-colors">회원가입</a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden nav-link text-2xl">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay (Hidden by default) -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden flex-col pt-24 px-6">
+        <nav class="flex flex-col gap-6 text-xl font-bold text-social-dark">
+            <a href="http://socialhousing.kr/about" class="border-b border-gray-100 pb-2">협회소개</a>
+            <a href="http://socialhousing.kr/sohaus" class="border-b border-gray-100 pb-2">사회주택이란?</a>
+            <a href="http://socialhousing.kr/room" class="border-b border-gray-100 pb-2">입주안내</a>
+            <a href="http://socialhousing.kr/press" class="border-b border-gray-100 pb-2">소식·자료</a>
+            <a href="http://socialhousing.kr/policy_bbs" class="border-b border-gray-100 pb-2">정책제안</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-[85vh] flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="현대적인 커뮤니티 주택" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full text-white">
+            <span class="inline-block py-1 px-3 rounded-full bg-social-yellow text-social-dark text-sm font-bold mb-6">모두를 위한 주거 공동체</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                집을 넘어,<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-social-green to-teal-400">삶을 짓습니다</span>
+            </h1>
+            <p class="text-lg md:text-xl max-w-2xl text-gray-200 mb-10 font-light leading-relaxed">
+                시민이 주도하고 공공이 지원하는 사회주택.<br>
+                한국사회주택협회는 투기가 아닌 거주를 위한 집, 이웃과 함께 성장하는 건강한 주거 생태계를 만들어갑니다.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="http://socialhousing.kr/room" class="bg-social-blue hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-colors flex items-center gap-2">
+                    입주가능 주택찾기 <i class="ph ph-arrow-right"></i>
+                </a>
+                <a href="https://youtube.com/ksha2015" class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-8 py-4 rounded-full font-bold text-lg transition-colors border border-white/30">
+                    사회주택 소개 영상
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links (Overlapping Hero) -->
+    <section class="relative z-20 max-w-7xl mx-auto px-6 md:px-12 -mt-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <a href="http://socialhousing.kr/room" class="group bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all border-t-4 border-social-blue flex flex-col justify-between h-full min-h-[200px]">
+                <div>
+                    <i class="ph-duotone ph-magnifying-glass text-4xl text-social-blue mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">사회주택 입주하기</h3>
+                    <p class="text-gray-600 text-sm">내 조건에 맞는 전국의 다양한 사회주택 모집 공고를 확인하세요.</p>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-social-blue group-hover:text-white transition-colors">
+                        <i class="ph ph-arrow-right"></i>
+                    </div>
+                </div>
+            </a>
+            <!-- Card 2 -->
+            <a href="http://socialhousing.kr/gongmos" class="group bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all border-t-4 border-social-green flex flex-col justify-between h-full min-h-[200px]">
+                <div>
+                    <i class="ph-duotone ph-buildings text-4xl text-social-green mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">사업자 지원 안내</h3>
+                    <p class="text-gray-600 text-sm">사회주택을 기획하고 운영하고자 하는 예비/기존 사업자를 위한 가이드.</p>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-social-green group-hover:text-white transition-colors">
+                        <i class="ph ph-arrow-right"></i>
+                    </div>
+                </div>
+            </a>
+            <!-- Card 3 -->
+            <a href="http://socialhousing.kr/signin" class="group bg-social-dark p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all text-white flex flex-col justify-between h-full min-h-[200px] relative overflow-hidden">
+                <div class="absolute -right-8 -bottom-8 opacity-10">
+                    <i class="ph-fill ph-handshake text-9xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <i class="ph-duotone ph-handshake text-4xl text-social-yellow mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">협회 회원사 가입</h3>
+                    <p class="text-gray-300 text-sm">건강한 주거 문화를 확산하는 길, 한국사회주택협회와 함께하세요.</p>
+                </div>
+                <div class="mt-6 flex justify-end relative z-10">
+                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-social-yellow group-hover:text-social-dark transition-colors text-white">
+                        <i class="ph ph-arrow-right"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Concept Section (Aspern Style Image & Text Block) -->
+    <section class="py-24 max-w-7xl mx-auto px-6 md:px-12">
+        <div class="flex flex-col lg:flex-row gap-16 items-center">
+            <div class="lg:w-1/2">
+                <h2 class="text-sm font-bold text-social-green tracking-wider uppercase mb-2">Social Housing</h2>
+                <h3 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">집은 '사는 것'이 아니라<br>'사는 곳'입니다</h3>
+                <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                    사회주택은 무주택 서민의 주거 안정을 위해 협동조합, 비영리법인 등 사회적 경제주체가 공급하고 운영하는 임대주택입니다. 적정한 임대료로 오랫동안 안심하고 살 수 있으며, 입주자들이 함께 커뮤니티 공간을 공유하며 이웃과 소통하는 새로운 주거 문화를 제안합니다.
+                </p>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start gap-3">
+                        <i class="ph-fill ph-check-circle text-social-blue text-xl mt-1"></i>
+                        <div>
+                            <strong class="block text-gray-900">시세보다 저렴한 임대료</strong>
+                            <span class="text-gray-600 text-sm">주변 시세의 80% 이하로 책정되어 주거비 부담을 덜어줍니다.</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph-fill ph-check-circle text-social-blue text-xl mt-1"></i>
+                        <div>
+                            <strong class="block text-gray-900">장기 거주 보장</strong>
+                            <span class="text-gray-600 text-sm">최장 10년 이상 안정적으로 거주할 수 있어 잦은 이사의 불안이 없습니다.</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph-fill ph-check-circle text-social-blue text-xl mt-1"></i>
+                        <div>
+                            <strong class="block text-gray-900">커뮤니티 중심 생활</strong>
+                            <span class="text-gray-600 text-sm">단순한 거주를 넘어 주민 주도형 커뮤니티 활동을 지원합니다.</span>
+                        </div>
+                    </li>
+                </ul>
+                <a href="#" class="inline-flex items-center gap-2 font-bold text-social-blue hover:text-blue-800 transition-colors border-b-2 border-social-blue pb-1">
+                    사회주택의 종류 알아보기 <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+            <div class="lg:w-1/2 relative">
+                <div class="absolute inset-0 bg-social-yellow rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="커뮤니티 미팅" class="rounded-3xl shadow-lg w-full object-cover h-[500px]" />
+                
+                <!-- Floating Stats Card -->
+                <div class="absolute bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-xl hidden md:block">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-green-100 p-3 rounded-full text-social-green">
+                            <i class="ph-fill ph-users text-3xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-extrabold text-gray-900">12,500+</div>
+                            <div class="text-sm font-medium text-gray-500">전국 사회주택 거주자 (2025 기준)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Updates (Aspern Modular Grid) -->
+    <section class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold">최신 소식 및 공고</h2>
+                    <p class="text-gray-600 mt-2">협회의 활동과 새로운 사업 공고를 확인하세요.</p>
+                </div>
+                <a href="http://socialhousing.kr/notice2" class="hidden md:inline-flex items-center gap-2 font-bold hover:text-social-green transition-colors">
+                    모두 보기 <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- CSS Grid for Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[300px]">
+                
+                <!-- Large Featured Article (Spans 8 cols, 2 rows) -->
+                <a href="#" class="group relative md:col-span-8 md:row-span-2 rounded-2xl overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="건축 현장" class="absolute inset-0 w-full h-full object-cover card-zoom-image" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-social-dark/90 via-social-dark/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full">
+                        <span class="bg-social-blue text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">입주공고</span>
+                        <h3 class="text-white text-2xl md:text-4xl font-bold mb-3 leading-tight group-hover:text-social-yellow transition-colors">2026년 상반기 LH 특화형 임대주택 사업 공모</h3>
+                        <p class="text-gray-300 line-clamp-2 md:w-3/4">청년, 신혼부부, 고령자를 위한 맞춤형 공공임대주택 사업계획을 전국적으로 공모합니다. 매입약정 방식의 특화형 공공매입임대사업에 많은 관심과 참여 바랍니다.</p>
+                        <div class="text-gray-400 text-sm mt-4 flex items-center gap-2"><i class="ph ph-calendar-blank"></i> 2026. 04. 03</div>
+                    </div>
+                </a>
+
+                <!-- Standard Article 1 (Spans 4 cols, 1 row) -->
+                <a href="#" class="group relative md:col-span-4 md:row-span-1 bg-white rounded-2xl overflow-hidden shadow-md flex flex-col">
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="회의" class="w-full h-full object-cover card-zoom-image" />
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-social-green text-xs font-bold mb-2 inline-block">협회소식</span>
+                            <h3 class="text-lg font-bold text-gray-900 group-hover:text-social-blue transition-colors line-clamp-2">특화형 매입임대 사업공모 선청접수 마감일(온라인접수) </h3>
+                        </div>
+                        <div class="text-gray-500 text-sm mt-4 flex items-center gap-2"><i class="ph ph-calendar-blank"></i> 2026. 05. 11</div>
+                    </div>
+                </a>
+
+                <!-- Standard Article 2 (Spans 4 cols, 1 row) -->
+                <a href="#" class="group relative md:col-span-4 md:row-span-1 bg-social-dark rounded-2xl overflow-hidden shadow-md text-white flex flex-col p-8 justify-between">
+                    <div>
+                        <span class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">정책동향</span>
+                        <h3 class="text-xl font-bold group-hover:text-social-yellow transition-colors line-clamp-3">국토교통부, 2026년 사회주택 활성화 지원방안 발표. 기금 지원 확대</h3>
+                        <p class="text-gray-400 text-sm mt-3 line-clamp-2">정부가 사회주택 사업자를 위한 HUG 기금 보증 한도를 상향하고 절차를 간소화합니다.</p>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center text-sm">
+                        <span class="text-gray-400"><i class="ph ph-calendar-blank"></i> 2026. 04. 10</span>
+                        <div class="w-8 h-8 rounded-full border border-gray-600 flex items-center justify-center group-hover:bg-social-yellow group-hover:border-transparent group-hover:text-social-dark transition-all">
+                            <i class="ph ph-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            
+            <div class="mt-8 text-center md:hidden">
+                <a href="http://socialhousing.kr/press" class="inline-flex items-center gap-2 font-bold bg-gray-200 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors">
+                    소식 더보기 <i class="ph ph-arrow-down"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners / Logos -->
+    <section class="py-16 bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 text-center">
+            <h3 class="text-sm font-bold text-gray-400 mb-8 uppercase tracking-wider">함께 만드는 파트너</h3>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale">
+                <!-- Placeholder for Logos -->
+                <div class="text-xl font-black font-serif">국토교통부</div>
+                <div class="text-xl font-black font-serif">HUG 주택도시보증공사</div>
+                <div class="text-xl font-black font-serif">서울특별시</div>
+                <div class="text-xl font-black font-serif">SH 서울주택도시공사</div>
+                <div class="text-xl font-black font-serif">LH 한국토지주택공사</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action (Newsletter) -->
+    <section class="py-24 bg-social-blue relative overflow-hidden">
+        <!-- Abstract shape background -->
+        <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-50"></div>
+        <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-teal-500 rounded-full blur-3xl opacity-50"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10 text-white">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">사회주택의 최신 소식을 구독하세요</h2>
+            <p class="text-blue-100 text-lg mb-10">새로운 입주 공고, 정책 변화, 커뮤니티 소식을 이메일로 가장 먼저 받아보실 수 있습니다.</p>
+            
+            <form class="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+                <input type="email" placeholder="이메일 주소를 입력해주세요" class="flex-1 px-6 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-300" required>
+                <button type="submit" class="bg-social-yellow hover:bg-yellow-500 text-social-dark font-bold px-8 py-4 rounded-full transition-colors whitespace-nowrap">
+                    구독하기
+                </button>
+            </form>
+            <p class="text-xs text-blue-200 mt-4">구독 버튼을 클릭하시면 개인정보수집 및 이용에 동의하는 것으로 간주됩니다.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-social-dark text-gray-400 py-16">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <!-- Col 1 -->
+            <div class="md:col-span-1">
+                <a href="http://socialhousing.kr" class="flex items-center gap-2 mb-6">
+                    <i class="ph-fill ph-house-line text-2xl text-social-green"></i>
+                    <span class="text-white text-lg font-bold">한국사회주택협회</span>
+                </a>
+                <p class="text-sm leading-relaxed mb-6">
+                    우리는 투기가 아닌 거주를 위한 집을 만들고,<br>개인이 아닌 공동체가 함께 살아가는<br>건강한 주거 문화를 확산합니다.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-social-green hover:text-white transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-social-blue hover:text-white transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-social-yellow hover:text-white transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                </div>
+            </div>
+
+            <!-- Col 2 -->
+            <div>
+                <h4 class="text-white font-bold mb-6">바로가기</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="http://socialhousing.kr/about" class="hover:text-white transition-colors">협회소개</a></li>
+                    <li><a href="http://socialhousing.kr/room" class="hover:text-white transition-colors">사회주택 입주안내</a></li>
+                    <li><a href="http://socialhousing.kr/member" class="hover:text-white transition-colors">회원사 명부</a></li>
+                    <li><a href="http://socialhousing.kr/arcive" class="hover:text-white transition-colors">자료실</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3 -->
+            <div>
+                <h4 class="text-white font-bold mb-6">고객센터</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><strong class="text-white block text-lg mb-1">02-6264-5323</strong></li>
+                    <li>평일 09:00 - 18:00<br>(점심시간 12:00 - 13:00)</li>
+                    <li>이메일: contact@socialhousing.kr</li>
+                </ul>
+            </div>
+
+            <!-- Col 4 -->
+            <div>
+                <h4 class="text-white font-bold mb-6">정보</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="text-white font-bold hover:underline">개인정보처리방침</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">이용약관</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">이메일무단수집거부</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 md:px-12 mt-16 pt-8 border-t border-gray-800 text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>
+                사단법인 한국사회주택협회 | 대표자: 이한솔 | 사업자등록번호: 294-82-00033<br>
+                서울특별시 영등포구 영등포로 143, 에이블허브 601-3 
+            </p>
+            <p>&copy; 2026 Korean Social Housing Association. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactions -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('header');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            let isMenuOpen = false;
+
+            // Header Scroll Effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('header-scrolled');
+                    header.classList.remove('py-4');
+                    header.classList.add('py-2');
+                } else {
+                    header.classList.remove('header-scrolled');
+                    header.classList.add('py-4');
+                    header.classList.remove('py-2');
+                }
+            });
+
+            // Mobile Menu Toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.classList.add('flex');
+                    mobileMenuBtn.innerHTML = '<i class="ph ph-x text-social-dark"></i>';
+                    header.classList.add('header-scrolled'); // Force styling
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                    mobileMenuBtn.innerHTML = '<i class="ph ph-list"></i>';
+                    if (window.scrollY <= 50) {
+                        header.classList.remove('header-scrolled');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

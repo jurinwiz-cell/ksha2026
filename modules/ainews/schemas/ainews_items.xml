@@ -1,0 +1,14 @@
+<table name="ainews_items">
+    <column name="item_srl" type="bigint" size="20" notnull="notnull" primary_key="notnull" />
+    <column name="module_srl" type="int" size="11" notnull="notnull" index="idx_module_srl" />
+    <column name="title" type="varchar" size="250" notnull="notnull" />
+    <column name="content" type="text" notnull="notnull" />
+    <column name="source_url" type="varchar" size="250" />
+    <column name="category" type="varchar" size="50" index="idx_category" />
+    <column name="summary" type="text" />
+    <column name="is_representative" type="char" size="1" default="N" />
+    <column name="status" type="varchar" size="20" default="TEMP" />
+    <column name="ai_metadata" type="text" />
+    <column name="regdate" type="varchar" size="14" index="idx_regdate" />
+    <column name="last_update" type="varchar" size="14" />
+</table>

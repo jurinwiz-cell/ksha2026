@@ -1,0 +1,14 @@
+<load target="./xml/logout.xml" />
+
+<div class="account">
+  <div class="userName">
+		<a class="member_{$logged_info->member_srl} nick_name" href="#popup_menu_area">{$logged_info->nick_name}</a>
+		<span class="point">({$member_point}p)</span>
+		<a class="btn_logout" href="{getUrl('act','dispMemberLogout')}">{$lang->cmd_logout}</a>
+	</div>
+
+	<ul class="userMenu">
+		<li loop="$logged_info->menu_list => $key,$val"><a href="{getUrl('', 'act',$key, 'mid', $mid, 'vid', $vid)}">{Context::getLang($val)}</a></li>
+		<li cond="$logged_info->is_admin=='Y' && !$site_module_info->site_srl"><a href="{getUrl('','module','admin')}">{$lang->cmd_management}</a></li>
+	</ul>
+</div>

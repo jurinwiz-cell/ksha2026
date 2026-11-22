@@ -1,0 +1,28 @@
+
+<ul class="smImageTitle">
+	<li loop="$widget_info->content_items=>$key,$item">
+		<a href="{$item->getLink()}">
+			{@
+				$oDocumentModel = getModel('document');
+				$item_document_srl = $item->get('document_srl');
+				$itemDocument = $oDocumentModel->getDocument($item_document_srl);
+			}
+			<div class="smThumb" cond="$item->getThumbnail()" style="background-image:url({$itemDocument->getThumbnail(450,450,'crop')});"></div>
+			<div class="smThumb smNoThumb" cond="!$item->getThumbnail()"></div>
+			<!--@if(in_array('title', $widget_info->option_view_arr))-->
+			<span class="title"><strong><span class="cate {$colorset}" cond="$widget_info->show_category=='Y' && $item->getCategory()">{$item->getCategory()}</span>{$item->getTitle($widget_info->subject_cut_size)}</strong></span>
+			<!--@end-->
+			<ul class="smInfo">
+				<!--@if(in_array('nickname', $widget_info->option_view_arr))-->
+				<li class="auth"><i class="xe-user"></i>{$item->getNickName()}</li>
+				<!--@end-->
+				<!--@if(in_array('regdate', $widget_info->option_view_arr))-->
+				<li class="date"><i class="xe-time-point"></i>{$item->getRegdate("Y-m-d")}</li>
+				<!--@end-->
+				<!--@if($widget_info->show_comment_count=='Y')-->
+				<li class="comment"><i class="xe-message-left-ellipsis"></i>{(int)$item->getCommentCount()}</li>
+				<!--@end-->
+			</ul>
+		</a>
+	</li>
+</ul>

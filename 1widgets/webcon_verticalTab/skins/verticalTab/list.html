@@ -1,0 +1,65 @@
+<!--%import("normal.css")-->
+{@ 
+   $unique = rand(0,100);
+   $midCount = count($widget_info->midCount);
+}
+<div class="vTabContainer_{$unique}" id="verticalTab">
+    <div class="verticalTab">
+        <div id="vTab">
+        {@ $no = 1;}
+         <!--@for($i=0;$i<$midCount;$i++)-->
+                <div id="m_{$no}" class="tab_module"><a href="#" onclick="verticalTabChange(jQuery(this),jQuery(this).parent('div.tab_module').next('div.vTabContent'),{$no},{$unique}); return false;">{$widget_info->module_name[$i]}</a></div>
+                <div class="vTabContent" style="min-height:{$midCount*50+4}px">
+                    <div class="vTabContentBox">
+                    	<ul>
+                      <!--@for($j = 0 ; $j < $widget_info->rows_list_count ; $j++)-->
+                      	{@  $oDocument = $widget_info->document_list[$i][$j]; }
+			             <!--@if($oDocument->document_srl)--> 
+                         {@ $_existsThumbnail = $oDocument->thumbnailExists($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type) }
+                         	<li>
+                                <!--@if($_existsThumbnail)--> 
+                                    <a href="{$oDocument->getPermanentUrl()}"><img src="{$oDocument->getThumbnail($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type)}" border="0" /></a>
+                                <!--@end-->
+                                <p class="title">
+                                    <a href="{$oDocument->getPermanentUrl()}">{$oDocument->getTitle($widget_info->subject_cut_size)}</a>&nbsp;{$oDocument->printExtraImages()}
+                                    <div style="position:absolute;right:3px;top:3px;padding:3px 9px 3px 9px; border:1px solid #d6d6d6;background:#fff; border-radius:18px;-webkit-border-radius:18px;">
+                                    	<a href="{$oDocument->getPermanentUrl()}#comment"><font style="font-size:11px;">{$oDocument->getCommentCount()}</font></a>
+                                    </div>                                   
+                                </p>
+                                <p>
+                                    <div class="authorBox">
+                                          <span class="author">by {$oDocument->getNickName()}</span>
+                                          <span class="regdate">{$oDocument->getRegdate("Y.m.d")}</span>
+                                          <span class="readed">view {$oDocument->get('readed_count')}</span>
+                                    </div>
+                                </p>
+							</li>
+                         <!--@end-->
+                      <!--@end-->
+                        </ul>
+                    </div>
+                </div>
+           	{@ $no++;}
+         <!--@end-->
+        </div>
+    </div>
+</div>
+
+<!--@if($widget_info->widget_position == 'right_tab')-->
+<style>
+.vTabContainer_{$unique} .verticalTab #vTab .tab_module > a{position: relative !important;left: 80%  !important;}
+.vTabContainer_{$unique} .verticalTab #vTab .vTabContent{left:0%  !important;}
+</style>
+<!--@end-->
+<script>
+jQuery(function($){
+	$('.vTabContainer_{$unique} .verticalTab #vTab .tab_module').eq(0).addClass('on');
+	$('.vTabContainer_{$unique} .verticalTab #vTab .vTabContent').eq(0).css("display","block");
+});
+function verticalTabChange(tab,list,i,unique){
+	$('.vTabContainer_'+unique+' .verticalTab #vTab .tab_module').removeClass('on');
+	tab.parent('.vTabContainer_'+unique+' .verticalTab #vTab .tab_module').addClass('on');
+	$('.vTabContainer_'+unique+' .verticalTab #vTab .vTabContent').css("display","none");
+	list.css("display","block");
+}
+</script>

@@ -1,0 +1,35 @@
+{@ $skin_path = $tpl_path}
+
+<!--//스킨 CSS,JS 인클루드-->
+<load target="./css/widget.css" />
+
+
+<div class="widget_rssreader_skin">
+  <div class="search_area" cond="$rss_obj->output_rsssearch=='Y'">
+    <form action="./" method="get" id="form_rss_search" no-error-return-url="true">
+      <input type="hidden" name="vid" disabled|cond="!$vid" value="{$vid}"|cond="$vid" />
+      <input type="hidden" name="act" disabled|cond="!$act" value="{$act}"|cond="$act" />
+      <input type="text" name="rss_url" value="{$rss_url}" class="rss_url_box" placeholder="{$rss_obj->text_rss_url}" />
+      <button class="btn_rss_search btn">{$lang->cmd_search}</button>
+    </form>
+  </div>
+
+  <div class="title_area">
+    <a class="title" href="{$rss_info['link']}" target="_blank">{$rss_info['title']}</a>
+    <a class="more" href="{$rss_info['link']}" target="_blank">more</a>
+  </div>
+  <ul class="rss_list" cond="$rss_items">
+    {@ $count = 1}
+    <!--@foreach($rss_items as $key => $item)-->
+      <li cond="$count<=$rss_obj->list_count">
+        <span class="bullet">▶</span>
+        <a class="title" href="{$item['link']}" target="_blank">
+          {cut_str($item['title'],$rss_obj->subject_cut_size,'...')}
+        </a>
+        <span class="pubDate" cond="$rss_obj->output_pubdate!='N'">{substr($item['pubDate'],0,-$rss_obj->pubdate_cut_size)}</span>
+      </li>
+      {@ $count++}
+    <!--@end-->
+  </ul>
+</div>
+

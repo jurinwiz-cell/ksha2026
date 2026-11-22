@@ -1,0 +1,15 @@
+#slider-viewport { overflow: hidden;margin:0 auto;}
+#controls {position: absolute;text-align: center;bottom: 0px;left: 10px;z-index: 10000;}
+
+#controls > a {border: 1px solid #937b5c;background: #fff;width: 12px;height: 12px;margin: 0 1px;display: inline-block;-webkit-border-radius: 6px;border-radius: 6px;}
+#controls > a.current{width: 12px;height: 12px;border: 1px solid #937b5c;background: #f5d078;margin: 0 1px;display: inline-block;-webkit-border-radius: 6px;border-radius: 6px;}
+
+.effectSlider_Container {margin: 0;padding: 0;list-style: none;}
+
+.effectSlider_Container .direction-nav a {width: 48px;height: 48px;display: block;background: url(../../images/slider-arrows.png) no-repeat 0 0;position: absolute;margin-top: -24px;cursor: pointer;text-indent: -9999px;z-index: 10000;top:50%;opacity:0;filter:alpha(opacity=0);}
+.effectSlider_Container .direction-nav .next {background-position: bottom right;right: 0;}
+.effectSlider_Container .direction-nav .next:hover {background-position: bottom right;}
+.effectSlider_Container .direction-nav .prev {background-position: bottom left;left: 0;}
+.effectSlider_Container .direction-nav .prev:hover {background-position: bottom left;}
+.effectSlider_Container .disabled {cursor: default;}
+.effectSlider_Container:hover .direction-nav  li a { opacity: 1; filter:alpha(opacity=100); }

@@ -1,0 +1,7 @@
+.bx-wrapper {
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+}
+
+.bannerWidget a { display: block; position: relative; z-index:10000}

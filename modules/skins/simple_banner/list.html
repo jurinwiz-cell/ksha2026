@@ -1,0 +1,98 @@
+<include target="_header.html" />
+<include cond="$oDocument->isExists()" target="_read.html" />
+
+<style>
+.board_list .notice_box, .board .top_btn {width: {$module_info->nl_w}px !important}
+.board_list .banner_box, .board_read, .cTab {width: {$module_info->bl_w}px !important}
+</style>
+
+<div class="top_btn">
+    <a cond="$module_info->use_tag" href="{getUrl('act','dispBoardTagList')}" title="{$lang->tag}" class="mb_btn"><i class="icon-tag icons"></i></a>
+	<a href="{getUrl('act','dispBoardWrite','document_srl','')}" class="mb_btn"><i class="icon-note icons"></i></a>
+	<a cond="$grant->manager" href="{getUrl('','module','document','act','dispDocumentManageDocument')}" class="mb_btn manager" onclick="popopen(this.href,'manageDocument'); return false;"><i class="icon-wrench icons"></i></a>
+	<a cond="$grant->manager" href="{getUrl('act','dispBoardAdminBoardInfo')}" class="mb_btn manager" title="{$lang->cmd_setup}"><i class="icon-settings icons"></i></a>
+</div>
+	
+<div class="board_list" id="board_list">
+		<div cond="!$document_list && !$notice_list">
+			<tr>
+				<td colspan="{count($list_config)}"|cond="!$grant->manager" colspan="{count($list_config)+1}"|cond="$grant->manager">
+					<p style="text-align:center">{$lang->no_documents}</p>
+				</td>
+			</tr>
+		</div>
+		<div cond="$document_list || $notice_list">
+		
+			<!-- NOTICE 공지사항 -->
+			<div class="notice_box">
+			<li class="notice" loop="$notice_list=>$no,$document">
+				<block loop="$list_config=>$key,$val">
+				<div class="notice_icon" cond="$val->type=='no' && $val->idx==-1">
+					<block cond="$document_srl==$document->document_srl"><i class="icon-arrow-right icons"></i></block>
+					<block cond="$document_srl!=$document->document_srl"><i class="icon-pin icons"></i></block>
+				</div>
+				<div class="notice_title" cond="$val->type=='title' && $val->idx==-1">
+					<a href="{getUrl('document_srl',$document->document_srl, 'cpage','')}">
+						{$document->getTitle()}
+					</a>
+					<a cond="$document->getCommentCount()" href="{getUrl('document_srl', $document->document_srl)}#comment" class="replyNum" title="Replies">
+						[{$document->getCommentCount()}]
+					</a>
+				</div>
+				<div class="notice_time" cond="$val->type=='regdate' && $val->idx==-1">{$document->getRegdate('Y/m/d')}</div>
+				</block>
+			</li>
+			</div>
+			<!-- /NOTICE -->
+			
+			<!-- CATEGORY 카테고리 -->
+		    <div class="cTab" cond="$module_info->use_category=='Y'">
+		    <span class="on"|cond="!$category"><a href="{getUrl('category','','page','')}"><i class="icon-fire icons"></i></a></span>
+     		<span loop="$cate_list=>$key,$val" class="on"|cond="$category==$val->category_srl">/ <a href="{getUrl(category,$val->category_srl,'document_srl','', 'page', '')}"><span class="cTab_cate">{$val->title}</span><span cond="$val->document_count">({$val->document_count})</span></a>
+		    </span>
+	        </div>
+			<!-- /CATEGORY -->
+			
+			<!-- LIST 일반글 -->
+			<div class="banner_box">
+			<div cond="!$document_list" style="text-align:center">
+			{$lang->no_documents}
+			</div>
+			<div class="mini-banner" loop="$document_list=>$no,$document">
+				<div class="banner">
+				<!--@if(!$document->getExtraEidValue('banner_img'))-->
+				<a href="{$document->getExtraEidValue('banner_link')}" title="{$document->getTitle(false)}" target="_blank">
+				<block cond="$module_info->no_banner">
+				<img src="{$module_info->no_banner}" />
+				</block>
+				<block cond="!$module_info->no_banner">
+				<img src="img/no_banner.png" />
+				</block>
+				</a>
+				<!--@else-->
+				<a href="{$document->getExtraEidValue('banner_link')}" title="{$document->getTitle(false)}" target="_blank"><img src="{$document->getExtraEidValue('banner_img')}" />
+				</a>
+				<!--@end-->
+				<div class="banner_edit">
+				<a href="{getUrl('document_srl',$document->document_srl, 'cpage','')}">
+				<i class="icon-key icons"></i>
+				<input type="checkbox" cond="$grant->manager" name="cart" value="{$document->document_srl}" class="iCheck" title="Check This Article" onclick="doAddDocumentCart(this)" checked="checked"|cond="$document->isCarted()" />
+				</a>
+				</div>
+				</div>
+			</div>
+			</div>
+			<!-- /LIST -->
+		</div>
+</div>
+<div class="list_footer">
+	<div class="pagination" cond="$document_list || $notice_list">
+		<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division)}" class="direction prev"><i class="icon-arrow-left icons"></i></a> 
+		<block loop="$page_no=$page_navigation->getNextPage()">
+			<a class="is_here" cond="$page==$page_no">{$page_no}</a> 
+			<a cond="$page!=$page_no" href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division)}">{$page_no}</a>
+		</block>
+		<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division)}" class="direction next"><i class="icon-arrow-right icons"></i></a>
+	</div>
+</div>
+<include target="_footer.html" />

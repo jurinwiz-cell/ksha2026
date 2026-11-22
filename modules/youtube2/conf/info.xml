@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">youtube2 (유튜브 백엔드 위젯)</title>
+	<description xml:lang="ko">위젯에 유튜브 채널/재생목록 데이터를 가장 빠르고 안전하게 공급하는 최적화 모듈입니다.</description>
+	<version>1.0.0</version>
+	<date>2026-04-05</date>
+	<category>utility</category>
+	<author email_address="developer@example.com" link="">
+		<name xml:lang="ko">Developer</name>
+	</author>
+	<license>New BSD License</license>
+</module>

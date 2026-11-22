@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+	<title xml:lang="ko">J Maltese</title>
+	<description xml:lang="ko">J 말티즈 레이아웃</description>
+	<version>1.4</version>
+	<date>2017-11-24</date>
+	<author email_address="jbirdweb@naver.com" link="https://www.jbirdweb.com/">
+		<name xml:lang="ko">JBIRDWEB</name>
+	</author>
+	<menus>
+		<menu name="GNB" maxdepth="1" default="true">
+			<title xml:lang="ko">Menu</title>
+		</menu>
+	</menus>
+	<extra_vars>
+		<group>
+      <title xml:lang="ko">레이아웃 타입</title>
+      <var name="layout_type" type="select" default="auto">
+        <title xml:lang="ko">레이아웃 타입</title>
+        <options value="main">
+          <title xml:lang="ko">메인페이지 전용</title>
+        </options>
+        <options value="sub_side">
+          <title xml:lang="ko">서브 (사이드 유지)</title>
+        </options>
+        <options value="sub_full">
+          <title xml:lang="ko">서브 (풀페이지)</title>
+        </options>
+      </var>
+      <var name="search_mid" type="text">
+        <title xml:lang="ko">페이지 모듈값</title>
+        <description xml:lang="ko">위젯 페이지를 생성해서 페이지의 모듈값을 적어주세요. (회원가입 및 통합검색시 필요)</description>
+      </var>
+    </group>
+    <group>
+      <title xml:lang="ko">사이드 설정</title>
+      <var name="logo_img" type="image">
+        <title xml:lang="ko">로고 이미지</title>
+      </var>
+      <var name="logo_text" type="text">
+        <title xml:lang="ko">로고 텍스트</title>
+      </var>
+      <var name="logo_url" type="text">
+        <title xml:lang="ko">로고 Url</title>
+      </var>
+      <var name="side_text" type="textarea">
+        <title xml:lang="ko">로고 하단 텍스트</title>
+      </var>
+      <var name="side_img_srl" type="text">
+        <title xml:lang="ko">최근이미지 모듈명</title>
+        <description xml:lang="ko">연결할 게시판의 srl명을 입력하세요.</description>
+      </var>
+      <var name="side_img_listcount" type="text">
+        <title xml:lang="ko">최근이미지 목록수</title>
+        <description xml:lang="ko">숫자로 입력하세요.</description>
+      </var>
+      <var name="side_img_subject_cut" type="text">
+        <title xml:lang="ko">최근이미지 제목 글자수</title>
+        <description xml:lang="ko">숫자로 입력하세요.</description>
+      </var>
+    </group>
+    <group>
+      <title xml:lang="ko">메인 최근이미지 설정</title>
+      <var name="latest_img_srl" type="text">
+        <title xml:lang="ko">모듈명</title>
+        <description xml:lang="ko">연결할 게시판의 srl명을 입력하세요.</description>
+      </var>
+      <var name="latest_img_listcount" type="text">
+        <title xml:lang="ko">목록수</title>
+        <description xml:lang="ko">숫자로 입력하세요.</description>
+      </var>
+      <var name="latest_img_width" type="text">
+        <title xml:lang="ko">가로 크기</title>
+        <description xml:lang="ko">숫자로 입력하세요. (기본 : 600)</description>
+      </var>
+      <var name="latest_img_height" type="text">
+        <title xml:lang="ko">세로 크기</title>
+        <description xml:lang="ko">숫자로 입력하세요. (기본 : 400)</description>
+      </var>
+      <var name="latest_img_subject_cut" type="text">
+        <title xml:lang="ko">제목 글자수</title>
+        <description xml:lang="ko">숫자로 입력하세요.</description>
+      </var>
+      <var name="latest_img_content_cut" type="text">
+        <title xml:lang="ko">내용 글자수</title>
+        <description xml:lang="ko">숫자로 입력하세요.</description>
+      </var>
+    </group>
+    <group>
+      <title xml:lang="ko">하단 설정</title>
+      <var name="facebook" type="text">
+        <title xml:lang="ko">페이스북 주소</title>
+      </var>
+      <var name="twitter" type="text">
+        <title xml:lang="ko">트위터 주소</title>
+      </var>
+      <var name="instagram" type="text">
+        <title xml:lang="ko">인스타그램 주소</title>
+      </var>
+      <var name="youtube" type="text">
+        <title xml:lang="ko">유튜브 주소</title>
+      </var>
+      <var name="google_plus" type="text">
+        <title xml:lang="ko">구글 Plus 주소</title>
+      </var>
+      <var name="copyright" type="text">
+        <title xml:lang="ko">카피라이트</title>
+      </var>
+    </group>
+	</extra_vars>
+</layout>

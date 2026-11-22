@@ -1,0 +1,31 @@
+.webcon_news_container {margin: 0px;padding: 0;background: #ffffff;}
+.webcon_news_thumb{position: relative;margin-right: 0px;}
+.webcon_news_thumb li{display:none;}
+.webcon_news_thumb li img{width:100%;}
+.webcon_news_thumb li.active{display:block;}
+.webcon_news_thumb li .bottom_info{ opacity:.5; position:absolute;background-color:#4d4d4d; color:#fff; width:100%; height:80px; bottom:0px; left:0px; right:0px;}
+.webcon_news_thumb li .bottom_title{ position:absolute; bottom:40px; color:#fff; font-size:22px; padding:5px 5px 10px 10px; font-weight:bold;}
+.webcon_news_thumb li .bottom_content{position:absolute; bottom:0px; color:#fff; font-size:12px; padding: 15px 15px 5px 15px;line-height: 16px;}
+
+.webcon_news_wrap .top_btn{position:absolute; top:5px; right:5px;}
+.webcon_news_wrap .top_btn a{float:left;width:26px; height:26px;  margin-right:5px; }
+.webcon_news_wrap .top_btn .p_btn{background:url('../../images/prev_btn.png') no-repeat center center; cursor:pointer;}
+.webcon_news_wrap .top_btn .n_btn{background:url('../../images/next_btn.png') no-repeat center center;cursor:pointer;}
+
+.webcon_news{padding: 0;list-style: none;margin-top: 2px;}
+.webcon_news > li {padding: 7px; border-bottom:1px solid #eaeaea;}
+.webcon_news > li:hover{background:#f8f8f8;}
+.webcon_news > li:hover a{color:#3abcff;}
+.webcon_news > li p {margin: 0;padding: 0;line-height: 1.5;font-size: 11px;color: #808080;}
+.webcon_news > li .title{font-size: 13px;color: #484848;font-weight:normal;}
+.webcon_news > li a {color: #333333;outline: none;}
+.webcon_news > li .title a:hover{color:#3abcff;}
+
+.webcon_news > li .authorBox { margin-top:2px; }
+.webcon_news > li .authorBox img{margin-right:3px; width:12px; height:12px;}
+.webcon_news > li .authorBox .regdate,.webcon_news > li .authorBox .author,.webcon_news > li .authorBox .readed{ margin-right:12px; font-size:11px; }
+
+
+.webconnews_webzineNavigator{margin:5px; padding:0px; text-align:right; clear:both;right: 10px;bottom: 0px;}
+.webconnews_webzineNavigator li{ list-style:none; display:inline;}
+.webconnews_webzineNavigator li button.prev,.webconnews_webzineNavigator li button.next{border:1px solid #dcdcdc;padding:3px; width:30px; text-align: center; font-size:11px;cursor: pointer;display: inline-block; border-radius:2px;-webkit-border-radius:2px; background:#ffffff;}

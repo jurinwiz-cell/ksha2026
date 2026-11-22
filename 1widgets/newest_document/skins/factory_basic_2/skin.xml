@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">XE Factory - 기본 최근 글 2</title>
+    <title xml:lang="en">XE Factory - Basic Newest Document 2</title>
+    <description xml:lang="ko">XE팩토리에서 만든 기본적인 최근 글 스킨입니다.</description>
+    <version>2.0</version>
+    <date>2010-09-16</date>
+    <link>http://xefactory.kr</link>
+
+    <author email_address="contact@xefactory.kr" link="http://xefactory.kr">
+        <name xml:lang="ko">XE Factory</name>
+        <name xml:lang="en">XE Factory</name>
+    </author>
+
+	 <colorset>
+        <color name="orange">
+            <title xml:lang="ko">오렌지</title>
+            <title xml:lang="en">Orange</title>
+        </color>
+        <color name="blue">
+            <title xml:lang="ko">블루</title>          
+            <title xml:lang="en">Blue</title>
+        </color>
+		<color name="green">
+            <title xml:lang="ko">그린</title>          
+            <title xml:lang="en">Green</title>
+        </color>
+		<color name="gray">
+            <title xml:lang="ko">그레이</title>          
+            <title xml:lang="en">Gray</title>
+        </color>
+		<color name="purple">
+            <title xml:lang="ko">퍼플</title>          
+            <title xml:lang="en">Purple</title>
+        </color>
+    </colorset>
+
+</skin>

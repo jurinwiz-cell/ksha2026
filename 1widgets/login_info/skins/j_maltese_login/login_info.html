@@ -1,0 +1,21 @@
+
+<style>
+    a{border-bottom: 0;}
+</style>
+<load target="./filter/logout.xml" />
+<form action="" method="post" class="login_{$colorset}">
+	<fieldset>
+        <section id="intro">
+            <a href="#popup_menu_area" class="member_{$logged_info->member_srl}"><h3>{$logged_info->nick_name}</h3></a>
+            <header>
+                <a href="{getUrl('act','dispMemberLogout')}">{$lang->cmd_logout}</a><span style="margin-left:1em; font-size:0.6em;">{$lang->last_login}: {zDate($logged_info->last_login, "Y-m-d")}</span>
+            </header>
+        </section>
+        <section style="padding-top:1em;">
+            <ul>
+                <li style="font-size:0.8em; padding:0; list-style-type:square;" loop="$logged_info->menu_list => $key,$val"><a href="{getUrl('', 'act',$key, 'mid', $mid, 'vid', $vid)}">{Context::getLang($val)}</a></li>
+                <li style="font-size:0.8em; padding:0; list-style-type:square;" cond="$logged_info->is_admin=='Y' && !$site_module_info->site_srl"><a href="{getUrl('','module','admin')}">{$lang->cmd_management}</a></li>
+            </ul>
+        </section>
+</fieldset>
+</form>

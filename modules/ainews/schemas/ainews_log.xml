@@ -1,0 +1,10 @@
+<table name="ainews_log">
+    <column name="log_srl" type="bigint" size="20" notnull="notnull" primary_key="notnull" />
+    <column name="item_srl" type="bigint" size="20" notnull="notnull" index="idx_item_srl" />
+    <column name="email" type="varchar" size="250" notnull="notnull" index="idx_email" />
+    <column name="status" type="char" size="1" default="S" notnull="notnull" />
+    <column name="retry_count" type="int" size="11" default="0" notnull="notnull" />
+    <column name="error_msg" type="text" />
+    <column name="regdate" type="varchar" size="14" index="idx_regdate" />
+    <column name="last_update" type="varchar" size="14" />
+</table>

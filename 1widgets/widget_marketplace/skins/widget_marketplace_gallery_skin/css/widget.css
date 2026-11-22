@@ -1,0 +1,37 @@
+﻿@charset "utf-8";
+
+
+.widget_marketplace_gallery_skin { position:relative; width:100%; overflow:hidden; border:0px; line-height:normal; }
+.widget_marketplace_gallery_skin * {
+  box-sizing:content-box !important;
+  -moz-box-sizing:content-box !important;
+  -webkit-box-sizing:content-box !important;
+}
+.widget_marketplace_gallery_skin ul,
+.widget_marketplace_gallery_skin li,
+.widget_marketplace_gallery_skin ol,
+.widget_marketplace_gallery_skin dl,
+.widget_marketplace_gallery_skin dd { padding:0px; margin:0px; list-style:none; }
+.widget_marketplace_gallery_skin a { line-height:normal; text-decoration:none; }
+
+
+.widget_marketplace_gallery_skin .marketplace_list { position:relative; overflow:hidden; text-align:center; display:block; }
+.widget_marketplace_gallery_skin .marketplace_list .list { position:relative; margin:10px; overflow:hidden; display:inline-block; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link { position:relative; padding:0px; overflow:hidden; display:block; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link:hover { background:#fafafa; }
+
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb { position:relative; border:1px solid #ccc; overflow:hidden; display:block; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .category { position:absolute; top:0px; left:0px; font-size:18px; color:#fff; font-weight:bold; background:#000; display:inline-block; opacity: 0.3; filter: alpha(opacity=30); }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .item_status { position:absolute; bottom:30px; right:5px; padding:3px 10px; border-radius:5px; color:#fff; font-weight:bold; display:inline-block; opacity: 0.5; filter: alpha(opacity=50); }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .item_status_soldout { background:#0000ff; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .item_status_cancel { background:#000; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .item_status_selling { background:#ff0000; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .product_price { position:absolute; bottom:0px; left:0px; font-size:18px; color:#fff; font-weight:bold; display:inline-block; opacity: 0.7; filter: alpha(opacity=70); }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .product_price_soldout { background:#0000ff; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .product_price_cancel { background:#000; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .thumb .product_price_selling { background:#ff0000; }
+
+.widget_marketplace_gallery_skin .marketplace_list .list .link .title_area { position:relative; overflow:hidden; white-space:nowrap; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .title_area .title { font-weight:bold; }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .title_area .extra_image { }
+.widget_marketplace_gallery_skin .marketplace_list .list .link .title_area .date { display:block; }

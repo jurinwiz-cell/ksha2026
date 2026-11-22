@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">배너 출력 위젯 기본 스킨</title>
+	<description xml:lang="ko">전광판(뉴스티커) 형식으로 한 줄씩 스크롤 되는 방식의 위젯 스킨입니다.</description>
+	<version>0.1</version>
+	<date>2010-01-11</date>
+	<link>http://funnyxe.com</link>
+
+	<author email_address="dowon2308@paran.com" link="http://funnyxe.com">
+		<name xml:lang="ko">SMaker</name>
+	</author>
+
+	<colorset>
+		<color name="default">
+			<title xml:lang="ko">기본 컬러셋</title>
+		</color>
+	</colorset>
+</skin>

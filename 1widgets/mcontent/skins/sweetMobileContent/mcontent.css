@@ -1,0 +1,50 @@
+@charset "utf-8"; 
+
+/* Colorset 설정 CSS부분 */
+span.cate.gray { color:#ccc; }
+span.cate.blue { color:#0088cc; }
+span.cate.skyblue { color:#84accb; }
+span.cate.green { color:#29b80a; }
+span.cate.purple { color:#526bbe; }
+span.cate.red { color:#fe8505; }
+span.cate.pink { color:#ee80c3; }
+
+.smNormal { margin:0; padding:0; list-style:none; }
+.smNormal > li { border-top:1px solid #f2f2f2; }
+.smNormal > li:first-child { border-top:0; }
+.smNormal > li a { color:#222; text-decoration:none; display:block; padding:10px 12px; position:relative; }
+.smNormal > li a p.title { padding:0; margin:0; width:100%; letter-spacing:-1px; box-sizing:border-box; white-space:nowrap; text-overflow: ellipsis; overflow:hidden; font-size:1.15em; }
+.smNormal > li a p.title span.cate { padding:0 12px 0 0; display:inline-block; }
+.smNormal > li ul { padding:0; margin:0; list-style:none; overflow:hidden; }
+.smNormal > li ul li { float:left; width:33.3%; padding:7px 0 0 0; color:#aaa; font-size:0.9em; }
+.smNormal > li ul li i { margin:0 5px 0 0; }
+
+.smImageTitle { margin:0; padding:5px; list-style:none; overflow:hidden; }
+.smImageTitle > li { width:50%; float:left; padding:5px; box-sizing:border-box; }
+.smImageTitle > li .smThumb { padding:0 0 61% 0; background:no-repeat center center; background-size:cover; }
+.smImageTitle > li .smNoThumb { background:#f9f9f9; }
+.smImageTitle > li a { text-decoration:none; }
+.smImageTitle > li .title { color:#222; font-size:15px; display:block; padding:5px 0 0 0; line-height:1.35em; height:2.78em; letter-spacing:-1px; }
+.smImageTitle > li .title strong { display: -webkit-box; overflow: hidden; font-weight:normal; font-size:0.92em; line-height:1.32em; white-space: normal; word-wrap: break-word; -o-ellipsis-lastline:2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: ellipsis; }
+.smImageTitle > li .title strong .cate { padding:0 12px 0 0; }
+.smImageTitle > li ul { padding:0; margin:0; list-style:none; overflow:hidden; }
+.smImageTitle > li ul li { padding:3px 0 0 0; color:#aaa; font-size:0.9em; }
+.smImageTitle > li ul li:first-child { padding:0; }
+.smImageTitle > li ul li i { margin:0 5px 0 0; }
+
+.smImageTitleContent { margin:0; padding:0; list-style:none; }
+.smImageTitleContent > li { border-top:1px solid #f2f2f2; }
+.smImageTitleContent > li:first-child { border-top:0; }
+.smImageTitleContent > li a { text-decoration:none; padding:10px; display:block; overflow:hidden; color:#222; }
+.smImageTitleContent > li .smThumb { float:left; width:35%; padding:0 12px 0 0; box-sizing:border-box; }
+.smImageTitleContent > li .smThumb .image { padding:0 0 70% 0; background:#ccc; background:no-repeat center center; background-size:cover; }
+.smImageTitleContent > li .withThumb { float:left; width:65%; }
+.smImageTitleContent > li .title { letter-spacing:-1px; box-sizing:border-box; white-space:nowrap; text-overflow: ellipsis; overflow:hidden; font-size:1.15em; width:100%; display:block; padding:0 0 3px 0; }
+.smImageTitleContent > li .cate { padding:0; font-size:1.1em; display:block; }
+.smImageTitleContent > li .conte { display: -webkit-box; margin:0; padding:3px 0 0 0; font-size:0.92em; color:#a1a1a1; overflow: hidden; white-space: normal; word-wrap: break-word; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: ellipsis; }
+.smImageTitleContent > li ul { padding:0; margin:0; list-style:none; overflow:hidden; }
+.smImageTitleContent > li ul li { padding:0 0 0 5px; float:left; color:#aaa; font-size:0.9em; }
+.smImageTitleContent > li ul li:first-child { padding:0; }
+.smImageTitleContent > li ul li i { margin:0 5px 0 0; }
+
+

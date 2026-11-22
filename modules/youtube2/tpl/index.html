@@ -1,0 +1,43 @@
+<include target="_header.html" />
+
+<div class="x_page-header">
+	<h1>youtube2 <a class="x_icon-question-sign" href="#">설정</a></h1>
+</div>
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == ''" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="module" value="youtube2" />
+	<input type="hidden" name="act" value="procYoutube2AdminConfig" />
+	<input type="hidden" name="xe_validator_id" value="modules/youtube2/tpl/index" />
+	
+	<div class="x_control-group">
+		<label class="x_control-label" for="api_key">Google API Key</label>
+		<div class="x_controls">
+			<input type="text" name="api_key" id="api_key" value="{$config->api_key}" />
+			<p class="x_help-block">YouTube Data API v3가 활성화된 서버/브라우저 키를 입력하세요.</p>
+		</div>
+	</div>
+	
+	<div class="x_control-group">
+		<label class="x_control-label" for="cache_ttl">캐시 유지 시간 (초)</label>
+		<div class="x_controls">
+			<input type="number" name="cache_ttl" id="cache_ttl" value="{$config->cache_ttl}" />
+			<p class="x_help-block">API 할당량 초과 방지를 위해 캐시 유지 시간(기본 3600초=1시간)을 지정합니다. Rhymix 내부 캐싱 시스템을 사용하여 매우 빠릅니다.</p>
+		</div>
+	</div>
+
+	<div class="x_control-group">
+		<label class="x_control-label" for="default_channel_id">기본 채널 ID</label>
+		<div class="x_controls">
+			<input type="text" name="default_channel_id" id="default_channel_id" value="{$config->default_channel_id}" />
+			<p class="x_help-block">위젯 측에서 channel_id를 명시하지 않았을 때 사용할 기본 채널 ID (예: UC...)를 입력할 수 있습니다.</p>
+		</div>
+	</div>
+
+	<div class="x_clearfix x_btn-admin">
+		<button type="submit" class="x_btn x_btn-primary">저장</button>
+	</div>
+</form>

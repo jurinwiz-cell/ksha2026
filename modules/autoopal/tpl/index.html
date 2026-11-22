@@ -1,0 +1,65 @@
+<include target="header.html" />
+
+<div class="x_form-horizontal">
+    <form action="./" method="post" id="opalForm">
+        <input type="hidden" name="module" value="autoopal" />
+        <input type="hidden" name="act" value="procAutoopalCreatePage" />
+        <input type="hidden" name="xe_validator_id" value="modules/autoopal/tpl/1" />
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="target_module_srl">생성 위치 (대상 모듈)</label>
+            <div class="x_controls">
+                <select name="target_module_srl" id="target_module_srl">
+                    <option value="">-- 게시판 또는 페이지를 선택하세요 --</option>
+                    <!--@foreach($module_list as $key => $val)-->
+                    <option value="{$val->module_srl}">{$val->browser_title} ({$val->mid})</option>
+                    <!--@endforeach-->
+                </select>
+                <p class="x_help-block">Opal 결과물로 생성될 문서가 저장될 위치를 선택합니다.</p>
+            </div>
+        </div>
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="title">문서 제목</label>
+            <div class="x_controls">
+                <input type="text" name="title" id="title" class="x_span6" placeholder="예: LH 2026년 공고 요약 페이지" />
+            </div>
+        </div>
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="opal_xml_content">Opal XML / HTML 결과</label>
+            <div class="x_controls">
+                <textarea name="opal_xml_content" id="opal_xml_content" rows="15" class="x_span8"
+                    placeholder="Opal 생성 결과(XML 코드 또는 HTML)를 여기에 붙여넣으세요."></textarea>
+            </div>
+        </div>
+
+        <div class="x_clearfix btnArea">
+            <div class="x_pull-right">
+                <button type="submit" class="x_btn x_btn-primary">페이지 자동 생성</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    jQuery(function ($) {
+        $('#opalForm').submit(function (e) {
+            if (!$('#target_module_srl').val()) {
+                alert('생성 위치를 선택해 주세요.');
+                $('#target_module_srl').focus();
+                return false;
+            }
+            if (!$.trim($('#title').val())) {
+                alert('문서 제목을 입력해 주세요.');
+                $('#title').focus();
+                return false;
+            }
+            if (!$.trim($('#opal_xml_content').val())) {
+                alert('Opal XML 또는 HTML 내용을 입력해 주세요.');
+                $('#opal_xml_content').focus();
+                return false;
+            }
+        });
+    });
+</script>

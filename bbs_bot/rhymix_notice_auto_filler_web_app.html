@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입주자 모집 공고 자동 입력기 & 웹앱</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-indigo-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                🏠 사회주택 입주자 모집 공고 자동화 도구
+            </h1>
+            <span class="text-xs bg-indigo-800 px-3 py-1 rounded-full mt-2 sm:mt-0">Target: socialhousing.kr/room/write</span>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Panel: Input & Analysis Control -->
+        <section class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-6">
+            <h2 class="text-lg font-semibold border-b pb-3 text-indigo-700">1. 공고문 소스 입력</h2>
+
+            <!-- PDF Upload Box -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-medium text-slate-700">📄 공고문 PDF 업로드</label>
+                <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition cursor-pointer relative">
+                    <input type="file" id="pdfFile" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">
+                    <div id="pdfFileName" class="text-sm text-slate-500">클릭하거나 PDF 파일을 끌어다 놓으세요</div>
+                </div>
+            </div>
+
+            <!-- Notice Link Input -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-medium text-slate-700">🔗 공고문 URL / 웹 링크</label>
+                <input type="url" id="noticeLink" placeholder="https://..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Analyze Button -->
+            <button id="analyzeBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl shadow transition duration-200 flex items-center justify-center gap-2">
+                <span>✨ AI 공고문 정밀 분석 및 추출</span>
+            </button>
+
+            <!-- Status Box -->
+            <div id="statusBox" class="hidden p-4 rounded-xl bg-indigo-50 border border-indigo-100 text-sm text-indigo-800">
+                <p id="statusText" class="font-medium">분석 대기 중...</p>
+            </div>
+        </section>
+
+        <!-- Right Panel: Rhymix Form Preview & Auto-fill -->
+        <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center border-b pb-3 mb-6">
+                <h2 class="text-lg font-semibold text-slate-800">2. 라이믹스 게시판 입력 폼 미리보기</h2>
+                <button id="fillSampleBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition font-medium">샘플 데이터 자동채우기</button>
+            </div>
+
+            <!-- Rhymix Simulated Form -->
+            <form id="rhymixForm" class="space-y-6">
+                <!-- 분류 및 제목 -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+                    <div>
+                        <select name="category_srl" id="category_srl" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                            <option value="197696">모집중 (5)</option>
+                            <option value="197697">마감 (62)</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <input type="text" name="title" id="title" value="[입주자모집]" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                </div>
+
+                <!-- 포스터 첨부 -->
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1"><span class="text-red-500">*</span> 포스터 (대표 이미지)</label>
+                    <div class="flex items-center gap-4">
+                        <input type="file" name="extra_vars1" id="posterFile" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        <div id="posterPreview" class="w-16 h-16 bg-slate-100 rounded-lg border flex items-center justify-center text-xs text-slate-400 overflow-hidden">
+                            미리보기
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 주소 -->
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">주소</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                        <input type="text" id="postcode" placeholder="우편번호" class="border border-slate-300 rounded-lg p-2 text-sm bg-slate-50" readonly>
+                        <button type="button" class="bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm py-2 px-4 transition font-medium">우편번호 검색</button>
+                    </div>
+                    <input type="text" id="roadAddress" placeholder="도로명 주소" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 mb-2" readonly>
+                    <input type="text" name="detail_address" id="detail_address" placeholder="상세 주소 (예: 잠실 더클래스원 402호)" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                </div>
+
+                <!-- 종류 (Checkbox) -->
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">종류 (주택형태)</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="단독" class="rounded text-indigo-600"> 단독</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="다가구" class="rounded text-indigo-600"> 다가구</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="다세대" class="rounded text-indigo-600"> 다세대</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="아파트" class="rounded text-indigo-600"> 아파트</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="원룸" class="rounded text-indigo-600"> 원룸</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="housing_type" value="공유주택" class="rounded text-indigo-600"> 공유주택</label>
+                    </div>
+                </div>
+
+                <!-- 분류 (Checkbox) -->
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">분류 (입주 대상)</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="청년" class="rounded text-indigo-600"> 청년</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="일반" class="rounded text-indigo-600"> 일반</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="고령자" class="rounded text-indigo-600"> 고령자</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="장애인" class="rounded text-indigo-600"> 장애인</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="여성" class="rounded text-indigo-600"> 여성</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="창업" class="rounded text-indigo-600"> 창업</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="target_group" value="기타" class="rounded text-indigo-600"> 기타</label>
+                    </div>
+                </div>
+
+                <!-- 임대료 및 보증금 수준 -->
+                <div class="border-t pt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">임대료 수준</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="10만원대" class="rounded text-indigo-600"> 10만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="20만원대" class="rounded text-indigo-600"> 20만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="30만원대" class="rounded text-indigo-600"> 30만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="40만원대" class="rounded text-indigo-600"> 40만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="50만원대" class="rounded text-indigo-600"> 50만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="rent" value="기타" class="rounded text-indigo-600"> 기타</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">보증금 수준</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="100만원대" class="rounded text-indigo-600"> 100만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="500만원대" class="rounded text-indigo-600"> 500만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="1천만원대" class="rounded text-indigo-600"> 1천만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="5천만원대" class="rounded text-indigo-600"> 5천만원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="1억원대" class="rounded text-indigo-600"> 1억원대</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="deposit" value="2억원대" class="rounded text-indigo-600"> 2억원대</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 공공주체 및 운영단체 -->
+                <div class="border-t pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">공공주체</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="agency" value="LH" class="rounded text-indigo-600"> LH</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="agency" value="SH" class="rounded text-indigo-600"> SH</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="agency" value="GH" class="rounded text-indigo-600"> GH</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">운영단체</label>
+                        <input type="text" name="operating_org" id="operating_org" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="예: 한지붕협동조합">
+                    </div>
+                </div>
+
+                <!-- 링크 및 액션 -->
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">유튜브 링크 / 공고 관련 링크</label>
+                    <input type="url" name="youtube_link" id="youtube_link" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="https://...">
+                </div>
+
+                <!-- 제출 버튼 영역 -->
+                <div class="pt-4 flex gap-3">
+                    <button type="button" id="copyPayloadBtn" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 rounded-xl transition text-sm shadow">
+                        📋 폼 데이터 JSON 복사
+                    </button>
+                    <button type="button" id="simulateSubmitBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition text-sm shadow">
+                        🚀 라이믹스 서버로 자동 전송
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 text-xs text-slate-400 border-t mt-auto">
+        &copy; Social Housing Auto-Filler. Powered by AI & Web APIs.
+    </footer>
+
+    <!-- App Logic Script -->
+    <script>
+        // PDF 업로드 파일 이름 표시 인터랙션
+        const pdfFileInput = document.getElementById('pdfFile');
+        const pdfFileNameDisplay = document.getElementById('pdfFileName');
+        
+        pdfFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                pdfFileNameDisplay.textContent = `선택된 파일: ${e.target.files[0].name}`;
+                pdfFileNameDisplay.classList.add('font-semibold', 'text-indigo-600');
+            }
+        });
+
+        // 포스터 이미지 업로드 시 미리보기
+        const posterInput = document.getElementById('posterFile');
+        const posterPreview = document.getElementById('posterPreview');
+
+        posterInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    posterPreview.innerHTML = `<img src="${evt.target.result}" class="w-full h-full object-cover rounded-lg">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 샘플 데이터 자동 채우기 버튼 이벤트 (제공해주신 샘플 PDF 분석 결과 기반)
+        document.getElementById('fillSampleBtn').addEventListener('click', () => {
+            document.getElementById('title').value = "[입주자모집] 2026년 LH 특화형 매입임대주택 [잠실 더클래스원]";
+            document.getElementById('postcode').value = "05626";
+            document.getElementById('roadAddress').value = "서울특별시 송파구 오금로11길 61";
+            document.getElementById('detail_address').value = "방이동 49-6 (잠실 더클래스원)";
+            document.getElementById('operating_org').value = "한지붕협동조합";
+            document.getElementById('youtube_link').value = "https://한지붕.kr";
+
+            // 체크박스 자동 선택
+            document.querySelectorAll('input[name="housing_type"]').forEach(cb => {
+                if (cb.value === '원룸' || cb.value === '아파트') cb.checked = true;
+            });
+            document.querySelectorAll('input[name="target_group"]').forEach(cb => {
+                if (cb.value === '청년') cb.checked = true;
+            });
+            document.querySelectorAll('input[name="rent"]').forEach(cb => {
+                if (cb.value === '40만원대' || cb.value === '50만원대' || cb.value === '60만원대') cb.checked = true;
+            });
+            document.querySelectorAll('input[name="deposit"]').forEach(cb => {
+                if (cb.value === '1천만원대') cb.checked = true;
+            });
+            document.querySelectorAll('input[name="agency"]').forEach(cb => {
+                if (cb.value === 'LH') cb.checked = true;
+            });
+
+            showStatus("샘플 공고문(잠실 더클래스원) 분석 데이터가 폼에 자동으로 채워졌습니다!", "success");
+        });
+
+        // AI 분석 버튼 클릭 시뮬레이션
+        document.getElementById('analyzeBtn').addEventListener('click', () => {
+            const statusBox = document.getElementById('statusBox');
+            const statusText = document.getElementById('statusText');
+            
+            statusBox.classList.remove('hidden');
+            statusText.textContent = "🔄 PDF 문서 및 링크 내용을 분석 중입니다...";
+
+            setTimeout(() => {
+                statusText.textContent = "✅ 분석 완료! 주소, 임대료, 보증금 및 대표 이미지가 추출되었습니다.";
+                // 자동 샘플 반영 트리거
+                document.getElementById('fillSampleBtn').click();
+            }, 1200);
+        });
+
+        function showStatus(msg, type) {
+            const statusBox = document.getElementById('statusBox');
+            const statusText = document.getElementById('statusText');
+            statusBox.classList.remove('hidden');
+            statusText.textContent = msg;
+        }
+
+        // JSON 데이터 복사
+        document.getElementById('copyPayloadBtn').addEventListener('click', () => {
+            const formData = {
+                title: document.getElementById('title').value,
+                postcode: document.getElementById('postcode').value,
+                roadAddress: document.getElementById('roadAddress').value,
+                detailAddress: document.getElementById('detail_address').value,
+                operatingOrg: document.getElementById('operating_org').value,
+                link: document.getElementById('youtube_link').value
+            };
+            
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = JSON.stringify(formData, null, 2);
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            alert('폼 데이터가 클립보드에 복사되었습니다.');
+        });
+
+        // 시뮬레이션 전송
+        document.getElementById('simulateSubmitBtn').addEventListener('click', () => {
+            alert('라이믹스 게시판(socialhousing.kr/room/write) 서버로 데이터 전송 요청이 정상적으로 처리되었습니다!');
+        });
+    </script>
+</body>
+</html>

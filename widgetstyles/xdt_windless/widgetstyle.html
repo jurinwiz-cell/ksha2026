@@ -1,0 +1,39 @@
+<!--@if($widgetstyle_extra_var->ws_colorset == "orange")-->
+    {@ $_colorset = "orange"}
+<!--@elseif($widgetstyle_extra_var->ws_colorset == "blue")-->
+    {@ $_colorset = "blue"}
+<!--@elseif($widgetstyle_extra_var->ws_colorset == "green")-->
+    {@ $_colorset = "green"}
+<!--@elseif($widgetstyle_extra_var->ws_colorset == "red")-->
+    {@ $_colorset = "red"}
+<!--@else-->
+    {@ $_colorset = "gray"}
+<!--@end-->
+
+
+<style>
+.widgetbox { padding:5px; border-bottom:1px solid #999; }
+.widgetbox.gray { border-top:2px solid #444; }
+.widgetbox.orange { border-top:2px solid #E2920C; }
+.widgetbox.red { border-top:2px solid #A61D31; }
+.widgetbox.blue { border-top:2px solid #27A9CB; }
+.widgetbox.green { border-top:3px solid #27a9cb; }
+
+
+
+</style>
+
+
+<div class="widgetbox {$_colorset}">
+	<!--@if($widgetstyle_extra_var->ws_title_img)-->
+	<div style="border-bottom:1px solid #ccc; width:100%; padding:0; height:50px;" >
+		<img class="widget_title" src="{$widgetstyle_extra_var->ws_title_img}">
+	</div>
+	<!--@end-->
+	<!--@if($widgetstyle_extra_var->ws_title)-->
+	<p style="line-height:30px; font-size:20px; font-weight:bold; color:#444; border-bottom:1px solid #ccc; padding-left:10px;">{$widgetstyle_extra_var->ws_title}</p>
+	<!--@end-->
+	<div class="widget" style="padding:5px 5px 0 5px;">
+		{$widget_content}
+	</div>
+</div>

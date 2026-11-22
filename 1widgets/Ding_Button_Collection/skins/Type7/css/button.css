@@ -1,0 +1,32 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+div.widgetBorder > div:nth-child(1n) {height: 100%;}
+
+div.xe-widget-wrapper > div:nth-child(1n) {height: 100%;}
+
+.default-btn
+{
+    display: block;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* fow.kr 롤*/
+.type7
+{
+    width: 100%;
+    height: 100%;
+    background-color: #7ac;
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #04c), color-stop(0.02, #48d), color-stop(1, #7ac));
+    background-image:-moz-linear-gradient(top, #04c, #48d 2%, #7ac);
+    background-image:-o-linear-gradient(top, #04c, #48d 2%, #7ac);
+    border: 1px solid #15E;
+    color: #FFF;
+}
+
+
+.button_text
+{
+    position: relative;
+}

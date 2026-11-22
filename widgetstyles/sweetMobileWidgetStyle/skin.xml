@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">Sweet Mobile</title>
+    <title xml:lang="en">Simple line</title>
+    <description xml:lang="ko">선 하나만으로 꾸며진 위젯스타일 입니다.</description>
+    <description xml:lang="en">A widget style decorated with one simple line.</description>
+    <version>1.7</version>
+    <date>2013-11-27</date>
+    <preview>preview.gif</preview>
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+    </author>
+    <extra_vars>
+        <var name="ws_title_display" type="select">
+            <title xml:lang="ko">제목 표시</title>
+            <title xml:lang="en">more button</title>
+            <description xml:lang="ko">제목을 표시하시겠습니까?</description>
+            <description xml:lang="en">Do you want to display title?</description>
+            <options>
+                <name xml:lang="ko">예</name>
+                <name xml:lang="en">Yes</name>
+                <value>Y</value>
+            </options>
+            <options>
+                <name xml:lang="ko">아니오</name>
+                <name xml:lang="en">No</name>
+                <value>N</value>
+            </options>
+        </var>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <name xml:lang="en">Title</name>
+            <description xml:lang="ko">제목 텍스트</description>
+            <description xml:lang="en">Title text</description>
+        </var>
+        <var name="ws_more" type="select">
+            <title xml:lang="ko">더보기 표시</title>
+            <title xml:lang="en">more button</title>
+            <description xml:lang="ko">더보기 아이콘을 표시하시겠습니까?</description>
+            <description xml:lang="en">Do you want to display more button?</description>
+            <options>
+                <name xml:lang="ko">예</name>
+                <name xml:lang="en">Yes</name>
+                <value>Y</value>
+            </options>
+            <options>
+                <name xml:lang="ko">아니오</name>
+                <name xml:lang="en">No</name>
+                <value>N</value>
+            </options>
+        </var>
+        <var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 URL</name>
+            <name xml:lang="en">more URL</name>
+            <description xml:lang="ko">http:// 포함한 URL를 등록합니다.</description>
+            <description xml:lang="en">Destination of a 'more' link. Register a URL including http://</description>
+        </var>
+    </extra_vars>
+</widgetstyle>

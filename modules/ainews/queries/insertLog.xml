@@ -1,0 +1,13 @@
+<query id="insertLog" action="insert">
+    <tables>
+        <table name="ainews_log" />
+    </tables>
+    <columns>
+        <column name="log_srl" var="log_srl" filter="number" notnull="notnull" />
+        <column name="item_srl" var="item_srl" filter="number" notnull="notnull" />
+        <column name="email" var="email" notnull="notnull" />
+        <column name="status" var="status" notnull="notnull" />
+        <column name="retry_count" var="retry_count" default="0" />
+        <column name="regdate" var="regdate" notnull="notnull" />
+    </columns>
+</query>

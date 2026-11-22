@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">Windless 위젯스타일</title>
+    <description xml:lang="ko">xdt에서 windless레이아웃을 발표함에따라 어울리는 windless 위젯을 배포합니다.</description>
+    <version>1.0</version>
+    <date>2012-12-20</date>
+    <preview>preview.gif</preview>
+
+    <author email_address="dlehdanakf@gmail.com" link="http://www.xedesignteam.com">
+        <name xml:lang="ko">이동현</name>
+    </author>
+    <extra_vars>
+        <var name="ws_colorset" type="select">
+            <title xml:lang="ko">컬러셋</title>
+            <description xml:lang="ko">컬러셋을 지정해주세요</description>
+            <options>
+                <name xml:lang="ko">기본 (Gray)</name>
+                <value>gray</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Orange</name>
+                <value>orange</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Blue</name>
+                <value>blue</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Green</name>
+                <value>green</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Red</name>
+                <value>red</value>
+            </options>
+        </var>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <description xml:lang="ko">제목을 입력하세요.</description>
+        </var>
+        <var name="ws_title_img" type="filebox">
+            <name xml:lang="ko">타이틀 이미지</name>
+            <description xml:lang="ko">타이틀 이미지를 업로드 하세요.(제목을 입력하지 않은 경우)</description>
+        </var>
+    </extra_vars>
+</widgetstyle>

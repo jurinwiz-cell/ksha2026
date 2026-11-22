@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">Count  </title>    
+    <description xml:lang="ko">counter 의 숫자가 올라가는 counter_status</description>
+    
+    <version>1.0</version>
+    <date>2019-05-08</date>
+    <link>http:/xeant.com/</link>
+    <author email_address="proant777@naver.com" link="http:/xeant.com/">
+        <name xml:lang="ko">XE ANT</name>        
+    </author>
+</skin>

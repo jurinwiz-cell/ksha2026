@@ -1,0 +1,27 @@
+<section class="content portfolio">
+    {@$_idx=0}
+    <!--@foreach($widget_info->content_items as $key => $item)-->
+    <div class="grid-lg-6 grid-sm-12 portfolio-item"<!--@if($_idx >= $widget_info->list_count)--> style="display:none"<!--@end-->>
+
+        <!--@for($j=0,$c=count($widget_info->option_view_arr);$j<$c;$j++)-->
+
+        <!--@if($widget_info->option_view_arr[$j]=='title')-->
+
+        <a href="{$item->getLink()}" class="portfolio-link" target="_self" |cond="$widget_info->new_window">
+            <div class="caption">
+                <div class="caption-content">
+                    <h3>{$item->getTitle($widget_info->subject_cut_size)}</h3>
+                    <h4>{$item->getContent()}</h4>
+                </div>
+            </div>        
+            <img src="{$item->getThumbnail()}" class="img-responsive" alt=""/>
+        </a>
+        <!--@end-->
+        <!--@end-->
+    </div>
+    {@$_idx++}
+    <!--@end-->
+</section>
+
+
+

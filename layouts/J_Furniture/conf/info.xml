@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+	<title xml:lang="ko">J Furniture</title>
+	<description xml:lang="ko">J 퍼니처 레이아웃</description>
+	<version>2.0</version>
+	<date>2018-01-21</date>
+	<author email_address="chcgogo2@naver.com" link="https://www.jbirdweb.com/">
+		<name xml:lang="ko">Jbirdweb</name>
+	</author>
+	<menus>
+		<menu name="GNB" maxdepth="1" default="true">
+			<title xml:lang="ko">메인메뉴</title>
+		</menu>
+	</menus>
+	<extra_vars>
+    <group>
+      <title xml:lang="ko">상단 설정</title>
+      <var name="logo_img" type="image">
+        <title xml:lang="ko">로고 이미지</title>
+      </var>
+      <var name="logo_url" type="text">
+        <title xml:lang="ko">로고 Url</title>
+      </var>
+      <var name="top_text_01" type="textarea">
+        <title xml:lang="ko">상단 문구 01</title>
+      </var>
+      <var name="top_text_02" type="textarea">
+        <title xml:lang="ko">상단 문구 02</title>
+      </var>
+    </group>
+    <group>
+      <title xml:lang="ko">하단 설정</title>
+      <var name="bottom_text" type="textarea">
+        <title xml:lang="ko">하단 문구</title>
+      </var>
+      <var name="phone" type="text">
+        <title xml:lang="ko">Call</title>
+      </var>
+      <var name="email" type="text">
+        <title xml:lang="ko">E-mail</title>
+      </var>
+      <var name="author" type="text">
+        <title xml:lang="ko">제작자</title>
+      </var>
+    </group>
+	</extra_vars>
+</layout>

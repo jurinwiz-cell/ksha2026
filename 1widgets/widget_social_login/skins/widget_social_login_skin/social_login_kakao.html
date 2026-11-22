@@ -1,0 +1,57 @@
+<!--//카카오 JS 인클루드(카카오 로그아웃을 위해 설정)-->
+<load target="///developers.kakao.com/sdk/js/kakao.min.js" />
+
+
+<a class="btn_social_login" id="btn_kakao_login" href="#login" onclick="socialBtnCheck('kakao'); return false;"><span>Kakao Login</span></a>
+<a id="btn_kakao_login_function" href="#" onclick="myKakaoLogin(); return false" style="display:none;">SOCIAL LOGIN</a>
+
+
+
+<script>
+//카카오 로그인 함수
+function myKakaoLogin() {
+  //웹뷰에서 작동하기 위해, popup이 아닌 페이지 형식으로 진행 (/oauth/authorize 실행하여 코드를 발급받음)
+  //회원가입 전 소셜공급자 세션 설정(웹뷰작동형)
+  var url = "./";
+  jQuery.ajax({
+    type: "POST",
+    url: url,
+    data: "ajax=y&mid={$mid}&social_provider=kakao&insert_session=y&act={$act}",
+    success: function(data){
+      var response = jQuery(data);
+      if(response.filter("#ajax_result_text").text()){
+        var result_msg = response.filter("#ajax_result_text").text();
+      } else if(response.find("#ajax_result_text").text()){
+        var result_msg = response.find("#ajax_result_text").text();
+      }
+      if(result_msg){
+        location.reload();
+        //IE에서 '이 페이지에서 나가겠습니까?' 창이 뜨는 문제로 인해 php 'header'로 변경함
+        {@
+          $mt = microtime();
+          $rand = mt_rand();
+          $state = md5($mt . $rand);
+        }
+        //var redirect_uri = encodeURI("{$redirect_uri}");
+        //window.location = encodeURI("https://kauth.kakao.com/oauth/authorize?client_id={$social_obj->kakao_rest_key}&redirect_uri="+redirect_uri+"&response_type=code&state={$state}");
+      }
+      return false;
+    }
+  });
+}
+
+
+<!--@if($social_obj->kakao_js_key)-->
+//카카오 API 시작(카카오 로그아웃을 위해 설정)
+Kakao.init('{$social_obj->kakao_js_key}');
+
+
+//카카오 로그아웃 함수(사용안함)
+function myKakaoLogout() {
+  //로그아웃 실행
+  Kakao.Auth.logout(function(a){
+    //로그아웃 내용
+  });
+}
+<!--@end-->
+</script>

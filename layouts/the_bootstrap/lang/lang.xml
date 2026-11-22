@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<lang>
+	<item name="tb_more">
+		<value xml:lang="ko"><![CDATA[더보기]]></value>
+		<value xml:lang="en"><![CDATA[More]]></value>
+		<value xml:lang="jp"><![CDATA[もっと見る]]></value>
+	</item>
+	<item name="tb_message">
+		<value xml:lang="ko"><![CDATA[쪽지]]></value>
+		<value xml:lang="en"><![CDATA[Message]]></value>
+		<value xml:lang="jp"><![CDATA[メッセージ]]></value>
+	</item>
+	<item name="tb_theme">
+		<value xml:lang="ko"><![CDATA[테마]]></value>
+		<value xml:lang="en"><![CDATA[Theme]]></value>
+		<value xml:lang="jp"><![CDATA[テーマ]]></value>
+	</item>
+	<item name="tb_site">
+		<value xml:lang="ko"><![CDATA[사이트]]></value>
+		<value xml:lang="en"><![CDATA[Site]]></value>
+		<value xml:lang="jp"><![CDATA[サイト]]></value>
+	</item>
+	<item name="tb_message_alaram_title">
+		<value xml:lang="ko"><![CDATA[쪽지 알림]]></value>
+		<value xml:lang="en"><![CDATA[Site]]></value>
+		<value xml:lang="jp"><![CDATA[新しいメッセージ]]></value>
+	</item>
+	<item name="tb_socialxe_social_info">
+		<value xml:lang="ko"><![CDATA[소셜 정보]]></value>
+		<value xml:lang="en"><![CDATA[Social Info]]></value>
+		<value xml:lang="jp"><![CDATA[ソーシャル情報]]></value>
+	</item>
+	<item name="tb_not_readed_message">
+		<value xml:lang="ko"><![CDATA[개의 읽지 않은 쪽지가 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Site]]></value>
+		<value xml:lang="jp"><![CDATA[もっと見る]]></value>
+	</item>
+</lang>

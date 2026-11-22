@@ -1,0 +1,3 @@
+/* 검색상자 - 컬러셋설정 */
+#search #searchWindow { background-color:#FFFFFF;border:7px solid #aa1fc3;}
+#search #searchWindow input.purple {color:#aa1fc3;}

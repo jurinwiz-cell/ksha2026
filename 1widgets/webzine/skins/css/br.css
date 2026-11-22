@@ -1,0 +1,24 @@
+
+
+	#gallery .caption {
+
+		background-color:#FFF; 
+		color:#666; 
+	}
+
+	
+	#gallery .caption .content h3 {
+
+		color:#0d447a;
+		
+		
+	}
+
+	#gallery .caption .content h3 .date {
+		
+		color:#333;
+	}
+
+	#gallery .caption .content h3 .author {
+		color:#333;
+	}

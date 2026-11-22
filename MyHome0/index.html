@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이홈포털 임대주택 찾아보기</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+
+    /* ── 레이아웃 ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── 사이드바 ── */
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: #1a2744;
+      color: #c8d3e8;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.28s cubic-bezier(.4,0,.2,1), min-width 0.28s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      z-index: 10;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.13);
+    }
+    .sidebar.collapsed { width: 0; min-width: 0; overflow: hidden; }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .sidebar-logo { font-size: 22px; }
+    .sidebar-title { font-size: 15px; font-weight: 700; color: #e8eef8; white-space: nowrap; }
+
+    .sidebar-section { padding: 16px 18px 8px; }
+    .sidebar-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #7a8fb8;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* 필터 항목 */
+    .filter-group { margin-bottom: 14px; }
+    .filter-label {
+      font-size: 12px;
+      color: #a0b0cc;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .filter-select, .filter-input {
+      width: 100%;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 7px;
+      color: #e0e8f8;
+      font-size: 13px;
+      outline: none;
+      transition: border 0.15s, background 0.15s;
+    }
+    .filter-select:focus, .filter-input:focus {
+      border-color: #4d8aff;
+      background: rgba(77,138,255,0.1);
+    }
+    .filter-select option { background: #1a2744; color: #e0e8f8; }
+    .filter-input::placeholder { color: #6a7fa8; }
+
+    /* 체크박스 필터 */
+    .checkbox-group { display: flex; flex-direction: column; gap: 6px; }
+    .checkbox-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #c0cfea; }
+    .checkbox-item input[type=checkbox] { accent-color: #4d8aff; width: 15px; height: 15px; cursor: pointer; }
+    .checkbox-item:hover { color: #e8eef8; }
+
+    .range-row { display: flex; gap: 6px; align-items: center; }
+    .range-row .filter-input { width: 0; flex: 1; }
+    .range-sep { color: #6a7fa8; font-size: 12px; flex-shrink: 0; }
+
+    /* 사이드바 버튼들 */
+    .btn-sidebar-apply {
+      display: block; width: calc(100% - 36px); margin: 0 18px 8px;
+      padding: 10px; background: #4d8aff; color: #fff;
+      border: none; border-radius: 8px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-sidebar-apply:hover { background: #2d6ef0; }
+    .btn-sidebar-reset {
+      display: block; width: calc(100% - 36px); margin: 0 18px 20px;
+      padding: 8px; background: transparent; color: #7a8fb8;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      font-size: 13px; cursor: pointer; transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-sidebar-reset:hover { color: #c8d3e8; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    .sidebar-divider {
+      border: none; border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 4px 18px 14px;
+    }
+
+    /* 네비게이션 링크 */
+    .nav-links { display: flex; flex-direction: column; gap: 4px; padding: 0 12px 4px; }
+    .nav-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #a0b0cc;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.07); color: #e0e8f8; }
+    .nav-link.active { background: rgba(77,138,255,0.18); color: #79afff; font-weight: 700; }
+    .nav-link .nav-icon { font-size: 17px; flex-shrink: 0; }
+
+    /* 통계 뱃지 */
+    .stat-row { display: flex; gap: 8px; padding: 0 18px 16px; flex-wrap: wrap; }
+    .stat-badge {
+      flex: 1; min-width: 80px;
+      background: rgba(77,138,255,0.12);
+      border: 1px solid rgba(77,138,255,0.2);
+      border-radius: 8px; padding: 8px 10px; text-align: center;
+    }
+    .stat-badge .sv { font-size: 16px; font-weight: 700; color: #79afff; display: block; }
+    .stat-badge .sl { font-size: 11px; color: #7a8fb8; }
+
+    /* ── 사이드바 토글 버튼 ── */
+    .sidebar-toggle {
+      position: fixed;
+      top: 18px;
+      left: 14px;
+      z-index: 200;
+      background: #1a2744;
+      color: #c8d3e8;
+      border: none;
+      border-radius: 8px;
+      width: 38px; height: 38px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      transition: background 0.15s, left 0.28s cubic-bezier(.4,0,.2,1);
+    }
+    .sidebar-toggle:hover { background: #253562; }
+    /* 사이드바 열려있을 때 토글 버튼 위치 */
+    .sidebar-toggle.open { left: 222px; }
+
+    /* ── 메인 콘텐츠 ── */
+    .main {
+      flex: 1;
+      padding: 24px 28px;
+      min-width: 0;
+      transition: all 0.28s;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 28px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    h1 { font-size: 20px; font-weight: 700; color: #0056b3; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #e9ecef; padding-left: 44px; }
+    .search-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    select, input[type=text] { padding: 10px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; background: #fff; }
+    select { min-width: 130px; }
+    input[type=text] { flex: 1; min-width: 160px; }
+    .btn { padding: 10px 22px; background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn:hover { background: #cfe2ff; border-color: #9ec5fe; }
+    .btn:active { background: #b6d4fe; }
+    .btn-reset:hover { background: #f8d7da; border-color: #f1aeb5; }
+    .btn-reset:active { background: #f1aeb5; }
+    .meta { font-size: 13px; color: #6c757d; margin-bottom: 12px; min-height: 18px; }
+    .err { color: #c0392b; font-size: 13px; margin-bottom: 10px; }
+    .spinner { text-align: center; padding: 30px; color: #999; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #f8f9fa; color: #495057; font-weight: 600; padding: 10px 10px; text-align: left; border-bottom: 2px solid #dee2e6; white-space: nowrap; }
+    td { padding: 10px 10px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+    tr:hover td { background: #f8fbff; }
+    .name { font-weight: 600; color: #0056b3; }
+    .badge { display: inline-block; background: #e6f7ff; color: #1890ff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .detail-btn { display: inline-block; padding: 4px 10px; background: #f8f9fa; color: #222; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px; cursor: pointer; white-space: nowrap; text-decoration: none; transition: background 0.15s; }
+    .detail-btn:hover { background: #cfe2ff; border-color: #9ec5fe; }
+    .detail-btn:active { background: #b6d4fe; }
+
+    /* 활성 필터 태그 */
+    .active-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .filter-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #e7f0ff; color: #1a5fbf; border: 1px solid #b8d1ff;
+      border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600;
+    }
+    .filter-tag .rm { cursor: pointer; color: #7aa4f5; font-size: 14px; line-height: 1; }
+    .filter-tag .rm:hover { color: #c0392b; }
+
+    /* 모달 */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; align-items: center; justify-content: center; }
+    .modal-bg.open { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 28px; max-width: 560px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+    .modal h2 { font-size: 17px; font-weight: 700; color: #0056b3; margin-bottom: 18px; padding-right: 24px; }
+    .modal-close { position: absolute; top: 16px; right: 18px; font-size: 22px; cursor: pointer; color: #999; border: none; background: none; }
+    .modal-close:hover { color: #333; }
+    .info-grid { display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; font-size: 14px; }
+    .info-label { color: #6c757d; font-weight: 500; }
+    .info-value { color: #222; }
+    .info-value.money { color: #c0392b; font-weight: 600; }
+
+    .pager { display: flex; justify-content: center; gap: 4px; margin-top: 18px; flex-wrap: wrap; }
+    .pg { padding: 7px 13px; border: 1px solid #dee2e6; background: #fff; color: #222; border-radius: 5px; font-size: 13px; cursor: pointer; transition: background 0.15s; }
+    .pg.on { background: #cfe2ff; border-color: #9ec5fe; color: #222; font-weight: 600; }
+    .pg:hover:not(.on) { background: #f1f3f5; }
+
+    /* 반응형 */
+    @media (max-width: 700px) {
+      .sidebar { position: fixed; top: 0; left: 0; height: 100%; }
+      .sidebar.collapsed { width: 0; }
+      .main { padding: 16px 12px; }
+      .sidebar-toggle { top: 14px; left: 10px; }
+      .sidebar-toggle.open { left: 218px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 토글 버튼 -->
+<button class="sidebar-toggle open" id="sidebarToggle" onclick="toggleSidebar()" title="사이드바 열기/닫기">☰</button>
+
+<div class="layout">
+  <!-- ── 사이드바 ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo">🏠</span>
+      <span class="sidebar-title">마이홈포털</span>
+    </div>
+
+    <!-- 통계 -->
+    <div style="padding:14px 18px 0;">
+      <div class="sidebar-section-label">현재 조회 결과</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-badge"><span class="sv" id="statTotal">-</span><span class="sl">전체 건수</span></div>
+      <div class="stat-badge"><span class="sv" id="statPage">-</span><span class="sl">현재 페이지</span></div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <!-- 네비게이션 -->
+    <div style="padding:0 18px 4px;">
+      <div class="sidebar-section-label">메뉴</div>
+    </div>
+    <nav class="nav-links">
+      <a class="nav-link active" href="index.html">
+        <span class="nav-icon">📋</span> 목록 보기
+      </a>
+      <a class="nav-link" href="map.html">
+        <span class="nav-icon">🗺️</span> 지도 보기
+      </a>
+    </nav>
+
+    <hr class="sidebar-divider">
+
+    <!-- 필터 -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">필터 조건</div>
+
+      <div class="filter-group">
+        <label class="filter-label">광역시도</label>
+        <select class="filter-select" id="fRegion">
+          <option value="">전체</option>
+          <option>서울특별시</option><option>부산광역시</option><option>대구광역시</option>
+          <option>인천광역시</option><option>광주광역시</option><option>대전광역시</option>
+          <option>울산광역시</option><option>세종특별자치시</option><option>경기도</option>
+          <option>강원특별자치도</option><option>충청북도</option><option>충청남도</option>
+          <option>전북특별자치도</option><option>전라남도</option><option>경상북도</option>
+          <option>경상남도</option><option>제주특별자치도</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">임대종류</label>
+        <div class="checkbox-group" id="fTypeGroup">
+          <label class="checkbox-item"><input type="checkbox" value="영구임대"> 영구임대</label>
+          <label class="checkbox-item"><input type="checkbox" value="국민임대"> 국민임대</label>
+          <label class="checkbox-item"><input type="checkbox" value="행복주택"> 행복주택</label>
+          <label class="checkbox-item"><input type="checkbox" value="공공임대"> 공공임대</label>
+          <label class="checkbox-item"><input type="checkbox" value="장기전세"> 장기전세</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">월임대료 (원)</label>
+        <div class="range-row">
+          <input class="filter-input" type="number" id="fRentMin" placeholder="최소" min="0">
+          <span class="range-sep">~</span>
+          <input class="filter-input" type="number" id="fRentMax" placeholder="최대" min="0">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">임대보증금 (원)</label>
+        <div class="range-row">
+          <input class="filter-input" type="number" id="fDepMin" placeholder="최소" min="0">
+          <span class="range-sep">~</span>
+          <input class="filter-input" type="number" id="fDepMax" placeholder="최대" min="0">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">세대수</label>
+        <div class="range-row">
+          <input class="filter-input" type="number" id="fUnitMin" placeholder="최소" min="0">
+          <span class="range-sep">~</span>
+          <input class="filter-input" type="number" id="fUnitMax" placeholder="최대" min="0">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-sidebar-apply" onclick="applyFilters()">🔍 필터 적용</button>
+    <button class="btn-sidebar-reset" onclick="resetFilters()">초기화</button>
+  </aside>
+
+  <!-- ── 메인 ── -->
+  <div class="main">
+    <div class="container">
+      <h1>마이홈포털 기존임대주택 찾아보기</h1>
+      <div class="search-row">
+        <select id="sType">
+          <option value="전체">전체</option>
+          <option value="단지명">단지명</option>
+          <option value="도로명주소">주소(지역명)</option>
+          <option value="임대사업자">임대사업자</option>
+          <option value="시군구">시군구</option>
+          <option value="광역시도">광역시도</option>
+        </select>
+        <input type="text" id="sInput" placeholder="검색어 입력 후 엔터">
+        <button class="btn" onclick="doSearch()">검색</button>
+        <button class="btn btn-reset" onclick="doReset()">초기화</button>
+      </div>
+
+      <!-- 활성 필터 태그 -->
+      <div class="active-filters" id="activeTags"></div>
+
+      <div class="meta" id="meta">데이터를 불러오는 중...</div>
+      <div class="err" id="err"></div>
+      <div style="overflow-x:auto">
+        <div id="tableWrap"><div class="spinner">로딩 중...</div></div>
+      </div>
+      <div class="pager" id="pager"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 모달 -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalDirect()">×</button>
+    <h2 id="modalTitle"></h2>
+    <div class="info-grid" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  const PER = 10;
+  let curPage = 1;
+
+  // ── 사이드바 토글 ──
+  let sidebarOpen = true;
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    const sb = document.getElementById('sidebar');
+    const tb = document.getElementById('sidebarToggle');
+    if (sidebarOpen) {
+      sb.classList.remove('collapsed');
+      tb.classList.add('open');
+    } else {
+      sb.classList.add('collapsed');
+      tb.classList.remove('open');
+    }
+  }
+
+  // ── 필터 상태 ──
+  let activeFilters = {
+    region: '',
+    types: [],
+    rentMin: '', rentMax: '',
+    depMin: '', depMax: '',
+    unitMin: '', unitMax: ''
+  };
+
+  function applyFilters() {
+    activeFilters.region  = document.getElementById('fRegion').value;
+    activeFilters.types   = [...document.querySelectorAll('#fTypeGroup input:checked')].map(c => c.value);
+    activeFilters.rentMin = document.getElementById('fRentMin').value;
+    activeFilters.rentMax = document.getElementById('fRentMax').value;
+    activeFilters.depMin  = document.getElementById('fDepMin').value;
+    activeFilters.depMax  = document.getElementById('fDepMax').value;
+    activeFilters.unitMin = document.getElementById('fUnitMin').value;
+    activeFilters.unitMax = document.getElementById('fUnitMax').value;
+    renderActiveTags();
+    curPage = 1;
+    load(1);
+  }
+
+  function resetFilters() {
+    document.getElementById('fRegion').value = '';
+    document.querySelectorAll('#fTypeGroup input').forEach(c => c.checked = false);
+    ['fRentMin','fRentMax','fDepMin','fDepMax','fUnitMin','fUnitMax'].forEach(id => document.getElementById(id).value = '');
+    activeFilters = { region:'', types:[], rentMin:'', rentMax:'', depMin:'', depMax:'', unitMin:'', unitMax:'' };
+    renderActiveTags();
+    curPage = 1;
+    load(1);
+  }
+
+  function renderActiveTags() {
+    const tags = [];
+    if (activeFilters.region) tags.push({ label: '지역: ' + activeFilters.region, key: 'region' });
+    activeFilters.types.forEach(t => tags.push({ label: '임대: ' + t, key: 'type:' + t }));
+    if (activeFilters.rentMin || activeFilters.rentMax)
+      tags.push({ label: '월임대료: ' + (activeFilters.rentMin||'0') + '~' + (activeFilters.rentMax||'∞') + '원', key: 'rent' });
+    if (activeFilters.depMin || activeFilters.depMax)
+      tags.push({ label: '보증금: ' + (activeFilters.depMin||'0') + '~' + (activeFilters.depMax||'∞') + '원', key: 'dep' });
+    if (activeFilters.unitMin || activeFilters.unitMax)
+      tags.push({ label: '세대수: ' + (activeFilters.unitMin||'0') + '~' + (activeFilters.unitMax||'∞'), key: 'unit' });
+
+    document.getElementById('activeTags').innerHTML = tags.map(t => `
+      <span class="filter-tag">${t.label}
+        <span class="rm" onclick="removeFilter('${t.key}')">×</span>
+      </span>`).join('');
+  }
+
+  function removeFilter(key) {
+    if (key === 'region') { activeFilters.region = ''; document.getElementById('fRegion').value = ''; }
+    else if (key.startsWith('type:')) {
+      const v = key.slice(5);
+      activeFilters.types = activeFilters.types.filter(t => t !== v);
+      document.querySelectorAll('#fTypeGroup input').forEach(c => { if (c.value === v) c.checked = false; });
+    }
+    else if (key === 'rent') {
+      activeFilters.rentMin = ''; activeFilters.rentMax = '';
+      document.getElementById('fRentMin').value = ''; document.getElementById('fRentMax').value = '';
+    }
+    else if (key === 'dep') {
+      activeFilters.depMin = ''; activeFilters.depMax = '';
+      document.getElementById('fDepMin').value = ''; document.getElementById('fDepMax').value = '';
+    }
+    else if (key === 'unit') {
+      activeFilters.unitMin = ''; activeFilters.unitMax = '';
+      document.getElementById('fUnitMin').value = ''; document.getElementById('fUnitMax').value = '';
+    }
+    renderActiveTags();
+    curPage = 1;
+    load(1);
+  }
+
+  // 클라이언트 사이드 필터 적용
+  function applyClientFilters(list) {
+    return list.filter(item => {
+      if (activeFilters.region && item['광역시도'] !== activeFilters.region) return false;
+      if (activeFilters.types.length && !activeFilters.types.includes(item['임대종류'])) return false;
+      const rent = Number(item['월임대료']) || 0;
+      if (activeFilters.rentMin && rent < Number(activeFilters.rentMin)) return false;
+      if (activeFilters.rentMax && rent > Number(activeFilters.rentMax)) return false;
+      const dep = Number(item['임대보증금']) || 0;
+      if (activeFilters.depMin && dep < Number(activeFilters.depMin)) return false;
+      if (activeFilters.depMax && dep > Number(activeFilters.depMax)) return false;
+      const unit = Number(item['세대수']) || 0;
+      if (activeFilters.unitMin && unit < Number(activeFilters.unitMin)) return false;
+      if (activeFilters.unitMax && unit > Number(activeFilters.unitMax)) return false;
+      return true;
+    });
+  }
+
+  // ── 검색 ──
+  document.getElementById('sInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  function doSearch() { curPage = 1; load(1); }
+  function doReset() {
+    document.getElementById('sInput').value = '';
+    document.getElementById('sType').selectedIndex = 0;
+    load(1);
+  }
+
+  function fmt만원(val) {
+    if (!val || val == 0) return '0원';
+    return Number(val).toLocaleString() + '원';
+  }
+
+  function openModal(item) {
+    document.getElementById('modalTitle').textContent = item['단지명'] || '-';
+    const fields = [
+      ['광역시도',       item['광역시도']],
+      ['시군구',         item['시군구']],
+      ['도로명주소',     item['도로명주소']],
+      ['임대종류',       item['임대종류']],
+      ['임대사업자',     item['임대사업자']],
+      ['주택유형',       item['주택유형']],
+      ['건물형태',       item['건물형태']],
+      ['세대수',         item['세대수'] ? item['세대수'] + ' 세대' : '-'],
+      ['공급면적(전용)', item['공급면적(전용)'] ? item['공급면적(전용)'] + ' ㎡' : '-'],
+      ['공급면적(공용)', item['공급면적(공용)'] ? item['공급면적(공용)'] + ' ㎡' : '-'],
+      ['임대보증금',     item['임대보증금'] ? fmt만원(item['임대보증금']) : '-'],
+      ['월임대료',       item['월임대료'] ? fmt만원(item['월임대료']) : '-'],
+      ['전환보증금',     item['전환보증금'] ? fmt만원(item['전환보증금']) : '-'],
+      ['난방방식',       item['난방방식']],
+      ['승강기',         item['승강기설치여부']],
+      ['주차',           item['주차수'] ? item['주차수'] + ' 대' : '-'],
+      ['준공일자',       item['준공일자']],
+      ['형명',           item['형명']],
+    ];
+    const moneyFields = ['임대보증금','월임대료','전환보증금'];
+    document.getElementById('modalBody').innerHTML = fields
+      .filter(([,v]) => v !== undefined && v !== null && v !== '')
+      .map(([l, v]) => `
+        <span class="info-label">${l}</span>
+        <span class="info-value ${moneyFields.includes(l) ? 'money' : ''}">${v ?? '-'}</span>
+      `).join('');
+    document.getElementById('modalBg').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalBg')) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+  // 전체 검색: 필드별 병렬 요청 후 중복 제거 머지
+  const ALL_FIELDS = ['단지명', '도로명주소', '임대사업자', '시군구', '광역시도'];
+
+  async function fetchField(field, kw, page, perPage) {
+    const url = `./api_proxy.php?page=${page}&perPage=${perPage}&cond[${field}::LIKE]=${encodeURIComponent(kw)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    return json;
+  }
+
+  // 전체 검색 결과 캐시 (페이지네이션용)
+  let _allResults = [];
+  let _allKw = '';
+
+  // 통계 업데이트
+  function updateStats(total, page, totalPages) {
+    document.getElementById('statTotal').textContent = total.toLocaleString();
+    document.getElementById('statPage').textContent = `${page}/${totalPages}`;
+  }
+
+  async function load(page) {
+    curPage = page;
+    const type = document.getElementById('sType').value;
+    const kw   = document.getElementById('sInput').value.trim();
+    const meta = document.getElementById('meta');
+    const err  = document.getElementById('err');
+    const wrap = document.getElementById('tableWrap');
+    const pager= document.getElementById('pager');
+
+    meta.textContent = ''; err.textContent = '';
+    pager.innerHTML  = '';
+    wrap.innerHTML   = '<div class="spinner">불러오는 중...</div>';
+
+    try {
+      let list, total, totalPages;
+      let rawList = [];
+
+      if (type === '전체' && kw) {
+        if (page === 1 || _allKw !== kw) {
+          const results = await Promise.all(
+            ALL_FIELDS.map(f => fetchField(f, kw, 1, 100).catch(() => ({ data: [] })))
+          );
+          const seen = new Set();
+          _allResults = [];
+          for (const r of results) {
+            for (const item of (r.data || [])) {
+              const key = (item['단지명'] || '') + '|' + (item['도로명주소'] || '');
+              if (!seen.has(key)) { seen.add(key); _allResults.push(item); }
+            }
+          }
+          _allKw = kw;
+        }
+        rawList = applyClientFilters(_allResults);
+        total      = rawList.length;
+        totalPages = Math.max(1, Math.ceil(total / PER));
+        list       = rawList.slice((page - 1) * PER, page * PER);
+        meta.textContent = `"${kw}" 전체 검색결과: 총 ${total}건 (${page}/${totalPages} 페이지)`;
+
+      } else if (!kw) {
+        const r2   = await fetch(`./api_proxy.php?page=${page}&perPage=${PER}`);
+        const json2 = await r2.json();
+        rawList    = applyClientFilters(json2.data || []);
+        list       = rawList;
+        total      = json2.totalCount || 0;
+        totalPages = Math.max(1, Math.ceil(total / PER));
+        meta.textContent = `전체 목록: 총 ${total}건 (${page}/${totalPages} 페이지)`;
+
+      } else {
+        const json = await fetchField(type, kw, page, PER);
+        rawList    = applyClientFilters(json.data || []);
+        list       = rawList;
+        total      = json.matchCount !== undefined ? json.matchCount : (json.totalCount || 0);
+        totalPages = Math.max(1, Math.ceil(total / PER));
+        meta.textContent = `"${kw}" [${type}] 검색결과: 총 ${total}건 (${page}/${totalPages} 페이지)`;
+      }
+
+      updateStats(total, page, totalPages);
+
+      if (!list.length) {
+        wrap.innerHTML = '<div class="spinner">조회된 결과가 없습니다.</div>';
+        return;
+      }
+
+      window._items = list;
+
+      const rows = list.map((item, i) => `
+        <tr>
+          <td>${(page-1)*PER + i + 1}</td>
+          <td class="name">${item['단지명'] || '-'}</td>
+          <td>${item['도로명주소'] || '-'}</td>
+          <td><span class="badge">${item['임대종류'] || '-'}</span></td>
+          <td>${item['임대사업자'] || '-'}</td>
+          <td>${item['세대수'] != null ? item['세대수'] + ' 세대' : '-'}</td>
+          <td>${item['임대보증금'] ? Number(item['임대보증금']).toLocaleString() + '원' : '-'}</td>
+          <td>${item['월임대료'] ? Number(item['월임대료']).toLocaleString() + '원' : '-'}</td>
+          <td><button class="detail-btn" onclick="openModal(window._items[${i}])">상세보기</button></td>
+        </tr>`).join('');
+
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>단지명</th><th>주소</th><th>임대종류</th>
+              <th>임대사업자</th><th>세대수</th><th>임대보증금</th><th>월임대료</th><th></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+
+      const s = Math.max(1, page - 2), e = Math.min(totalPages, page + 2);
+      if (page > 1) addPg('«', 1);
+      for (let i = s; i <= e; i++) addPg(i, i, i === page);
+      if (page < totalPages) addPg('»', totalPages);
+
+    } catch(ex) {
+      wrap.innerHTML = '';
+      err.textContent = '오류: ' + ex.message;
+    }
+  }
+
+  function addPg(label, target, active=false) {
+    const b = document.createElement('button');
+    b.className = 'pg' + (active ? ' on' : '');
+    b.textContent = label;
+    b.onclick = () => load(target);
+    document.getElementById('pager').appendChild(b);
+  }
+
+  load(1);
+</script>
+</body>
+</html>

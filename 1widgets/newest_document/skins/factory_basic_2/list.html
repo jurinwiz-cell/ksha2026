@@ -1,0 +1,35 @@
+<!--%import("css/normal.css")-->
+
+
+<div class="documentWrap {$colorset}">
+
+	<ul class="items">
+
+      <!--@foreach($widget_info->document_list as $oDocument)-->
+
+	   
+
+      <li> 
+	  
+	  <!--@if($widget_info->display_regdate == 'Y')-->
+          <em class="date">{$oDocument->getRegdate("m-d")}</em>
+	  <!--@end-->
+
+	  <a href="{$oDocument->getPermanentUrl()}#{$oDocument->getCommentCount()}">{$oDocument->getTitle($widget_info->subject_cut_size)}</a>
+	  
+		<!--@if($oDocument->getCommentCount())-->
+             - <span class="comment"><a href="{$oDocument->getPermanentUrl()}#comment">{$oDocument->getCommentCount()}</a></span>
+            <!--@end-->
+
+		<!--{$oDocument->printExtraImages($widget_info->duration_new)}-->
+
+	  </li>
+
+      <!--@end-->
+
+	 
+
+    </ul>
+
+
+</div>

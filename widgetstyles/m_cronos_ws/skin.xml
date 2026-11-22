@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">m_cronos_ws</title>
+    
+    *********** 1.1 ***********
+    -cronos-x 모바일 레이아웃 사용시 제목에 아이콘옵션추가
+    
+     <version>1.1</version>
+    <date>2014-02-26</date>
+    <preview>preview.gif</preview>
+
+    <author email_address="help@2sisstore.com" link="http://www.2sisstore.com/">
+        <name xml:lang="ko">2sisstore</name>
+    </author>
+
+    <extra_vars>
+        <var name="ws_colorset" type="text">
+            <title xml:lang="ko">컬러셋</title>
+            <description xml:lang="ko">컬러셋을 지정해주세요</description>
+        </var>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <description xml:lang="ko">제목 텍스트</description>
+        </var>
+        <var name="fa_icon" type="text">
+            <name xml:lang="ko">아이콘 넣기</name>
+            <description xml:lang="ko">http://fortawesome.github.io/Font-Awesome/icons/ 의 아이콘을 등록해 주세요.예)fa-check-circle</description>
+        </var>
+        <var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 URL</name>
+            <description xml:lang="ko">http:// 포함한 URL를 등록합니다.</description>
+        </var>
+        <var name="ws_more_text" type="text">
+            <name xml:lang="ko">더보기 텍스트</name>
+            <description xml:lang="ko">더보기 텍스트</description>
+       </var>
+    </extra_vars>
+</widgetstyle>

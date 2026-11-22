@@ -1,0 +1,64 @@
+.clear {
+	clear:both
+}
+
+#gallery {
+	position:relative;
+	height:360px
+	
+}
+	#gallery a {
+		float:left;
+		position:absolute;
+		
+	}
+	
+	#gallery a img {
+		border:none;
+	}
+	
+	#gallery a.show {
+		z-index:500
+	}
+
+	#gallery .caption {
+		z-index:600; 
+		background-color:#000; 
+		color:#999; 
+		height:100px; 
+		width:100%; 
+		position:absolute;
+		bottom:0;
+		font:normal 12px 'arial', 'tahoma', '³ª´® °íµñ', '¸¼Àº °íµñ', 'µ¸¿ò', sans-serif;
+	}
+
+	#gallery .caption .content {
+		margin:5px 10px;
+		
+	}
+	
+	#gallery .caption .content h3 {
+		margin:0;
+		padding:0;
+		padding-bottom:5px;
+		color:#FF7E00;
+		font-weight:bold;
+		font-size:18px;
+		line-height:20px;
+		
+	}
+
+	#gallery .caption .content h3 .date {
+		
+		display:block;
+		color:#ccc;
+		font:normal 11px 'georgia', serif;
+		padding-bottom:5px;
+	}
+
+	#gallery .caption .content h3 .author {
+		
+		color:#ccc;
+		font-size: 12px;
+		line-height:20px;
+	}

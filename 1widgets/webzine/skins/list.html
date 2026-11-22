@@ -1,0 +1,54 @@
+
+<!--%import("css/common.css")-->
+<!--%import("function.js")-->
+
+<!--@if($colorset=="BR")-->
+	<!--%import("css/br.css")-->
+<!--@end-->
+
+<style type="text/css">
+
+#gallery {height:{$widget_info->thumbnail_height}px}
+
+</style>
+
+
+
+<div id="gallery">
+
+
+    <!--@if(count($widget_info->document_list))-->
+   
+      
+        {@ $count = 0; }
+        <!--@for($i=0;$i<$widget_info->rows_list_count;$i++)-->
+
+            <!--@for($j=0;$j<$widget_info->cols_list_count;$j++)-->
+                {@ $oDocument = $widget_info->document_list[$i*$widget_info->cols_list_count + $j]}
+                {@ $_existsThumbnail = $oDocument->thumbnailExists($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type) }
+         
+			<!--@if($oDocument->document_srl)-->			
+
+					<!--@if($_existsThumbnail)-->
+					<a href="<!--@if($oDocument->getExtraValue(1))-->{$oDocument->getExtraValue(1)}<!--@else-->{getUrl('','document_srl',$oDocument->document_srl)}<!--@end-->">
+						<img src="{$oDocument->getThumbnail($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type)}" alt="{$oDocument->getTitle($widget_info->subject_cut_size)}" width="{$widget_info->thumbnail_width}" height="{$widget_info->thumbnail_height}" title="" rel="<h3><!--@if($widget_info->display_regdate == 'Y')--><span class='date'>{$oDocument->getRegdate('Y.m.d')}</span><!--@end-->
+						{$oDocument->getTitle($widget_info->subject_cut_size)}
+						<!--@if($widget_info->display_author == 'Y')--><span class='author'>by {$oDocument->getNickName()}</span><!--@end-->
+						</h3>
+						{$oDocument->getSummary($widget_info->content_cut_size)}"/>
+					</a>
+					<!--@end-->
+
+
+            <!--@end-->
+          
+            <!--@end-->
+            <!--@for($k=$j;$k<$widget_info->cols_list_count;$k++)--><!--@end-->  
+        <!--@end-->
+
+    <!--@end-->
+	<div class="caption"><div class="content"></div></div>
+	
+</div>
+
+<div class="clear"></div>

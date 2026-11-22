@@ -1,0 +1,987 @@
+@version(2)
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $layout_info->title ?? '사회주택' }}</title>
+
+    <!-- External Libraries -->
+    <script src="/static/vendor/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/static/vendor/swiper/swiper-bundle.min.css" />
+    <script src="/static/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="/static/vendor/js/chart.min.js"></script>
+
+    <!-- Theme CSS -->
+    <load target="style.css" />
+    <style>
+        :root {
+            --accent-color: #{{ $layout_info->accent_color ?? 'FF8C00' }};
+        }
+    </style>
+</head>
+
+<body class="font-sans text-slate-800 bg-white">
+
+    <!-- Navigation -->
+    <nav id="mainNav"
+        class="fixed top-0 w-full z-50 bg-white/0 text-white transition-all duration-300 [&.scrolled]:bg-white [&.scrolled]:text-slate-800 [&.scrolled]:shadow-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                @if($layout_info->logo_image)
+                <a href="{{ getUrl('') }}">
+                    <img src="{{ $layout_info->logo_image }}" alt="Logo" class="h-8 w-auto">
+                </a>
+                @else
+                <div class="font-black text-xl tracking-tight">SOCIAL HOUSING</div>
+                @endif
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-8 text-sm font-bold items-center">
+                <a href="#hero" class="hover:text-blue-500 transition-colors">홈</a>
+                <a href="#notices" class="hover:text-blue-500 transition-colors">공지사항</a>
+                <a href="#widgets" class="hover:text-blue-500 transition-colors">최신글</a>
+                <a href="#archive" class="hover:text-blue-500 transition-colors">자료실</a>
+                <a href="#business" class="hover:text-blue-500 transition-colors">사업안내</a>
+
+                <div class="flex gap-3 ml-4 border-l pl-4 items-center">
+                    @if($layout_info->sns_facebook)
+                    <a href="{{ $layout_info->sns_facebook }}" target="_blank" class="hover:text-blue-500">FB</a>
+                    @endif
+                    @if($layout_info->sns_instagram)
+                    <a href="{{ $layout_info->sns_instagram }}" target="_blank" class="hover:text-pink-500">IG</a>
+                    @endif
+
+                    @if($is_logged && $logged_info->is_admin == 'Y')
+                    <a href="{{ getUrl('', 'module', 'admin', 'act', 'dispLayoutAdminModify', 'layout_srl', $layout_info->layout_srl) }}"
+                        onclick="window.open(this.href, 'layout_admin', 'width=1200,height=800,scrollbars=yes'); return false;"
+                        class="ml-2 px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black rounded-md hover:bg-red-100 transition-colors [&.scrolled]:bg-red-50">ADMIN</a>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobileMenuBtn" class="md:hidden p-2 focus:outline-none" aria-label="모바일 메뉴 열기">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu"
+        class="fixed inset-0 bg-white z-40 hidden flex-col pt-24 px-6 text-slate-800 transition-all duration-300">
+        <div class="flex flex-col gap-4 text-lg font-bold">
+            <a href="#hero" class="mobile-link py-3 border-b border-slate-100">홈</a>
+            <a href="#notices" class="mobile-link py-3 border-b border-slate-100">공지사항</a>
+            <a href="#widgets" class="mobile-link py-3 border-b border-slate-100">최신글</a>
+            <a href="#archive" class="mobile-link py-3 border-b border-slate-100">자료실</a>
+            <a href="#business" class="mobile-link py-3 border-b border-slate-100">사업안내</a>
+        </div>
+    </div>
+
+    <!-- [Section 1] Hero -->
+    <section id="hero"
+        class="min-h-screen flex items-center justify-center pt-16 text-white overflow-hidden relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="1" title="히어로 섹션 설정" aria-label="히어로 섹션 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        @if($layout_info->hero_img)
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $layout_info->hero_img }}')">
+            <div class="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px]"></div>
+        </div>
+        @else
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-blue-700"></div>
+        @endif
+
+        @php
+            // 공급현황 DB에서 통계 가져오기
+            try {
+                $supply_stats_query = "SELECT
+                    SUM(household_count) as total_households,
+                    COUNT(DISTINCT company_name_raw) as total_orgs,
+                    COUNT(*) as total_projects,
+                    COUNT(CASE WHEN completion_status = '준공' THEN 1 END) as completed_projects,
+                    COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(raw_data, '$.public_entity')) NOT LIKE '%민간%' AND
+                    JSON_UNQUOTE(JSON_EXTRACT(raw_data, '$.public_entity')) != '' THEN 1 END) as public_projects
+                    FROM tb_social_housing_supply WHERE deleted_at IS NULL AND completion_status IN ('준공', '미준공', '미착공', '종료')";
+
+                $shm_pdo = new \PDO("mysql:host=localhost;dbname=socialhousing_db;charset=utf8mb4", 'root', '1@tkghlwnxor');
+                $shm_pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+
+                $stmtStats = $shm_pdo->prepare($supply_stats_query);
+                $stmtStats->execute();
+                $stats_result = (object) $stmtStats->fetch();
+
+                $hero_households = $stats_result->total_households ?? 8650;
+                $hero_orgs = $stats_result->total_orgs ?? 45;
+                $hero_projects = $stats_result->total_projects ?? 0;
+                $hero_completed = $stats_result->completed_projects ?? 0;
+            } catch (\Exception) {
+                $hero_households = 8650;
+                $hero_orgs = 45;
+                $hero_projects = 120;
+                $hero_completed = 98;
+            }
+
+            // 히어로 영역 내 노출할 최근 사업공모 목록
+            $hero_gongmo_list = [];
+            if($layout_info->notice_target) {
+                $h_targets = array_filter(explode(',', $layout_info->notice_target));
+                $h_srls = [];
+                foreach($h_targets as $t) {
+                    if(!is_numeric($t)) {
+                        $m_info = getModel('module')->getModuleInfoByMid(trim($t));
+                        if($m_info) $h_srls[] = $m_info->module_srl;
+                    } else {
+                        $h_srls[] = $t;
+                    }
+                }
+
+                if(count($h_srls) > 0) {
+                    $h_module_in = implode(',', array_fill(0, count($h_srls), '?'));
+                    $h_ev_query = "SELECT document_srl FROM document_extra_vars WHERE module_srl IN ($h_module_in)
+                    AND (eid = '마감' OR eid = 'status' OR value = '진행중')";
+                    $h_stmtEv = \DB::getInstance()->prepare($h_ev_query);
+                    $h_stmtEv->execute($h_srls);
+                    $h_ev_docs = $h_stmtEv->fetchAll();
+                    $h_ev_srls = [];
+                    foreach($h_ev_docs as $e) {
+                        $h_ev_srls[] = $e->document_srl;
+                    }
+
+                    $h_args = new stdClass();
+                    $h_args->module_srl = implode(',', $h_srls);
+                    $h_args->list_count = 2;
+                    $h_args->sort_index = 'list_order';
+                    $h_args->order_type = 'asc';
+
+                    if(count($h_ev_srls) > 0) {
+                        $h_args->document_srl = implode(',', $h_ev_srls);
+                    } else {
+                        $h_cat_query = "SELECT category_srl FROM document_categories WHERE module_srl IN ($h_module_in) AND title LIKE '%사업공모%'";
+                        $h_stmtCat = \DB::getInstance()->prepare($h_cat_query);
+                        $h_stmtCat->execute($h_srls);
+                        $h_categories = $h_stmtCat->fetchAll();
+                        $h_cat_srls = [];
+                        foreach($h_categories as $c) {
+                            $h_cat_srls[] = $c->category_srl;
+                        }
+                        if(count($h_cat_srls) > 0) {
+                            $h_args->category_srl = implode(',', $h_cat_srls);
+                        }
+                    }
+
+                    $h_gongmo_out = executeQuery('document.getDocumentList', $h_args);
+                    if($h_gongmo_out->toBool() && $h_gongmo_out->data) {
+                        $hero_gongmo_list = is_array($h_gongmo_out->data) ? $h_gongmo_out->data : [$h_gongmo_out->data];
+                    }
+                }
+            }
+        @endphp
+
+        <div class="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            <!-- Left Hero Content (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold tracking-wide text-blue-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>사회주택 공급 &amp; 공모 종합안내</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight drop-shadow-sm">
+                    {{ $layout_info->hero_title }}
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl text-blue-100/90 font-medium max-w-xl leading-relaxed">
+                    {{ $layout_info->hero_description }}
+                </p>
+                <div class="pt-2 flex flex-wrap gap-4 items-center">
+                    <a href="#business"
+                        class="px-8 py-4 bg-[var(--accent-color)] hover:scale-105 transition-all rounded-full font-black text-white shadow-xl shadow-orange-950/30 flex items-center gap-2 text-sm">
+                        <span>공급현황 자세히보기</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </a>
+                    <a href="#notices"
+                        class="px-7 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full font-bold text-white text-sm transition-colors">
+                        최신 소식 확인
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Glassmorphism Dashboard (5 Cols) -->
+            <div class="lg:col-span-5 w-full">
+                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6 text-white">
+                    <!-- Dashboard Header -->
+                    <div class="flex justify-between items-center border-b border-white/15 pb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/30 flex items-center justify-center border border-white/20">
+                                <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-black text-sm tracking-wide">사회주택 공급 실적 현황</h3>
+                                <p class="text-[11px] text-blue-200/80">실시간 집계 데이터</p>
+                            </div>
+                        </div>
+                        <a href="#business" class="text-xs text-blue-200 hover:text-white font-bold transition-colors">상세보기 &rarr;</a>
+                    </div>
+
+                    <!-- 4 Statistics Grid -->
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-white/25 transition-all">
+                            <div class="text-[11px] font-bold text-blue-200 mb-1">총 공급 호수</div>
+                            <div class="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
+                                {{ number_format($hero_households) }}
+                                <span class="text-xs font-normal text-blue-300">세대</span>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-white/25 transition-all">
+                            <div class="text-[11px] font-bold text-blue-200 mb-1">공급 개소</div>
+                            <div class="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
+                                {{ number_format($hero_projects) }}
+                                <span class="text-xs font-normal text-blue-300">개소</span>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-white/25 transition-all">
+                            <div class="text-[11px] font-bold text-blue-200 mb-1">준공 완료 건수</div>
+                            <div class="text-2xl font-black text-emerald-400 tracking-tight flex items-baseline gap-1">
+                                {{ number_format($hero_completed) }}
+                                <span class="text-xs font-normal text-emerald-300">건</span>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-white/25 transition-all">
+                            <div class="text-[11px] font-bold text-blue-200 mb-1">회원 조합</div>
+                            <div class="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
+                                {{ number_format($hero_orgs) }}
+                                <span class="text-xs font-normal text-blue-300">곳</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Contest/Notice Mini List -->
+                    <div class="pt-2 border-t border-white/15 space-y-2.5">
+                        <div class="flex justify-between items-center text-xs font-bold text-blue-200">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                최근 사업 공모
+                            </span>
+                            @if($layout_info->supply_stat4_link)
+                            <a href="{{ $layout_info->supply_stat4_link }}" class="hover:underline text-[11px] text-blue-200">공모 전체 &gt;</a>
+                            @endif
+                        </div>
+
+                        @if(count($hero_gongmo_list) > 0)
+                            @foreach($hero_gongmo_list as $hg_doc)
+                            @php
+                                $hg_item = new documentItem();
+                                $hg_item->setAttribute($hg_doc);
+                                $hg_vars = $hg_item->getExtraVars();
+                                $hg_status = '진행중';
+                                $hg_end = '';
+                                if($hg_vars) {
+                                    foreach($hg_vars as $ev) {
+                                        if(strpos($ev->name, '종료') !== false || strpos($ev->name, '마감') !== false || $ev->eid == 'end_date') $hg_end = $ev->value;
+                                        if(strpos($ev->name, '마감') !== false || $ev->eid == 'status') $hg_status = $ev->value;
+                                    }
+                                }
+                            @endphp
+                            <a href="{{ getSiteUrl('', 'document_srl', $hg_doc->document_srl) }}"
+                               class="block p-3 rounded-xl bg-black/20 hover:bg-black/35 border border-white/10 hover:border-white/20 transition-all group">
+                                <div class="flex items-center justify-between gap-2 mb-1">
+                                    <span class="text-xs font-bold text-white group-hover:text-blue-200 transition-colors truncate">
+                                        {{ $hg_doc->title }}
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 {{ in_array($hg_status, ['진행중', '모집중', '공고중']) ? 'bg-emerald-500/80 text-white' : 'bg-white/20 text-slate-200' }}">
+                                        {{ $hg_status }}
+                                    </span>
+                                </div>
+                                @if($hg_end)
+                                <div class="text-[10px] text-blue-200/70">
+                                    마감: {{ $hg_end }}
+                                </div>
+                                @endif
+                            </a>
+                            @endforeach
+                        @else
+                            <div class="p-3 text-center text-xs text-blue-200/70 bg-black/10 rounded-xl">
+                                현재 진행 중인 공모 일정이 없습니다.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [Section 2] Notice Slider -->
+    <section id="notices" class="py-24 bg-slate-50 relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="2" title="공지사항 섹션 설정"
+            aria-label="공지사항 섹션 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-12">
+                <div class="space-y-2">
+                    <h2 class="text-sm font-black text-blue-600 uppercase tracking-widest">Notice</h2>
+                    <h3 class="text-3xl font-black text-slate-900">최신 소식</h3>
+                </div>
+            </div>
+
+            <div class="swiper notice-swiper">
+                <div class="swiper-wrapper">
+                    @php
+                    if($layout_info->notice_target) {
+                    $notice_targets = array_filter(explode(',', $layout_info->notice_target));
+                    $notice_srls = [];
+                    foreach($notice_targets as $t) {
+                    if(!is_numeric($t)) {
+                    $m_info = getModel('module')->getModuleInfoByMid($t);
+                    if($m_info) $notice_srls[] = $m_info->module_srl;
+                    } else {
+                    $notice_srls[] = $t;
+                    }
+                    }
+
+                    $args = new stdClass();
+                    $args->module_srl = $notice_srls;
+                    $args->list_count = 5;
+                    $args->sort_index = 'list_order';
+                    $args->order_type = 'asc'; // or desc
+
+                    $can_fetch = true;
+                    // Handle extra var filtering if name is provided
+                    if ($layout_info->notice_extra_var_name && $layout_info->notice_extra_var_value) {
+                    $query = "SELECT document_srl FROM document_extra_vars WHERE module_srl IN (" . implode(',',
+                    array_fill(0, count($notice_srls), '?')) . ") AND eid = ? AND value = ? ORDER BY document_srl DESC
+                    LIMIT 50";
+                    $stmt = \DB::getInstance()->prepare($query);
+                    $params = $notice_srls;
+                    $params[] = trim($layout_info->notice_extra_var_name);
+                    $params[] = trim($layout_info->notice_extra_var_value);
+                    $stmt->execute($params);
+                    $result = $stmt->fetchAll();
+                    $extra_srls = [];
+                    foreach($result as $r) {
+                    $extra_srls[] = $r->document_srl;
+                    }
+
+                    if(count($extra_srls) > 0) {
+                    $args->document_srl = $extra_srls;
+                    } else {
+                    $can_fetch = false;
+                    }
+                    }
+
+                    if ($can_fetch) {
+                    $notice_list = executeQuery('document.getDocumentList', $args)->data;
+                    } else {
+                    $notice_list = [];
+                    }
+                    } else {
+                    $notice_list = [];
+                    }
+                    @endphp
+                    @if(isset($notice_list) && count($notice_list))
+                    @foreach($notice_list as $doc)
+                    @php
+                        $doc_item = new documentItem();
+                        $doc_item->setAttribute($doc);
+                        $thumbnail = $doc_item->getThumbnail(400, 240, 'crop');
+
+                        // 주요 시한 및 확장변수 추출
+                        $doc_ext_vars = $doc_item->getExtraVars();
+                        $period_start = '';
+                        $period_end = '';
+                        $status_badge = '';
+
+                        if($doc_ext_vars) {
+                            foreach($doc_ext_vars as $ev) {
+                                if(strpos($ev->name, '시작') !== false || $ev->eid == 'start_date') $period_start = $ev->value;
+                                if(strpos($ev->name, '종료') !== false || strpos($ev->name, '마감') !== false || $ev->eid == 'end_date' || $ev->eid == 'due_date') $period_end = $ev->value;
+                                if((strpos($ev->name, '상태') !== false || $ev->eid == 'status') && in_array($ev->value, ['진행중', '모집중', '마감', '접수중', '공고중'])) {
+                                    $status_badge = $ev->value;
+                                }
+                            }
+                        }
+                        // 시한 표시 포맷
+                        $deadline_text = '';
+                        if($period_end) {
+                            $deadline_text = ($period_start ? $period_start . ' ~ ' : '기한: ') . $period_end;
+                        }
+                        
+                        // 요약 내용
+                        $doc_summary = $doc_item->getContentText(110);
+                        $readed_count = (int)$doc->readed_count;
+                    @endphp
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-white rounded-3xl border border-slate-100 hover:shadow-xl transition-all overflow-hidden flex flex-col h-full group">
+                            <!-- 썸네일 이미지 영역 -->
+                            @if($thumbnail)
+                            <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+                                <img src="{{ $thumbnail }}" alt="{{ $doc->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                @if($status_badge)
+                                <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-black shadow-sm {{ in_array($status_badge, ['진행중', '모집중', '접수중']) ? 'bg-emerald-500 text-white' : 'bg-slate-700/80 text-white' }}">
+                                    {{ $status_badge }}
+                                </span>
+                                @endif
+                            </div>
+                            @endif
+
+                            <div class="p-6 md:p-8 flex flex-col flex-grow">
+                                <div class="flex items-center justify-between text-xs text-slate-400 mb-3">
+                                    <span class="font-bold text-blue-600">{{ zdate($doc->regdate, 'Y.m.d') }}</span>
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        {{ number_format($readed_count) }}
+                                    </span>
+                                </div>
+
+                                <h4 class="text-lg font-bold text-slate-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
+                                    <a href="{{ getSiteUrl('', 'document_srl', $doc->document_srl) }}">{{ $doc->title }}</a>
+                                </h4>
+
+                                @if($doc_summary)
+                                <p class="text-sm text-slate-500 line-clamp-2 mb-4 leading-relaxed flex-grow">
+                                    {{ $doc_summary }}
+                                </p>
+                                @endif
+
+                                @if($deadline_text)
+                                <div class="mb-4 flex items-center gap-1.5 text-xs text-rose-500 bg-rose-50/80 px-3 py-1.5 rounded-lg font-bold w-fit">
+                                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="truncate">{{ $deadline_text }}</span>
+                                </div>
+                                @endif
+
+                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
+                                    <a href="{{ getSiteUrl('', 'document_srl', $doc->document_srl) }}" class="text-xs font-black text-slate-400 group-hover:text-blue-600 flex items-center gap-1 transition-colors">
+                                        READ MORE
+                                        <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                    @else
+                    <div class="swiper-slide text-center py-20 text-slate-300 font-bold">게시판을 설정해주세요.</div>
+                    @endif
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [Section 3] Managed Widgets -->
+    <section id="widgets" class="py-24 relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="3" title="최신글 영역 설정" aria-label="최신글 영역 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @foreach(['board1', 'board2', 'board3'] as $idx)
+                @php
+                $title_key = $idx . '_title';
+                $target_key = $idx . '_target';
+                $style_key = $idx . '_style';
+                $extra_var_name_key = $idx . '_extra_var_name';
+                $extra_var_value_key = $idx . '_extra_var_value';
+                $accent_colors = ['board1' => 'blue', 'board2' => 'indigo', 'board3' => 'emerald'];
+                $color = $accent_colors[$idx];
+                @endphp
+                <div class="widget-box">
+                    <h4 class="text-lg font-black mb-6 border-l-4 border-{{ $color }}-600 pl-4">{{
+                        $layout_info->$title_key }}</h4>
+                    <div class="bg-white rounded-3xl border border-slate-100 p-2 overflow-hidden shadow-sm">
+                        @if($layout_info->$target_key)
+                        @php
+                        $w_targets = array_filter(explode(',', $layout_info->$target_key));
+                        $w_srls = [];
+                        foreach($w_targets as $t) {
+                        if(!is_numeric($t)) {
+                        $m_info = getModel('module')->getModuleInfoByMid($t);
+                        if($m_info) $w_srls[] = $m_info->module_srl;
+                        } else {
+                        $w_srls[] = $t;
+                        }
+                        }
+
+                        $args = new stdClass();
+                        $args->module_srl = implode(',', $w_srls);
+                        $args->list_count = 5;
+                        $args->sort_index = 'list_order';
+                        $args->order_type = 'asc';
+
+                        $can_fetch = true;
+                        $ev_name = $layout_info->$extra_var_name_key ?? '';
+                        $ev_val = $layout_info->$extra_var_value_key ?? '';
+
+                        if ($ev_name && $ev_val) {
+                        $query = "SELECT document_srl FROM document_extra_vars WHERE module_srl IN (" . implode(',',
+                        array_fill(0, count($w_srls), '?')) . ") AND eid = ? AND value = ? ORDER BY document_srl DESC
+                        LIMIT 50";
+                        $stmt = \DB::getInstance()->prepare($query);
+                        $params = $w_srls;
+                        $params[] = trim($ev_name);
+                        $params[] = trim($ev_val);
+                        $stmt->execute($params);
+                        $result = $stmt->fetchAll();
+                        $extra_srls = [];
+                        foreach($result as $r) {
+                        $extra_srls[] = $r->document_srl;
+                        }
+                        if(count($extra_srls) > 0) {
+                        $args->document_srl = $extra_srls;
+                        } else {
+                        $can_fetch = false;
+                        }
+                        }
+
+                        if ($can_fetch) {
+                        $widget_list = executeQuery('document.getDocumentList', $args)->data;
+                        } else {
+                        $widget_list = [];
+                        }
+                        $style = $layout_info->$style_key;
+                        @endphp
+
+                        @if(isset($widget_list) && count($widget_list))
+                        <ul class="divide-y divide-slate-100 px-4">
+                            @foreach($widget_list as $doc)
+                            <li class="py-3 flex {{ $style == 'webzine' ? 'gap-4' : 'justify-between items-center' }}">
+                                @if($style == 'webzine' || $style == 'gallery')
+                                @php
+                                $doc_item = new documentItem();
+                                $doc_item->setAttribute($doc);
+                                $thumbnail = $doc_item->getThumbnail(80, 80, 'crop');
+                                @endphp
+                                @if($thumbnail)
+                                <img src="{{ $thumbnail }}" alt="{{ $doc->title }}"
+                                    class="w-16 h-16 rounded-xl object-cover shrink-0" />
+                                @else
+                                <div
+                                    class="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                                    <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                @endif
+                                @endif
+
+                                <div class="min-w-0 {{ $style == 'webzine' ? 'flex-1' : 'flex-1 pr-4' }}">
+                                    <a href="{{ getSiteUrl('', 'document_srl', $doc->document_srl) }}"
+                                        class="text-sm font-bold text-slate-700 hover:text-blue-600 truncate block">{{
+                                        $doc->title }}</a>
+                                    @if($style == 'webzine')
+                                    <p class="text-xs text-slate-400 mt-1 truncate">{{ zdate($doc->regdate, 'Y.m.d') }}
+                                    </p>
+                                    @endif
+                                </div>
+
+                                @if($style != 'webzine')
+                                <div class="text-xs text-slate-400 shrink-0">{{ zdate($doc->regdate, 'Y.m.d') }}</div>
+                                @endif
+                            </li>
+                            @endforeach
+                        </ul>
+                        @else
+                        <div class="py-10 text-center text-slate-400 text-sm">등록된 글이 없습니다.</div>
+                        @endif
+                        @else
+                        <div class="py-20 text-center text-slate-300 text-xs font-bold italic">게시판을 선택해주세요.</div>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- [Section 4] Archive -->
+    <section id="archive" class="py-24 bg-slate-900 text-white relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="4" title="자료실 설정" aria-label="자료실 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center space-y-4 mb-16">
+                <h2 class="text-sm font-black text-blue-400 uppercase tracking-widest">Archive</h2>
+                <h3 class="text-4xl font-black">{{ $layout_info->archive_title }}</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto">{{ $layout_info->archive_desc }}</p>
+            </div>
+
+            @php
+            $archive_docs = [];
+            if ($layout_info->archive_target) {
+            $arch_targets = array_filter(explode(',', $layout_info->archive_target));
+            $arch_srls = [];
+            foreach ($arch_targets as $t) {
+            $t = trim($t);
+            if (!is_numeric($t)) {
+            $m_info = getModel('module')->getModuleInfoByMid($t);
+            if ($m_info) $arch_srls[] = $m_info->module_srl;
+            } else {
+            $arch_srls[] = $t;
+            }
+            }
+            if (count($arch_srls) > 0) {
+            $arch_args = new stdClass();
+            $arch_args->module_srl = $arch_srls;
+            $arch_args->list_count = 8;
+            $arch_args->sort_index = 'list_order';
+            $arch_args->order_type = 'asc';
+            $archive_docs = executeQuery('document.getDocumentList', $arch_args)->data ?: [];
+            }
+            }
+            @endphp
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @if(count($archive_docs))
+                @foreach($archive_docs as $adoc)
+                @php
+                $adoc_item = new documentItem();
+                $adoc_item->setAttribute($adoc);
+                $arch_thumb = $adoc_item->getThumbnail(300, 400, 'crop');
+                $arch_file_url = null;
+                if ($adoc_item->hasUploadedFiles()) {
+                $arch_files = $adoc_item->getUploadedFiles();
+                if ($arch_files && count($arch_files) > 0) {
+                $arch_file_url = $arch_files[0]->download_url;
+                }
+                }
+                @endphp
+                <div
+                    class="bg-white/5 rounded-3xl p-6 border border-white/10 hover:bg-white/10 transition-colors group">
+                    <div
+                        class="w-full aspect-[3/4] bg-white/10 rounded-2xl mb-6 flex items-center justify-center overflow-hidden">
+                        @if($arch_thumb)
+                        <img src="{{ $arch_thumb }}" alt="{{ $adoc->title }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        @else
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-white/20 group-hover:scale-110 transition-transform">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <polyline points="9 15 12 12 15 15"></polyline>
+                        </svg>
+                        @endif
+                    </div>
+                    <h4 class="font-bold mb-2 text-sm">{{ $adoc->title }}</h4>
+                    <p class="text-[10px] text-slate-500 mb-4">{{ zdate($adoc->regdate, 'Y.m.d') }}</p>
+                    @if($arch_file_url)
+                    <a href="{{ $arch_file_url }}"
+                        class="block w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-black transition-colors text-center text-white">내려받기</a>
+                    @else
+                    <a href="{{ getSiteUrl('', 'document_srl', $adoc->document_srl) }}"
+                        class="block w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-black transition-colors text-center text-white">자세히
+                        보기</a>
+                    @endif
+                </div>
+                @endforeach
+                @else
+                <div class="col-span-4 py-20 text-center text-white/30 font-bold">자료실 게시판을 설정해주세요.</div>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    <!-- [Section 5] Business Info -->
+    <section id="business" class="py-24 relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="5" title="공급 현황 설정" aria-label="공급 현황 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                <div class="space-y-8">
+                    <div class="space-y-2">
+                        <h2 class="text-sm font-black text-blue-600 uppercase tracking-widest">{{
+                            $layout_info->supply_title ?: 'Supply Status' }}</h2>
+                        <h3 class="text-4xl font-black text-slate-900">사회주택 공급 현황</h3>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        @php
+                        // 공급현황 DB에서 통계 가져오기
+                        $supply_stats_query = "SELECT
+                        SUM(household_count) as total_households,
+                        COUNT(DISTINCT company_name_raw) as total_orgs,
+                        COUNT(*) as total_projects,
+                        COUNT(CASE WHEN completion_status = '준공' THEN 1 END) as completed_projects,
+                        COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(raw_data, '$.public_entity')) NOT LIKE '%민간%' AND
+                        JSON_UNQUOTE(JSON_EXTRACT(raw_data, '$.public_entity')) != '' THEN 1 END) as public_projects
+                        FROM tb_social_housing_supply WHERE deleted_at IS NULL AND completion_status IN ('준공', '미준공',
+                        '미착공', '종료')";
+
+                        // 라이믹스 DB 객체 대신 shm/includes/db.php 와 동일한 별도 DB(socialhousing_db)에 직접 연결
+                        $shm_pdo = new \PDO("mysql:host=localhost;dbname=socialhousing_db;charset=utf8mb4", 'root',
+                        '1@tkghlwnxor');
+                        $shm_pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+
+                        $stmtStats = $shm_pdo->prepare($supply_stats_query);
+                        $stmtStats->execute();
+                        $stats_result = (object) $stmtStats->fetch();
+
+                        $total_households = $stats_result->total_households ?? 8650;
+                        $total_orgs = $stats_result->total_orgs ?? 45;
+                        $total_projects = $stats_result->total_projects ?? 0;
+                        $completed_projects = $stats_result->completed_projects ?? 0;
+                        $public_projects = $stats_result->public_projects ?? 0;
+
+                        $supply_stats = [
+                        ['label' => $layout_info->supply_stat1_label ?: '사회주택 공급호수(세대)', 'number' =>
+                        number_format($total_households)],
+                        ['label' => '사회주택 공급개소', 'number' => number_format($total_projects)],
+                        ['label' => '준공 완료 건수', 'number' => number_format($completed_projects)],
+                        ['label' => $layout_info->supply_stat3_label ?: '회원조합(곳)', 'number' =>
+                        number_format($total_orgs)],
+                        ];
+                        @endphp
+                        @foreach($supply_stats as $stat)
+                        <div
+                            class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 flex flex-col justify-center">
+                            <div class="text-3xl font-black text-blue-600 mb-2">{{ $stat['number'] }}</div>
+                            <div class="text-[11px] text-slate-400 font-bold break-keep">{{ $stat['label'] }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                    <!-- Chart could be placed here if needed -->
+                </div>
+                <div class="space-y-8">
+                    <h4 class="text-xl font-black">{{ $layout_info->supply_stat4_label ?: '최근 사업 공모 현황' }}</h4>
+                    <p class="text-slate-400 text-sm">{{ $layout_info->supply_stat4_number ?: '' }}</p>
+                    @if($layout_info->supply_stat4_link)
+                    <a href="{{ $layout_info->supply_stat4_link }}"
+                        class="inline-flex items-center gap-2 text-sm font-black text-blue-600 hover:underline">
+                        공모 안내 바로가기 →
+                    </a>
+                    @endif
+                    <div class="space-y-4">
+                        @php
+                        $gongmo_list = [];
+                        if($layout_info->notice_target) {
+                        $notice_targets = array_filter(explode(',', $layout_info->notice_target));
+                        $notice_srls = [];
+                        foreach($notice_targets as $t) {
+                        if(!is_numeric($t)) {
+                        $m_info = getModel('module')->getModuleInfoByMid(trim($t));
+                        if($m_info) $notice_srls[] = $m_info->module_srl;
+                        } else {
+                        $notice_srls[] = $t;
+                        }
+                        }
+
+                        if(count($notice_srls) > 0) {
+                        $module_srl_in = implode(',', array_fill(0, count($notice_srls), '?'));
+
+                        // '마감' 상태가 '진행중'인 문서 SRL 찾기 (extra_vars 사용)
+                        $ev_query = "SELECT document_srl FROM document_extra_vars WHERE module_srl IN ($module_srl_in)
+                        AND (eid = '마감' OR eid = 'status' OR value = '진행중')";
+                        $stmtEv = \DB::getInstance()->prepare($ev_query);
+                        $stmtEv->execute($notice_srls);
+                        $ev_docs = $stmtEv->fetchAll();
+                        $ev_srls = [];
+                        foreach($ev_docs as $e) {
+                        $ev_srls[] = $e->document_srl;
+                        }
+
+                        $args = new stdClass();
+                        $args->module_srl = implode(',', $notice_srls);
+                        $args->list_count = 3;
+                        $args->sort_index = 'list_order';
+                        $args->order_type = 'asc';
+
+                        if(count($ev_srls) > 0) {
+                        $args->document_srl = implode(',', $ev_srls);
+                        } else {
+                        // '진행중'인 문서가 없더라도 최근 사업공모 카테고리 글을 가져오기 위해 카테고리 검색
+                        $cat_query = "SELECT category_srl FROM document_categories WHERE module_srl IN ($module_srl_in)
+                        AND title LIKE '%사업공모%'";
+                        $stmtCat = \DB::getInstance()->prepare($cat_query);
+                        $stmtCat->execute($notice_srls);
+                        $categories = $stmtCat->fetchAll();
+                        $cat_srls = [];
+                        foreach($categories as $c) {
+                        $cat_srls[] = $c->category_srl;
+                        }
+                        if(count($cat_srls) > 0) {
+                        $args->category_srl = implode(',', $cat_srls);
+                        }
+                        }
+
+                        $gongmo_output = executeQuery('document.getDocumentList', $args);
+                        if($gongmo_output->toBool() && $gongmo_output->data) {
+                        $gongmo_list = is_array($gongmo_output->data) ? $gongmo_output->data : [$gongmo_output->data];
+                        }
+                        }
+                        }
+                        @endphp
+
+                        @if(count($gongmo_list) > 0)
+                        @php $g_idx = 1; @endphp
+                        @foreach($gongmo_list as $gdoc)
+                        @php
+                        $gdoc_item = new documentItem();
+                        $gdoc_item->setAttribute($gdoc);
+                        $ext_vars = $gdoc_item->getExtraVars();
+
+                        $period_start = '';
+                        $period_end = '';
+                        $status_badge = '공고중';
+
+                        if($ext_vars) {
+                        foreach($ext_vars as $ev) {
+                        if(strpos($ev->name, '시작') !== false || $ev->eid == 'start_date') $period_start = $ev->value;
+                        if(strpos($ev->name, '종료') !== false || $ev->eid == 'end_date') $period_end = $ev->value;
+                        if(strpos($ev->name, '마감') !== false || $ev->eid == 'status') $status_badge = $ev->value;
+                        }
+                        }
+                        $period = ($period_start && $period_end) ? $period_start . ' ~ ' . $period_end : '별도 공지시까지';
+                        @endphp
+                        <div
+                            class="flex items-center gap-6 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors rounded-xl">
+                            <div
+                                class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 font-black">
+                                0{{ $g_idx++ }}</div>
+                            <div class="flex-grow">
+                                <a href="{{ getSiteUrl('', 'document_srl', $gdoc->document_srl) }}"
+                                    class="font-bold text-slate-800 hover:text-blue-600 block line-clamp-1">{{
+                                    $gdoc->title }}</a>
+                                <p class="text-xs text-slate-400 mt-1">접수기간: {{ $period }}</p>
+                            </div>
+                            <span
+                                class="px-3 py-1 {{ $status_badge == '진행중' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600' }} text-[10px] font-black rounded-full shrink-0">{{
+                                $status_badge }}</span>
+                        </div>
+                        @endforeach
+                        @else
+                        <div class="py-10 text-center text-slate-400 text-sm">현재 진행중인 사업공모가 없습니다.</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-16 border-t border-slate-100 bg-slate-50 relative group/section">
+        @if($is_logged && $logged_info->is_admin == 'Y')
+        <button type="button" class="layout-section-btn" data-group-index="6" title="푸터 설정" aria-label="푸터 설정">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
+        @endif
+        <div
+            class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            <div class="space-y-4">
+                <div class="font-black text-blue-900">SOCIAL HOUSING</div>
+                <p class="text-xs text-slate-500 whitespace-pre-line leading-relaxed">
+                    {{ $layout_info->footer_text }}
+                </p>
+            </div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                {{ $layout_info->copyright }}
+            </div>
+        </div>
+    </footer>
+
+    <!-- Layout Settings Modal -->
+    @if($is_logged && $logged_info->is_admin == 'Y')
+    <div id="layoutAdminModal"
+        class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white w-full max-w-4xl h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-black text-slate-800 text-lg">섹션 설정</h3>
+                <button type="button" id="closeLayoutModalBtn" aria-label="설정창 닫기"
+                    class="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-grow relative bg-slate-100">
+                <div id="layoutAdminLoading"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-white z-10">
+                    <svg class="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <p class="text-sm font-bold text-slate-500">설정창을 불러오는 중입니다...</p>
+                </div>
+                <iframe id="layoutAdminIframe" src="" class="w-full h-full border-0"
+                    data-admin-url="{{ getUrl('', 'module', 'admin', 'act', 'dispLayoutAdminModify', 'layout_srl', $layout_info->layout_srl) }}"></iframe>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Theme JS -->
+    <load target="main.js" />
+</body>
+
+</html>

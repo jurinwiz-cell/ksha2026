@@ -1,0 +1,80 @@
+<load target="./js/jquery.cookie.js" />
+<load target="./js/common.js" />
+<load target="https://static.nid.naver.com/js/naverLogin_implicit-1.0.2.js" />
+
+
+<a class="btn_social_login" id="btn_naver_login" href="#login" onclick="socialBtnCheck('naver'); return false;"><span>Naver Login</span></a>
+<a id="btn_naver_login_function" href="#" onclick="myNaverLogin(); return false" style="display:none;">SOCIAL LOGIN</a>
+
+
+
+<script>
+//네이버 로그인 SDK 적용(naverLogin_implicit-1.0.2.js)
+var naver_redirect_uri = "{$redirect_uri}";
+var naver_id_login = new naver_id_login("{$social_obj->naver_client_id}", naver_redirect_uri);
+
+<!--@if($social_provider=='naver')-->
+//hash(#)가 있고 'access_token'이 있을 때, XE로그인 설정
+var hash_string = window.location.hash;
+if(hash_string.length > 99){
+  //로딩 아이콘 출력
+  var social_loading = new sociaLoginLoading();
+  //access_token 설정
+  var hash_array = hash_string.split("&");
+  var access_token = hash_array[0].replace("#access_token=", "");
+  //헤시태그 제거
+  history.replaceState({}, document.title, "{str_replace('amp;','',getFullUrl('mid',$mid))}");
+
+  var url = "./";
+  jQuery.ajax({
+    type: "POST",
+    url: url,
+    data: "mid={$mid}&naver_access_token="+access_token,
+    success: function(data){
+      location.reload();
+    }
+  });
+}
+<!--@end-->
+
+
+//네이버 로그인 함수
+function myNaverLogin(){
+  //로딩 아이콘 출력
+  var social_loading = new sociaLoginLoading();
+
+  //회원가입 전 소셜공급자 세션 설정
+  var url = "./";
+  jQuery.ajax({
+    type: "POST",
+    url: url,
+    data: "ajax=y&mid={$mid}&social_provider=naver&insert_session=y&act={$act}",
+    success: function(data){
+      var response = jQuery(data);
+      if(response.filter("#ajax_result_text").text()){
+        var result_msg = response.filter("#ajax_result_text").text();
+      } else if(response.find("#ajax_result_text").text()){
+        var result_msg = response.find("#ajax_result_text").text();
+      }
+      if(result_msg){
+        location.reload();
+        //IE에서 '이 페이지에서 나가겠습니까?' 창이 뜨는 문제로 인해 php 'header'로 변경함
+        //window.location = naver_id_login.getNaverIdLoginLink();
+      }
+      return false;
+    }
+  });
+}
+
+
+//네이버 로그아웃 함수(사용안함)
+function myNaverLogout(){
+  //네이버 로그아웃을 위해 삽입
+  jQuery('body').append('<img id="naver_logout_img" src="http://nid.naver.com/nidlogin.logout" style="display:none;" />');
+
+  setTimeout(function(){
+    jQuery('#naver_logout_img').remove();
+    //로그아웃 내용
+  },300);
+}
+</script>

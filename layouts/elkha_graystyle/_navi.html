@@ -1,0 +1,22 @@
+<!--//
+$menu_vars = array(); // 임시 배열를 생성합니다. (한번만 생성해도 됩니다)
+$menu_depth = 1; // 1번 클래스부터 시작합니다. (.ul1 > .li1 > ... > .li3 > .ul4)
+$menu_vars[$menu_depth] = $gnb->list; // 출력할 메뉴를 변수로 입력합니다.
+-->
+
+<ul class="ul{$menu_depth}">
+	<li loop="$menu_vars[$menu_depth]=>$val" cond="$val['link']" class="li{$menu_depth}{$val['selected']||$layout_info->REQUEST_URI==$val['href']? ' on on'.$menu_depth:''}">
+		<block cond="($val['selected']||$layout_info->REQUEST_URI==$val['href']) && !$L_CATEGORY[$menu_depth]">{@ $L_CATEGORY[$menu_depth]=$val; }</block>
+		<a href="{$val['href']}" class="a{$menu_depth}{$val['selected']||$layout_info->REQUEST_URI==$val['href']? ' on on'.$menu_depth:''}" target="_blank"|cond="$val['open_window']=='Y'"><span cond="$val['text']==$val['link']">{$val["text"]}</span><block cond="$val['text']!=$val['link']">{$val["link"]}</block></a>
+		<block cond="$val['list']">
+{@
+$menu_depth++;
+$menu_vars[$menu_depth] = $val['list'];
+}
+		<include target="_navi.html" />
+{@
+$menu_depth--;
+}
+		</block>
+	</li>
+</ul>

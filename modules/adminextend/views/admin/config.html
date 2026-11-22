@@ -1,0 +1,102 @@
+<include target="_header.html" />
+
+<form class="x_form-horizontal" action="./" method="post" id="adminextend">
+	<input type="hidden" name="module" value="adminextend" />
+	<input type="hidden" name="act" value="procAdminextendAdminInsertConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input type="hidden" name="xe_validator_id" value="modules/adminextend/tpl/config/1" />
+	
+	<div class="message {$XE_VALIDATOR_MESSAGE_TYPE}" cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/adminextend/tpl/config/1'">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+
+	<section class="section">
+		<h1>기본 설정</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->module_enabled}</label>
+			<div class="x_controls">
+				<label><input type="checkbox" name="module_enabled" value="Y" checked="checked"|cond="$config->module_enabled === 'Y'">&nbsp;{$lang->module_enabled}</label>
+				<p class="x_help-block">{$lang->about_module_enabled}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->super_admin_member_srl}</label>
+			<div class="x_controls">
+				<input type="number" name="super_admin_member_srl" value="{$config->super_admin_member_srl !== -1 ? $config->super_admin_member_srl : $this->user->member_srl}">&nbsp;(현재 계정 srl: {$this->user->member_srl})
+				<p class="x_help-block">{$lang->about_super_admin_member_srl}</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<h1>로그 설정</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->admin_log_enabled}</label>
+			<div class="x_controls">
+				<label><input type="checkbox" name="admin_log_enabled" value="Y" checked="checked"|cond="$config->admin_log_enabled === 'Y'">&nbsp;{$lang->admin_log_enabled}</label>
+				<p class="x_help-block">{$lang->about_admin_log_enabled}</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->report_super_admin_when_unauthorized_act}</label>
+			<div class="x_controls">
+				<label><input type="checkbox" name="report_super_admin_when_unauthorized_act" value="Y" checked="checked"|cond="$config->report_super_admin_when_unauthorized_act === 'Y'">&nbsp;{$lang->report_super_admin_when_unauthorized_act}</label>
+				<p class="x_help-block">{$lang->about_report_super_admin_when_unauthorized_act}</p>
+			</div>
+		</div>
+	</section>
+	
+	<section class="section">
+		<h1>IP 접근제어</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">접근 제어 레벨</label>
+			<div class="x_controls">
+				<select name="access_level">
+					<option value="none" selected="selected"|cond="$config->access_level == 'none'">0. 접근제어 사용 안함</option>
+					<option value="login_only" selected="selected"|cond="$config->access_level == 'login_only'">1. 로그인 시에만 접근제어 적용</option>
+					<option value="login_and_admin_act" selected="selected"|cond="$config->access_level == 'login_and_admin_act'">2. 로그인 및 관리자 페이지 접근 시에 접근제어 적용</option>
+					<option value="all_act" selected="selected"|cond="$config->access_level == 'all_act'">3. 로그인 및 모든 액션에 접근제어 적용</option>
+				</select>
+				<p class="x_help-block">IP 접근제어 레벨을 선택해주세요.</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">자동로그인 접근제어 적용 여부</label>
+			<div class="x_controls">
+				<label><input type="checkbox" name="apply_access_control_on_auto_login" value="Y" checked="checked"|cond="$config->apply_access_control_on_auto_login === 'Y'">&nbsp;자동로그인 시에도 접근제어 적용</label>
+				<p class="x_help-block">자동로그인 시에도 로그인 사유로 접근제어를 적용할지 여부를 선택해주세요.</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">최고 관리자 반영 여부</label>
+			<div class="x_controls">
+				<label><input type="checkbox" name="apply_access_control_on_super_admin" value="Y" checked="checked"|cond="$config->apply_access_control_on_super_admin === 'Y'">&nbsp;최고 관리자에게도 접근제어 적용</label>
+				<p class="x_help-block">최고 관리자에게도 접근제어를 적용할지 여부를 선택해주세요.</p>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->login_ip_range}</label>
+			<div class="x_controls">
+				<table class="x_table">
+					<!--@foreach($group_list as $group_srl => $group_info)-->
+					<tr>
+						<td><span>{$group_info->title} (#{$group_info->group_srl})</span></td>
+						<td><textarea name="login_ip_range_by_group[{$group_srl}]" placeholder="{$_SERVER['REMOTE_ADDR']}/32 &#13;&#10;0.0.0.0/0">{implode(PHP_EOL, $config->login_ip_range_by_group[$group_srl] ?? [])}</textarea></td>
+					</tr>
+					<!--@endforeach-->
+				</table>
+				<p class="x_help-block">{$lang->about_login_ip_range}</p>
+			</div>
+		</div>
+	</section>
+	
+	<div class="btnArea x_clearfix">
+		<button type="submit" class="x_btn x_btn-primary x_pull-right">{$lang->cmd_registration}</button>
+	</div>
+	
+</form>

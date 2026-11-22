@@ -1,0 +1,26 @@
+.picasa { padding-bottom:5px; overflow:hidden; position:relative;}
+.picasa h2 { font-size:1em; display:block; height:22px; padding:9px 0 0 9px; margin-bottom:5px; color:#000000; background:url(../images/normal/lineNotice.gif) no-repeat left bottom;}
+.picasa h2 img {position:relative;top: 3px;padding-right:5px;}
+.picasa .more { position:absolute; top:12px; right:11px; color:#000000; font:.8em Tahoma;}
+.picasa a.more { text-decoration:none;} 
+.picasa a.more:hover { text-decoration:underline;} 
+
+.picasa .thumbnail_box { width:100%; table-layout:fixed; }
+.picasa .thumbnail_box .thumbnail { margin:3px; padding:3px; border:none; text-align:center; }
+.picasa .thumbnail_box .thumbnail img { border:1px solid #DEDEDE; }
+.picasa .thumbnail_box .thumbnail img:hover { border:1px solid #54564b; }
+
+.picasa .thumbnail_box .title { text-align:center; }
+
+.picasa .thumbnail_box a { color:#000000; text-decoration:none; }
+.picasa .thumbnail_box a:visited { color:#54564b; text-decoration:none; }
+
+.picasa .thumbnail_box td.bottomBorder { border-bottom:1px dashed #EEEEEE; padding-bottom:5px; }
+.picasa .thumbnail_box div strong { font-weight:normal; color:#FE6700; font:.9em Tahoma; }
+.picasa .thumbnail_box div.author { color:#54564b; text-align:center;}
+.picasa .thumbnail_box div.author span, .picasa .thumbnail_box div.author div { color:#54564b; }
+.picasa .thumbnail_box div.regdate { font-size:0.9em; color:#AAAAAA; margin-top:2px;text-align:center;}
+
+.picasa .thumbnail_box div.readAndVoted { color:#999999; font-size:0.9em; text-align:center;}
+.picasa .thumbnail_box div.readAndVoted span.div_block { color:#333333; font-size:0.9em; }
+.picasa .thumbnail_box div.readAndVoted strong { font-weight:normal; color:#FE6700; }

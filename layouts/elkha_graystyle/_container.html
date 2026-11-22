@@ -1,0 +1,82 @@
+<div id="column">
+
+<!--// Widget 1 -->
+	<!--@if($layout_info->widget_1_title || $layout_info->widget_1)-->
+	<aside class="ext">
+		<!--@if($layout_info->widget_1_title)--><h3 class="t"><span class="span">{$layout_info->widget_1_title}</span></h3><!--@end-->
+		<!--@if($layout_info->widget_1)--><div class="sec">{$layout_info->widget_1}</div><!--@end-->
+	</aside>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+<!--// Widget 2 -->
+	<!--@if($layout_info->widget_2_title || $layout_info->widget_2)-->
+	<aside class="ext">
+		<!--@if($layout_info->widget_2_title)--><h3 class="t"><span class="span">{$layout_info->widget_2_title}</span></h3><!--@end-->
+		<!--@if($layout_info->widget_2)--><div class="sec">{$layout_info->widget_2}</div><!--@end-->
+	</aside>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+	<block cond="is_array($L_CATEGORY) && is_array($L_CATEGORY[1]) && count($L_CATEGORY[1]['list'])">
+	<div class="lnb ext mpReset">
+		<em class="t"><span class="span"><a href="{$L_CATEGORY[1]['href']}">{$L_CATEGORY[1]['link']}</a></span></em>
+{@
+	$menu_vars = array();
+	$menu_depth = 2;
+	$menu_vars[$menu_depth] = &$L_CATEGORY[1]['list'];
+}
+		<nav class="sec">
+			<include target="_navi.html" />
+		</nav>
+	</div>
+	<hr class="hr_hide" />
+	</block>
+
+<!--// Widget 3 -->
+	<!--@if($layout_info->widget_3_title || $layout_info->widget_3)-->
+	<aside class="ext">
+		<!--@if($layout_info->widget_3_title)--><h3 class="t"><span class="span">{$layout_info->widget_3_title}</span></h3><!--@end-->
+		<!--@if($layout_info->widget_3)--><div class="sec">{$layout_info->widget_3}</div><!--@end-->
+	</aside>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+<!--// Widget 4 -->
+	<!--@if($layout_info->widget_4_title || $layout_info->widget_4)-->
+	<aside class="ext">
+		<!--@if($layout_info->widget_4_title)--><h3 class="t"><span class="span">{$layout_info->widget_4_title}</span></h3><!--@end-->
+		<!--@if($layout_info->widget_4)--><div class="sec">{$layout_info->widget_4}</div><!--@end-->
+	</aside>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+<!--// Widget 5 -->
+	<!--@if($layout_info->widget_5_title || $layout_info->widget_5)-->
+	<aside class="ext">
+		<!--@if($layout_info->widget_5_title)--><h3 class="t"><span class="span">{$layout_info->widget_5_title}</span></h3><!--@end-->
+		<!--@if($layout_info->widget_5)--><div class="sec">{$layout_info->widget_5}</div><!--@end-->
+	</aside>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+</div>
+
+<div id="content" class="{$layout_info->padding}">
+	<nav cond="$layout_info->category!='none'" id="category" class="mpReset">
+		<ul class="ul">
+			{@ $__cond = $site_module_info->index_module_srl!=$current_module_info->module_srl && count($L_CATEGORY); }
+			<li class="li li1"><a href="{$layout_info->url}" class="a"><span class="gs-none">{$layout_info->name}</span></a></li>
+			<block cond="$__cond">
+				<li loop="$L_CATEGORY=>$key,$val" class="li">
+					<a cond="count($L_CATEGORY)!=$key" class="a" href="{$val['href']}">{$val["text"]}</a>
+					<strong cond="count($L_CATEGORY)==$key" class="a">{$val["text"]}</strong>
+				</li>
+			</block>
+		</ul>
+	</nav>
+	<section>
+	{$content}
+	</section>
+</div>
+<hr class="hr_hide" />

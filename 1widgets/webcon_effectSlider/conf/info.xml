@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+	<title xml:lang="ko">웹콘 이펙트 슬라이더 위젯</title>
+	<description xml:lang="ko">이펙트 슬라이더 위젯입니다.</description>
+	<version>1.0</version>
+	<date>2014-05-07</date>
+
+	<author email_address="travelposts@naver.com" link="http://www.webconsoft.co.kr">
+		<name xml:lang="ko">웹콘소프트</name>
+	</author>
+
+	<extra_vars>
+		<group>	
+			<title xml:lang="ko">슬라이드 설정</title>
+			<var id="effect_target">
+				<type>select</type>
+				<name xml:lang="ko">슬라이드 이펙트설정</name>
+				<description xml:lang="ko">IE는 3D 종류를 지원하지 않습니다. 3D종류 선택시 IE는 기본 scrollHorz로 보여지며 크롬,사파리는 정상적으로 보여집니다.</description>
+				<options>
+					<value>scrollHorz</value>
+					<name xml:lang="ko">ScrollHorizontal</name>
+				</options>
+				<options>
+					<value>scrollVert</value>
+					<name xml:lang="ko">ScrollVertical</name>
+				</options>				
+				<options>
+					<value>blindLeft</value>
+					<name xml:lang="ko">BlindLeft</name>
+				</options>
+				<options>
+					<value>blindDown</value>
+					<name xml:lang="ko">BlindDown</name>
+				</options>
+				<options>
+					<value>tile</value>
+					<name xml:lang="ko">Tile2d</name>
+				</options>
+				<options>
+					<value>fade</value>
+					<name xml:lang="ko">Fade</name>
+				</options>
+				<options>
+					<value>scrollVert3d</value>
+					<name xml:lang="ko">ScrollVert3d (크롬,사파리만 지원)</name>
+				</options>
+				<options>
+					<value>scrollHorz3d</value>
+					<name xml:lang="ko">ScrollHorz3d (크롬,사파리만 지원)</name>
+				</options>
+				<options>
+					<value>tile3d</value>
+					<name xml:lang="ko">Tile3d (크롬,사파리만 지원)</name>
+				</options>
+				
+			</var>	
+			<var id="slide_autoscroll">
+				<type>select</type>
+				<name xml:lang="ko">슬라이드 자동스크롤</name>
+				<description xml:lang="ko">슬라이드 자동스크롤 설정</description>
+				<options>
+					<value>Y</value>
+					<name xml:lang="ko">사용</name>
+				</options>
+				<options>
+					<value>N</value>
+					<name xml:lang="ko">사용안함</name>
+				</options>
+			</var>
+			<var id="slide_delay">
+				<type>text</type>
+				<name xml:lang="ko">슬라이드 딜레이 시간</name>
+				<description xml:lang="ko">슬라이드 딜레이 시간을 정하실 수 있습니다. (기본 5000, ex 5000 : 5초,4000 : 4초, 3000 : 3초 )</description>
+			</var>
+			<var id="slide_navi">
+				<type>select</type>
+				<name xml:lang="ko">슬라이드 네비버튼(페이징 버튼)</name>
+				<description xml:lang="ko">슬라이드 네비버튼 사용유무.</description>
+				<options>
+					<value>Y</value>
+					<name xml:lang="ko">사용</name>
+				</options>
+				<options>
+					<value>N</value>
+					<name xml:lang="ko">사용안함</name>
+				</options>
+				
+			</var>
+		</group>
+		<group>	
+			<title xml:lang="ko">썸네일 설정</title>		
+			<var id="thumbnail_type">
+				<type>select</type>
+				<name xml:lang="ko">썸네일 생성 방법</name>
+				<description xml:lang="ko">썸네일 생성 방법은 Crop (채우기) 입니다.</description>
+				<options>
+					<value>crop</value>
+					<name xml:lang="ko">Crop (채우기)</name>
+				</options>
+			</var>
+			<var id="thumbnail_width">
+				<type>text</type>
+				<name xml:lang="ko">이미지 가로크기</name>
+				<description xml:lang="ko">출력될 이미지의 가로크기를 정하실 수 있습니다. (기본 990px)</description>
+			</var>
+			<var id="thumbnail_height">
+				<type>text</type>
+				<name xml:lang="ko">이미지 세로크기</name>
+				<description xml:lang="ko">이미지의 세로 크기를 지정할 수 있습니다. (기본 410px)</description>
+			</var>
+		</group>
+		<group>	
+			<title xml:lang="ko">문서 설정</title>	
+			<var id="order_target">
+				<type>select</type>
+				<name xml:lang="ko">정렬 대상</name>
+				<options>
+					<value>list_order</value>
+					<name xml:lang="ko">최신 등록순</name>
+				</options>
+				<options>
+					<value>update_order</value>
+					<name xml:lang="ko">최근 변경순</name>
+				</options>
+			</var>
+			<var id="order_type">
+				<type>select</type>
+				<name xml:lang="ko">정렬 방법</name>
+				<description xml:lang="ko">정렬대상을 내림차순 또는 올림차순으로 정렬할 수 있습니다.</description>
+				<options>
+					<value>desc</value>
+					<name xml:lang="ko">내림차순</name>
+				</options>
+				<options>
+					<value>asc</value>
+					<name xml:lang="ko">올림차순</name>
+				</options>
+			</var>	
+			<var id="img_list_count">
+				<type>text</type>
+				<name xml:lang="ko">목록수</name>
+				<description xml:lang="ko">출력될 각 모듈별 목록수를 정하실 수 있습니다. (기본 5개)</description>
+			</var>		
+			<var id="module_srls">
+				<type>module_srl_list</type>
+				<name xml:lang="ko">대상 모듈</name>
+				<description xml:lang="ko">선택하신 모듈에 등록된 글을 대상으로 합니다.</description>
+			</var>
+		</group>
+		
+		
+	</extra_vars>
+</widget>

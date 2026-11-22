@@ -1,0 +1,4 @@
+.mosaicGallery{position: relative;background-color: #fff;border-top: 1px solid #dcdcdc;border-left: 1px solid #dcdcdc;border-bottom: 1px solid #dcdcdc;}
+.mosaicGalleryThum{position:absolute;cursor: pointer; opacity:.4;border-right: 1px solid #dcdcdc;border-bottom: 1px solid #dcdcdc;-webkit-filter: blur(1px);-moz-filter: blur(1px); -o-filter: blur(1px); -ms-filter:blur(1px); filter: blur(1px);}
+.mosaicGalleryThum:hover,.mosaicGallery ul > li.on{opacity:1;-webkit-filter: blur(0px);-moz-filter: blur(0px); -o-filter: blur(0px); -ms-filter:blur(0px); filter: blur(0px); }
+.no_img{margin:0 auto;text-align:center;background:url('../../images/no_img.png') no-repeat center center;}

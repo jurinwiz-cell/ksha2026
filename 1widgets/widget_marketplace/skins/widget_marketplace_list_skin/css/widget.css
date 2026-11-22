@@ -1,0 +1,36 @@
+﻿@charset "utf-8";
+
+
+.widget_marketplace_list_skin { position:relative; width:100%; overflow:hidden; border:0px; line-height:normal; }
+.widget_marketplace_list_skin * {
+  box-sizing:content-box !important;
+  -moz-box-sizing:content-box !important;
+  -webkit-box-sizing:content-box !important;
+}
+.widget_marketplace_list_skin ul,
+.widget_marketplace_list_skin li,
+.widget_marketplace_list_skin ol,
+.widget_marketplace_list_skin dl,
+.widget_marketplace_list_skin dd { padding:0px; margin:0px; list-style:none; }
+.widget_marketplace_list_skin a { line-height:normal; text-decoration:none; }
+
+
+.widget_marketplace_list_skin .marketplace_list { position:relative; overflow:hidden; border-top:1px solid #ccc; display:block; }
+.widget_marketplace_list_skin .marketplace_list .list { position:relative; overflow:hidden; border-bottom:1px solid #ccc; display:block; }
+.widget_marketplace_list_skin .marketplace_list .list .link { position:relative; padding:10px; overflow:hidden; display:block; }
+.widget_marketplace_list_skin .marketplace_list .list .link:hover { background:#fafafa; }
+
+.widget_marketplace_list_skin .marketplace_list .list .link .title_area { position:relative; overflow:hidden; }
+.widget_marketplace_list_skin .marketplace_list .list .link .title_area .title { font-weight:bold; }
+.widget_marketplace_list_skin .marketplace_list .list .link .title_area .extra_image { }
+.widget_marketplace_list_skin .marketplace_list .list .link .title_area .date { position:absolute; top:0px; right:200px; display:inline-block; }
+
+.widget_marketplace_list_skin .marketplace_list .list .link .product_price { position:absolute; bottom:7px; right:100px; font-size:18px; font-weight:bold; display:inline-block; }
+.widget_marketplace_list_skin .marketplace_list .list .link .product_price_soldout { color:#0000ff; }
+.widget_marketplace_list_skin .marketplace_list .list .link .product_price_cancel { color:#000; }
+.widget_marketplace_list_skin .marketplace_list .list .link .product_price_selling { color:#ff0000; }
+
+.widget_marketplace_list_skin .marketplace_list .list .link .item_status { position:absolute; bottom:7px; right:10px; padding:3px 10px; border-radius:5px; color:#fff; font-weight:bold; display:inline-block; }
+.widget_marketplace_list_skin .marketplace_list .list .link .item_status_soldout { background:#0000ff; }
+.widget_marketplace_list_skin .marketplace_list .list .link .item_status_cancel { background:#000; }
+.widget_marketplace_list_skin .marketplace_list .list .link .item_status_selling { background:#ff0000; }

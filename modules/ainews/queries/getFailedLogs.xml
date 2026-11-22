@@ -1,0 +1,11 @@
+<query id="getFailedLogs" action="select">
+    <tables>
+        <table name="ainews_log" />
+    </tables>
+    <conditions>
+        <condition operation="equal" column="status" default="F" />
+    </conditions>
+    <navigation>
+        <index column="log_srl" order="asc" />
+    </navigation>
+</query>

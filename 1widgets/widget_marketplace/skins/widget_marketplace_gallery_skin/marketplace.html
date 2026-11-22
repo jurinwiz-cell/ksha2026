@@ -1,0 +1,54 @@
+{@ $oDocumentModel = &getModel('document')}
+{@ $oMarketPlaceModel = &getModel('marketplace')}
+{@ $oModuleModel = &getModel('module')}
+
+{@ $skin_path = $tpl_path}
+{@ $skin_name = $map_obj->skin}
+
+
+<load target="./css/widget.css" />
+<!--@if(Mobile::isMobileCheckByAgent() || $m==1)-->
+<!--@end-->
+
+
+
+<div class="{$skin_name} widget_marketplace_gallery_skin">
+  <ul class="marketplace_list">
+    {@ $count = 1}
+    <!--@foreach($marketplace_list as $key => $val)-->
+      <li class="list{$count} list" style="width:{$market_obj->thumbnail_width}px;">
+        <a class="link" href="{getUrl('','document_srl',$val->document_srl)}" target="{$market_obj->new_window}">
+          <span class="thumb" style="height:{$market_obj->thumbnail_height}px;">
+            <!--@if($val->getThumbnail($market_obj->thumbnail_width,$market_obj->thumbnail_height,$market_obj->thumbnail_type))-->
+              <img src="{$val->getThumbnail($market_obj->thumbnail_width,$market_obj->thumbnail_height,$market_obj->thumbnail_type)}" />
+            <!--@else-->
+              <img src="{$skin_path}images/noimage.gif" style="width:{$market_obj->thumbnail_width}px; height:{$market_obj->thumbnail_height}px;" />
+            <!--@end-->
+
+            {@ $category_item = $oDocumentModel->getCategory($val->get('category_srl'))}
+            <span class="category" cond="$category_item->title" style="width:{$market_obj->thumbnail_width}px;">{$category_item->title}</span>
+            <span class="item_status_{$val->getItemStatus()} item_status">
+              <!--@if($val->getItemStatus()=='soldout')-->
+                {$market_obj->product_soldout_text}
+              <!--@else if($val->getItemStatus()=='cancel')-->
+                {$market_obj->product_cancel_text}
+              <!--@else-->
+                {$market_obj->product_selling_text}
+              <!--@end-->
+            </span>
+            <span class="product_price_{$val->getItemStatus()} product_price" style="width:{$market_obj->thumbnail_width}px;">{number_format($val->getPrice())} {$market_obj->won_format_text}</span>
+          </span>
+
+          <div class="title_area">
+            <span class="title">{$val->getTitle($market_obj->subject_cut_size)}</span>
+            <span class="extra_image">{$val->printExtraImages($market_obj->duration_new)}</span>
+            <span class="date">{$val->getRegdate($market_obj->date_format)}</span>
+          </div>
+        </a>
+
+
+      </li>
+      {@ $count++}
+    <!--@end-->
+  </ul>
+</div>

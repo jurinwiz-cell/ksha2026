@@ -1,0 +1,302 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  LayoutDashboard, 
+  Users, 
+  FileText, 
+  PieChart, 
+  LogOut,
+  Building,
+  TrendingUp,
+  CheckCircle,
+  Heart,
+  RefreshCw,
+  CreditCard,
+  Search,
+  Filter,
+  Download,
+  Plus,
+  ArrowUpDown
+} from 'lucide-react';
+
+// 제공해주신 텍스트 데이터를 바탕으로 구조화된 JSON 데이터를 구성했습니다.
+// UI/UX 시연을 위해 대표적인 케이스(납부완료, 청구완료, 상계, 후원금 등)를 포함했습니다.
+const initialData = [
+  { id: 1, company: '녹색친구들', building: '녹색친구들 성산', units: 11, type: '토지임대부', operation: '시행+운영', region: '서울', totalFee: 1296046, paidFee: 1296046, status: '납부완료' },
+  { id: 2, company: '녹색친구들', building: '녹색친구들 창천', units: 11, type: '토지임대부', operation: '시행+운영', region: '서울', totalFee: 1189954, paidFee: 1189954, status: '납부완료' },
+  { id: 4, company: '두꺼비하우징', building: '콘체르토녹번', units: 18, type: '리모델링', operation: '시행+운영', region: '서울', totalFee: 525250, paidFee: 525250, status: '납부완료' },
+  { id: 7, company: '안테나', building: '아츠스테이창신', units: 10, type: '토지임대부', operation: '시행+운영', region: '서울', totalFee: 400000, paidFee: 0, status: '추후청구' },
+  { id: 8, company: '㈜선랩건축사사무소', building: '쉐어어스거성', units: 16, type: '리모델링', operation: '운영', region: '서울', totalFee: 320000, paidFee: 0, status: '청구완료' },
+  { id: 16, company: '셰어하우스우주', building: '79호점', units: 5, type: '빈집', operation: '운영', region: '서울', totalFee: 100000, paidFee: 0, status: '종결' },
+  { id: 23, company: '아이부키', building: '캔저스대저택', units: 12, type: '토지임대부', operation: '시행+운영', region: '서울', totalFee: 480000, paidFee: 480000, status: '상계' },
+  { id: 30, company: '한국주거복지 사회적협동조합', building: '팔복추천', units: 10, type: '리모델링', operation: '운영', region: '이외', totalFee: 100000, paidFee: 100000, status: '납부완료' },
+  { id: 34, company: '더함', building: '위스테이별내', units: 491, type: '위스테이형', operation: '시행', region: '이외', totalFee: 4910000, paidFee: 0, status: '청구완료' },
+  { id: 183, company: '유니버설하우징협동조합', building: '후원금', units: 0, type: '후원금', operation: '-', region: '-', totalFee: 9000000, paidFee: 9000000, status: '후원금' },
+  { id: 184, company: '아이부키', building: '후원금', units: 0, type: '후원금', operation: '-', region: '-', totalFee: 16000000, paidFee: 16000000, status: '후원금' },
+  { id: 199, company: '녹색친구들', building: '22-4차 이사회 조정', units: 0, type: '조정', operation: '-', region: '-', totalFee: 3010000, paidFee: 3010000, status: '이사회 조정' },
+  { id: 26, company: '마을과집협동조합', building: '자몽하우스연신내', units: 6, type: '빈집활용', operation: '시행+운영', region: '서울', totalFee: 240000, paidFee: 240000, status: '상계' },
+];
+
+const formatCurrency = (num) => {
+  return new Intl.NumberFormat('ko-KR').format(num || 0);
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case '납부완료': return 'bg-green-50 text-green-700 border-green-200';
+    case '청구완료': return 'bg-blue-50 text-blue-700 border-blue-200';
+    case '추후청구': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+    case '상계': return 'bg-purple-50 text-purple-700 border-purple-200';
+    case '후원금': return 'bg-pink-50 text-pink-700 border-pink-200';
+    case '종결': return 'bg-gray-50 text-gray-700 border-gray-200';
+    case '이사회 조정': return 'bg-orange-50 text-orange-700 border-orange-200';
+    default: return 'bg-gray-100 text-gray-800 border-gray-200';
+  }
+};
+
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('모든 회원사');
+
+  // 고유한 회원사 목록 추출
+  const companies = ['모든 회원사', ...new Set(initialData.map(item => item.company))];
+
+  // 필터링된 데이터
+  const filteredData = useMemo(() => {
+    return initialData.filter(item => {
+      const matchesSearch = item.building.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            item.id.toString().includes(searchTerm);
+      const matchesCompany = selectedCompany === '모든 회원사' || item.company === selectedCompany;
+      return matchesSearch && matchesCompany;
+    });
+  }, [searchTerm, selectedCompany]);
+
+  // KPI 지표 계산
+  const kpi = useMemo(() => {
+    const totalProjects = initialData.filter(d => d.type !== '후원금' && d.type !== '조정').length;
+    const totalFeeAmt = initialData.filter(d => d.type !== '후원금' && d.type !== '조정').reduce((sum, d) => sum + d.totalFee, 0);
+    const paidFeeAmt = initialData.filter(d => d.status === '납부완료').reduce((sum, d) => sum + d.paidFee, 0);
+    const donationAmt = initialData.filter(d => d.status === '후원금').reduce((sum, d) => sum + d.totalFee, 0);
+    const offsetAmt = initialData.filter(d => d.status === '상계').reduce((sum, d) => sum + d.totalFee, 0);
+    const totalRevenue = paidFeeAmt + donationAmt + offsetAmt;
+
+    return { totalProjects, totalFeeAmt, paidFeeAmt, donationAmt, offsetAmt, totalRevenue };
+  }, []);
+
+  // 필터링된 테이블 데이터 요약 계산
+  const tableSummary = useMemo(() => {
+    const totalUnits = filteredData.reduce((sum, d) => sum + d.units, 0);
+    const totalFilteredFee = filteredData.reduce((sum, d) => sum + d.totalFee, 0);
+    const totalFilteredPaid = filteredData.reduce((sum, d) => sum + d.paidFee, 0);
+    return { totalUnits, totalFilteredFee, totalFilteredPaid };
+  }, [filteredData]);
+
+  return (
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
+      
+      {/* Sidebar */}
+      <aside className="w-64 bg-[#111827] text-slate-300 flex flex-col transition-all duration-300">
+        <div className="h-20 flex items-center px-6 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded bg-[#0f766e] flex items-center justify-center text-white">
+              <Building size={18} />
+            </div>
+            <span className="text-white font-bold text-lg tracking-wide">KSHA 특별회비</span>
+          </div>
+        </div>
+
+        <nav className="flex-1 py-6 px-4 space-y-2">
+          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#0f766e] text-white font-medium transition-colors">
+            <LayoutDashboard size={20} />
+            <span>전체 회원사</span>
+          </a>
+          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+            <Users size={20} />
+            <span>회원사별</span>
+          </a>
+          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+            <FileText size={20} />
+            <span>총괄 보고서</span>
+          </a>
+          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+            <PieChart size={20} />
+            <span>현황 보고서</span>
+          </a>
+        </nav>
+
+        <div className="p-4 border-t border-slate-800">
+          <div className="flex items-center gap-3 px-4 py-2">
+            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold text-white">
+              관
+            </div>
+            <div>
+              <p className="text-sm font-medium text-white">채준배</p>
+              <p className="text-xs text-slate-500">관리자</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col h-full overflow-hidden">
+        
+        {/* Header */}
+        <header className="h-20 flex items-center justify-between px-8 bg-white border-b border-slate-200 shrink-0">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">전체 회원사 목록</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Data Update: 2024.06.01</span>
+            </div>
+          </div>
+          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200">
+            <LogOut size={16} />
+            <span>로그아웃</span>
+          </button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-8">
+          
+          {/* KPI Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+            <KPICard icon={<Building />} label="전체 사업 수" value={kpi.totalProjects} color="text-teal-600" bg="bg-teal-50" />
+            <KPICard icon={<TrendingUp />} label="회비 총액" value={`₩${formatCurrency(kpi.totalFeeAmt)}`} color="text-orange-500" bg="bg-orange-50" />
+            <KPICard icon={<CheckCircle />} label="회비 입금" value={`₩${formatCurrency(kpi.paidFeeAmt)}`} color="text-green-600" bg="bg-green-50" />
+            <KPICard icon={<Heart />} label="후원금" value={`₩${formatCurrency(kpi.donationAmt)}`} color="text-purple-500" bg="bg-purple-50" />
+            <KPICard icon={<RefreshCw />} label="상계 금액" value={`₩${formatCurrency(kpi.offsetAmt)}`} color="text-indigo-500" bg="bg-indigo-50" />
+            <KPICard icon={<CreditCard />} label="총 수납액" value={`₩${formatCurrency(kpi.totalRevenue)}`} color="text-blue-600" bg="bg-blue-50" />
+          </div>
+
+          {/* Filter & Action Bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <div className="flex flex-1 gap-4 w-full md:w-auto">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="건물명 또는 회원사번호 검색..." 
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0f766e] focus:bg-white transition-all text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="relative w-full md:w-64">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                <select 
+                  className="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0f766e] focus:bg-white appearance-none text-sm cursor-pointer"
+                  value={selectedCompany}
+                  onChange={(e) => setSelectedCompany(e.target.value)}
+                >
+                  {companies.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg font-medium text-sm transition-colors">
+                <Download size={16} />
+                <span>CSV 대량 동기화</span>
+              </button>
+              <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0f172a] text-white hover:bg-[#1e293b] rounded-lg font-medium text-sm transition-colors shadow-sm">
+                <Plus size={16} />
+                <span>신규 사업 등록</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* Table Summary Header */}
+            <div className="bg-[#0f766e] text-white px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="text-sm font-medium opacity-90">필터 집계</div>
+              <div className="flex gap-12 text-right">
+                <div>
+                  <div className="text-xs text-teal-100 mb-1">세대수 합계</div>
+                  <div className="font-bold">{tableSummary.totalUnits.toLocaleString()}세대</div>
+                </div>
+                <div>
+                  <div className="text-xs text-teal-100 mb-1">회비내역 합계</div>
+                  <div className="font-bold">₩{formatCurrency(tableSummary.totalFilteredFee)}</div>
+                  <div className="text-xs text-teal-200 mt-0.5">수납합계: ₩{formatCurrency(tableSummary.totalFilteredPaid)}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Table Columns */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <th className="px-6 py-4"><div className="flex items-center gap-1 cursor-pointer hover:text-slate-700">건물 정보 <ArrowUpDown size={12}/></div></th>
+                    <th className="px-6 py-4"><div className="flex items-center gap-1 cursor-pointer hover:text-slate-700">회원사 <ArrowUpDown size={12}/></div></th>
+                    <th className="px-6 py-4"><div className="flex items-center gap-1 cursor-pointer hover:text-slate-700">유형/운영 <ArrowUpDown size={12}/></div></th>
+                    <th className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-1 cursor-pointer hover:text-slate-700">세대수 <ArrowUpDown size={12}/></div></th>
+                    <th className="px-6 py-4 text-right"><div className="flex items-center justify-end gap-1 cursor-pointer hover:text-slate-700">회비내역 <ArrowUpDown size={12}/></div></th>
+                    <th className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-1 cursor-pointer hover:text-slate-700">상태 <ArrowUpDown size={12}/></div></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredData.length > 0 ? (
+                    filteredData.map((row) => (
+                      <tr key={row.id} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-6 py-4">
+                          <div className="font-bold text-slate-900 group-hover:text-[#0f766e] transition-colors">{row.building}</div>
+                          <div className="text-xs text-slate-500 mt-1">#{row.id} · {row.region}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            {row.company}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-slate-700">{row.type}</div>
+                          <div className="text-xs text-slate-400 mt-1">{row.operation}</div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="font-medium text-slate-700">{row.units > 0 ? `${row.units}세대` : '-'}</span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="font-bold text-slate-900">₩{formatCurrency(row.totalFee)}</div>
+                          <div className="text-xs text-emerald-600 font-medium mt-1">수납: ₩{formatCurrency(row.paidFee)}</div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${getStatusColor(row.status)}`}>
+                            {row.status === '납부완료' && <CheckCircle size={12} />}
+                            {row.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                        검색 결과가 없습니다.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// Subcomponent for KPI Cards
+function KPICard({ icon, label, value, color, bg }) {
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between group hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${bg} ${color}`}>
+          {React.cloneElement(icon, { size: 20 })}
+        </div>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-slate-500 mb-1">{label}</p>
+        <h3 className="text-2xl font-bold text-slate-900 truncate">{value}</h3>
+      </div>
+    </div>
+  );
+}

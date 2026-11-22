@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants>
+	</grants>
+	<actions>
+		<action name="dispAdminextendAdminConfig" class="Controllers\Common" menu_name="adminextend" admin_index="true" />
+		<action name="procAdminextendAdminInsertConfig" class="Controllers\Common" />
+
+		<action name="dispAdminextendAdminSubadminConfig" class="Controllers\Subadmin" />
+		<action name="procAdminextendAdminInsertSubadminConfig" class="Controllers\Subadmin" />
+
+		<action name="dispAdminextendAdminLogIndex" class="Controllers\AdminLog" />
+	</actions>
+	<menus>
+		<menu name="adminextend" type="all">
+			<title xml:lang="ko">관리자 확장팩</title>
+		</menu>
+	</menus>
+</module>

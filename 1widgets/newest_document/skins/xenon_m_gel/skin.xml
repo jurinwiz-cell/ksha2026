@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title>Xenon Mobile - 최신 갤러리 스킨</title>
+    <description>Xenon Mobile Layout에서 사용 가능한 최근 문서를 갤러리 형식으로 출력해주는 위젯 스킨 입니다.</description>
+    <version>1.0</version>
+    <date>2012-11-30</date>
+    <link>http://xenon.teamatde.co.kr/</link>
+
+    <author email_address="hyung778@gmail.com" link="http://xenon.teamatde.co.kr/">
+        <name>LI_NA</name>
+    </author>
+
+	 <colorset>
+    </colorset>
+</skin>

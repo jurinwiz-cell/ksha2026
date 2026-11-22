@@ -1,0 +1,649 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 사회주택 공급 현황 프리미엄 대시보드</title>
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="/static/vendor/css/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #64748b;
+            --bg-main: #f0f2f5;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            border-radius: 24px;
+        }
+
+        .chart-container { height: 400px; width: 100%; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
+
+        /* Filter Styles */
+        .filter-chip {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: white;
+            color: var(--secondary);
+        }
+        .filter-chip:hover { transform: translateY(-1px); border-color: var(--primary-light); }
+        .filter-chip.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .tab-btn {
+            position: relative;
+            transition: all 0.3s;
+        }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 99px;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fadeInScale 0.5s ease-out forwards; }
+
+        .kpi-gradient-1 { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .kpi-gradient-2 { background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); }
+        .kpi-gradient-3 { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
+
+        .type2-badge {
+            background: rgba(79, 70, 229, 0.08);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* Table */
+        th.active-sort { color: var(--primary) !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-[1400px] mx-auto space-y-8 pb-12">
+        
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="space-y-1">
+                <h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900">
+                    📊 <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">사회주택 공급 현황</span>
+                </h1>
+                <p class="text-sm text-slate-500 font-semibold flex items-center gap-2">
+                    <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="status-message">데이터 로딩 중...</span>
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="resetAllFilters()" class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold rounded-xl border border-slate-200 transition-all flex items-center gap-2 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                    필터 초기화
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card p-6 flex items-center gap-5 group hover:translate-y-[-4px] transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl kpi-gradient-1 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">총 공급 세대수</p>
+                    <h2 id="stat-total-units" class="text-3xl font-black text-slate-800">0</h2>
+                </div>
+            </div>
+            <div class="glass-card p-6 flex items-center gap-5 group hover:translate-y-[-4px] transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl kpi-gradient-2 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
+                </div>
+                <div>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">총 공급 건수</p>
+                    <h2 id="stat-total-count" class="text-3xl font-black text-slate-800">0</h2>
+                </div>
+            </div>
+            <div class="glass-card p-6 flex items-center gap-5 group hover:translate-y-[-4px] transition-all duration-300">
+                <div class="w-14 h-14 rounded-2xl kpi-gradient-3 flex items-center justify-center text-white shadow-lg shadow-orange-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">참여 운영사</p>
+                    <h2 id="stat-total-operators" class="text-3xl font-black text-slate-800">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Analytics Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Filters -->
+            <section class="lg:col-span-4 glass-card p-6 flex flex-col gap-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-indigo-600 rounded-full"></span> 필터링
+                    </h3>
+                </div>
+                
+                <div class="space-y-6 flex-grow custom-scrollbar overflow-y-auto pr-2" style="max-height: 600px;">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 mb-3 uppercase tracking-widest">통합 검색</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" oninput="debounceFilter()" placeholder="사업명, 운영사 등..." 
+                                class="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none transition-all text-xs font-semibold">
+                            <svg class="absolute left-3.5 top-3.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </div>
+                    </div>
+                    
+                    <div id="dynamic-filters" class="space-y-6">
+                        <!-- Filters injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Map & Chart Section -->
+            <div class="lg:col-span-8 space-y-8">
+                <!-- Main Map -->
+                <section class="glass-card overflow-hidden relative" style="height: 480px;">
+                    <div id="map-chart" class="w-full h-full"></div>
+                    <div class="absolute top-6 left-6 pointer-events-none">
+                        <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">지역별 분포</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Ratio Analysis -->
+                    <section class="glass-card p-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 mb-6 pb-2">
+                            <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
+                                <span class="w-1.5 h-4 bg-violet-500 rounded-full"></span> 비중 분석
+                            </h3>
+                            <div class="flex gap-4">
+                                <button onclick="switchRatioTab('completion')" id="btn-tab-completion" class="tab-btn active text-[11px] font-bold pb-1">준공</button>
+                                <button onclick="switchRatioTab('type2')" id="btn-tab-type2" class="tab-btn text-[11px] font-bold pb-1">대분류</button>
+                            </div>
+                        </div>
+                        <div id="ratio-chart" class="chart-container" style="height: 280px;"></div>
+                    </section>
+
+                    <!-- Detail Panel (Selection) -->
+                    <section id="detail-panel" class="glass-card p-6 overflow-y-auto custom-scrollbar">
+                        <!-- Detail info injected here -->
+                        <div class="h-full flex flex-col items-center justify-center text-slate-300 space-y-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <p class="text-xs font-bold uppercase tracking-widest">지도를 클릭하여 상세 정보를 확인하세요</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Section -->
+        <section class="glass-card overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/30 backdrop-blur-sm">
+                <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                    <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span> 상세 공급 리스트
+                </h3>
+                <span id="table-count" class="text-[11px] font-black px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100 shadow-inner">0건</span>
+            </div>
+            <div class="overflow-x-auto max-h-[600px] custom-scrollbar">
+                <table class="w-full text-left text-[11px] border-collapse">
+                    <thead class="sticky top-0 bg-white/80 backdrop-blur-xl z-20 shadow-sm">
+                        <tr>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="심사연도" onclick="sortTable('심사연도')">연도</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="name" onclick="sortTable('name')">사업명</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="type" onclick="sortTable('type')">유형</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="type2" onclick="sortTable('type2')">대분류</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="public" onclick="sortTable('public')">공공주체</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="operator" onclick="sortTable('operator')">운영사</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider" data-sort-key="region" onclick="sortTable('region')">지역</th>
+                            <th class="p-4 font-bold text-slate-400 border-b border-slate-100 cursor-pointer uppercase tracking-wider text-right" data-sort-key="units" onclick="sortTable('units')">세대수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100/50"></tbody>
+                </table>
+            </div>
+        </section>
+        
+        <footer class="text-center pt-8 text-slate-400 text-[10px] font-black tracking-[0.2em] uppercase opacity-50">
+            Premium Social Housing Insights Dashboard &copy; 2025
+        </footer>
+    </div>
+
+    <script>
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1yX14R6IwkXMXel1TB7W1X5HPLwWoImYJus_pitE1lgg/export?format=csv&gid=1763307000";
+        const KOREA_GEO_URL = "https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea_provinces_geo.json";
+
+        let rawData = [];
+        let filteredByGlobal = [];
+        let filteredByMap = [];
+        
+        let filterCategories = { completion: [], type2: [], public: [] };
+        let currentFilters = { completion: [], type2: [], public: [], search: '' };
+        let type2ColorMap = {}; 
+        let activeRatioTab = 'completion';
+        let selectedRegion = null;
+        let sortConfig = { key: '심사연도', direction: 'desc' };
+        let charts = {};
+
+        const COLORS = {
+            primary: '#4f46e5',
+            secondary: '#10b981',
+            accent: '#f59e0b',
+            danger: '#ef4444',
+            vibrant: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6', '#6366f1']
+        };
+
+        const normalizeMapName = (n) => {
+            if (!n) return '(미정)';
+            const name = String(n).trim();
+            if (name.includes('서울')) return '서울특별시';
+            if (name.includes('경기')) return '경기도';
+            if (name.includes('인천')) return '인천광역시';
+            if (name.includes('부산')) return '부산광역시';
+            if (name.includes('대구')) return '대구광역시';
+            if (name.includes('광주')) return '광주광역시';
+            if (name.includes('대전')) return '대전광역시';
+            if (name.includes('울산')) return '울산광역시';
+            if (name.includes('세종')) return '세종특별자치시';
+            if (name.includes('강원')) return '강원도';
+            if (name.includes('충북')) return '충청북도';
+            if (name.includes('충남')) return '충청남도';
+            if (name.includes('전북')) return '전라북도';
+            if (name.includes('전남')) return '전라남도';
+            if (name.includes('경북')) return '경상북도';
+            if (name.includes('경남')) return '경상남도';
+            if (name.includes('제주')) return '제주특별자치도';
+            return name;
+        };
+
+        window.toggleFilter = function(key, value) {
+            const index = currentFilters[key].indexOf(value);
+            if (index > -1) currentFilters[key].splice(index, 1);
+            else currentFilters[key].push(value);
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.setFilterAll = function(key, state) {
+            let options = filterCategories[key];
+            if (state) currentFilters[key] = [...new Set([...currentFilters[key], ...options])];
+            else currentFilters[key] = [];
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.debounceFilter = function() {
+            clearTimeout(window._debounceTimer);
+            window._debounceTimer = setTimeout(() => {
+                currentFilters.search = document.getElementById('search-input').value;
+                updateDashboard();
+            }, 300);
+        };
+
+        window.resetAllFilters = function() {
+            Object.keys(currentFilters).forEach(key => {
+                if(key === 'search') currentFilters[key] = '';
+                else if(filterCategories[key]) currentFilters[key] = [...filterCategories[key]];
+            });
+            document.getElementById('search-input').value = '';
+            selectedRegion = null;
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initCharts();
+            renderFilters();
+            updateDashboard();
+            window.addEventListener('resize', () => Object.values(charts).forEach(c => c.resize()));
+        });
+
+        async function loadData() {
+            return new Promise((resolve) => {
+                Papa.parse(CSV_URL, {
+                    download: true, header: true, skipEmptyLines: true,
+                    complete: (results) => {
+                        const data = results.data;
+                        const metaFields = results.meta.fields || [];
+                        const cleanHeaderMap = {};
+                        metaFields.forEach(f => {
+                            const clean = f.trim().replace(/\s/g, '').toLowerCase();
+                            cleanHeaderMap[clean] = f;
+                        });
+
+                        const findVal = (row, candidates) => {
+                            for (let cand of candidates) {
+                                const cleanCand = cand.replace(/\s/g, '').toLowerCase();
+                                const actualKey = cleanHeaderMap[cleanCand];
+                                if (actualKey && row[actualKey] !== undefined) return row[actualKey].trim();
+                            }
+                            return '';
+                        };
+
+                        const parseNum = (v) => { const n = parseInt(String(v).replace(/[^0-9]/g, '')); return isNaN(n) ? 0 : n; };
+
+                        rawData = data.map(row => {
+                            return {
+                                심사연도: findVal(row, ['심사연도', '연도', '심사년도']),
+                                completion: findVal(row, ['준공여부', '준공']) || '미진행',
+                                type2: findVal(row, ['유형2', '대분류']) || '(미정)',
+                                type: findVal(row, ['유형', '사업유형']) || '(미정)',
+                                public: findVal(row, ['공공주체', '공공', '사업주체']) || '(미정)',
+                                operator: findVal(row, ['운영사', '시행사', '운영단체']) || '(미정)',
+                                region: findVal(row, ['광역', '지역', '소재지']),
+                                units: parseNum(findVal(row, ['세대', '세대수', '공급세대수'])),
+                                name: findVal(row, ['사업명', '주택명', '건물명']) || '(미등록 사업)'
+                            };
+                        }).filter(d => d.units > 0 && ['준공', '미준공', '미착공', '종료'].includes(d.completion));
+
+                        ['completion', 'type2', 'public'].forEach(key => {
+                            filterCategories[key] = [...new Set(rawData.map(d => d[key]))].filter(v => v && v !== '(미정)').sort();
+                            currentFilters[key] = [...filterCategories[key]];
+                        });
+
+                        filterCategories.type2.forEach((t2, i) => {
+                            type2ColorMap[t2] = COLORS.vibrant[i % COLORS.vibrant.length];
+                        });
+                        
+                        document.getElementById('status-message').textContent = `분석 완료 (${rawData.length.toLocaleString()}건)`;
+                        resolve();
+                    }
+                });
+            });
+        }
+
+        function filterData() {
+            filteredByGlobal = rawData.filter(d => {
+                const searchStr = currentFilters.search.toLowerCase();
+                const ms = !searchStr || d.name.toLowerCase().includes(searchStr) || d.operator.toLowerCase().includes(searchStr) || d.public.toLowerCase().includes(searchStr);
+                const mf = ['completion', 'type2', 'public'].every(key => currentFilters[key].includes(d[key]));
+                return ms && mf;
+            });
+
+            filteredByMap = filteredByGlobal.filter(d => {
+                if (!selectedRegion) return true;
+                return normalizeMapName(d.region) === selectedRegion;
+            });
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('dynamic-filters');
+            if (!container) return; container.innerHTML = '';
+            const labels = { completion: '준공여부', type2: '대분류', public: '공공주체' };
+            ['completion', 'type2', 'public'].forEach(key => {
+                let options = filterCategories[key];
+                const div = document.createElement('div');
+                div.className = "space-y-3";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center px-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${labels[key]}</label>
+                        <div class="flex gap-2">
+                            <button onclick="setFilterAll('${key}', true)" class="text-[9px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors">ALL</button>
+                            <button onclick="setFilterAll('${key}', false)" class="text-[9px] font-bold text-slate-300 hover:text-slate-500 transition-colors">NONE</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${options.map(opt => `<button onclick="toggleFilter('${key}', '${opt}')" class="filter-chip ${currentFilters[key].includes(opt) ? 'active' : ''}">${opt}</button>`).join('')}
+                    </div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateDashboard() {
+            filterData(); 
+            renderStats(); 
+            renderRatioChart(); 
+            renderMap();
+            renderTable();
+            renderDetailPanel();
+        }
+
+        function renderStats() {
+            document.getElementById('stat-total-units').innerText = filteredByMap.reduce((s, d) => s + d.units, 0).toLocaleString();
+            document.getElementById('stat-total-count').innerText = filteredByMap.length.toLocaleString();
+            const operators = new Set(filteredByMap.map(d => d.operator).filter(o => o !== '(미정)' && o !== ''));
+            document.getElementById('stat-total-operators').innerText = operators.size.toLocaleString();
+        }
+
+        function initCharts() {
+            charts.ratio = echarts.init(document.getElementById('ratio-chart'));
+            charts.map = echarts.init(document.getElementById('map-chart'));
+            charts.map.on('click', (params) => { 
+                selectedRegion = (selectedRegion === params.name) ? null : params.name; 
+                updateDashboard();
+            });
+        }
+
+        window.switchRatioTab = function(tab) {
+            activeRatioTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === `btn-tab-${tab}`));
+            renderRatioChart();
+        };
+
+        function renderRatioChart() {
+            const agg = {}; 
+            filteredByMap.forEach(d => { 
+                if(d[activeRatioTab] && d[activeRatioTab] !== '(미정)') 
+                    agg[d[activeRatioTab]] = (agg[d[activeRatioTab]] || 0) + d.units; 
+            });
+            const data = Object.entries(agg).map(([name, value]) => {
+                const item = { name, value };
+                if (activeRatioTab === 'type2') item.itemStyle = { color: type2ColorMap[name] };
+                return item;
+            });
+
+            charts.ratio.setOption({
+                color: activeRatioTab === 'type2' ? null : ['#6366f1', '#10b981', '#f59e0b', '#ef4444'],
+                tooltip: { 
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: 12,
+                    textStyle: { color: '#1e293b', fontWeight: 'bold' }
+                },
+                legend: { bottom: 0, icon: 'circle', itemStyle: { fontSize: 10 }, textStyle: { color: '#64748b' } },
+                series: [{ 
+                    type: 'pie', 
+                    radius: ['50%', '75%'], 
+                    avoidLabelOverlap: true, 
+                    itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 }, 
+                    label: { show: false }, 
+                    data: data 
+                }]
+            }, true);
+        }
+
+        async function renderMap() {
+            if (!charts.map._geoLoaded) { 
+                const geo = await fetch(KOREA_GEO_URL).then(r => r.json()); 
+                echarts.registerMap('korea', geo); 
+                charts.map._geoLoaded = true; 
+            }
+            
+            const agg = {}; 
+            filteredByGlobal.forEach(d => { const r = normalizeMapName(d.region); agg[r] = (agg[r] || 0) + d.units; });
+            const data = Object.entries(agg).map(([name, value]) => ({ name, value }));
+            
+            charts.map.setOption({
+                visualMap: {
+                    min: 0, max: Math.max(...data.map(d => d.value), 1),
+                    left: 20, bottom: 20,
+                    text: ['High', 'Low'], 
+                    inRange: { color: ['#e0e7ff', '#6366f1', '#4338ca'] }, 
+                    calculable: true,
+                    textStyle: { fontSize: 10, fontWeight: 'bold', color: '#64748b' }
+                },
+                series: [{ 
+                    type: 'map', map: 'korea', roam: true, selectedMode: 'single', 
+                    emphasis: { itemStyle: { areaColor: '#f59e0b', shadowBlur: 20, shadowColor: 'rgba(245, 158, 11, 0.5)' } },
+                    itemStyle: { areaColor: '#f8fafc', borderColor: '#e2e8f0' },
+                    data: data 
+                }]
+            }, true);
+            
+            if (selectedRegion) charts.map.dispatchAction({ type: 'mapSelect', name: selectedRegion });
+            else charts.map.dispatchAction({ type: 'mapUnSelect', all: true });
+        }
+
+        function renderDetailPanel() {
+            const panel = document.getElementById('detail-panel');
+            if (!selectedRegion) {
+                panel.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-slate-300 space-y-4 animate-fade-in">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-center">지도를 클릭하여<br/>지역별 상세 통계를 확인하세요</p>
+                    </div>`;
+                return;
+            }
+
+            const data = filteredByMap;
+            const total = data.reduce((s, d) => s + d.units, 0);
+            const types = {}; data.forEach(d => types[d.type2] = (types[d.type2] || 0) + d.units);
+            const top5 = [...data].sort((a,b) => b.units - a.units).slice(0, 5);
+            
+            panel.innerHTML = `
+                <div class="animate-fade-in space-y-8">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-2xl font-black text-slate-800">${selectedRegion}</h4>
+                        <button onclick="selectedRegion=null; updateDashboard();" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors">✕</button>
+                    </div>
+                    
+                    <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200">
+                        <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">공급 총계</p>
+                        <p class="text-4xl font-black">${total.toLocaleString()}<span class="text-lg ml-2 font-medium opacity-70">세대</span></p>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">대분류별 비중</h5>
+                        <div class="space-y-4">
+                            ${Object.entries(types).sort((a,b)=>b[1]-a[1]).map(([n,v]) => {
+                                const color = type2ColorMap[n] || '#6366f1';
+                                return `
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between text-[11px] font-bold">
+                                            <span class="text-slate-600">${n}</span>
+                                            <span class="text-slate-400">${v.toLocaleString()}세대 (${total > 0 ? ((v/total)*100).toFixed(1) : 0}%)</span>
+                                        </div>
+                                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full" style="width: ${total > 0 ? (v/total)*100 : 0}%; background-color: ${color}"></div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">TOP 프로젝트</h5>
+                        <div class="space-y-2">
+                            ${top5.map(p => `
+                                <div class="p-4 bg-slate-50/80 rounded-xl flex justify-between items-center group hover:bg-white hover:shadow-md transition-all duration-300">
+                                    <div class="truncate">
+                                        <p class="font-bold text-slate-700 truncate text-[12px]">${p.name}</p>
+                                        <p class="text-[10px] text-slate-400 font-medium">${p.operator}</p>
+                                    </div>
+                                    <p class="font-black text-indigo-600 ml-4">${p.units}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderTable() {
+            const sorted = [...filteredByMap].sort((a,b) => {
+                const vA = a[sortConfig.key], vB = b[sortConfig.key];
+                if (typeof vA === 'number' && typeof vB === 'number') return sortConfig.direction === 'asc' ? vA - vB : vB - vA;
+                const sA = String(vA).toLowerCase(), sB = String(vB).toLowerCase();
+                if (sA < sB) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (sA > sB) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            document.getElementById('table-count').innerText = `${filteredByMap.length.toLocaleString()}건`;
+            document.getElementById('table-body').innerHTML = sorted.map(d => {
+                const color = type2ColorMap[d.type2] || '#6366f1';
+                return `
+                    <tr class="hover:bg-indigo-50/30 transition-colors group">
+                        <td class="p-4 text-indigo-600 font-black">${d.심사연도 || '-'}</td>
+                        <td class="p-4 font-bold text-slate-700">${d.name}</td>
+                        <td class="p-4 text-slate-500">${d.type}</td>
+                        <td class="p-4"><span class="type2-badge" style="background-color: ${color}15; color: ${color}">${d.type2}</span></td>
+                        <td class="p-4 text-slate-400 font-medium">${d.public}</td>
+                        <td class="p-4 text-slate-400 font-medium">${d.operator}</td>
+                        <td class="p-4 text-slate-500 font-semibold">${d.region}</td>
+                        <td class="p-4 text-right font-black text-slate-800">${d.units.toLocaleString()}</td>
+                    </tr>`;
+            }).join('');
+                
+            document.querySelectorAll('th[data-sort-key]').forEach(th => {
+                const key = th.getAttribute('data-sort-key');
+                th.classList.toggle('active-sort', key === sortConfig.key);
+                th.querySelector('.sort-indicator')?.remove();
+                if (key === sortConfig.key) {
+                    const span = document.createElement('span');
+                    span.className = "sort-indicator ml-1";
+                    span.innerHTML = sortConfig.direction === 'asc' ? '↑' : '↓';
+                    th.appendChild(span);
+                }
+            });
+        }
+
+        window.sortTable = function(key) { 
+            if (sortConfig.key === key) sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'; 
+            else { sortConfig.key = key; sortConfig.direction = 'desc'; } 
+            renderTable(); 
+        };
+    </script>
+</body>
+</html>
+

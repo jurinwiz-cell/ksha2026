@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <actions>
+        <!-- Opal 페이지 생성 요청 처리 액션 -->
+        <action name="procAutoopalCreatePage" type="controller" method="POST" />
+        <!-- 관리자 설정 페이지 액션 (필요시) -->
+        <action name="dispAutoopalAdminIndex" type="adminview" standalone="true" />
+    </actions>
+</module>

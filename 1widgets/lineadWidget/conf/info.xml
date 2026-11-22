@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+	<title xml:lang="ko">전광판 출력 위젯</title>
+	<description xml:lang="ko">등록된 광고를 전광판 형식으로 출력하는 위젯입니다.</description>
+	<version>0.9</version>
+	<date>2019-11-25</date>
+
+	<author email_address="funnyxe@simplesoft.io" link="https://funnyxe.com">
+		<name xml:lang="ko">퍼니XE</name>
+	</author>
+	<extra_vars>
+		<var id="scroll_speed">
+			<type>text</type>
+			<name xml:lang="ko">스크롤 속도</name>
+			<description xml:lang="ko">스크롤 되는 속도를 지정할 수 있습니다.
+			(기본 : 50, 숫자가 작을 수록 빠릅니다)</description>
+		</var>
+		<var id="scroll_rate">
+			<type>text</type>
+			<name xml:lang="ko">스크롤 간격</name>
+			<description xml:lang="ko">광고와 광고 사이의 스크롤 간격을 지정할 수 있습니다.
+			(기본 : 3500, 숫자가 작을 수록 빠릅니다)</description>
+		</var>
+		<var id="subject_cut_size">
+			<type>text</type>
+			<name xml:lang="ko">내용 길이 제한</name>
+			<description xml:lang="ko">내용 길이를 제한합니다.
+			지정된 길이를 넘어서면 자릅니다.
+			(기본값 : 50)
+			</description>
+		</var>
+		<var id="list_count">
+			<type>text</type>
+			<name xml:lang="ko">목록 수</name>
+			<description xml:lang="ko">출력할 광고 수를 입력해 주세요.
+			입력하지 않으시면 모두 출력합니다.</description>
+		</var>
+		<var id="sort_index">
+			<type>select</type>
+			<name xml:lang="ko">정렬 방식</name>
+			<options>
+				<value>documents.list_order</value>
+				<name xml:lang="ko">등록일 기준</name>
+			</options>
+			<options>
+				<value>rand()</value>
+				<name xml:lang="ko">랜덤</name>
+			</options>
+		</var>
+		<var id="order_type">
+			<type>select</type>
+			<name xml:lang="ko">정렬 순서</name>
+			<options>
+				<value>desc</value>
+				<name xml:lang="ko">내림차순 (순차)</name>
+			</options>
+			<options>
+				<value>asc</value>
+				<name xml:lang="ko">오름차순 (역순)</name>
+			</options>
+			<description xml:lang="ko">랜덤 정렬 시 무시됩니다.</description>
+		</var>
+		<var id="scroll_stop">
+			<type>select</type>
+			<name xml:lang="ko">마우스 올릴 시 스크롤 중단</name>
+			<options>
+				<value>Y</value>
+				<name xml:lang="ko">사용</name>
+			</options>
+			<options>
+				<value>N</value>
+				<name xml:lang="ko">사용 안함</name>
+			</options>
+		</var>
+		<var id="display_author">
+			<type>select</type>
+			<name xml:lang="ko">등록자 표시</name>
+			<options>
+				<value>Y</value>
+				<name xml:lang="ko">표시</name>
+			</options>
+			<options>
+				<value>N</value>
+				<name xml:lang="ko">표시 안함</name>
+			</options>
+		</var>
+		<var id="display_notice_head">
+			<type>select</type>
+			<name xml:lang="ko">공지 머릿말 표시</name>
+			<options>
+				<value>Y</value>
+				<name xml:lang="ko">표시</name>
+			</options>
+			<options>
+				<value>N</value>
+				<name xml:lang="ko">표시 안함</name>
+			</options>
+		</var>
+		<var id="use_extra_info">
+			<type>select</type>
+			<name xml:lang="ko">회원 확장 정보 사용</name>
+			<options>
+				<value>N</value>
+				<name xml:lang="ko">사용 안함</name>
+			</options>
+			<options>
+				<value>Y</value>
+				<name xml:lang="ko">사용</name>
+			</options>
+			<description xml:lang="ko">레벨 아이콘, 그룹 마크, 이미지 마크, 이미지 닉네임 등의 회원 확장 정보 출력 여부를 결정합니다.</description>
+		</var>
+		<var id="module_srls">
+			<type>mid</type>
+			<name xml:lang="ko">대상 모듈</name>
+			<description xml:lang="ko">선택하신 모듈에 등록된 광고를 대상으로 전광판을 출력합니다.</description>
+		</var>
+	</extra_vars>
+</widget>

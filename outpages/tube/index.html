@@ -1,0 +1,413 @@
+<!--
+  유튜브 재생목록 뷰어 (PHP include 용 단일 HTML)
+  사용법:
+    <?php include 'youtube-playlists.html'; ?>
+
+  사전 준비:
+    1) 아래 YT_API_KEY 에 본인의 YouTube Data API v3 키를 넣으세요.
+       (Google Cloud Console → API 및 서비스 → 사용자 인증 정보)
+       보안을 위해 키에 HTTP 리퍼러 제한을 거는 것을 권장합니다.
+    2) PLAYLISTS 배열에 보여줄 채널/재생목록을 등록하세요.
+       - playlistId 만 알아도 동작합니다 (channelId 는 라벨/그룹핑용).
+       - 재생목록 ID는 유튜브 URL 의 list= 뒤 값입니다.
+         예) https://www.youtube.com/playlist?list=PLxxxxxxxxxxxx
+-->
+<meta charset="UTF-8">
+<div id="yt-pl-app" class="yt-pl-root">
+  <!-- 상단 타이틀 배너 -->
+  <header class="yt-pl-header-banner">
+    <h1>쏘하우sTV <span class="yt-pl-sub-text">- 사회주택을 보자...</span></h1>
+  </header>
+  <style>
+    /* 상단 배너 스타일 */
+    .yt-pl-header-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      padding: 40px 20px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .yt-pl-header-banner h1 {
+      font-size: 32px;
+      font-weight: 900;
+      margin: 0;
+      letter-spacing: -1px;
+    }
+    .yt-pl-header-banner .yt-pl-sub-text {
+      display: inline-block;
+      font-weight: 300;
+      font-size: 18px;
+      margin-left: 12px;
+      vertical-align: middle;
+      opacity: 0.9;
+    }
+    @media (max-width: 768px) {
+      .yt-pl-header-banner { padding: 30px 15px; }
+      .yt-pl-header-banner h1 { font-size: 24px; }
+      .yt-pl-header-banner .yt-pl-sub-text { display: block; margin: 8px 0 0 0; font-size: 15px; }
+    }
+
+    .yt-pl-root {
+      --yt-bg: #ffffff;
+      --yt-fg: #0f172a;
+      --yt-muted: #64748b;
+      --yt-border: #e2e8f0;
+      --yt-accent: #ef4444;
+      --yt-accent-fg: #ffffff;
+      --yt-card: #f8fafc;
+      --yt-radius: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Malgun Gothic",
+        sans-serif;
+      color: var(--yt-fg);
+      background: var(--yt-bg);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .yt-pl-root *,
+    .yt-pl-root *::before,
+    .yt-pl-root *::after { box-sizing: border-box; }
+
+    .yt-pl-header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .yt-pl-title { font-size: 20px; font-weight: 700; margin: 0; }
+    .yt-pl-search {
+      flex: 1 1 240px;
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--yt-border);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--yt-card);
+    }
+    .yt-pl-search input {
+      flex: 1; border: 0; outline: none; background: transparent;
+      font-size: 14px; color: var(--yt-fg);
+    }
+    .yt-pl-search svg { width: 16px; height: 16px; color: var(--yt-muted); flex: none; }
+
+    /* 레이아웃 개편: 상하 구조 */
+    .yt-pl-layout { display: flex; flex-direction: column; gap: 24px; }
+
+    /* 플레이어 영역: 상단 100% */
+    .yt-pl-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .yt-pl-player {
+      position: relative; width: 100%; aspect-ratio: 16 / 9;
+      background: #000; border-radius: var(--yt-radius); overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .yt-pl-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    /* 탭 스타일 재생목록 선택 */
+    .yt-pl-tabs-container {
+      border-bottom: 1px solid var(--yt-border);
+      margin-bottom: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    .yt-pl-tabs {
+      display: flex; gap: 4px; padding: 0 4px;
+      list-style: none; margin: 0;
+    }
+    .yt-pl-tab-item {
+      padding: 12px 20px;
+      font-size: 14px; font-weight: 700;
+      color: var(--yt-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .yt-pl-tab-item:hover { color: var(--yt-accent); }
+    .yt-pl-tab-item.is-active {
+      color: var(--yt-accent);
+      border-bottom-color: var(--yt-accent);
+    }
+
+    /* 영상 리스트: 반응형 그리드 */
+    .yt-pl-video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      list-style: none; margin: 0; padding: 0;
+    }
+    .yt-pl-video-card {
+      display: flex; flex-direction: column; gap: 10px;
+      cursor: pointer; group;
+    }
+    .yt-pl-video-thumb-wrapper {
+      position: relative; width: 100%; aspect-ratio: 16 / 9;
+      border-radius: 10px; overflow: hidden; background: #000;
+    }
+    .yt-pl-video-thumb {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .yt-pl-video-card:hover .yt-pl-video-thumb { transform: scale(1.05); }
+    
+    .yt-pl-video-info { display: flex; flex-direction: column; gap: 4px; }
+    .yt-pl-video-title {
+      font-size: 14px; font-weight: 700; line-height: 1.4;
+      overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      color: var(--yt-fg);
+    }
+    .yt-pl-video-meta { font-size: 12px; color: var(--yt-muted); }
+
+    .yt-pl-status { padding: 20px; text-align: center; font-size: 14px; color: var(--yt-muted); }
+    .yt-pl-status.is-error { color: #ef4444; }
+
+    @media (prefers-color-scheme: dark) {
+      .yt-pl-root {
+        --yt-bg: #0f172a;
+        --yt-fg: #f1f5f9;
+        --yt-muted: #94a3b8;
+        --yt-border: #1e293b;
+        --yt-card: #1e293b;
+      }
+    }
+  </style>
+
+  <div class="yt-pl-header">
+    <h2 class="yt-pl-title">📺 재생목록</h2>
+    <label class="yt-pl-search" aria-label="재생목록 검색">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input id="yt-pl-search-input" type="search"
+             placeholder="채널명 · 재생목록명 · 영상 제목 검색" autocomplete="off"/>
+    </label>
+  </div>
+
+  <div class="yt-pl-layout">
+    <section class="yt-pl-main">
+      <!-- 1. 영상 플레이어 영역 -->
+      <div class="yt-pl-player">
+        <div id="yt-pl-empty" class="yt-pl-empty">
+            영상을 선택하면 재생됩니다.
+        </div>
+        <iframe id="yt-pl-iframe" hidden
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                title="YouTube player"></iframe>
+      </div>
+
+      <!-- 2. 영상 메타 정보 -->
+      <div class="yt-pl-meta">
+        <h3 id="yt-pl-now-title" class="yt-pl-meta-title">재생 중인 영상이 없습니다</h3>
+        <span id="yt-pl-now-channel" class="yt-pl-meta-channel"></span>
+        <a id="yt-pl-now-link" href="#" target="_blank" rel="noopener" hidden>YouTube에서 보기 ↗</a>
+      </div>
+
+      <!-- 3. 재생목록 탭 & 영상 그리드 -->
+      <div class="yt-pl-content">
+        <div class="yt-pl-tabs-container">
+          <ul id="yt-pl-playlist-tabs" class="yt-pl-tabs"></ul>
+        </div>
+        <div id="yt-pl-status" class="yt-pl-status"></div>
+        <ul id="yt-pl-video-grid" class="yt-pl-video-grid"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+  (function () {
+    // ===== 설정 =====================================================
+    const YT_API_KEY = "AIzaSyCOa4CW3j9aSQrddkMfbfL1O69GyYl9gm4"; // ← 여기에 키 입력
+
+    // 관리자가 미리 등록하는 채널/재생목록 목록
+    // channelLabel 은 표시용입니다. playlistId 만 정확하면 동작합니다.
+    const PLAYLISTS = [
+      {
+        channelLabel: "쏘하우스TV",
+        playlistTitle: "사회주택을 말하다",
+        playlistId: "PLXLxTt8xUmeqALUf1UjIxQUengi8nHuWZ"
+      },
+      {
+        channelLabel: "쏘하우스TV",
+        playlistTitle: "사회주택 이야기",
+        playlistId: "PLXLxTt8xUmeqb9mtsINxSWSyB1iN1yeGC"
+      }
+    ];
+    // ================================================================
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      status: $("yt-pl-status"),
+      videoGrid: $("yt-pl-video-grid"),
+      playlistTabs: $("yt-pl-playlist-tabs"),
+      iframe: $("yt-pl-iframe"),
+      empty: $("yt-pl-empty"),
+      nowTitle: $("yt-pl-now-title"),
+      nowChannel: $("yt-pl-now-channel"),
+      nowLink: $("yt-pl-now-link"),
+      search: $("yt-pl-search-input")
+    };
+
+    let currentPlaylistId = null;
+    let currentVideos = [];
+    let currentFilter = "";
+
+    function setStatus(msg, isError) {
+      els.status.textContent = msg || "";
+      els.status.hidden = !msg;
+      els.status.classList.toggle("is-error", !!isError);
+    }
+
+    function renderPlaylistTabs() {
+      els.playlistTabs.innerHTML = "";
+      PLAYLISTS.forEach((p) => {
+        const li = document.createElement("li");
+        li.className = "yt-pl-tab-item" + (p.playlistId === currentPlaylistId ? " is-active" : "");
+        li.textContent = p.playlistTitle;
+        li.addEventListener("click", () => loadPlaylist(p));
+        els.playlistTabs.appendChild(li);
+      });
+    }
+
+    async function fetchAllPlaylistItems(playlistId) {
+      if (!YT_API_KEY || YT_API_KEY === "key") {
+        throw new Error("YouTube API 키가 설정되지 않았습니다. youtube-playlists.html 파일의 YT_API_KEY 값을 채워주세요.");
+      }
+      const items = [];
+      let pageToken = "";
+      for (let page = 0; page < 5; page++) {
+        const url = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+        url.searchParams.set("part", "snippet");
+        url.searchParams.set("maxResults", "50");
+        url.searchParams.set("playlistId", playlistId);
+        url.searchParams.set("key", YT_API_KEY);
+        if (pageToken) url.searchParams.set("pageToken", pageToken);
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+          let detail = "";
+          try { detail = (await res.json()).error?.message || ""; } catch (e) {}
+          throw new Error("YouTube API 오류 (" + res.status + ") " + detail);
+        }
+        const data = await res.json();
+        (data.items || []).forEach((it) => {
+          const sn = it.snippet || {};
+          const vid = sn.resourceId && sn.resourceId.videoId;
+          if (!vid) return;
+          if (sn.title === "Private video" || sn.title === "Deleted video") return;
+          const thumbs = sn.thumbnails || {};
+          // 고해상도 순서대로 시도: high -> medium -> default
+          const thumbUrl = (thumbs.high ? thumbs.high.url : (thumbs.medium ? thumbs.medium.url : (thumbs.default ? thumbs.default.url : "")));
+          items.push({
+            videoId: vid,
+            title: sn.title || "(제목 없음)",
+            channelTitle: sn.videoOwnerChannelTitle || sn.channelTitle || "",
+            thumb: thumbUrl
+          });
+        });
+        pageToken = data.nextPageToken || "";
+        if (!pageToken) break;
+      }
+      return items;
+    }
+
+    function renderVideoList() {
+      els.videoGrid.innerHTML = "";
+      const q = currentFilter.trim().toLowerCase();
+      const filtered = q
+        ? currentVideos.filter((v) =>
+            v.title.toLowerCase().includes(q) ||
+            v.channelTitle.toLowerCase().includes(q))
+        : currentVideos;
+
+      if (!filtered.length) {
+        setStatus(currentVideos.length ? "검색 결과가 없습니다." : "재생목록이 비어있습니다.");
+        return;
+      }
+      setStatus("");
+
+      filtered.forEach((v) => {
+        const card = document.createElement("li");
+        card.className = "yt-pl-video-card";
+        card.onclick = () => {
+            playVideo(v);
+            // 상단으로 부드럽게 스크롤
+            const appEl = document.getElementById('yt-pl-app');
+            if(appEl) appEl.scrollIntoView({ behavior: 'smooth' });
+        };
+        
+        card.innerHTML = `
+          <div class="yt-pl-video-thumb-wrapper">
+            <img class="yt-pl-video-thumb" alt="" loading="lazy"/>
+          </div>
+          <div class="yt-pl-video-info">
+            <div class="yt-pl-video-title">${v.title}</div>
+            <div class="yt-pl-video-meta">${v.channelTitle}</div>
+          </div>
+        `;
+        
+        // 라이믹스 경로 필터 우회를 위해 src를 직접 할당
+        card.querySelector('img').src = v.thumb;
+        
+        els.videoGrid.appendChild(card);
+      });
+    }
+
+    function playVideo(v, shouldAutoplay = true) {
+      const src = "https://www.youtube.com/embed/" + encodeURIComponent(v.videoId)
+        + "?list=" + encodeURIComponent(currentPlaylistId)
+        + (shouldAutoplay ? "&autoplay=1" : "")
+        + "&rel=0";
+      els.iframe.src = src;
+      els.iframe.hidden = false;
+      els.empty.style.display = "none";
+      els.nowTitle.textContent = v.title;
+      els.nowChannel.textContent = v.channelTitle;
+      els.nowLink.href = "https://www.youtube.com/watch?v=" + v.videoId
+        + "&list=" + currentPlaylistId;
+      els.nowLink.hidden = false;
+
+      // 선택된 카드 표시 업데이트
+      els.videoGrid.querySelectorAll(".yt-pl-video-card").forEach((card) => {
+        const isTarget = card.querySelector('img').src.includes(v.videoId) || card.innerText.includes(v.title);
+        card.classList.toggle("is-active", isTarget);
+      });
+    }
+
+    async function loadPlaylist(p, isInitial = false) {
+      currentPlaylistId = p.playlistId;
+      currentVideos = [];
+      renderPlaylistTabs();
+      setStatus("영상을 불러오는 중…");
+      try {
+        currentVideos = await fetchAllPlaylistItems(p.playlistId);
+        renderVideoList();
+        
+        // 첫 영상 자동 선택
+        if (currentVideos.length > 0) {
+            // 초기 로딩 시에는 재생 안함(false), 그 외(탭 클릭 등)에는 자동 재생(true)
+            playVideo(currentVideos[0], !isInitial);
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus(err.message || "불러오기에 실패했습니다.", true);
+      }
+    }
+
+    els.search.addEventListener("input", (e) => {
+      currentFilter = e.target.value;
+      if (currentPlaylistId) renderVideoList();
+    });
+
+    if (!PLAYLISTS.length) {
+      setStatus("등록된 재생목록이 없습니다. PLAYLISTS 배열에 추가하세요.", true);
+    } else {
+      renderPlaylistTabs();
+      // true를 전달하여 초기 로딩임을 알림 (첫 영상 자동 재생 방지)
+      loadPlaylist(PLAYLISTS[0], true);
+    }
+  })();
+  </script>
+</div>
+

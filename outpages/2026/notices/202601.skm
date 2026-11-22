@@ -1,0 +1,37 @@
+-- 데이터베이스 생성 (필요에 따라 이름 수정)
+CREATE DATABASE IF NOT EXISTS public_housing_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE public_housing_db;
+
+-- 포털 콘텐츠 저장 테이블
+CREATE TABLE IF NOT EXISTS portal_content (
+    field_key VARCHAR(100) PRIMARY KEY,
+    field_value TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 초기 기본 데이터 삽입
+INSERT IGNORE INTO portal_content (field_key, field_value) VALUES
+('portalTitle', '공공임대주택 통합 안내 포털'),
+('portalSubtitle', '민간참여형 특화 및 공공주체별 사업 공모 안내'),
+('tab1Name', '2026년 상반기 특화형 공고'),
+('tab2Name', '공공주체별 공모 안내'),
+('tab3Name', '연도별 현황'),
+('doc1Date', '공고일: 2026.04.03'),
+('doc1Title', '2026년 상반기 특화형 임대주택 모집 공고'),
+('doc1Subtitle', '(민간제안형)'),
+('doc1Scale', '1,000호 내외'),
+('doc1Deadline', '~ 26.5.11(월) 17시'),
+('doc1OverviewDesc', '(사업구조) 민간사업자가 자유롭게 테마를 제안하여 기획·설계·시공하여 공사가 매입 후 민간사업자가 테마에 따른 입주자 선발 및 차별화된 주거 서비스 제공 등 임대 운영관리까지 수행'),
+('doc1OverviewTheme', '(운영테마) 돌봄·육아·교육, 일자리·창업지원, 귀농·귀촌, 장애인·자립지원 등 사업시행자가 자유롭게 제안'),
+('doc1OverviewScale', '(공모규모) 1,000호 내외\n※ 공모 규모 범위 내에서 선정하되, 수요부족, 건축계획 등이 부적합할 경우 공모 규모에도 불구하고 선정하지 아니할 수 있음'),
+('doc1OverviewArea', '(공모지역) 인구 8만 이상의 전국 대상\n- 단, 인구 8만 미만의 소도시·농산어촌 지역의 경우 읍, 면, 행정복지센터 소재지에 한하여 허용'),
+('doc1Eligibility', '사업 시행자는 본 사업을 시행하고자 하는 자로 공고일 기준 자격을 충족하여야 함.'),
+('doc2Title', '공공주체별 공모사업 안내'),
+('doc2Subtitle', '민간참여형(민관협력형) 공공임대주택'),
+('doc2LH', 'LH는 기존주택매입, 일반매입약정, 특화형 매입약정 등으로 청약플러스를 통해 공고합니다.\n- 일반적으로 LH 본사에서 사전공고를 내고 지역본부에서 개별 공고 진행'),
+('doc2SH', 'SH는 일반 매입임대공고(주로 매입약정방식)가 진행되고 있습니다.'),
+('doc2GH', 'GH는 기존주택매입방식 위주에서 매입약정형이 확대되고 있습니다.'),
+('doc3Title', '연도별 공모 현황 및 결과'),
+('doc3Subtitle', '최근 공모사업 진행 상황부터 과거 공모 결과까지 안내'),
+('doc3Year2025', '▶ GH 특화형(11월) - 진행중\n▶ GH Care Hub(12월) - 진행중'),
+('doc3Year2024', '▶ 2024 LH 신축 특화형 임대주택 공모사업 (6/7 상반기)\n▶ 2024 GH 특화형 임대주택 공모사업');

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 사회주택 현황 편집 대시보드</title>
+    <meta name="description" content="한국사회주택협회 사회주택 공급 현황 편집 대시보드">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary: #3b5bdb; --primary-dark: #2f4ac0;
+            --success: #2f9e44; --success-bg: #d3f9d8;
+            --warning: #e67700; --warning-bg: #fff3bf;
+            --danger: #c92a2a; --danger-bg: #ffe3e3;
+            --info: #1971c2; --info-bg: #d0ebff;
+            --bg: #f0f2f5; --card: #fff; --border: #dee2e6;
+            --text: #212529; --text-muted: #6c757d;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --radius: 10px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+
+        /* HEADER */
+        .site-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+        .header-inner { max-width: 1800px; margin: 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 0; flex-wrap: wrap; }
+        .header-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg,#3b5bdb,#228be6,#12b886); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; white-space: nowrap; }
+        .header-badge { background: var(--danger); color: white; font-size: 0.62rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .header-status { font-size: 0.78rem; color: var(--text-muted); flex: 1; }
+        .header-status strong { color: var(--primary); }
+        .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .hdr-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: white; font-size: 0.75rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; color: var(--text-muted); }
+        .hdr-btn:hover { background: #f1f3f5; }
+        .hdr-btn.success { background: var(--success); border-color: var(--success); color: white; }
+        #save-status { font-size: 0.72rem; padding: 5px 10px; border-radius: 6px; font-weight: 600; display: none; }
+        #save-status.show { display: block; }
+        #save-status.ok { background: var(--success-bg); color: var(--success); }
+        #save-status.err { background: var(--danger-bg); color: var(--danger); }
+        #save-status.ing { background: var(--info-bg); color: var(--info); }
+
+        /* LAYOUT */
+        .main-wrap { max-width: 1800px; margin: 0 auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+        /* FILTER */
+        .filter-section { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .filter-section-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+        .filter-section-title { font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); }
+        .filter-grid { display: grid; grid-template-columns: repeat(6, 1fr); }
+        .filter-panel { border-right: 1px solid var(--border); }
+        .filter-panel:last-child { border-right: none; }
+        .filter-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f8f9fa; border-bottom: 1px solid #f1f3f5; cursor: pointer; user-select: none; }
+        .panel-title-row { display: flex; align-items: center; gap: 6px; }
+        .panel-checkbox { width: 13px; height: 13px; cursor: pointer; accent-color: var(--primary); }
+        .panel-title { font-size: 0.75rem; font-weight: 700; }
+        .panel-col-labels { display: flex; gap: 6px; }
+        .col-label { font-size: 0.65rem; color: var(--text-muted); min-width: 38px; text-align: right; }
+        .filter-panel-body { max-height: 175px; overflow-y: auto; }
+        .filter-panel-body.collapsed { display: none; }
+        .filter-row-item { display: flex; align-items: center; padding: 4px 8px; border-bottom: 1px solid #f8f9fa; cursor: pointer; transition: background 0.1s; gap: 5px; }
+        .filter-row-item:hover { background: #f8f9fa; }
+        .filter-row-item.checked { background: #eef2ff; }
+        .row-checkbox { width: 12px; height: 12px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
+        .row-label { font-size: 0.7rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .filter-row-item.checked .row-label { font-weight: 600; color: var(--primary-dark); }
+        .row-units { font-size: 0.68rem; min-width: 38px; text-align: right; font-weight: 600; }
+        .row-count { font-size: 0.65rem; min-width: 22px; text-align: right; color: var(--text-muted); }
+        .highlight-mija { background: #fff9db; border-left: 3px solid var(--warning); }
+        .highlight-mija .row-label { color: var(--warning); font-weight: 700; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+
+        /* KPI */
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .kpi-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 14px 18px; border-left: 4px solid var(--primary); }
+        .kpi-card.green { border-left-color: var(--success); }
+        .kpi-card.orange { border-left-color: var(--warning); }
+        .kpi-label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-family: 'Outfit', sans-serif; font-size: 1.7rem; font-weight: 700; display: block; margin: 4px 0 2px; }
+        .kpi-sub { font-size: 0.68rem; color: var(--text-muted); }
+
+        /* CHARTS + MAP */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .chart-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 14px; display: flex; flex-direction: column; }
+        .tabs-header { display: flex; gap: 12px; border-bottom: 2px solid var(--border); margin-bottom: 10px; }
+        .tab-btn { background: none; border: none; padding: 6px 2px; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-family: inherit; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; flex-grow: 1; }
+        .tab-content.active { display: flex; flex-direction: column; }
+        .canvas-wrapper { flex-grow: 1; position: relative; height: 280px; }
+        .map-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .map-card-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .map-card-title { font-size: 0.85rem; font-weight: 700; color: var(--primary-dark); }
+        #map { height: 320px; }
+
+        /* TABLE SECTION */
+        .table-section { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .table-section-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+        .table-section-title { font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); }
+        .edit-hint { font-size: 0.7rem; color: var(--danger); }
+        .table-tabs { display: flex; gap: 4px; }
+        .tbl-tab-btn { padding: 4px 12px; border-radius: 5px; border: 1px solid var(--border); background: white; font-size: 0.75rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; color: var(--text-muted); }
+        .tbl-tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+        .table-actions { display: flex; gap: 8px; align-items: center; }
+        .table-search-input { padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border); font-size: 0.75rem; font-family: inherit; width: 180px; }
+        .table-container-wrap { overflow-x: auto; max-height: 450px; overflow-y: auto; }
+
+        /* PIVOT */
+        .pivot-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; white-space: nowrap; }
+        .pivot-table th, .pivot-table td { padding: 6px 10px; border: 1px solid #e9ecef; vertical-align: middle; }
+        .pivot-table thead th { background: #e9ecef; font-weight: 700; position: sticky; top: 0; z-index: 10; text-align: center; }
+        .pivot-table .th-group { background: #dee2e6; font-size: 0.7rem; color: var(--text-muted); }
+        .pivot-table .col-type2 { background: #f8f9fa; font-weight: 700; position: sticky; left: 0; z-index: 5; min-width: 100px; }
+        .pivot-table td.num-cell { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+        .pivot-table td.num-cell.zero { color: #adb5bd; }
+        .pivot-table .col-total { font-weight: 700; background: #f1f3f5; border-left: 2px solid var(--border); border-right: 2px solid var(--border); }
+        .pivot-table tr:hover td { filter: brightness(0.95); }
+        .heat-1 { background: #e7f5ff; } .heat-2 { background: #a5d8ff; }
+        .heat-3 { background: #74c0fc; color: #1864ab; } .heat-4 { background: #4dabf7; color: white; }
+        .heat-5 { background: #228be6; color: white; font-weight: 700; }
+        .type2-band-0 { border-left: 3px solid #4dabf7; } .type2-band-1 { border-left: 3px solid #f783ac; }
+        .type2-band-2 { border-left: 3px solid #69db7c; } .type2-band-3 { border-left: 3px solid #ffa94d; }
+        .type2-band-4 { border-left: 3px solid #a9e34b; } .type2-band-5 { border-left: 3px solid #f06595; }
+        .type2-band-6 { border-left: 3px solid #74c0fc; } .type2-band-7 { border-left: 3px solid #63e6be; }
+        .type2-band-8 { border-left: 3px solid #da77f2; }
+
+        /* DATA TABLE */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; white-space: nowrap; }
+        .data-table th { background: #e9ecef; padding: 7px 8px; font-weight: 700; position: sticky; top: 0; z-index: 10; cursor: pointer; user-select: none; border: 1px solid #dee2e6; }
+        .data-table th:hover { background: #dee2e6; }
+        .data-table td { padding: 5px 8px; border-bottom: 1px solid #f1f3f5; border-left: 1px solid #f1f3f5; vertical-align: middle; }
+        .data-table tr:hover td { background: #f8f9fa; }
+        .sort-icon { display: inline-block; margin-left: 4px; font-size: 0.65rem; color: #adb5bd; }
+        .edit-cell { outline: none; border-radius: 4px; padding: 3px 5px; margin: -3px -5px; border: 1px dashed transparent; transition: all 0.2s; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .edit-cell:hover { background: #f1f5f9; border-color: #ced4da; cursor: text; }
+        .edit-cell:focus { background: #fff; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,91,219,0.12); white-space: normal; overflow: visible; z-index: 5; position: relative; }
+        .status-select { border: 1px dashed transparent; outline: none; font-weight: 700; font-size: 0.68rem; text-align: center; cursor: pointer; padding: 4px 6px; border-radius: 6px; width: 100%; appearance: menulist; transition: border-color 0.2s; font-family: inherit; }
+        .status-select:hover { border-color: #ced4da; }
+        select.status-done { background: #d3f9d8; color: #2f9e44; }
+        select.status-ing { background: #d0ebff; color: #1971c2; }
+        select.status-end { background: #f1f3f5; color: #495057; }
+        select.status-wait { background: #fff3bf; color: #e67700; }
+        select.status-none { background: #ffe3e3; color: #c92a2a; }
+        .table-section.fullscreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; overflow: auto; background: white; }
+        .table-section.fullscreen .table-container-wrap { max-height: calc(100vh - 120px); }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 10000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 14px; width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+        .modal-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 14px 14px 0 0; position: sticky; top: 0; }
+        .modal-head h3 { font-size: 0.9rem; color: var(--primary-dark); margin: 0; }
+        .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+        .modal-body-wrap { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+        .info-grid { display: grid; grid-template-columns: 90px 1fr; gap: 0; }
+        .info-grid dt, .info-grid dd { padding: 7px 10px; border-bottom: 1px solid #f1f3f5; font-size: 0.82rem; }
+        .info-grid dt { color: var(--text-muted); font-weight: 600; background: #f8f9fa; }
+        .modal-save-btn { padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; font-family: inherit; }
+        .modal-save-btn:hover { background: var(--primary-dark); }
+        .modal-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        @media (max-width: 1200px) { .filter-grid { grid-template-columns: repeat(3, 1fr); } .dashboard-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 700px) { .kpi-grid { grid-template-columns: 1fr 1fr; } .filter-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <h1 class="header-title">사회주택 현황판</h1>
+        <span class="header-badge">편집모드</span>
+        <span class="header-status" id="status-text">데이터 로드 중...</span>
+        <div class="header-actions">
+            <span id="save-status"></span>
+            <button class="hdr-btn" id="btn-reset">🔄 초기화</button>
+            <button class="hdr-btn" id="btn-map-toggle">🗺 지도 보기</button>
+            <button class="hdr-btn success" id="btn-export">💾 CSV 다운로드</button>
+        </div>
+    </div>
+</header>
+
+<div class="main-wrap">
+
+    <!-- 필터 -->
+    <div class="filter-section">
+        <div class="filter-section-header" onclick="toggleFilterSection()">
+            <span class="filter-section-title">🔍 필터 패널 (클릭하여 접기/펼치기)</span>
+            <span id="filter-toggle-icon" style="font-size:0.75rem;color:var(--text-muted)">▼</span>
+        </div>
+        <div id="filter-body">
+            <div class="filter-grid">
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('type2')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-type2" checked onclick="event.stopPropagation();toggleAllFilter('type2',this.checked)"><span class="panel-title">대분류</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-type2"></div>
+                </div>
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('sinchuk')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-sinchuk" checked onclick="event.stopPropagation();toggleAllFilter('sinchuk',this.checked)"><span class="panel-title">신축여부</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-sinchuk"></div>
+                </div>
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('public')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-public" checked onclick="event.stopPropagation();toggleAllFilter('public',this.checked)"><span class="panel-title">공공</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-public"></div>
+                </div>
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('completion')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-completion" checked onclick="event.stopPropagation();toggleAllFilter('completion',this.checked)"><span class="panel-title">준공여부</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-completion"></div>
+                </div>
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('region')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-region" checked onclick="event.stopPropagation();toggleAllFilter('region',this.checked)"><span class="panel-title">광역</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-region"></div>
+                </div>
+                <div class="filter-panel">
+                    <div class="filter-panel-header" onclick="togglePanelCollapse('operator')">
+                        <div class="panel-title-row"><input type="checkbox" class="panel-checkbox" id="chk-all-operator" checked onclick="event.stopPropagation();toggleAllFilter('operator',this.checked)"><span class="panel-title">단체명</span></div>
+                        <div class="panel-col-labels"><span class="col-label">세대</span><span class="col-label">건</span></div>
+                    </div>
+                    <div class="filter-panel-body" id="body-operator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+        <div class="kpi-card"><span class="kpi-label">총 공급 세대수</span><span class="kpi-value" id="kpi-units">0</span><span class="kpi-sub" id="kpi-units-sub"></span></div>
+        <div class="kpi-card green"><span class="kpi-label">필터링 사업 수</span><span class="kpi-value" id="kpi-projects">0</span><span class="kpi-sub" id="kpi-projects-sub"></span></div>
+        <div class="kpi-card orange"><span class="kpi-label">준공 완료율</span><span class="kpi-value" id="kpi-rate">0%</span><span class="kpi-sub" id="kpi-rate-sub"></span></div>
+    </div>
+
+    <!-- 차트 + 지도 -->
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-target="tab-type">유형별 세대수</button>
+                <button class="tab-btn" data-target="tab-region">지역별 세대수</button>
+            </div>
+            <div id="tab-type" class="tab-content active"><div class="canvas-wrapper"><canvas id="typeChart"></canvas></div></div>
+            <div id="tab-region" class="tab-content"><div class="canvas-wrapper"><canvas id="regionChart"></canvas></div></div>
+        </div>
+        <div class="map-card" id="map-card">
+            <div class="map-card-header" onclick="toggleMap()">
+                <span class="map-card-title">📍 위치 지도 <span id="map-count" style="font-size:0.7rem;color:var(--text-muted);font-weight:400"></span></span>
+                <span id="map-toggle-icon" style="font-size:0.75rem;color:var(--text-muted)">▶</span>
+            </div>
+            <div id="map" style="display:none"></div>
+        </div>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="table-section" id="table-section">
+        <div class="table-section-header">
+            <div style="display:flex;align-items:center;gap:10px">
+                <span class="table-section-title" id="table-title">📊 유형별 심사연도 × 세대수</span>
+                <span class="edit-hint" id="edit-hint"></span>
+            </div>
+            <div class="table-tabs">
+                <button class="tbl-tab-btn active" id="tab-pivot" onclick="switchTab('pivot')">피벗 테이블</button>
+                <button class="tbl-tab-btn" id="tab-list" onclick="switchTab('list')">목록 보기 ✏️</button>
+            </div>
+            <div class="table-actions">
+                <input type="text" class="table-search-input" id="table-search" placeholder="🔍 검색...">
+                <button class="hdr-btn" id="btn-fullscreen" onclick="toggleFullscreen()">🖥 전체화면</button>
+            </div>
+        </div>
+        <div class="table-container-wrap" id="table-container"></div>
+    </div>
+
+</div>
+
+<!-- 편집 모달 -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="modal-title">상세 편집</h3>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body-wrap" id="modal-body"></div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ══ CONFIG ══
+const CSV_URL = "/stockG/fetch_data.php";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxgrGf8rDpn-E2Eo32bZnhGBzzpFYjIbH1c4qQw43tbH1YbSm-ra7FVn7MyVfo63hafmA/exec";
+const KAKAO_REST_API_KEY = "4cd85258a0af900c29f573aafabfbcc7";
+const TYPE2_COLORS = {'특화형임대':'#4dabf7','토지임대부':'#f783ac','리모델링':'#ffa94d','도시재생형':'#69db7c','공공지원리츠':'#da77f2','공공소유형':'#a9e34b','공동리츠형':'#63e6be','공공임대':'#74c0fc','공동체주택':'#ff8787'};
+
+function normalizeCompletion(raw) {
+    raw = (raw||'').trim();
+    if (['준공'].includes(raw)) return '준공';
+    if (['미준공'].includes(raw)) return '미준공';
+    if (['미착공'].includes(raw)) return '미착공';
+    if (['종료','종결'].includes(raw)) return '종료';
+    if (['취소','중단','포기','사업포기'].includes(raw)) return '취소';
+    if (['유찰'].includes(raw)) return '유찰';
+    return '기타';
+}
+
+// ══ STATE ══
+let rawData=[], filteredData=[];
+let filters={type2:new Set(),sinchuk:new Set(),public:new Set(),completion:new Set(),region:new Set(),operator:new Set()};
+let operatorTopList=[], charts={}, map=null, mapMarkers=[];
+let currentTab='pivot', searchQuery='', sortCol='year', sortAsc=false;
+let isPickingLocation=false, pickingForId=null, mapVisible=false;
+
+// ══ INIT ══
+document.addEventListener('DOMContentLoaded', () => {
+    initMap(); loadData();
+    document.getElementById('btn-reset').addEventListener('click', resetFilters);
+    document.getElementById('btn-export').addEventListener('click', exportCSV);
+    document.getElementById('table-search').addEventListener('input', e => { searchQuery=e.target.value.toLowerCase(); if(currentTab==='list') renderListTable(); });
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+        });
+    });
+});
+
+// ══ DATA ══
+function loadData() {
+    Papa.parse(CSV_URL, {
+        download:true, header:true, skipEmptyLines:true,
+        complete: results => {
+            rawData = results.data.map(row => {
+                const units = parseInt(String(row['세대']||'0').replace(/[^0-9]/g,''),10)||0;
+                const name = (row['주택명']||'').trim();
+                if (!units && !name) return null;
+                return {
+                    id: (crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)),
+                    no: (row['NO']||'').trim(),
+                    year: String(row['심사연도']||'').trim().substring(0,4)||'-',
+                    name: name||'미상',
+                    operator: (row['단체명']||'-').trim(),
+                    region: (row['광역']||'기타').trim(),
+                    gu: (row['자치구']||'-').trim(),
+                    public: (row['공공']||'민간').trim(),
+                    sinchuk: (row['신축여부']||'기타').trim(),
+                    type2: (row['유형2']||'기타').trim(),
+                    type: (row['유형']||'-').trim(),
+                    address: (row['소재지']||row['위치']||'-').trim(),
+                    completion: normalizeCompletion(row['준공여부']),
+                    units, lat: parseFloat(row['위도'])||null, lng: parseFloat(row['경도'])||null,
+                };
+            }).filter(d=>d!==null);
+            initFilters(); applyAndRender();
+        },
+        error: err => { document.getElementById('status-text').textContent='⚠️ 로드 실패: '+err.message; }
+    });
+}
+
+// ══ FILTERS ══
+function getUnique(key) { return [...new Set(rawData.map(d=>d[key]).filter(Boolean))].sort(); }
+
+function initFilters() {
+    const EXCL = new Set(['취소','유찰','기타']);
+    ['type2','sinchuk','public','region'].forEach(k=>{filters[k]=new Set(getUnique(k));});
+    filters.completion = new Set(getUnique('completion').filter(v=>!EXCL.has(v)));
+    const opMap={};
+    rawData.forEach(d=>{if(!opMap[d.operator])opMap[d.operator]={units:0,count:0};opMap[d.operator].units+=d.units;opMap[d.operator].count++;});
+    operatorTopList = Object.entries(opMap).sort((a,b)=>b[1].units-a[1].units).slice(0,20).map(e=>e[0]);
+    filters.operator = new Set(rawData.map(d=>d.operator));
+}
+
+function applyFilters() {
+    filteredData = rawData.filter(d=>{
+        if(filters.type2.size>0&&!filters.type2.has(d.type2)) return false;
+        if(filters.sinchuk.size>0&&!filters.sinchuk.has(d.sinchuk)) return false;
+        if(filters.public.size>0&&!filters.public.has(d.public)) return false;
+        if(filters.completion.size>0&&!filters.completion.has(d.completion)) return false;
+        if(filters.region.size>0&&!filters.region.has(d.region)) return false;
+        const inPanel=operatorTopList.includes(d.operator);
+        if(inPanel&&!filters.operator.has(d.operator)) return false;
+        return true;
+    });
+}
+
+function applyAndRender(){applyFilters();renderAll();}
+function renderAll(){renderPanels();updateKPI();renderCharts();updateMapMarkers();if(currentTab==='pivot')renderPivot();else renderListTable();}
+function resetFilters(){initFilters();applyAndRender();}
+
+function getOtherFiltered(excludeKey) {
+    return rawData.filter(d=>{
+        for(const[k,sel]of Object.entries(filters)){
+            if(k===excludeKey) continue;
+            if(k==='operator'){const ip=operatorTopList.includes(d.operator);if(ip&&!sel.has(d.operator))return false;}
+            else{if(sel.size>0&&!sel.has(d[k]))return false;}
+        }
+        return true;
+    });
+}
+
+function renderPanels(){
+    renderPanel('type2','body-type2',d=>d.type2);
+    renderPanel('sinchuk','body-sinchuk',d=>d.sinchuk);
+    renderPanel('public','body-public',d=>d.public);
+    renderCompletionPanel();
+    renderPanel('region','body-region',d=>d.region);
+    renderOperatorPanel();
+}
+
+function renderPanel(filterKey,bodyId,getVal){
+    const base=getOtherFiltered(filterKey),agg={};
+    base.forEach(d=>{const v=getVal(d);if(!agg[v])agg[v]={units:0,count:0};agg[v].units+=d.units;agg[v].count++;});
+    const keys=Object.keys(agg).sort((a,b)=>agg[b].units-agg[a].units);
+    const c=document.getElementById(bodyId); if(!c) return;
+    c.innerHTML=keys.map(val=>{
+        const{units,count}=agg[val],chk=filters[filterKey].has(val);
+        return `<div class="filter-row-item ${chk?'checked':''}" onclick="toggleFilter('${filterKey}','${escHtml(val)}')">
+            <input type="checkbox" class="row-checkbox" ${chk?'checked':''} onclick="event.stopPropagation();toggleFilter('${filterKey}','${escHtml(val)}')" >
+            <span class="row-label" title="${escHtml(val)}">${escHtml(val)}</span>
+            <span class="row-units">${units.toLocaleString()}</span><span class="row-count">${count}</span>
+        </div>`;
+    }).join('');
+    updatePanelCheck(filterKey,keys);
+}
+
+function renderCompletionPanel(){
+    const ORDER=['준공','미준공','미착공','종료','취소','유찰','기타'];
+    const base=getOtherFiltered('completion'),agg={};
+    base.forEach(d=>{if(!agg[d.completion])agg[d.completion]={units:0,count:0};agg[d.completion].units+=d.units;agg[d.completion].count++;});
+    const keys=ORDER.filter(k=>agg[k]);
+    const c=document.getElementById('body-completion'); if(!c) return;
+    c.innerHTML=keys.map(val=>{
+        const{units,count}=agg[val],chk=filters.completion.has(val);
+        return `<div class="filter-row-item ${chk?'checked':''} ${val==='미착공'?'highlight-mija':''}" onclick="toggleFilter('completion','${val}')">
+            <input type="checkbox" class="row-checkbox" ${chk?'checked':''} onclick="event.stopPropagation();toggleFilter('completion','${val}')">
+            <span class="row-label">${val}</span>
+            <span class="row-units">${units.toLocaleString()}</span><span class="row-count">${count}</span>
+        </div>`;
+    }).join('');
+    updatePanelCheck('completion',keys);
+}
+
+function renderOperatorPanel(){
+    const base=getOtherFiltered('operator'),agg={};
+    base.forEach(d=>{if(!operatorTopList.includes(d.operator))return;if(!agg[d.operator])agg[d.operator]={units:0,count:0};agg[d.operator].units+=d.units;agg[d.operator].count++;});
+    const keys=operatorTopList.filter(k=>agg[k]).sort((a,b)=>agg[b].units-agg[a].units);
+    const c=document.getElementById('body-operator'); if(!c) return;
+    c.innerHTML=keys.map(val=>{
+        const{units,count}=agg[val],chk=filters.operator.has(val);
+        return `<div class="filter-row-item ${chk?'checked':''}" onclick="toggleFilter('operator','${escHtml(val)}')">
+            <input type="checkbox" class="row-checkbox" ${chk?'checked':''} onclick="event.stopPropagation();toggleFilter('operator','${escHtml(val)}')">
+            <span class="row-label" title="${escHtml(val)}">${escHtml(val)}</span>
+            <span class="row-units">${units.toLocaleString()}</span><span class="row-count">${count}</span>
+        </div>`;
+    }).join('');
+    updatePanelCheck('operator',keys);
+}
+
+function updatePanelCheck(key,keys){
+    const el=document.getElementById(`chk-all-${key}`); if(!el) return;
+    const allChk=keys.length>0&&keys.every(v=>filters[key].has(v));
+    const someChk=keys.some(v=>filters[key].has(v));
+    el.checked=allChk; el.indeterminate=!allChk&&someChk;
+}
+
+function toggleFilter(key,val){if(filters[key].has(val))filters[key].delete(val);else filters[key].add(val);applyAndRender();}
+function toggleAllFilter(key,checked){if(checked){const vals=key==='operator'?operatorTopList:getUnique(key);vals.forEach(v=>filters[key].add(v));}else{filters[key].clear();}applyAndRender();}
+function togglePanelCollapse(key){const b=document.getElementById(`body-${key}`);if(b)b.classList.toggle('collapsed');}
+function toggleFilterSection(){const b=document.getElementById('filter-body'),i=document.getElementById('filter-toggle-icon');const h=b.style.display==='none';b.style.display=h?'':'none';i.textContent=h?'▼':'▶';}
+
+// ══ KPI ══
+function updateKPI(){
+    const total=filteredData.length,units=filteredData.reduce((s,d)=>s+d.units,0);
+    const done=filteredData.filter(d=>d.completion==='준공').reduce((s,d)=>s+d.units,0);
+    const rate=units?(done/units*100).toFixed(1):0;
+    document.getElementById('kpi-units').textContent=units.toLocaleString();
+    document.getElementById('kpi-units-sub').textContent=`준공 ${done.toLocaleString()}세대 포함`;
+    document.getElementById('kpi-projects').textContent=total.toLocaleString();
+    document.getElementById('kpi-projects-sub').textContent=`전체 ${rawData.length}건 중`;
+    document.getElementById('kpi-rate').textContent=rate+'%';
+    document.getElementById('kpi-rate-sub').textContent='준공 세대 기준';
+    document.getElementById('status-text').innerHTML=`<strong>${total.toLocaleString()}</strong>건 · <strong>${units.toLocaleString()}</strong>세대 · 준공 <strong>${done.toLocaleString()}</strong>세대`;
+}
+
+// ══ CHARTS ══
+function renderCharts(){
+    const agg=k=>{const r={};filteredData.forEach(d=>{const key=(k==='type')?d.type2:d[key];r[key]=(r[key]||0)+d.units;});return r;};
+    const draw=(id,type,dataMap)=>{
+        if(charts[id])charts[id].destroy();
+        const labels=Object.keys(dataMap).sort((a,b)=>dataMap[b]-dataMap[a]);
+        const colors=['#4f46e5','#10b981','#f59e0b','#ef4444','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316'];
+        charts[id]=new Chart(document.getElementById(id),{type,data:{labels,datasets:[{data:labels.map(l=>dataMap[l]),backgroundColor:colors,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:9}}}}}});
+    };
+    draw('typeChart','doughnut',agg('type'));
+    draw('regionChart','bar',agg('region'));
+}
+
+// ══ MAP ══
+function initMap(){
+    map=L.map('map').setView([36.5,127.8],7);
+    L.tileLayer('https://api.vworld.kr/req/wmts/1.0.0/C15F78DF-8CB0-394F-B6F1-51B35D1A69FB/Base/{z}/{y}/{x}.png',{attribution:'© 브이월드',maxZoom:19}).addTo(map);
+    map.on('click',e=>{
+        if(!isPickingLocation) return;
+        isPickingLocation=false;
+        const lat=parseFloat(e.latlng.lat.toFixed(6)),lng=parseFloat(e.latlng.lng.toFixed(6));
+        const toast=document.getElementById('map-pick-toast');if(toast)toast.remove();
+        document.body.style.cursor='';
+        const idx=rawData.findIndex(r=>r.id===pickingForId);
+        if(idx>-1) openEditModal({...rawData[idx],lat,lng});
+    });
+}
+
+function toggleMap(){
+    mapVisible=!mapVisible;
+    const mapEl=document.getElementById('map'),icon=document.getElementById('map-toggle-icon'),btn=document.getElementById('btn-map-toggle');
+    mapEl.style.display=mapVisible?'':'none';
+    icon.textContent=mapVisible?'▼':'▶';
+    btn.textContent=mapVisible?'🗺 지도 숨김':'🗺 지도 보기';
+    if(mapVisible){setTimeout(()=>{map.invalidateSize();updateMapMarkers();},100);}
+}
+
+function updateMapMarkers(){
+    if(!mapVisible) return;
+    mapMarkers.forEach(m=>map.removeLayer(m)); mapMarkers=[];
+    const bounds=[];
+    filteredData.forEach(d=>{
+        if(!d.lat||!d.lng||d.lat<33||d.lat>39||d.lng<124||d.lng>132) return;
+        const color=TYPE2_COLORS[d.type2]||'#adb5bd';
+        const m=L.circleMarker([d.lat,d.lng],{radius:Math.min(4+Math.sqrt(d.units/5),14),fillColor:color,color:'white',weight:1.5,fillOpacity:0.85}).addTo(map);
+        m.bindPopup(`<strong>${escHtml(d.name)}</strong><br>${d.units}세대 · ${d.type2} · ${d.completion}<br><small style="color:#999">(더블클릭으로 편집)</small>`);
+        m.on('dblclick',()=>openEditModal(d));
+        mapMarkers.push(m); bounds.push([d.lat,d.lng]);
+    });
+    document.getElementById('map-count').textContent=`마커 ${mapMarkers.length}개`;
+    if(bounds.length){try{map.fitBounds(bounds,{padding:[20,20],maxZoom:13});}catch(e){}}
+}
+
+// ══ PIVOT TABLE ══
+function renderPivot(){
+    document.getElementById('table-title').textContent='📊 유형별 심사연도 × 세대수';
+    document.getElementById('edit-hint').textContent='';
+    const years=[...new Set(filteredData.map(d=>d.year).filter(y=>y&&y!=='-'))].sort().reverse();
+    const agg={};
+    filteredData.forEach(d=>{
+        if(!agg[d.type2])agg[d.type2]={};
+        if(!agg[d.type2][d.type])agg[d.type2][d.type]={};
+        if(!agg[d.type2][d.type][d.year])agg[d.type2][d.type][d.year]=0;
+        agg[d.type2][d.type][d.year]+=d.units;
+    });
+    let maxVal=0;
+    Object.values(agg).forEach(t=>Object.values(t).forEach(ym=>Object.values(ym).forEach(v=>{if(v>maxVal)maxVal=v;})));
+    const hc=v=>{if(!v)return '';const p=v/maxVal;if(p<0.1)return 'heat-1';if(p<0.25)return 'heat-2';if(p<0.5)return 'heat-3';if(p<0.75)return 'heat-4';return 'heat-5';};
+    const t2Totals={};
+    Object.keys(agg).forEach(t2=>{t2Totals[t2]=Object.values(agg[t2]).reduce((s,ym)=>s+Object.values(ym).reduce((a,v)=>a+v,0),0);});
+    const t2List=Object.keys(agg).sort((a,b)=>t2Totals[b]-t2Totals[a]);
+    const t2Band={};t2List.forEach((t2,i)=>{t2Band[t2]=i;});
+
+    let html=`<table class="pivot-table"><thead>
+        <tr>
+            <th class="col-type2 th-group" rowspan="2">대분류</th>
+            <th class="th-group" rowspan="2" style="border-left:2px solid var(--border);border-right:2px solid var(--border)">총합</th>
+            <th colspan="${years.length}" class="th-group">심사연도 / 세대</th>
+        </tr>
+        <tr>${years.map(y=>`<th style="min-width:46px;text-align:center">${y}</th>`).join('')}</tr>
+    </thead><tbody>`;
+
+    t2List.forEach(t2=>{
+        const tList=Object.keys(agg[t2]).sort((a,b)=>Object.values(agg[t2][b]).reduce((s,v)=>s+v,0)-Object.values(agg[t2][a]).reduce((s,v)=>s+v,0));
+        const band=t2Band[t2]%9;
+        let rowTotal=0;
+        const cells=years.map(y=>{let v=0;tList.forEach(tp=>{v+=(agg[t2][tp][y]||0);});rowTotal+=v;return`<td class="num-cell ${hc(v)} ${!v?'zero':''}">${v?v.toLocaleString():'-'}</td>`;}).join('');
+        html+=`<tr><td class="col-type2 type2-band-${band}">${escHtml(t2)}</td><td class="num-cell col-total">${rowTotal.toLocaleString()}</td>${cells}</tr>`;
+    });
+
+    const grandTotal=filteredData.reduce((s,d)=>s+d.units,0);
+    const yearTotals={};filteredData.forEach(d=>{yearTotals[d.year]=(yearTotals[d.year]||0)+d.units;});
+    html+=`<tr style="background:#f1f3f5;font-weight:700;border-top:2px solid var(--border)">
+        <td class="col-type2">합 계</td>
+        <td class="num-cell col-total" style="background:#e9ecef">${grandTotal.toLocaleString()}</td>
+        ${years.map(y=>`<td class="num-cell col-total">${(yearTotals[y]||0).toLocaleString()}</td>`).join('')}
+    </tr></tbody></table>`;
+    document.getElementById('table-container').innerHTML=html;
+}
+
+// ══ LIST TABLE ══
+function renderListTable(){
+    document.getElementById('table-title').textContent='📋 데이터 목록';
+    document.getElementById('edit-hint').textContent='(셀 클릭하여 편집 ✏️)';
+    let data=[...filteredData];
+    if(searchQuery){const q=searchQuery;data=data.filter(d=>d.name.toLowerCase().includes(q)||d.operator.toLowerCase().includes(q)||d.address.toLowerCase().includes(q)||d.type2.toLowerCase().includes(q));}
+    data.sort((a,b)=>{let vA=a[sortCol],vB=b[sortCol];if(sortCol==='units')return sortAsc?vA-vB:vB-vA;vA=String(vA||'');vB=String(vB||'');return sortAsc?vA.localeCompare(vB,'ko'):vB.localeCompare(vA,'ko');});
+    const COLS=[{key:'year',label:'연도',w:'58px'},{key:'region',label:'광역',w:'68px'},{key:'name',label:'주택명',w:'155px'},{key:'units',label:'세대',w:'52px'},{key:'operator',label:'단체명',w:'125px'},{key:'type2',label:'유형',w:'90px'},{key:'completion',label:'상태',w:'88px'},{key:'address',label:'주소',w:'auto'}];
+    const thead=COLS.map(c=>`<th style="width:${c.w}" onclick="sortList('${c.key}')">${c.label}<span class="sort-icon">${sortCol===c.key?(sortAsc?'▲':'▼'):'↕'}</span></th>`).join('')+`<th style="width:105px;text-align:center">좌표/편집</th>`;
+    window.__editDataById={};data.forEach(d=>{window.__editDataById[d.id]=d;});
+    const tbody=data.map(d=>`<tr>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="year">${d.year}</div></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="region">${escHtml(d.region)}</div></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="name" title="${escHtml(d.name)}" style="max-width:150px">${escHtml(d.name)}</div></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="units" style="text-align:right;font-weight:700">${d.units.toLocaleString()}</div></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="operator" title="${escHtml(d.operator)}" style="max-width:120px">${escHtml(d.operator)}</div></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="type2" style="max-width:85px">${escHtml(d.type2)}</div></td>
+        <td><select class="status-select ${getStatusClass(d.completion)}" data-id="${d.id}">
+            <option value="준공" ${d.completion==='준공'?'selected':''}>준공</option>
+            <option value="미준공" ${d.completion==='미준공'?'selected':''}>미준공</option>
+            <option value="미착공" ${d.completion==='미착공'?'selected':''}>미착공</option>
+            <option value="종료" ${d.completion==='종료'?'selected':''}>종료</option>
+            <option value="취소" ${d.completion==='취소'?'selected':''}>취소</option>
+            <option value="기타" ${d.completion==='기타'?'selected':''}>기타</option>
+        </select></td>
+        <td><div contenteditable="true" class="edit-cell" data-id="${d.id}" data-field="address" style="max-width:240px;font-size:0.68rem;color:#495057" title="${escHtml(d.address)}">${escHtml(d.address)}</div></td>
+        <td style="text-align:center;font-size:0.65rem;color:#868e96">
+            ${d.lat?d.lat.toFixed(4):'-'},${d.lng?d.lng.toFixed(4):'-'}
+            <br><button onclick="openEditModal(window.__editDataById['${d.id}'])" style="margin-top:3px;padding:2px 8px;font-size:0.65rem;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer">✏️ 상세</button>
+        </td>
+    </tr>`).join('');
+    const tbl=document.createElement('table'); tbl.className='data-table';
+    tbl.innerHTML=`<thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody>`;
+    const wrap=document.getElementById('table-container'); wrap.innerHTML=''; wrap.appendChild(tbl);
+    const tb=tbl.querySelector('tbody');
+    tb.addEventListener('focusout',e=>{if(e.target.classList.contains('edit-cell'))handleCellEdit(e.target);});
+    tb.addEventListener('keydown',e=>{if(e.target.classList.contains('edit-cell')&&e.key==='Enter'){e.preventDefault();e.target.blur();}});
+    tb.addEventListener('change',e=>{if(e.target.classList.contains('status-select'))handleStatusChange(e.target);});
+}
+
+function sortList(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=false;}renderListTable();}
+
+// ══ INLINE EDIT ══
+function handleCellEdit(target){
+    const id=target.dataset.id,field=target.dataset.field;
+    let v=target.innerText.trim();
+    const idx=rawData.findIndex(d=>d.id===id); if(idx===-1) return;
+    if(field==='units'){v=parseInt(v.replace(/[^0-9]/g,''),10)||0;target.innerText=v.toLocaleString();}
+    if(rawData[idx][field]!==v){rawData[idx][field]=v;const fi=filteredData.findIndex(d=>d.id===id);if(fi>-1)filteredData[fi][field]=v;updateKPI();renderCharts();saveToGoogleSheet(rawData[idx]);}
+}
+function handleStatusChange(el){
+    const id=el.dataset.id,v=el.value;
+    const idx=rawData.findIndex(d=>d.id===id);
+    if(idx>-1&&rawData[idx].completion!==v){rawData[idx].completion=v;const fi=filteredData.findIndex(d=>d.id===id);if(fi>-1)filteredData[fi].completion=v;el.className=`status-select ${getStatusClass(v)}`;updateKPI();renderCharts();saveToGoogleSheet(rawData[idx]);}
+}
+function getStatusClass(s){return s==='준공'?'status-done':s==='미준공'?'status-ing':s==='미착공'?'status-wait':s==='종료'?'status-end':'status-none';}
+
+// ══ GAS SAVE ══
+function saveToGoogleSheet(rowData){
+    if(!GAS_WEB_APP_URL||GAS_WEB_APP_URL.includes('여기에')){console.warn('GAS URL 미설정');return;}
+    showSaveStatus('ing','⏳ 시트에 저장 중...');
+    fetch(GAS_WEB_APP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rowData)})
+        .then(r=>r.json()).then(d=>{if(d.status==='success')showSaveStatus('ok','✅ 시트 반영 완료!');else showSaveStatus('err','❌ 저장 실패: '+(d.message||''));})
+        .catch(e=>{showSaveStatus('err','❌ 통신 오류');console.error(e);});
+}
+function showSaveStatus(type,msg){const el=document.getElementById('save-status');el.className=`show ${type}`;el.textContent=msg;if(type!=='ing')setTimeout(()=>{el.className='';el.textContent='';},3000);}
+
+// ══ EDIT MODAL ══
+function openEditModal(d){
+    if(!d) return;
+    document.getElementById('modal-title').textContent=(d.name||'상세 편집')+' — 수정';
+    document.getElementById('modal-body').innerHTML=`
+        <dl class="info-grid">
+            <dt>연도</dt><dd><div contenteditable="true" class="edit-cell" id="m-year">${d.year}</div></dd>
+            <dt>광역</dt><dd><div contenteditable="true" class="edit-cell" id="m-region">${escHtml(d.region)}</div></dd>
+            <dt>자치구</dt><dd><div contenteditable="true" class="edit-cell" id="m-gu">${escHtml(d.gu)}</div></dd>
+            <dt>주택명</dt><dd><div contenteditable="true" class="edit-cell" id="m-name">${escHtml(d.name)}</div></dd>
+            <dt>세대수</dt><dd><div contenteditable="true" class="edit-cell" id="m-units" style="font-weight:700">${d.units.toLocaleString()}</div></dd>
+            <dt>단체명</dt><dd><div contenteditable="true" class="edit-cell" id="m-operator">${escHtml(d.operator)}</div></dd>
+            <dt>유형2</dt><dd><div contenteditable="true" class="edit-cell" id="m-type2">${escHtml(d.type2)}</div></dd>
+            <dt>준공여부</dt><dd>
+                <select class="status-select ${getStatusClass(d.completion)}" id="m-status" onchange="this.className='status-select '+getStatusClass(this.value)">
+                    <option value="준공" ${d.completion==='준공'?'selected':''}>준공</option>
+                    <option value="미준공" ${d.completion==='미준공'?'selected':''}>미준공</option>
+                    <option value="미착공" ${d.completion==='미착공'?'selected':''}>미착공</option>
+                    <option value="종료" ${d.completion==='종료'?'selected':''}>종료</option>
+                    <option value="취소" ${d.completion==='취소'?'selected':''}>취소</option>
+                    <option value="기타" ${d.completion==='기타'?'selected':''}>기타</option>
+                </select>
+            </dd>
+            <dt>주소</dt><dd>
+                <div style="display:flex;gap:6px;align-items:center">
+                    <div contenteditable="true" class="edit-cell" id="m-address" style="flex:1">${escHtml(d.address)}</div>
+                    <button id="btn-geocode" style="padding:3px 8px;font-size:0.7rem;background:var(--info);color:white;border:none;border-radius:4px;cursor:pointer;white-space:nowrap">📍 좌표 검색</button>
+                    <button id="btn-pick-map" style="padding:3px 8px;font-size:0.7rem;background:var(--warning);color:#000;border:none;border-radius:4px;cursor:pointer;white-space:nowrap">🖱 지도 클릭</button>
+                </div>
+                <div id="geocode-result" style="font-size:0.7rem;color:var(--danger);margin-top:4px"></div>
+            </dd>
+            <dt>위도</dt><dd><div contenteditable="true" class="edit-cell" id="m-lat">${d.lat||''}</div></dd>
+            <dt>경도</dt><dd><div contenteditable="true" class="edit-cell" id="m-lng">${d.lng||''}</div></dd>
+        </dl>
+        <button class="modal-save-btn" id="modal-save" data-id="${d.id}">💾 변경사항 저장 및 시트 반영</button>`;
+    document.getElementById('edit-modal').classList.add('active');
+
+    document.getElementById('btn-geocode').onclick=async function(){
+        const addr=document.getElementById('m-address').innerText.trim(),rd=document.getElementById('geocode-result');
+        if(!addr){rd.textContent='주소를 입력해주세요.';return;} this.textContent='검색중...';
+        try{const res=await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(addr)}`,{headers:{'Authorization':`KakaoAK ${KAKAO_REST_API_KEY}`}});
+            const data=await res.json();
+            if(data.documents&&data.documents.length>0){const loc=data.documents[0];document.getElementById('m-lat').innerText=parseFloat(loc.y).toFixed(6);document.getElementById('m-lng').innerText=parseFloat(loc.x).toFixed(6);rd.innerHTML='<span style="color:var(--success)">✅ 좌표 변환 성공!</span>';}
+            else rd.textContent='❌ 주소를 찾을 수 없습니다.';}
+        catch(e){rd.textContent='❌ 오류: '+e.message;}finally{this.textContent='📍 좌표 검색';}
+    };
+
+    document.getElementById('btn-pick-map').onclick=function(){
+        document.getElementById('edit-modal').classList.remove('active');
+        isPickingLocation=true; pickingForId=d.id; document.body.style.cursor='crosshair';
+        if(!mapVisible){mapVisible=true;document.getElementById('map').style.display='';setTimeout(()=>{map.invalidateSize();},100);}
+        const toast=document.createElement('div'); toast.id='map-pick-toast';
+        toast.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--primary);color:white;padding:12px 24px;border-radius:30px;z-index:99999;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.3);text-align:center';
+        toast.innerHTML=`지도에서 <strong>${escHtml(d.name)}</strong>의 위치를 클릭하세요.<br><button id="btn-cancel-pick" style="margin-top:8px;padding:4px 12px;background:white;border:none;color:var(--primary);border-radius:4px;cursor:pointer;font-weight:bold">취소</button>`;
+        document.body.appendChild(toast);
+        document.getElementById('btn-cancel-pick').onclick=function(e){e.stopPropagation();isPickingLocation=false;document.body.style.cursor='';toast.remove();openEditModal(d);};
+    };
+
+    document.getElementById('modal-save').onclick=function(){
+        const btn=this; btn.textContent='⏳ 저장 중...'; btn.disabled=true;
+        const id=btn.dataset.id,idx=rawData.findIndex(r=>r.id===id); if(idx===-1) return;
+        const row=rawData[idx];
+        row.year=document.getElementById('m-year').innerText.trim();
+        row.region=document.getElementById('m-region').innerText.trim();
+        row.gu=document.getElementById('m-gu').innerText.trim();
+        row.name=document.getElementById('m-name').innerText.trim();
+        row.units=parseInt(document.getElementById('m-units').innerText.replace(/[^0-9]/g,''),10)||0;
+        row.operator=document.getElementById('m-operator').innerText.trim();
+        row.type2=document.getElementById('m-type2').innerText.trim();
+        row.completion=document.getElementById('m-status').value;
+        row.address=document.getElementById('m-address').innerText.trim();
+        row.lat=parseFloat(document.getElementById('m-lat').innerText)||null;
+        row.lng=parseFloat(document.getElementById('m-lng').innerText)||null;
+        const fi=filteredData.findIndex(r=>r.id===id);if(fi>-1)Object.assign(filteredData[fi],row);
+        renderAll(); saveToGoogleSheet(row);
+        setTimeout(()=>closeModal(),400);
+    };
+}
+function closeModal(){document.getElementById('edit-modal').classList.remove('active');}
+
+// ══ TAB / FULLSCREEN ══
+function switchTab(tab){currentTab=tab;document.getElementById('tab-pivot').classList.toggle('active',tab==='pivot');document.getElementById('tab-list').classList.toggle('active',tab==='list');if(tab==='pivot')renderPivot();else renderListTable();}
+function toggleFullscreen(){const s=document.getElementById('table-section');s.classList.toggle('fullscreen');document.getElementById('btn-fullscreen').textContent=s.classList.contains('fullscreen')?'✕ 닫기':'🖥 전체화면';}
+
+// ══ CSV EXPORT ══
+function exportCSV(){
+    const headers=['심사연도','광역','자치구','주택명','세대수','단체명','유형2','유형','공공','준공여부','주소'];
+    const fields=['year','region','gu','name','units','operator','type2','type','public','completion','address'];
+    let csv='\uFEFF'+headers.join(',')+'\n';
+    filteredData.forEach(d=>{csv+=fields.map(f=>{let v=String(d[f]===null||d[f]===undefined?'':d[f]);if(v.includes(',')||v.includes('"')||v.includes('\n'))v=`"${v.replace(/"/g,'""')}"`;return v;}).join(',')+'\n';});
+    const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+    const a=document.createElement('a');a.href=url;a.download='사회주택_현황.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ══ UTILS ══
+function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+</script>
+</body>
+</html>

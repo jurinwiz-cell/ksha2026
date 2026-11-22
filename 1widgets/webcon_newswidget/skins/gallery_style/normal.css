@@ -1,0 +1,34 @@
+.webcon_news_g_container {margin: 0px;padding: 0;background: #ffffff;}
+.webcon_news_g_thumb{position: relative;margin-right: 0px;}
+.webcon_news_g_thumb > li{display:none;}
+.webcon_news_g_thumb > li img{width:100%;}
+.webcon_news_g_thumb > li.active{display:block;}
+.webcon_news_g_thumb > li .bottom_info{ opacity:.5; position:absolute;background-color:#4d4d4d; color:#fff; width:100%; height:80px; bottom:0px; left:0px; right:0px;}
+.webcon_news_g_thumb > li .bottom_title{ position:absolute; bottom:40px; color:#fff; font-size:22px; padding:5px 5px 10px 10px; font-weight:bold;}
+.webcon_news_g_thumb > li .bottom_content{position:absolute; bottom:0px; color:#fff; font-size:12px; padding: 15px 15px 5px 15px;line-height: 16px;}
+
+.webcon_news_g_wrap .top_btn{position:absolute; top:5px; right:5px;}
+.webcon_news_g_wrap .top_btn a{float:left;width:26px; height:26px;  margin-right:5px; }
+.webcon_news_g_wrap .top_btn .p_btn{background:url('../../images/prev_btn.png') no-repeat center center; cursor:pointer;}
+.webcon_news_g_wrap .top_btn .n_btn{background:url('../../images/next_btn.png') no-repeat center center;cursor:pointer;}
+
+.webcon_news_g{padding: 0;list-style: none;margin-top: 2px;}
+.webcon_news_g > li {position:relative;  padding: 7px; border-bottom:1px solid #eaeaea;clear: both;overflow: hidden;}
+.webcon_news_g > li:hover{background:#f8f8f8;}
+.webcon_news_g > li:hover .webcon_news_g_listThumb{opacity:.5; border:0px solid #45aaf8;}
+.webcon_news_g > li:hover a{color:#3abcff;}
+.webcon_news_g > li p {margin: 0;padding: 0;line-height: 1.5;font-size: 11px;color: #808080;}
+
+.webcon_news_g > li .webcon_news_g_listThumb{position: relative;display: block;margin-right: 8px;border: 1px solid #efefef;float: left;}
+.webcon_news_g > li .title{font-size: 13px;color: #484848;font-weight:normal;margin-left: 110px;}
+.webcon_news_g > li a {color: #333333;outline: none;}
+.webcon_news_g > li .title a:hover{color:#45aaf8;}
+
+.webcon_news_g > li .authorBox { margin-top:2px; margin-left: 110px;}
+.webcon_news_g > li .authorBox img{margin-right:3px; width:12px; height:12px;}
+.webcon_news_g > li .authorBox .regdate,.webcon_news_g > li .authorBox .author,.webcon_news_g > li .authorBox .readed{ margin-right:12px; font-size:11px; }
+
+
+.webconnews_g_webzineNavigator{margin:5px; padding:0px; text-align:right; clear:both;right: 10px;bottom: 0px;}
+.webconnews_g_webzineNavigator li{ list-style:none; display:inline;}
+.webconnews_g_webzineNavigator li button.prev,.webconnews_g_webzineNavigator li button.next{border:1px solid #dcdcdc;padding:3px; width:30px; text-align: center; font-size:11px;cursor: pointer;display: inline-block; border-radius:2px;-webkit-border-radius:2px; background:#ffffff;}

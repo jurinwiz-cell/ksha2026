@@ -1,0 +1,25 @@
+﻿/********** 공통 **********/
+.widget_rssreader_skin { position:relative; overflow:hidden; line-height:normal; font-size:13px; color:#555;}
+.widget_rssreader_skin ul,.widget_rssreader_skin ol,.widget_rssreader_skin li{
+  padding:0px; margin:0px; list-style:none;
+}
+
+.widget_rssreader_skin .search_area { position:relative; margin-bottom:20px; overflow:hidden; }
+.widget_rssreader_skin .search_area .rss_url_box {
+  width:100%; height:30px; padding:5px 55px 5px 5px !important; border:1px solid #ccc; display:inline-block;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.widget_rssreader_skin .search_area .btn_rss_search { position:absolute; top:2px; right:3px; }
+
+.widget_rssreader_skin .title_area { position:relative; margin-bottom:5px; overflow:hidden; border-bottom:2px solid #B1B1B1; }
+.widget_rssreader_skin .title_area .title { padding-bottom:5px; border-bottom:2px solid #375472; font-size:16px; font-weight:bold; text-shadow: 1px 1px #eee; display:inline-block; }
+.widget_rssreader_skin .title_area .more { position:absolute; bottom:7px; right:3px; font-size:10px; display:inline-block; }
+.widget_rssreader_skin .rss_list { position:relative; overflow:hidden; }
+.widget_rssreader_skin .rss_list li { position:relative; padding:0px 5px; overflow:hidden; line-height:20px; display:block; }
+.widget_rssreader_skin .rss_list li .bullet { margin-right:5px; float:left; display:inline-block; }
+.widget_rssreader_skin .rss_list li a.title { position:relative; overflow:hidden; float:left; display:inline-block; }
+.widget_rssreader_skin .rss_list li a.title:hover { text-decoration:underline; }
+.widget_rssreader_skin .rss_list li .pubDate { position:relative; overflow:hidden; float:right; display:inline-block; }
+

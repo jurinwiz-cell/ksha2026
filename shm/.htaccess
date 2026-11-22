@@ -1,0 +1,8 @@
+DirectoryIndex index.php index.html
+Options -Indexes
+
+# includes 디렉토리 보호는 해당 디렉토리에 별도 .htaccess를 두거나
+# 아래와 같이 개별 파일 접근을 막는 방식으로 수정 가능합니다.
+<FilesMatch "\.(php|inc|sql)$">
+    # 이 부분은 필요시 상세 설정
+</FilesMatch>

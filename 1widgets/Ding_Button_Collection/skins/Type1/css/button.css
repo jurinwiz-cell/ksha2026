@@ -1,0 +1,36 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+div.widgetBorder > div:nth-child(1n) {height: 100%;}
+
+div.xe-widget-wrapper > div:nth-child(1n) {height: 100%;}
+
+.default-btn
+{
+    display: block;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* XE 디자인 */
+.type1
+{
+    width: 100%;
+    height: 100%;
+
+    border: 1px solid #5D75C2;
+    background-color: #526BBE;
+    color: #FFF;
+}
+
+.type1:hover
+{
+    border: 1px solid #4761BA;
+    background-color: #FFF;
+    color: #526BBE;
+}
+
+.button_text
+{
+    position: relative;
+}

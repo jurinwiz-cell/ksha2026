@@ -1,0 +1,34 @@
+<include target="header.html" />
+
+<div class="x_page-header">
+	<h1>AI 뉴스레터 관리 <a class="x_icon-question-sign" href="./?module=module&amp;act=dispModuleAdminRecord&amp;module_srl={$module_info->module_srl}">도움말</a></h1>
+</div>
+
+<form action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="module" value="ainews" />
+	<input type="hidden" name="act" value="procAinewsAdminSaveConfig" />
+	
+	<section class="section">
+		<h1>기본 설정</h1>
+		<div class="x_control-group">
+			<label class="x_control-label" for="target_module_srl">대상 게시판 모듈 SRL</label>
+			<div class="x_controls">
+				<input type="number" id="target_module_srl" name="target_module_srl" value="{$config->target_module_srl}" />
+				<p class="x_help-block">뉴스레터가 임시 저장될 타겟 게시판(document 모듈)의 srl을 입력하세요.</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="search_keyword">수집 키워드</label>
+			<div class="x_controls">
+				<input type="text" id="search_keyword" name="search_keyword" value="{$config->search_keyword}" placeholder="예: 사회주택, 부동산" />
+				<p class="x_help-block">에이전트가 뉴스를 검색할 때 사용할 키워드입니다.</p>
+			</div>
+		</div>
+	</section>
+
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-right"><button class="x_btn x_btn-primary" type="submit">저장</button></span>
+	</div>
+</form>
+
+<include target="footer.html" />

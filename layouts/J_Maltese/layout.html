@@ -1,0 +1,259 @@
+﻿
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+        <load target="assets/css/main.css" />
+        <load target="assets/css/font-awesome.min.css" />
+        <style>
+            .image.featured {
+               width: {$layout_info->latest_img_width}px;
+               height: {$layout_info->latest_img_height}px;
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="{$layout_info->logo_url}">{$layout_info->logo_text}</a></h1>
+						<nav class="links">
+							<ul>
+                                <li loop="$GNB->list=>$key1,$val1" |cond="$val1['selected']">
+                                    <a href="{$val1['href']}">{$val1['link']}</a>
+                                </li>
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<li class="search">
+									<a class="fa-search" href="#search">Search</a>
+                                    <form action="{getUrl()}" method="get" id="search">
+                                        <input type="hidden" name="vid" value="{$vid}" />
+                                        <input type="hidden" name="mid" value="{$layout_info->search_mid}" />
+                                        <input type="hidden" name="act" value="IS" />
+                                        <input type="text" name="is_keyword" value="{$is_keyword}" />   
+                                    </form>
+								</li>
+								<span id="mobile_btn">
+									<a href="#menu">Menu</a>
+								</span>
+							</ul>
+						</nav>
+                        <script>
+                            jQuery(document).ready(function(){
+                                jQuery("#mobile_btn").click(function(){
+                                    jQuery("nav.mobile_menu").toggle();
+                                });
+                            });
+                        </script>
+					</header>
+                    <nav class="mobile_menu">
+                        <ul>
+                            <li loop="$GNB->list=>$key1,$val1" |cond="$val1['selected']">
+                                <a href="{$val1['href']}">{$val1['link']}</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                <!--@if($layout_info->layout_type == main)-->
+
+				<!-- Main -->
+					<div id="main">
+                        
+                            <img class="zbxe_widget_output"
+                                 widget="content"
+                                 skin="J_Maltese_Right"
+                                 colorset="white"
+                                 content_type="document"
+                                 module_srls="{$layout_info->latest_img_srl}"
+                                 list_type="image_title_content"
+                                 tab_type="none"
+                                 markup_type="list"
+                                 list_count="{$layout_info->latest_img_listcount}"
+                                 subject_cut_size="{$layout_info->latest_img_subject_cut}"
+                                 content_cut_size="{$layout_info->latest_img_content_cut}"
+                                 option_view="thumbnail,title,regdate,nickname,content"
+                                 show_browser_title="N"
+                                 show_comment_count="Y"
+                                 show_trackback_count="N"
+                                 show_category="N"
+                                 show_icon="N"
+                                 order_target="regdate"
+                                 order_type="desc"
+                                 thumbnail_type="crop"
+                                 thumbnail_width="{$layout_info->latest_img_width}"
+                                 thumbnail_height="{$layout_info->latest_img_height}" />
+
+                        
+					</div>
+
+                <!-- Sidebar -->
+					<section id="sidebar">
+
+						<!-- Intro -->
+                        <section id="intro">
+                            <a href="{$layout_info->logo_url}" style="border:0;"><img src="{$layout_info->logo_img}" /></a>
+                            <header>
+                                <h2>{$layout_info->logo_text}</h2>
+                                <p>{$layout_info->side_text}</p>
+                            </header>
+                        </section>
+
+                        <div>
+                            <img class="zbxe_widget_output" widget="login_info" skin="j_maltese_login" colorset="default" />
+                        </div>
+
+						<!-- Posts List -->
+                        <section style="margin-top: 0;">
+                            <img class="zbxe_widget_output" 
+                                 widget="content" 
+                                 skin="J_Maltese_Left" 
+                                 colorset="white" 
+                                 content_type="document" 
+                                 module_srls="{$layout_info->side_img_srl}" 
+                                 list_type="image_title" 
+                                 tab_type="none" 
+                                 markup_type="list" 
+                                 list_count="{$layout_info->side_img_listcount}" 
+                                 cols_list_count="1" 
+                                 page_count="1" 
+                                 subject_cut_size="{$layout_info->side_img_subject_cut}" 
+                                 option_view="thumbnail,title,regdate" 
+                                 order_target="regdate" 
+                                 order_type="desc" 
+                                 thumbnail_type="crop" 
+                                 thumbnail_width="150" 
+                                 thumbnail_height="150" />
+                        </section>
+
+                        <!-- 
+                        <section class="blurb">
+                            <h2>센터 소개</h2>
+                            <p>내용</p>
+                            <ul class="actions">
+                                <li><a href="{$layout_info->more_url}" class="button">{$layout_info->more_text}</a></li>
+                            </ul>
+                        </section>
+                        -->
+
+
+                        <!-- Footer -->
+                        <section id="footer">
+                            <ul class="icons">
+                                <li><a href="{$layout_info->facebook}" cond="$layout_info->facebook" class="fa-facebook"><span class="label">Facebook</span></a></li>
+                                <li><a href="{$layout_info->twitter}" cond="$layout_info->twitter" class="fa-twitter"><span class="label">Twitter</span></a></li>
+                                <li><a href="{$layout_info->instagram}" cond="$layout_info->instagram" class="fa-instagram"><span class="label">Instagram</span></a></li>
+                                <li><a href="{$layout_info->youtube}" cond="$layout_info->youtube" class="fa-youtube"><span class="label">youtube</span></a></li>
+                                <li><a href="{$layout_info->google_plus}" cond="$layout_info->google_plus" class="fa-google-plus"><span class="label">google_plus</span></a></li>
+                            </ul>
+                            <p class="copyright">{$layout_info->copyright}</p>
+                        </section>
+
+                    </section>
+
+                    <!--@else if($layout_info->layout_type == sub_side)-->
+                    <!-- Main -->
+                    <div id="main">
+                        <article class="post">
+                            {$content}
+                        </article>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <section id="sidebar">
+
+                        <!-- Intro -->
+                        <section id="intro">
+                            <a href="{$layout_info->logo_url}" style="border:0;"><img src="{$layout_info->logo_img}" /></a>
+                            <header>
+                                <h2>{$layout_info->logo_text}</h2>
+                                <p>{$layout_info->side_text}</p>
+                            </header>
+                        </section>
+
+                        <div>
+                            <img class="zbxe_widget_output" widget="login_info" skin="j_maltese_login" colorset="default" />
+                        </div>
+
+                        <!-- Posts List -->
+                        <section style="margin-top: 0;">
+                            <img class="zbxe_widget_output"
+                                 widget="content"
+                                 skin="J_Maltese_Left"
+                                 colorset="white"
+                                 content_type="document"
+                                 module_srls="{$layout_info->side_img_srl}"
+                                 list_type="image_title"
+                                 tab_type="none"
+                                 markup_type="list"
+                                 list_count="{$layout_info->side_img_listcount}"
+                                 cols_list_count="1"
+                                 page_count="1"
+                                 subject_cut_size="{$layout_info->side_img_subject_cut}"
+                                 option_view="thumbnail,title,regdate"
+                                 order_target="regdate"
+                                 order_type="desc"
+                                 thumbnail_type="crop"
+                                 thumbnail_width="150"
+                                 thumbnail_height="150" />
+                        </section>
+
+                        <!--
+                        <section class="blurb">
+                            <h2>센터 소개</h2>
+                            <p>내용</p>
+                            <ul class="actions">
+                                <li><a href="{$layout_info->more_url}" class="button">{$layout_info->more_text}</a></li>
+                            </ul>
+                        </section>
+                        -->
+                        
+
+                        <!-- Footer -->
+                        <section id="footer">
+                            <ul class="icons">
+                                <li><a href="{$layout_info->facebook}" cond="$layout_info->facebook" class="fa-facebook"><span class="label">Facebook</span></a></li>
+                                <li><a href="{$layout_info->twitter}" cond="$layout_info->twitter" class="fa-twitter"><span class="label">Twitter</span></a></li>
+                                <li><a href="{$layout_info->instagram}" cond="$layout_info->instagram" class="fa-instagram"><span class="label">Instagram</span></a></li>
+                                <li><a href="{$layout_info->youtube}" cond="$layout_info->youtube" class="fa-youtube"><span class="label">youtube</span></a></li>
+                                <li><a href="{$layout_info->google_plus}" cond="$layout_info->google_plus" class="fa-google-plus"><span class="label">google_plus</span></a></li>
+                            </ul>
+                            <p class="copyright">{$layout_info->copyright}</p>
+                        </section>
+
+                    </section>
+
+                    <!--@else-->
+
+                    <div id="main">
+                        <article class="post">
+                            {$content}
+                        </article>
+                    </div>
+
+                    <!--@end-->
+
+
+			    </div>
+
+            <section id="footer" style="text-align:center;" cond="$layout_info->layout_type == sub_full">
+                <ul class="icons">
+                    <li><a href="{$layout_info->facebook}" cond="$layout_info->facebook" class="fa-facebook"><span class="label">Facebook</span></a></li>
+                    <li><a href="{$layout_info->twitter}" cond="$layout_info->twitter" class="fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="{$layout_info->instagram}" cond="$layout_info->instagram" class="fa-instagram"><span class="label">Instagram</span></a></li>
+                    <li><a href="{$layout_info->youtube}" cond="$layout_info->youtube" class="fa-youtube"><span class="label">youtube</span></a></li>
+                    <li><a href="{$layout_info->google_plus}" cond="$layout_info->google_plus" class="fa-google-plus"><span class="label">google_plus</span></a></li>
+                </ul>
+                <p class="copyright">{$layout_info->copyright}</p>
+            </section>
+
+		<!-- Scripts -->
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>

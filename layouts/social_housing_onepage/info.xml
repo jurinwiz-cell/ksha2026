@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title xml:lang="ko">Social Housing Onepage (Managed)</title>
+    <description xml:lang="ko">관리용 conf/info.xml이 적용된 테마입니다.</description>
+    <version>1.3.1</version>
+    <date>2026-04-22</date>
+    <author email="admin@example.com" link="#">
+        <name xml:lang="ko">Antigravity</name>
+    </author>
+
+    <extra_vars>
+        <group>
+            <title xml:lang="ko">1. 공통 및 헤더 설정</title>
+            <var name="accent_color" type="color">
+                <title xml:lang="ko">포인트 컬러</title>
+                <default>FF8C00</default>
+            </var>
+            <var name="logo_image" type="image">
+                <title xml:lang="ko">로고 이미지</title>
+            </var>
+            <var name="sns_facebook" type="text">
+                <title xml:lang="ko">페이스북 URL</title>
+            </var>
+            <var name="sns_instagram" type="text">
+                <title xml:lang="ko">인스타그램 URL</title>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">2. 히어로 섹션 (Section 1)</title>
+            <var name="hero_img" type="image">
+                <title xml:lang="ko">배경 이미지</title>
+            </var>
+            <var name="hero_title" type="text">
+                <title xml:lang="ko">메인 제목</title>
+                <default>모두가 함께 사는 공간, 사회주택</default>
+            </var>
+            <var name="hero_description" type="textarea">
+                <title xml:lang="ko">서브 설명</title>
+                <default>더 나은 주거 문화를 위해 사회주택 협회가 함께합니다.</default>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">3. 공지사항 슬라이더 (Section 2)</title>
+            <var name="notice_target" type="text">
+                <title xml:lang="ko">대상 게시판 (mid/srl 쉼표구분)</title>
+            </var>
+            <var name="notice_extra_var_name" type="text">
+                <title xml:lang="ko">확장변수 필터 아이디</title>
+            </var>
+            <var name="notice_extra_var_value" type="text">
+                <title xml:lang="ko">확장변수 필터 값</title>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">4. 메인 최신글 영역 (Section 3)</title>
+            <!-- 게시판 1 -->
+            <var name="board1_title" type="text"><title xml:lang="ko">[위젯 1] 제목</title><default>공식 소식</default></var>
+            <var name="board1_target" type="text"><title xml:lang="ko">[위젯 1] 대상 게시판</title></var>
+            <var name="board1_style" type="select">
+                <title xml:lang="ko">[위젯 1] 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">갤러리형</title></options>
+                <default>list</default>
+            </var>
+            <var name="board1_extra_var_name" type="text"><title xml:lang="ko">[위젯 1] 필터링 확장변수 이름</title></var>
+            <var name="board1_extra_var_value" type="text"><title xml:lang="ko">[위젯 1] 필터링 확장변수 값</title></var>
+            <hr />
+            <!-- 게시판 2 -->
+            <var name="board2_title" type="text"><title xml:lang="ko">[위젯 2] 제목</title><default>커뮤니티</default></var>
+            <var name="board2_target" type="text"><title xml:lang="ko">[위젯 2] 대상 게시판</title></var>
+            <var name="board2_style" type="select">
+                <title xml:lang="ko">[위젯 2] 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">갤러리형</title></options>
+                <default>list</default>
+            </var>
+            <var name="board2_extra_var_name" type="text"><title xml:lang="ko">[위젯 2] 필터링 확장변수 이름</title></var>
+            <var name="board2_extra_var_value" type="text"><title xml:lang="ko">[위젯 2] 필터링 확장변수 값</title></var>
+            <hr />
+            <!-- 게시판 3 -->
+            <var name="board3_title" type="text"><title xml:lang="ko">[위젯 3] 제목</title><default>미디어</default></var>
+            <var name="board3_target" type="text"><title xml:lang="ko">[위젯 3] 대상 게시판</title></var>
+            <var name="board3_style" type="select">
+                <title xml:lang="ko">[위젯 3] 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">갤러리형</title></options>
+                <default>list</default>
+            </var>
+            <var name="board3_extra_var_name" type="text"><title xml:lang="ko">[위젯 3] 필터링 확장변수 이름</title></var>
+            <var name="board3_extra_var_value" type="text"><title xml:lang="ko">[위젯 3] 필터링 확장변수 값</title></var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">5. 자료실 (Section 4)</title>
+            <var name="archive_title" type="text"><title xml:lang="ko">자료실 제목</title><default>자료실</default></var>
+            <var name="archive_desc" type="textarea"><title xml:lang="ko">자료실 설명</title></var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">6. 푸터 설정</title>
+            <var name="footer_text" type="textarea">
+                <title xml:lang="ko">하단 정보</title>
+            </var>
+            <var name="copyright" type="text">
+                <title xml:lang="ko">카피라이트</title>
+            </var>
+        </group>
+    </extra_vars>
+</layout>

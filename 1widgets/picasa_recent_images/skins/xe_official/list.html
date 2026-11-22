@@ -1,0 +1,40 @@
+<!--// 설정된 컬러셋의 종류에 따라서 css파일을 import 합니다 -->
+
+<!--@if($colorset=="normal"||!$colorset)-->
+    <!--%import("css/normal.css")-->
+<!--@end-->
+
+<div class="picasa">
+    <!--@if($widget_info->widgettitle)-->
+        <h2><img src="images/picasa.png" border=0><a href="{getUrl('','mid',$widget_info->mid)}">{$widget_info->widgettitle}</a></h2>
+    <!--@end-->
+
+    <!--@if(count($output))-->
+    <div>
+        <table class="thumbnail_box">
+        {@ $count = 0; }
+        <!--@for($i=0;$i<$widget_info->rows_list_count;$i++)-->
+        <tr valign="top">
+            <!--@for($j=0;$j<$widget_info->cols_list_count;$j++)-->
+            <td <!--@if($widget_info->rows_list_count>1)-->class="bottomBorder"<!--@end-->>
+				{@ $entry = $output[$i*$widget_info->cols_list_count + $j]}
+                <div class="thumbnail"><a href="{getUrl('','mid',$widget_info->mid,'album',$entry->album,'photoid',$entry->photoid,'act','dispGdataViewPhoto')}"><img src="{$entry->thumb_url}" border="0" alt="{$entry->summary}" /></a></div>
+
+                <div class="title">
+                    <a href="{getUrl('','mid',$widget_info->mid,'album',$entry->album,'photoid',$entry->photoid,'act','dispGdataViewPhoto')}">{$entry->title}</a>
+                </div>
+
+                <!--@if($widget_info->display_timestamp == 'Y')-->
+                <div class="regdate">{$entry->timestamp}</div>
+                <!--@end-->
+            </td>
+            <!--@end-->
+            <!--@for($k=$j;$k<$widget_info->cols_list_count;$k++)--><td>&nbsp;</td><!--@end-->
+        </tr>
+        <!--@end-->
+        </table>
+    <!--@end-->
+    </div>
+
+        <a href="{getUrl('','mid',$widget_info->mid)}" class="more">more</a>
+</div>

@@ -1,0 +1,766 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 사회주택 공급 현황 프리미엄 대시보드</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="/static/vendor/css/leaflet.css" />
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-main: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: rgba(226, 232, 240, 0.8);
+            --radius: 16px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            line-height: 1.5;
+            padding: 24px;
+        }
+
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; }
+
+        .dashboard-wrapper {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* --- KPI Cards --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .kpi-card:hover { transform: translateY(-4px); }
+
+        .kpi-label { font-size: 0.875rem; color: var(--text-muted); font-weight: 600; }
+        .kpi-value { font-size: 1.875rem; font-weight: 700; color: var(--text-main); }
+        .kpi-trend { font-size: 0.75rem; font-weight: 500; }
+        .trend-up { color: var(--success); }
+
+        /* --- Filter Bar --- */
+        .filter-bar {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+        }
+        .filter-select:focus { border-color: var(--primary); }
+
+        /* --- Main Dashboard Grid --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 24px;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container.span-2 { grid-column: span 2; }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title { font-size: 1.125rem; font-weight: 700; color: var(--text-main); }
+
+        .canvas-wrapper { position: relative; flex-grow: 1; min-height: 300px; }
+
+        /* --- Map Section --- */
+        .map-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #map { 
+            height: 600px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .map-info {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .chart-container.span-2 { grid-column: auto; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            header { flex-direction: column; gap: 16px; text-align: center; }
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <header>
+            <h1>📊 사회주택 공급 현황</h1>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span id="dataStatusText">데이터 로딩 중...</span>
+            </div>
+        </header>
+
+        <!-- KPI Metrics -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">총 공급 세대수</span>
+                <span class="kpi-value" id="kpi-total-units">-</span>
+                <span class="kpi-trend trend-up">↑ 실시간 집계</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">전체 사업수</span>
+                <span class="kpi-value" id="kpi-total-projects">-</span>
+                <span class="kpi-trend">프로젝트 기반</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">준공 완료율</span>
+                <span class="kpi-value" id="kpi-completion-rate">-</span>
+                <span class="kpi-trend" id="kpi-completion-units">0 세대 완료</span>
+            </div>
+            
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>심사연도</label>
+                <select id="filter-year" class="filter-select">
+                    <option value="all">전체 연도</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>광역 지역</label>
+                <select id="filter-region" class="filter-select">
+                    <option value="all">전체 지역</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>사업 대분류</label>
+                <select id="filter-type" class="filter-select">
+                    <option value="all">전체 유형</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>준공 상태</label>
+                <select id="filter-completion" class="filter-select">
+                    <option value="all">전체 상태</option>
+                    <option value="준공">준공 완료</option>
+                    <option value="미준공">미준공 (공사중)</option>
+                    <option value="미착공">미착공 (계획)</option>
+                </select>
+            </div>
+            <div style="margin-left: auto;">
+                <button id="reset-filters" style="padding: 8px 16px; border: none; background: #f1f5f9; border-radius: 8px; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: #64748b;">필터 초기화</button>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <div class="chart-header"><h3 class="chart-title">유형별 세대수 비중</h3></div>
+                <div class="canvas-wrapper"><canvas id="type1Chart"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header"><h3 class="chart-title">대분류별 세대수 비중</h3></div>
+                <div class="canvas-wrapper"><canvas id="type2Chart"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header"><h3 class="chart-title">공공 주체별 분석</h3></div>
+                <div class="canvas-wrapper"><canvas id="publicChart"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header"><h3 class="chart-title">광역별 공급 현황</h3></div>
+                <div class="canvas-wrapper"><canvas id="regionChart"></canvas></div>
+            </div>
+            <div class="chart-container span-2">
+                <div class="chart-header"><h3 class="chart-title">심사연도별 누적 공급 추이</h3></div>
+                <div class="canvas-wrapper"><canvas id="timeSeriesChart"></canvas></div>
+            </div>
+            <div class="chart-container span-2">
+                <div class="chart-header"><h3 class="chart-title">준공 여부 상세 현황</h3></div>
+                <div class="canvas-wrapper"><canvas id="completionChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="map-section">
+            <h3 class="chart-title">📍 공급 위치 지도</h3>
+            <div id="map"></div>
+            <div class="map-info">
+                ※ 지도는 Google Sheet의 좌표 데이터를 기반으로 실시간으로 업데이트됩니다. 마커를 클릭하여 상세 주소를 확인하세요.
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/vendor/js/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="/static/vendor/js/leaflet.js"></script>
+
+    <script>
+        /**
+         * 1. 전역 변수 및 설정
+         */
+        let rawData = [];
+        let filteredData = [];
+        let charts = {};
+        let map;
+        let markers = [];
+        let typeColorMap = {}; // 대분류별 색상 매핑
+
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1yX14R6IwkXMXel1TB7W1X5HPLwWoImYJus_pitE1lgg/export?format=csv&gid=1763307000";
+
+        const COLORS = {
+            primary: ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe'],
+            vibrant: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'],
+            success: '#10b981',
+            danger: '#ef4444'
+        };
+
+        const FIELD_MAP = {
+            SIMSA_YEAR: ["심사연도", "사업심사년도"],
+            COMPLETION: ["준공여부"],
+            TYPE1: ["유형"],
+            TYPE2: ["유형2", "유형2(대분류)"], 
+            PUBLIC: ["공공", "사업주체"], 
+            REGION: ["광역"], 
+            ADDRESS: ["위치", "주소", "소재지"],
+            UNITS: ["세대", "세대수", "총세대수", "공급세대수", "세대 수"], 
+            PROJECT_NAME: ["건물명", "사업명"], 
+            LAT: ["위도"],
+            LNG: ["경도"],
+        };
+
+        /**
+         * 2. 데이터 로드 및 초기화
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadData();
+            
+            // 필터 이벤트 리스너
+            document.getElementById('filter-year').addEventListener('change', handleFilters);
+            document.getElementById('filter-region').addEventListener('change', handleFilters);
+            document.getElementById('filter-type').addEventListener('change', handleFilters);
+            document.getElementById('filter-completion').addEventListener('change', handleFilters);
+            document.getElementById('reset-filters').addEventListener('click', () => {
+                document.getElementById('filter-year').value = 'all';
+                document.getElementById('filter-region').value = 'all';
+                document.getElementById('filter-type').value = 'all';
+                document.getElementById('filter-completion').value = 'all';
+                handleFilters();
+            });
+        });
+
+        async function loadData() {
+            Papa.parse(CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processRawData(results);
+                }
+            });
+        }
+
+	function processRawData(results) {
+    const headers = results.meta.fields;
+    const hMap = {};
+    for (let key in FIELD_MAP) {
+        hMap[key] = FIELD_MAP[key].find(f => headers.includes(f));
+    }
+
+    // 유효 status 화이트리스트
+    const VALID_STATUS = new Set(['준공', '미준공', '미착공']);
+
+    rawData = results.data
+        .filter(row => row[hMap.UNITS] && !isNaN(parseInt(row[hMap.UNITS])))
+        .map(row => {
+            const rawVal = (row[hMap.COMPLETION] || '').trim();
+
+            // status 분류
+            let status;
+            if (rawVal === 'Y' || rawVal === '준공') status = '준공';
+            else if (rawVal === 'N' || rawVal === '미준공') status = '미준공';
+            else if (rawVal === '미착공') status = '미착공';
+            else return null; // ← 유효하지 않은 항목은 즉시 제거
+
+            let lat = parseFloat(row[hMap.LAT]);
+            let lng = parseFloat(row[hMap.LNG]);
+            if (isNaN(lat) || lat < 33 || lat > 43) lat = null;
+            if (isNaN(lng) || lng < 124 || lng > 132) lng = null;
+
+            return {
+                year: row[hMap.SIMSA_YEAR] ? row[hMap.SIMSA_YEAR].toString().substring(0, 4) : '미상',
+                completion: status,
+                type1: row[hMap.TYPE1] || '기타',
+                type2: row[hMap.TYPE2] || '기타',
+                public: row[hMap.PUBLIC] || '민간',
+                region: row[hMap.REGION] || '기타',
+                project: row[hMap.PROJECT_NAME] || '미상',
+                address: row[hMap.ADDRESS] || '정보 없음',
+                units: parseInt(row[hMap.UNITS]) || 0,
+                lat: lat,
+                lng: lng
+            };
+        })
+        .filter(Boolean); // ← null 제거
+
+    populateFilters();
+
+    const uniqueTypes = [...new Set(rawData.map(d => d.type2))].sort();
+    uniqueTypes.forEach((type, i) => {
+        typeColorMap[type] = COLORS.vibrant[i % COLORS.vibrant.length];
+    });
+
+    handleFilters();
+}
+	/**
+
+        function processRawData(results) {
+            const headers = results.meta.fields;
+            const hMap = {};
+            for (let key in FIELD_MAP) {
+                hMap[key] = FIELD_MAP[key].find(f => headers.includes(f));
+            }
+
+            rawData = results.data
+                .filter(row => row[hMap.UNITS] && !isNaN(parseInt(row[hMap.UNITS])))
+                .map(row => {
+                    let lat = parseFloat(row[hMap.LAT]);
+                    let lng = parseFloat(row[hMap.LNG]);
+                    if (isNaN(lat) || lat < 33 || lat > 43) lat = null;
+                    if (isNaN(lng) || lng < 124 || lng > 132) lng = null;
+
+                    // 준공 상태 분류: Y/준공=준공, N/미준공=미준공, 기타=미진행
+                    let status;
+                    const rawVal = (row[hMap.COMPLETION] || '').trim();
+                    if (rawVal === 'Y' || rawVal === '준공') status = '준공';
+                    else if (rawVal === 'N' || rawVal === '미준공') status = '미준공';
+			else status = '미착공';
+                    return {
+                        year: row[hMap.SIMSA_YEAR] ? row[hMap.SIMSA_YEAR].toString().substring(0,4) : '미상',
+                        completion: status,
+                        type1: row[hMap.TYPE1] || '기타',
+                        type2: row[hMap.TYPE2] || '기타',
+                        public: row[hMap.PUBLIC] || '민간',
+                        region: row[hMap.REGION] || '기타',
+                        project: row[hMap.PROJECT_NAME] || '미상',
+                        address: row[hMap.ADDRESS] || '정보 없음',
+                        units: parseInt(row[hMap.UNITS]) || 0,
+                        lat: lat,
+                        lng: lng
+                    };
+                });
+
+            populateFilters();
+            
+            // 대분류별 색상 고정 매핑 생성
+            const uniqueTypes = [...new Set(rawData.map(d => d.type2))].sort();
+            uniqueTypes.forEach((type, i) => {
+                typeColorMap[type] = COLORS.vibrant[i % COLORS.vibrant.length];
+            });
+
+            handleFilters(); // 초기 데이터 표시
+        }
+*/
+        /**
+         * 3. 필터 제어
+         */
+        function populateFilters() {
+            const years = [...new Set(rawData.map(d => d.year))].sort().reverse();
+            const regions = [...new Set(rawData.map(d => d.region))].sort();
+            const types = [...new Set(rawData.map(d => d.type2))].sort();
+
+            const yearSel = document.getElementById('filter-year');
+            const regionSel = document.getElementById('filter-region');
+            const typeSel = document.getElementById('filter-type');
+
+            years.forEach(y => yearSel.add(new Option(y + '년', y)));
+            regions.forEach(r => regionSel.add(new Option(r, r)));
+            types.forEach(t => typeSel.add(new Option(t, t)));
+        }
+
+        function handleFilters() {
+            const y = document.getElementById('filter-year').value;
+            const r = document.getElementById('filter-region').value;
+            const t = document.getElementById('filter-type').value;
+            const c = document.getElementById('filter-completion').value;
+
+            filteredData = rawData.filter(d => {
+                return (y === 'all' || d.year === y) &&
+                       (r === 'all' || d.region === r) &&
+                       (t === 'all' || d.type2 === t) &&
+                       (c === 'all' || d.completion === c);
+            });
+
+            updateUI();
+        }
+
+        /**
+         * 4. UI 업데이트 (KPI, 차트, 지도)
+         */
+        function updateUI() {
+            updateKPIs();
+            updateCharts();
+            updateMarkers();
+            
+            document.getElementById('dataStatusText').innerText = `총 ${filteredData.length}개 사업 분석 중`;
+        }
+
+        function updateKPIs() {
+            const totalUnits = filteredData.reduce((s, r) => s + r.units, 0);
+            const totalProjects = filteredData.length;
+            const completedUnits = filteredData.filter(d => d.completion === '준공').reduce((s, r) => s + r.units, 0);
+            const rate = totalUnits > 0 ? ((completedUnits / totalUnits) * 100).toFixed(1) : 0;
+            const publicUnits = filteredData.filter(d => d.public.includes('공공') || d.public.includes('LH') || d.public.includes('SH')).reduce((s, r) => s + r.units, 0);
+            const pubRatio = totalUnits > 0 ? ((publicUnits / totalUnits) * 100).toFixed(1) : 0;
+
+            document.getElementById('kpi-total-units').innerText = totalUnits.toLocaleString() + ' 세대';
+            document.getElementById('kpi-total-projects').innerText = totalProjects.toLocaleString() + ' 건';
+            document.getElementById('kpi-completion-rate').innerText = rate + '%';
+            document.getElementById('kpi-completion-units').innerText = completedUnits.toLocaleString() + ' 세대 준공';
+            document.getElementById('kpi-public-ratio').innerText = pubRatio + '%';
+        }
+
+        /**
+         * 5. 차트 엔진
+         */
+        function updateCharts() {
+            // 1. 유형별 세대수 (Doughnut)
+            renderChart('type1Chart', 'doughnut', aggregate(filteredData, 'type1'), '유형별 비중');
+            
+            // 2. 대분류별 세대수 (Doughnut)
+            renderChart('type2Chart', 'doughnut', aggregate(filteredData, 'type2'), '대분류 비중');
+            
+            // 3. 공공 주체별 (Bar)
+            renderChart('publicChart', 'bar', aggregate(filteredData, 'public'), '사업주체별');
+            
+            // 4. 광역별 (Bar)
+            renderChart('regionChart', 'bar', aggregate(filteredData, 'region'), '지역별 공급');
+            
+            // 5. 누적 추이 (Line/Stacked Bar)
+            renderTimeSeriesChart();
+            
+            // 6. 준공 현황 (Stacked Bar)
+            renderCompletionChart();
+        }
+
+        function aggregate(data, key) {
+            const res = {};
+            data.forEach(d => {
+                res[d[key]] = (res[d[key]] || 0) + d.units;
+            });
+            return res;
+        }
+
+        function renderChart(id, type, dataMap, title) {
+            const ctx = document.getElementById(id).getContext('2d');
+            const labels = Object.keys(dataMap).sort((a, b) => dataMap[b] - dataMap[a]);
+            const data = labels.map(l => dataMap[l]);
+            
+            // 대분류 차트일 경우 고정된 색상 매핑 사용
+            const backgroundColors = id === 'type2Chart' 
+                ? labels.map(l => typeColorMap[l]) 
+                : (type === 'doughnut' ? COLORS.vibrant : COLORS.primary[0]);
+
+            if (charts[id]) charts[id].destroy();
+
+            charts[id] = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderRadius: type === 'bar' ? 8 : 0,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: type === 'doughnut', position: 'bottom' },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.label}: ${ctx.raw.toLocaleString()} 세대`
+                            }
+                        }
+                    },
+                    scales: type === 'bar' ? {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    } : {}
+                }
+            });
+        }
+
+        function renderTimeSeriesChart() {
+            const id = 'timeSeriesChart';
+            const ctx = document.getElementById(id).getContext('2d');
+            
+            const years = [...new Set(rawData.map(d => d.year))].sort();
+            const types = [...new Set(rawData.map(d => d.type2))];
+            
+            const datasets = types.map((type, i) => {
+                let cumulative = 0;
+                const data = years.map(year => {
+                    const yearUnits = filteredData.filter(d => d.year === year && d.type2 === type).reduce((s, r) => s + r.units, 0);
+                    cumulative += yearUnits;
+                    return cumulative;
+                });
+                return {
+                    label: type,
+                    data: data,
+                    backgroundColor: typeColorMap[type] || COLORS.vibrant[i % COLORS.vibrant.length],
+                    stack: 'stack0'
+                };
+            });
+
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: years, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, grid: { color: '#f1f5f9' } }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        function renderCompletionChart() {
+            const id = 'completionChart';
+            const ctx = document.getElementById(id).getContext('2d');
+            const regions = [...new Set(filteredData.map(d => d.region))].sort();
+            
+            const completed = regions.map(r => filteredData.filter(d => d.region === r && d.completion === '준공').reduce((s, r) => s + r.units, 0));
+            const incomplete = regions.map(r => filteredData.filter(d => d.region === r && d.completion === '미준공').reduce((s, r) => s + r.units, 0));
+            const notStart = regions.map(r => filteredData.filter(d => d.region === r && d.completion === '미착공').reduce((s, r) => s + r.units, 0));
+
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: regions,
+                    datasets: [
+                        { label: '준공 완료', data: completed, backgroundColor: COLORS.success },
+                        { label: '미준공 (공사중)', data: incomplete, backgroundColor: COLORS.warning },
+                        { label: '미착공 (계획)', data: notStart, backgroundColor: '#a2e8f0' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, grid: { color: '#f1f5f9' } }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        /**
+         * 6. 지도 엔진
+         */
+        function initMap() {
+            map = L.map('map', { center: [36.5, 127.5], zoom: 7 });
+            // 한국어 지원을 위해 OSM 표준 타일로 변경
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        function updateMarkers() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const bounds = [];
+            filteredData.forEach(d => {
+                if (d.lat && d.lng) {
+                    const markerColor = typeColorMap[d.type2] || COLORS.primary[0];
+                    const statusColor = d.completion === '준공' ? COLORS.success : (d.completion === '미준공' ? COLORS.warning : '#94a3b8');
+
+                    const marker = L.circleMarker([d.lat, d.lng], {
+                        radius: Math.max(5, Math.min(20, d.units / 50)),
+                        fillColor: markerColor,
+                        color: "#fff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <div style="font-family: 'Inter', sans-serif; padding: 4px;">
+                            <strong style="font-size: 14px; color: var(--primary);">${d.project}</strong><br/>
+                            <span style="font-size: 12px; color: #64748b;">${d.address}</span><hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;"/>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span>유형:</span> <strong style="color: ${markerColor};">${d.type2}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span>공급세대:</span> <strong>${d.units.toLocaleString()} 세대</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>상태:</span> <strong style="color: ${statusColor};">${d.completion}</strong>
+                            </div>
+                        </div>
+                    `);
+                    markers.push(marker);
+                    bounds.push([d.lat, d.lng]);
+                }
+            });
+
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+    </script>
+</body>
+</html>
+

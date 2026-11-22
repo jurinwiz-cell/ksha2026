@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="ko">Auto Opal Importer</title>
+    <description xml:lang="ko">Opal 프로젝트 결과를 바탕으로 라이믹스 문서를 자동 생성하는 모듈입니다.</description>
+    <version>1.0.0</version>
+    <date>2026-09-08</date>
+    <author email_address="admin@example.com" link="https://example.com">
+        <name xml:lang="ko">개발자</name>
+    </author>
+</module>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title>Elkha - Gray Style</title>
+    <description>
+		제작자 정보를 지우지 않는 범위내에서 사용하실 수 있습니다.
+		레이아웃을 수정/재배포 할때도 제작자 정보를 보존해야 합니다.
+	</description>
+    <version>2.2.1</version>
+    <date>2009-02-21</date>
+    <link>http://elkha.kr</link>
+    <author email_address="m@elkha.kr" link="http://elkha.kr">
+        <name>Elkha</name>
+    </author>
+    <extra_vars>
+		<group>
+			<title>Basic (기본 설정)</title>
+			<var name="colorset" type="select">
+				<title>Colorset (컬러셋)</title>
+				<options value="skyblue">
+					<title>Skyblue</title>
+				</options>
+				<options value="green">
+					<title>Green</title>
+				</options>
+				<options value="orange">
+					<title>Orange</title>
+				</options>
+				<options value="red">
+					<title>Red</title>
+				</options>
+				<options value="pink">
+					<title>Pink</title>
+				</options>
+			</var>
+			<var name="name" type="text">
+				<title>Site Title (사이트 제목)</title>
+			</var>
+			<var name="logo" type="text">
+				<title>Logo (로고)</title>
+			</var>
+			<var name="url" type="text">
+				<title>Homepage (홈페이지 주소)</title>
+			</var>
+			<var name="description" type="textarea">
+				<title>Description (사이트 설명)</title>
+			</var>
+		</group>
+
+		<group>
+			<title>Layout Align(레이아웃 정렬)</title>
+
+			<var name="widget" type="text">
+				<title>Column Width (칼럼 너비)</title>
+				<description>eg. 200 (입력 예: 200)</description>
+			</var>
+			<var name="align" type="select">
+				<title>Content Align (본문 정렬)</title>
+				<options value="default">
+					<title>Column | Content (칼럼 | 본문)</title>
+				</options>
+				<options value="ce">
+					<title>Content | Column (본문 | 칼럼)</title>
+				</options>
+				<options value="c">
+					<title>Content - No Column (본문 - 칼럼 없음)</title>
+				</options>
+			</var>
+			<var name="padding" type="select">
+				<title>Content margins (본문 여백)</title>
+				<options value="default">
+					<title>Default (여백 있음)</title>
+				</options>
+				<options value="no_margin">
+					<title>No Margin (여백 없음)</title>
+				</options>
+			</var>
+			<var name="category" type="select">
+				<title>Category (카테고리)</title>
+				<options value="default">
+					<title>Show (보임)</title>
+				</options>
+				<options value="hide">
+					<title>Hide (숨김)</title>
+				</options>
+			</var>
+			<var name="navi_ani" type="select">
+				<title>Navi Animation | 메뉴 애니메이션</title>
+				<options value="default">
+					<title>Enabled | 효과있음</title>
+				</options>
+				<options value="disabled">
+					<title>Disabled | 효과없음</title>
+				</options>
+			</var>
+			<var name="search_hide" type="select">
+				<title>Search Form | 검색 창</title>
+				<options value="default">
+					<title>Show | 보임</title>
+				</options>
+				<options value="Y">
+					<title>Hide | 숨김</title>
+				</options>
+			</var>
+			<var name="login_form" type="select">
+				<title>로그인 폼</title>
+				<options value="default">
+					<title>사용 안함</title>
+				</options>
+				<options value="Y">
+					<title>사용함</title>
+				</options>
+			</var>
+			<var name="right_top" type="textarea">
+				<title>우측 상단 태그 1</title>
+				<description>언어선택을 비활성화하고 임의의 태그를 삽입합니다.</description>
+			</var>
+			<var name="search_html" type="textarea">
+				<title>우측 상단 태그 2</title>
+				<description>검색창을 비활성화하고 임의의 태그를 삽입합니다.</description>
+			</var>
+
+		</group>
+
+		<group>
+			<title>HTML Tags (태그 입력)</title>
+<!--
+			<title>HTML Tags (HTML 태그)</title>
+			<var name="notice" type="text">
+				<title>Notice (공지사항)</title>
+			</var>
+			<var name="notice_href" type="text">
+				<title>Notice URL (공지사항 링크)</title>
+			</var>
+-->
+
+			<var name="widget_1_title" type="text">
+				<title>Widget Title (위젯 제목) 1</title>
+				<description>Above the lnb (서브메뉴 상단에 위치합니다)</description>
+			</var>
+			<var name="widget_1" type="textarea">
+				<title>Widget HTML Tags (위젯 태그) 1</title>
+				<description>Above the lnb (서브메뉴 상단에 위치합니다)</description>
+			</var>
+			<var name="widget_2_title" type="text">
+				<title>Widget Title (위젯 제목) 2</title>
+				 <description>Above the lnb (서브메뉴 상단에 위치합니다)</description>
+		   </var>
+			<var name="widget_2" type="textarea">
+				<title>Widget HTML Tags (위젯 태그) 2</title>
+				<description>Above the lnb (서브메뉴 상단에 위치합니다)</description>
+			</var>
+			<var name="widget_3_title" type="text">
+				<title>Widget Title (위젯 제목) 3</title>
+			</var>
+			<var name="widget_3" type="textarea">
+				<title>Widget HTML Tags (위젯 태그) 3</title>
+			</var>
+			<var name="widget_4_title" type="text">
+				<title>Widget Title (위젯 제목) 4</title>
+			</var>
+			<var name="widget_4" type="textarea">
+				<title>Widget HTML Tags (위젯 태그) 4</title>
+			</var>
+			<var name="widget_5_title" type="text">
+				<title>Widget Title (위젯 제목) 5</title>
+			</var>
+			<var name="widget_5" type="textarea">
+				<title>Widget HTML Tags (위젯 태그) 5</title>
+			</var>
+
+			<var name="copyright" type="textarea">
+				<title>Copyright Comment (저작권 문구)</title>
+			</var>
+		</group>
+    </extra_vars>
+    <menus>
+        <menu name="gnb" default="true">
+            <title>Global Navigation Bar (주 메뉴)</title>
+            <maxdepth>3</maxdepth>
+        </menu>
+        <menu name="sta">
+            <title>Service Title Area (서비스 메뉴)</title>
+            <maxdepth>1</maxdepth>
+        </menu>
+		<menu name="sitemap">
+			<title>Sitemap (사이트 맵)</title>
+			<maxdepth>3</maxdepth>
+		</menu>
+    </menus>
+</layout>

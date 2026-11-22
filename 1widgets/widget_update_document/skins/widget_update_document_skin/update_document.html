@@ -1,0 +1,119 @@
+<load target="./css/widget.css" />
+
+
+<div class="widget_update_document_skin">
+
+  <div class="module_list">
+    <select onchange="location.href=this.value;">
+      <option value="{getUrl('selected_module_srl','')}" selected="selected"|cond="!$selected_module_srl">{$lang->total}</option>
+      <!--@foreach($module_list as $key => $val)-->
+        <option value="{getUrl('selected_module_srl',$val->module_srl)}" selected="selected"|cond="$selected_module_srl==$val->module_srl">{$val->browser_title}({$val->module})</option>
+      <!--@end-->
+    </select>
+
+    <select onchange="location.href=this.value;">
+      <option value="{getUrl('sort_index','regdate')}" selected|cond="!$sort_index || $sort_index=='regdate'">등록순</option>
+      <option value="{getUrl('sort_index','last_update')}" selected|cond="$sort_index=='last_update'">변경순</option>
+      <option value="{getUrl('sort_index','readed_count')}" selected|cond="$sort_index=='readed_count'">조회순</option>
+      <option value="{getUrl('sort_index','voted_count')}" selected|cond="$sort_index=='voted_count'">추천순</option>
+      <option value="{getUrl('sort_index','blamed_count')}" selected|cond="$sort_index=='blamed_count'">비추천순</option>
+      <option value="{getUrl('sort_index','title')}" selected|cond="$sort_index=='title'">제목순</option>
+    </select>
+
+    <select onchange="location.href=this.value;">
+      <option value="{getUrl('order_type','desc')}" selected|cond="!$order_type || $order_type=='desc'">내림차순</option>
+      <option value="{getUrl('order_type','asc')}" selected|cond="$order_type=='asc'">올림차순</option>
+    </select>
+  </div>
+
+  <div class="document_list">
+    <table border="0" cellspacing="0" style="width:100%;">
+      <thead>
+        <tr>
+          <th class="no">번호</th>
+          <th class="document_srl">문서번호</th>
+          <th class="title">제목</th>
+          <th class="is_notice">공지</th>
+          <th class="readed_count">조회수</th>
+          <th class="voted_count">추천수</th>
+          <th class="blamed_count">비추천수</th>
+          <th class="regdate">등록일</th>
+          <th class="last_update">변경일</th>
+          <th class="last_update">수정</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--@foreach($document_list as $key => $val)-->
+          {@ $itemDocument = $oDocumentModel->getDocument($val->document_srl)}
+          <form name="form_{$itemDocument->document_srl}" id="form_{$itemDocument->document_srl}" no-error-return-url="true">
+      		  <input type="hidden" name="vid" disabled|cond="!$vid" value="{$vid}"|cond="$vid" />
+		        <input type="hidden" name="act" disabled|cond="!$act" value="{$act}"|cond="$act" />
+		        <input type="hidden" name="ajax" value="y" />
+		        <input type="hidden" name="mid" value="{$mid}" />
+            <input type="hidden" name="item_document_srl" value="{$itemDocument->document_srl}" />
+            <tr>
+              <td class="no">{$key}</td>
+              <td class="document_srl">{$itemDocument->document_srl}</td>
+              <td class="title">
+                <a href="{getUrl('','document_srl',$itemDocument->document_srl)}" target="_blank">{$itemDocument->getTitle($widget_info->subject_cut_size)}</a>
+              </td>
+              <td class="is_notice"><input type="checkbox" name="is_notice" value="Y" checked|cond="$itemDocument->get('is_notice')=='Y'" /></td>
+              <td class="readed_count"><input type="number" name="readed_count" class="input_number" value="{$itemDocument->get('readed_count')}" min="0" /></td>
+              <td class="voted_count"><input type="number" name="voted_count" class="input_number" value="{$itemDocument->get('voted_count')}" min="0" /></td>
+              <td class="blamed_count"><input type="number" name="blamed_count" class="input_number" value="{$itemDocument->get('blamed_count')}" min="0" /></td>
+              <td class="regdate"><input type="text" name="regdate" class="input_date" id="regdate_{$itemDocument->document_srl}" value="{$itemDocument->getRegdate('Ymd')}" readonly /></td>
+              <td class="last_update"><input type="text" name="last_update" class="input_date" id="last_update_{$itemDocument->document_srl}" value="{zdate($itemDocument->get('last_update'),'Ymd')}" readonly /></td>
+              <td class="update"><a class="btn_update btn" href="#" onclick="updateDocument(jQuery('#form_{$itemDocument->document_srl}'),this); return false;">수정</a></td>
+            </tr>
+          </form>
+        <!--@end-->
+      </tbody>
+    </table>
+
+  	<div class="pagination" cond="$document_list">
+	  	<a class="prev btn_page" href="{getUrl('page','')}">{$lang->first_page}</a> 
+		  <block loop="$page_no=$page_navigation->getNextPage()">
+			  <strong class="btn_page_on btn_page" cond="$page==$page_no">{$page_no}</strong> 
+			  <a class="btn_page" cond="$page!=$page_no" href="{getUrl('page',$page_no)}">{$page_no}</a>
+		  </block>
+		  <a class="next btn_page" href="{getUrl('page',$page_navigation->last_page)}">{$lang->last_page}</a>
+	  </div>
+  </div>
+</div>
+
+
+<script>
+function updateDocument(frm,btn) {
+  jQuery(btn).fadeTo('slow', 0.3);
+  var form_date = jQuery(frm).serialize();
+  var url = './';
+  jQuery.ajax({
+    type: 'post',
+    dataType: 'json',
+    url: url,
+    data: form_date,
+    success: function (data) {
+      if(data!='success') alert(data);
+      jQuery(btn).fadeTo('slow', 1);
+      return false;
+    },
+    error: function (request, status, error) {
+      alert('fail');
+      jQuery(btn).fadeTo('slow', 1);
+      console.log('code: '+request.status+"\n"+'message: '+request.responseText+"\n"+'error: '+error);
+      return false;
+    }
+  });
+}
+
+jQuery(function($){
+<!--@foreach($document_list as $key => $val)-->
+  $("#regdate_{$val->document_srl}").datepicker({
+    dateFormat: "yymmdd"
+  });
+  $("#last_update_{$val->document_srl}").datepicker({
+    dateFormat: "yymmdd"
+  });
+<!--@end-->
+});
+</script>

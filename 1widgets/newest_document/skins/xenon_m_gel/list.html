@@ -1,0 +1,19 @@
+<div class="commentWrap">
+<ul data-role="listview" data-inset="true">
+	<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-b">최신 글</li>
+    <!--@foreach($widget_info->document_list as $document)-->
+    <li>
+		<a href="{getUrl('document_srl', $document->document_srl)}" rel="external">
+        	<!--@if($document->thumbnailExists(160))-->
+            <img src="{$document->getThumbnail(160)}" class="ui-li-thumb" />
+            <!--@endif-->
+        	<h3>{$document->getSummary($widget_info->subject_cut_size)}</h3>
+            <!--@if($document->getCommentCount())-->
+            <span class="ui-li-count">{$document->getCommentCount()}</span>
+            <!--@endif-->
+			<p>{$document->getNickName()} ({$document->getRegDate("Y.m.d")})</p>
+		</a>
+	</li>
+	<!--@end-->
+</ul>
+</div>

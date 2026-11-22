@@ -1,0 +1,71 @@
+<div id="footer" class="{$layout_info->skin_colorset}">
+	<!-- Footer Menu -->
+	<!--@if($bottom_menu->list)-->
+	<div id="footerBox">
+		<!--@if(sizeof($family_menu->list)>0)-->
+		<div id="familySite" class="{$layout_info->skin_colorset}">
+			<h4 onclick="slideFamilySite()">
+				<span>Family Site</span>
+			</h4>
+			<div id="siteList">
+				<ul>
+					{@$idx = 0}
+					<!--@foreach($family_menu->list as $key => $val)-->
+						<!--@if($val['link'])-->
+						<li>
+							<a href="{$val['href']}"<!--@if($val['open_window']=='Y')--> onclick="window.open(this.href);return false;"<!--@end-->>
+							{$val['text']}
+							</a>
+						</li>
+						<!--@end-->
+					<!--@end-->
+				</ul>
+			</div>
+		</div>
+		<!--@end-->	
+		<ul id="bottomMenu">
+			{@ $index = 0;}
+			<!--@foreach($bottom_menu->list as $key => $val)-->
+			<li <!--@if($index==0)-->class="first-child"<!--@end-->>
+			<a href="{$val['href']}" <!--@if($val['open_window']=='Y')-->onclick="window.open(this.href);return false;"<!--@end--> title="{$val['text']}">{$val['link']}</a></li>
+			{@ $index++;}
+			<!--@endforeach-->
+		</ul>
+		<!--@if($layout_info->footer_copyright)-->
+		<p class="copyright_{$layout_info->skin_colorset}">{$layout_info->footer_copyright}</p>
+		<!--@end-->
+		<!--@if($layout_info->footer_address)-->
+		<address>
+		<a href="mailto:{$layout_info->footer_address}" title="{$layout_info->footer_address}">E-mail : {$layout_info->footer_address}</a>
+		</address>
+		<!--@end-->
+	</div>
+	<!--@end-->
+	<p id="info">{$layout_info->footer_site_info}</p>
+	<p id="copyright">Copyright © 
+		<!--@if($layout_info->footer_site_since_type=='SINCE_TYPE_002')-->
+			<!--@if($layout_info->footer_site_since!="")-->{$layout_info->footer_site_since}<!--@else-->2009<!--@end-->
+		<!--@end-->
+		- {date("Y")}.
+		<!--@if($layout_info->footer_site_name!=null)-->
+			<a title="{$layout_info->footer_site_name}" href="{$layout_info->footer_site_url}">{$layout_info->footer_site_name}</a>
+		<!--@else-->
+			<a title="XGENESIS.ORG" href="http://www.xgenesis.org">XGENESIS.ORG</a>
+		<!--@end-->
+		- All Rights Reserved.
+		<!--@if($layout_info->footer_rss_address==null)-->
+		{@ $footer_rss="http://feeds.feedburner.com/xgenesis";}
+		<!--@else-->
+		{@ $footer_rss=$layout_info->footer_rss_address;}
+		<!--@end-->
+		<a class="rss_icon" href="{$footer_rss}"><abbr title="Really Simple Syndication">RSS</abbr></a>
+	</p>
+	<address>
+		<img alt="email" src="./images/icon_email.gif"/>
+		<!--@if($layout_info->footer_webmaster_email==null)-->
+		<a title="master@xgenesis.org" href="mailto:master@xgenesis.org">E-mail : master@xgenesis.org</a>
+		<!--@else-->
+		<a title="{$layout_info->footer_webmaster_email}" href="mailto:{$layout_info->footer_webmaster_email}">E-mail : {$layout_info->footer_webmaster_email}</a>
+		<!--@end-->
+	</address>
+</div>

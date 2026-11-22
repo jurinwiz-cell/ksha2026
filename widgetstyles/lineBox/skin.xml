@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">라인 박스</title>
+    <title xml:lang="en">Line Box</title>
+	<description xml:lang="ko">박스 테두리를 자유롭게 지정할 수 있는 위젯스타일 입니다.</description>
+    <version>0.1</version>
+    <date>2011-03-22</date>
+    <preview>preview.gif</preview>
+    <author email_address="" link="http://study4u.hosting.paran.com">
+        <name xml:lang="ko">Study4U</name>
+        <name xml:lang="en">Study4U</name>
+    </author>
+
+    <extra_vars>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <description xml:lang="ko">제목 텍스트</description>
+        </var>
+		<var name="ws_title_color" type="text">
+            <name xml:lang="ko">제목 글자색</name>
+			<description xml:lang="ko">(RGB : #000000, 투명: transparent)</description>
+        </var>
+        <var name="ws_title_size" type="text">
+            <name xml:lang="ko">제목 글자크기</name>
+			<description xml:lang="ko">제목 글자크기를 지정합니다. (사용예 : 16)</description>
+        </var>
+		<var name="ws_title_font" type="text">
+            <name xml:lang="ko">제목 글꼴</name>
+			<description xml:lang="ko">원하는 제목 글꼴을 입력하세요. (사용예 : '맑은 고딕')</description>
+        </var>
+		<var name="ws_title_bgcolor" type="color">
+            <name xml:lang="ko">제목 배경색</name>
+			<description xml:lang="ko">(RGB : #000000, 투명: transparent)</description>
+        </var>
+		<var name="ws_title_image" type="filebox" filter="jpg,jpeg,gif,png">
+            <name xml:lang="ko">제목 이미지</name>
+            <description xml:lang="ko">제목 이미지를 등록합니다.</description>
+        </var>
+        <var name="ws_title_icon" type="filebox" filter="jpg,jpeg,gif,png">
+            <name xml:lang="ko">아이콘 이미지</name>
+            <description xml:lang="ko">제목 앞 아이콘 이미지를 등록합니다.</description>
+        </var>
+		<var name="ws_title_url" type="text">
+            <name xml:lang="ko">제목 URL</name>
+            <description xml:lang="ko">URL를 등록합니다.</description>
+        </var>
+
+		<var name="ws_linestyle" type="select">
+            <name xml:lang="ko">박스 라인 스타일</name>
+			<name xml:lang="en">Border Style</name>
+            <options>
+                <value>solid</value>
+                <name xml:lang="ko">solid</name>
+				<name xml:lang="en">solid</name>
+            </options>
+            <options>
+                <value>dotted</value>
+                <name xml:lang="ko">dotted</name>
+				<name xml:lang="en">dotted</name>
+            </options>
+            <options>
+                <value>dashed</value>
+                <name xml:lang="ko">dashed</name>
+				<name xml:lang="en">dashed</name>
+            </options>
+            <options>
+                <value>double</value>
+                <name xml:lang="ko">double</name>
+				<name xml:lang="en">double</name>
+            </options>
+            <options>
+                <value>groove</value>
+                <name xml:lang="ko">groove</name>
+				<name xml:lang="en">groove</name>
+            </options>
+            <options>
+                <value>ridge</value>
+                <name xml:lang="ko">ridge</name>
+				<name xml:lang="en">ridge</name>
+            </options>
+            <options>
+                <value>inset</value>
+                <name xml:lang="ko">inset</name>
+				<name xml:lang="en">inset</name>
+            </options>
+            <options>
+                <value>outset</value>
+                <name xml:lang="ko">outset</name>
+				<name xml:lang="en">outset</name>
+            </options>
+            <options>
+                <value>inherit</value>
+                <name xml:lang="ko">inherit</name>
+				<name xml:lang="en">inherit</name>
+            </options>
+            <options>
+                <value>none</value>
+                <name xml:lang="ko">none</name>
+				<name xml:lang="en">none</name>
+            </options>
+		</var>
+        <var name="ws_userstyle" type="text">
+            <name xml:lang="ko">박스 라인 스타일 직접 지정</name>
+            <description xml:lang="ko">박스 라인 스타일을 직접 지정합니다.(dotted solid double dashed)</description>
+        </var>
+		<var name="ws_linecolor" type="text">
+            <name xml:lang="ko">박스 라인 컬러</name>
+            <description xml:lang="ko">(RGB : #000000, 투명: transparent)</description>
+        </var>
+        <var name="ws_linewidth" type="text">
+            <name xml:lang="ko">박스 라인 두께</name>
+            <description xml:lang="ko">박스 라인 두께 (사용예 : 1)</description>
+        </var>
+
+		<var name="in_linestyle" type="select">
+            <name xml:lang="ko">제목 아래 라인 스타일</name>
+            <options>
+                <value>solid</value>
+                <name xml:lang="ko">solid</name>
+				<name xml:lang="en">solid</name>
+            </options>
+            <options>
+                <value>dotted</value>
+                <name xml:lang="ko">dotted</name>
+				<name xml:lang="en">dotted</name>
+            </options>
+            <options>
+                <value>dashed</value>
+                <name xml:lang="ko">dashed</name>
+				<name xml:lang="en">dashed</name>
+            </options>
+            <options>
+                <value>double</value>
+                <name xml:lang="ko">double</name>
+				<name xml:lang="en">double</name>
+            </options>
+            <options>
+                <value>groove</value>
+                <name xml:lang="ko">groove</name>
+				<name xml:lang="en">groove</name>
+            </options>
+            <options>
+                <value>ridge</value>
+                <name xml:lang="ko">ridge</name>
+				<name xml:lang="en">ridge</name>
+            </options>
+            <options>
+                <value>inset</value>
+                <name xml:lang="ko">inset</name>
+				<name xml:lang="en">inset</name>
+            </options>
+            <options>
+                <value>outset</value>
+                <name xml:lang="ko">outset</name>
+				<name xml:lang="en">outset</name>
+            </options>
+            <options>
+                <value>inherit</value>
+                <name xml:lang="ko">inherit</name>
+				<name xml:lang="en">inherit</name>
+            </options>
+            <options>
+                <value>none</value>
+                <name xml:lang="ko">none</name>
+				<name xml:lang="en">none</name>
+            </options>
+		</var>
+		<var name="in_linecolor" type="text">
+            <name xml:lang="ko">제목 아래 라인 컬러</name>
+            <description xml:lang="ko">(RGB : #000000, 투명: transparent)</description>
+        </var>
+        <var name="in_linewidth" type="text">
+            <name xml:lang="ko">제목 아래 라인 두께</name>
+            <description xml:lang="ko">제목 아래 라인 두께 (사용예 : 1)</description>
+        </var>
+
+        <var name="ws_more_text" type="text">
+            <name xml:lang="ko">더보기 텍스트</name>
+            <description xml:lang="ko">더보기 텍스트</description>
+		</var>
+		<var name="ws_more_color" type="text">
+            <name xml:lang="ko">더보기 글자색</name>
+			<description xml:lang="ko">(RGB : #000000, 투명: transparent)</description>
+        </var>
+        <var name="ws_more_image" type="filebox" filter="jpg,jpeg,gif,png">
+            <name xml:lang="ko">더보기 이미지</name>
+        </var>
+		<var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 URL</name>
+            <description xml:lang="ko">URL를 등록합니다.</description>
+        </var>
+	</extra_vars>
+</widgetstyle>

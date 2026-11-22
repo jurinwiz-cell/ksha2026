@@ -1,0 +1,19 @@
+<!--%import("style.css")-->
+
+{@$widgetstyle_extar_var->ws_more_url=trim($widgetstyle_extar_var->ws_more_url);}
+
+<div class="grayWidgetStyle grayWS_{$widgetstyle_extar_var->ws_form}">
+  <h2 class="title {$widgetstyle_extar_var->ws_colorset}"><span class="title">
+  		<!--@if($widgetstyle_extar_var->ws_more_url)--><a href="{$widgetstyle_extar_var->ws_more_url}"<!--@if($widgetstyle_extar_var->ws_window=='new')--> onclick="window.open(this.href);return false;"<!--@end-->><!--@end-->
+  			{$widgetstyle_extar_var->ws_title}
+  		<!--@if($widgetstyle_extar_var->ws_more_url)--></a><!--@end-->
+  </span></h2>
+	<div class="grayWidgetStyle_content_Wrapper">
+		<div class="grayWidgetStyle_content" <!--@if($widgetstyle_extar_var->ws_content_margin)--> style="margin:{$widgetstyle_extar_var->ws_content_margin};"<!--@end-->>
+  	  {$widget_content}
+    </div>
+    <div class="grayWidgetStyle_blank"></div>
+	</div>
+	<div class="grayWidgetStyle_blank"></div>
+</div>
+

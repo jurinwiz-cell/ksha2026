@@ -1,0 +1,55 @@
+<!--%import("./js/coin-slider.js")-->
+
+<!--%import("./css/coin-slider-styles.css")-->
+
+
+<div class="widgetContainer">
+	<div class="coin-slider">
+		<div id='coin-slider_{$widget_info->widget_division}' width='{$widget_info->thumbnail_width}'>
+			<!--@if($widget_info->coinslider_items)-->
+			<!--@foreach($widget_info->coinslider_items as $key => $item)-->
+			<!--@if($widget_info->hyperlink == 'Y')-->
+			<a href="{$item->getLink()}" target="_blank">
+
+				<!--@end-->
+				<!--@if($item && $item->getThumbnail())-->
+				<img src="{$item->getThumbnail()}" />
+				<!--@else-->
+				<!--@end-->
+				<!--@if($widget_info->show_title == 'Y' || $widget_info->show_content == 'Y')-->
+				<span class="contentview">
+					<!--@if($widget_info->show_title == 'Y')--><strong>{$item->getTitle($widget_info->subject_cut_size)}</strong>
+					<!--@if($widget_info->show_content == 'Y')--><br /><!--@end--><!--@end-->
+					<!--@if($widget_info->show_content == 'Y')-->{$item->getContent()}<!--@end-->
+				</span>
+				<!--@end-->
+				<!--@if($widget_info->hyperlink == 'Y')--></a><!--@end-->
+			<!--@end-->
+			<!--@end-->
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function () {
+		jQuery('#coin-slider_{$widget_info->widget_division}').coinslider({
+			width: parseInt('{$widget_info->thumbnail_width}', 10),
+			height: parseInt('{$widget_info->thumbnail_height}', 10),
+			spw: parseInt('{$widget_info->square_width}', 10),
+			sph: parseInt('{$widget_info->square_height}', 10),
+			delay: parseInt('{$widget_info->slide_delay}', 10),
+			sDelay: parseInt('{$widget_info->square_delay}', 10),
+			opacity: parseFloat('{$widget_info->content_opacity}'),
+			titleSpeed: parseInt('{$widget_info->content_speed}', 10),
+			effect: '{$widget_info->slide_effect}' === 'rand' ? '' : '{$widget_info->slide_effect}',
+			navigation: '{$widget_info->show_navigation}' === 'Y',
+			imagelist: '{$widget_info->show_imagelist}' === 'Y',
+			links: '{$widget_info->hyperlink}' === 'Y',
+			hoverPause: '{$widget_info->hover_pause}' === 'Y',
+			uptitle: '{$widget_info->content_position}' === 'top',
+			imagebutton: '{$colorset}' !== 'default',
+			imagebuttontype: ('{$colorset}' === 'imagebutton01' ? 0 : ('{$colorset}' === 'imagebutton02' ? 1 : ('{$colorset}' === 'imagebutton03' ? 2 : ('{$colorset}' === 'imagebutton04' ? 3 : 0)))),
+			skinsrc: '{$skin_path}'
+		});
+	});
+</script>

@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 사회주택 현황 대시보드</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --muted: #94a3b8;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .dashboard-wrapper {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .filter-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .filter-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 110px;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .all-toggle-btn {
+            font-size: 0.7rem;
+            color: var(--primary);
+            background: none;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            width: fit-content;
+            transition: all 0.2s;
+        }
+
+        .all-toggle-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex: 1;
+        }
+
+        /* 연도 타임라인 스타일 */
+        #filter-group-year {
+            gap: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        #filter-group-year .filter-btn {
+            border-radius: 0;
+            border: none;
+            border-right: 1px solid var(--border-color);
+            margin: 0;
+        }
+        #filter-group-year .filter-btn:last-child {
+            border-right: none;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-badge {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active .filter-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .filter-btn.active.btn-status-done {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .filter-btn.active.btn-status-ing {
+            background: var(--info);
+            border-color: var(--info);
+        }
+
+        .filter-btn.active.btn-status-end {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .filter-btn.active.btn-status-wait {
+            background: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .filter-btn.active.btn-status-none {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .hidden-filter {
+            display: none !important;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            align-self: flex-end;
+            transition: all 0.2s;
+        }
+
+        /* KPI & Charts */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .kpi-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: block;
+            margin: 5px 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .canvas-wrapper {
+            flex-grow: 1;
+            position: relative;
+            height: 330px;
+        }
+
+        #map {
+            height: 360px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 탭(Tab) UI 스타일 */
+        .tabs-header {
+            display: flex;
+            gap: 20px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 4px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Table Specific Styles */
+        .table-section {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .table-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .table-search {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            width: 250px;
+            font-size: 0.85rem;
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-export:hover {
+            background: #059669;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 500px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            table-layout: fixed;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .data-table th:hover {
+            background: #e2e8f0;
+        }
+
+        .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            opacity: 0.6;
+        }
+
+        .data-table th.active-sort {
+            color: var(--primary);
+        }
+
+        .data-table th.active-sort .sort-icon {
+            color: var(--primary);
+            opacity: 1;
+        }
+
+        /* 상태 배지 스타일 */
+        .status-badge {
+            font-weight: 700;
+            font-size: 0.65rem;
+            text-align: center;
+            padding: 4px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .status-done {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-ing {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-end {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-wait {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-none {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Fullscreen Table Styles */
+        .table-section.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .table-section.fullscreen .table-container {
+            flex-grow: 1;
+            max-height: none;
+        }
+
+        .btn-fullscreen {
+            padding: 8px 16px;
+            background: var(--info);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-fullscreen:hover {
+            background: #2563eb;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .info-table th {
+            text-align: left;
+            background: #f8fafc;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            width: 30%;
+        }
+
+        .info-table td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .col-year {
+            width: 60px;
+        }
+
+        .col-region {
+            width: 75px;
+        }
+
+        .col-project {
+            width: 160px;
+            font-weight: 600;
+        }
+
+        .col-units {
+            width: 55px;
+            text-align: right;
+        }
+
+        .col-operator {
+            width: 130px;
+        }
+
+        .col-type {
+            width: 100px;
+        }
+
+        .col-status {
+            width: 95px;
+            text-align: center;
+        }
+
+        .text-truncate {
+            display: block;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <header>
+            <h1>📊 사회주택 공급 현황 대시보드</h1>
+            <div id="dataStatusText" style="font-size: 0.85rem; font-weight: 600; color: var(--secondary);">데이터 로드 중...
+            </div>
+        </header>
+
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-header"><span class="filter-label">심사연도</span><button class="all-toggle-btn"
+                        data-group="year">전체선택</button></div>
+                <div class="btn-group" id="filter-group-year"></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-header"><span class="filter-label">광역 지역</span><button class="all-toggle-btn"
+                        data-group="region">전체선택</button></div>
+                <div class="btn-group" id="filter-group-region"></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-header"><span class="filter-label">주택유형</span><button class="all-toggle-btn"
+                        data-group="type">전체선택</button></div>
+                <div class="btn-group" id="filter-group-type"></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-header"><span class="filter-label">진행상태</span><button class="all-toggle-btn"
+                        data-group="status">전체선택</button></div>
+                <div class="btn-group" id="filter-group-status"></div>
+            </div>
+            <button class="reset-btn" id="btn-reset">🔄 초기 설정 (미진행 제외 전체 선택)</button>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card"><span class="kpi-label">총 공급 세대수</span><span class="kpi-value"
+                    id="kpi-total-units">0</span></div>
+            <div class="kpi-card"><span class="kpi-label">필터링 사업수</span><span class="kpi-value"
+                    id="kpi-total-projects">0</span></div>
+            <div class="kpi-card"><span class="kpi-label">공급 완료율</span><span class="kpi-value"
+                    id="kpi-completion-rate">0%</span></div>
+            <div class="kpi-card"><span class="kpi-label">공공 협력 비중</span><span class="kpi-value"
+                    id="kpi-public-ratio">0%</span></div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- 탭 기반 통합 차트 섹션 -->
+            <div class="chart-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-target="type-chart-tab">유형별 세대수</button>
+                    <button class="tab-btn" data-target="region-chart-tab">지역별 세대수</button>
+                </div>
+                <div id="type-chart-tab" class="tab-content active">
+                    <div class="canvas-wrapper"><canvas id="typeChart"></canvas></div>
+                </div>
+                <div id="region-chart-tab" class="tab-content">
+                    <div class="canvas-wrapper"><canvas id="regionChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- 축소된 위치 지도 섹션 -->
+            <div class="chart-container">
+                <h3 class="chart-title">📍 위치 지도</h3>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header-box">
+                <div>
+                    <h3 class="chart-title" style="margin-bottom: 5px;">📋 데이터 목록</h3>
+                </div>
+                <div class="table-actions">
+                    <input type="text" id="table-search" class="table-search" placeholder="검색어 입력...">
+                    <button class="btn-fullscreen" id="btn-fullscreen">🖥️ 전체화면</button>
+                    <button class="btn-export" id="btn-export">💾 엑셀 다운로드</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="data-table">
+                    <thead>
+                        <tr>
+                            <th class="col-year" data-sort="year">연도</th>
+                            <th class="col-region" data-sort="region">광역</th>
+                            <th class="col-project" data-sort="project">주택명</th>
+                            <th class="col-units" data-sort="units">세대</th>
+                            <th class="col-operator" data-sort="operator">운영사(단체)</th>
+                            <th class="col-type" data-sort="type2">유형</th>
+                            <th class="col-status" data-sort="completion">상태</th>
+                            <th data-sort="address">주소</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 팝업 모달 -->
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">주택 정보</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- 테이블 내용 렌더링 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JS 라이브러리 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        var rawData = [];
+        var filteredData = [];
+        var charts = {};
+        var map = null;
+        var markers = [];
+        var currentSortCol = 'year', currentSortAsc = false, searchQuery = '';
+        var selectedFilters = { year: [], region: [], type: [], status: ['준공', '미준공', '종료', '미착공'] };
+        var globalHMap = {}; // 원래 헤더명 보존용
+
+        // 구글 시트 직접 호출 대신 서버 프록시를 통해 데이터를 가져옵니다.
+        // 서버에 업로드한 z 경로 적용
+        var CSV_URL = "/stocks/fetch_data.php";
+
+        var FIELD_MAP = {
+            SIMSA_YEAR: ["심사연도", "사업심사년도", "연도", "심사년도", "사업년도", "선정연도"],
+            COMPLETION: ["준공여부", "상태", "준공", "진행현황", "진행상태"],
+            TYPE2: ["유형2", "대분류", "주택유형", "사업유형", "유형"],
+            PUBLIC: ["공공", "사업주체", "주체"],
+            OPERATOR: ["운영사", "운영기관", "법인명", "단체명", "운영사(단체명)", "운영단체", "사업자명"],
+            REGION: ["광역", "지역", "시도", "권역"],
+            ADDRESS: ["주소", "소재지", "사업지"],
+            UNITS: ["세대수", "총세대수", "공급세대수", "호수", "공급호수", "세대", "호", "공급 세대"],
+            PROJECT_NAME: ["주택명", "사업명", "프로젝트명"],
+            LAT: ["위도", "Y", "lat", "latitude"],
+            LNG: ["경도", "X", "lng", "longitude"]
+        };
+
+        function initApp() {
+            initMap();
+            loadData();
+            setupEvents();
+
+            // 모달 닫기 이벤트
+            document.getElementById('modal-close').addEventListener('click', () => {
+                document.getElementById('info-modal').classList.remove('active');
+            });
+            document.getElementById('info-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('info-modal')) {
+                    document.getElementById('info-modal').classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        function setupEvents() {
+            // 탭 전환 이벤트
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.target).classList.add('active');
+                });
+            });
+
+            document.getElementById('table-search').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderTable();
+            });
+            document.getElementById('btn-reset').addEventListener('click', resetToDefault);
+            document.getElementById('btn-export').addEventListener('click', downloadCSV);
+
+            document.getElementById('btn-fullscreen').addEventListener('click', () => {
+                const tableSection = document.querySelector('.table-section');
+                tableSection.classList.toggle('fullscreen');
+                const btn = document.getElementById('btn-fullscreen');
+                if (tableSection.classList.contains('fullscreen')) {
+                    btn.innerHTML = "🗗 원래대로";
+                    document.body.style.overflow = 'hidden'; // 배경 스크롤 방지
+                } else {
+                    btn.innerHTML = "🖥️ 전체화면";
+                    document.body.style.overflow = '';
+                }
+            });
+
+            document.querySelectorAll('.all-toggle-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const group = btn.dataset.group;
+                    const groupBtns = document.querySelectorAll(`.filter-btn[data-key="${group}"]:not(.hidden-filter)`);
+                    const allActive = Array.from(groupBtns).every(b => b.classList.contains('active'));
+                    selectedFilters[group] = allActive ? [] : Array.from(groupBtns).map(b => b.dataset.value);
+                    updateFilterButtonsUI();
+                    applyFilters();
+                };
+            });
+
+            document.querySelectorAll('.data-table th[data-sort]').forEach(th => {
+                th.onclick = () => {
+                    const col = th.dataset.sort;
+                    if (currentSortCol === col) {
+                        currentSortAsc = !currentSortAsc;
+                    } else {
+                        currentSortCol = col;
+                        currentSortAsc = false;
+                    }
+                    renderTable();
+                };
+            });
+        }
+
+        function updateDashboardWithoutTable() {
+            const totalUnits = filteredData.reduce((s, r) => s + r.units, 0);
+            const compUnits = filteredData.filter(d => d.completion === '준공').reduce((s, r) => s + r.units, 0);
+            const pubUnits = filteredData.filter(d => ['공공', 'LH', 'SH', 'GH', '서울시'].some(k => d.public.includes(k))).reduce((s, r) => s + r.units, 0);
+
+            document.getElementById('kpi-total-units').innerText = totalUnits.toLocaleString();
+            document.getElementById('kpi-total-projects').innerText = filteredData.length.toLocaleString();
+            document.getElementById('kpi-completion-rate').innerText = (totalUnits ? (compUnits / totalUnits * 100).toFixed(1) : 0) + '%';
+            document.getElementById('kpi-public-ratio').innerText = (totalUnits ? (pubUnits / totalUnits * 100).toFixed(1) : 0) + '%';
+
+            renderCharts();
+            updateMarkers();
+        }
+
+        // CSV 다운로드 (엑셀 호환)
+        function downloadCSV() {
+            const headers = ['year', 'region', 'type2', 'public', 'operator', 'project', 'units', 'completion', 'address'];
+            const headerNames = ['심사연도', '광역지역', '주택유형', '공공여부', '운영사(단체)', '주택명', '세대수', '진행상태', '상세주소'];
+
+            // \uFEFF 는 한글 깨짐 방지를 위한 BOM 마커
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headerNames.join(",") + "\n";
+
+            rawData.forEach(row => {
+                const rowData = headers.map(h => {
+                    let val = row[h] === null || row[h] === undefined ? '' : String(row[h]);
+                    val = val.replace(/"/g, '""'); // 따옴표 이스케이프
+                    if (val.includes(',') || val.includes('\n') || val.includes('"')) {
+                        val = `"${val}"`; // 쉼표 포함 문자열 보호
+                    }
+                    return val;
+                });
+                csvContent += rowData.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "사회주택_데이터.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function initSortIcons() {
+            document.querySelectorAll('.data-table th[data-sort]').forEach(th => {
+                if (!th.querySelector('.sort-icon')) {
+                    th.innerHTML += '<span class="sort-icon">↕</span>';
+                }
+            });
+        }
+
+        function updateSortIcons() {
+            document.querySelectorAll('.data-table th[data-sort]').forEach(th => {
+                th.classList.remove('active-sort');
+                const icon = th.querySelector('.sort-icon');
+                if (!icon) return;
+
+                if (th.dataset.sort === currentSortCol) {
+                    th.classList.add('active-sort');
+                    icon.innerHTML = currentSortAsc ? '▲' : '▼';
+                } else {
+                    icon.innerHTML = '↕';
+                }
+            });
+        }
+
+        async function loadData() {
+            Papa.parse(CSV_URL, {
+                download: true, header: true, skipEmptyLines: true,
+                complete: (results) => {
+                    const headers = results.meta.fields;
+                    const hMap = {};
+
+                    for (let key in FIELD_MAP) {
+                        let match = headers.find(h => FIELD_MAP[key].includes(h));
+                        if (!match) match = headers.find(h => FIELD_MAP[key].some(f => h.includes(f)));
+                        hMap[key] = match;
+                    }
+                    globalHMap = hMap;
+
+                    rawData = results.data.map((row) => {
+                        const rawUnits = row[hMap.UNITS] ? String(row[hMap.UNITS]).replace(/[^0-9]/g, '') : '0';
+                        const units = parseInt(rawUnits, 10) || 0;
+
+                        if (!units && !row[hMap.PROJECT_NAME]) return null;
+
+                        const rawStatus = (row[hMap.COMPLETION] || '').trim();
+                        let status = '미진행';
+                        if (['Y', '준공', '완료', '공급완료', '완공', '운영중'].some(k => rawStatus.includes(k))) status = '준공';
+                        else if (['미준공', '진행중', '공사중', 'N', '건축중'].some(k => rawStatus.includes(k))) status = '미준공';
+                        else if (['종료', '폐업', '사업취소', '취소'].some(k => rawStatus.includes(k))) status = '종료';
+                        else if (['미착공', '착공전', '대기'].some(k => rawStatus.includes(k))) status = '미착공';
+
+                        return {
+                            id: crypto.randomUUID(),
+                            year: row[hMap.SIMSA_YEAR] ? String(row[hMap.SIMSA_YEAR]).trim().substring(0, 4) : '-',
+                            region: (row[hMap.REGION] || '기타').trim(),
+                            type2: (row[hMap.TYPE2] || '기타').trim(),
+                            public: (row[hMap.PUBLIC] || '민간').trim(),
+                            operator: (row[hMap.OPERATOR] || '-').trim(),
+                            project: (row[hMap.PROJECT_NAME] || '미상').trim(),
+                            units: units,
+                            completion: status,
+                            address: (row[hMap.ADDRESS] || '-').trim(),
+                            lat: parseFloat(row[hMap.LAT]) || null,
+                            lng: parseFloat(row[hMap.LNG]) || null
+                        };
+                    }).filter(d => d !== null);
+
+                    initSortIcons();
+                    initFilters();
+                }
+            });
+        }
+
+        var STATUS_EMOJIS = {
+            '준공': '✅ ', '미준공': '🏗️ ', '종료': '🛑 ', '미착공': '⏳ ', '미진행': '❌ '
+        };
+
+        var STATUS_CLASSES = {
+            '준공': 'btn-status-done', '미준공': 'btn-status-ing', '종료': 'btn-status-end', '미착공': 'btn-status-wait', '미진행': 'btn-status-none'
+        };
+
+        function initFilters() {
+            const years = [...new Set(rawData.map(d => d.year))].filter(v => v !== '-').sort().reverse();
+            const regions = [...new Set(rawData.map(d => d.region))].filter(v => v).sort();
+            const types = [...new Set(rawData.map(d => d.type2))].filter(v => v).sort();
+            const statuses = ['준공', '미준공', '종료', '미착공', '미진행'];
+
+            renderFilterGroup('filter-group-year', years, 'year');
+            renderFilterGroup('filter-group-region', regions, 'region');
+            renderFilterGroup('filter-group-type', types, 'type');
+            renderFilterGroup('filter-group-status', statuses, 'status');
+
+            selectedFilters.year = [...years];
+            selectedFilters.region = [...regions];
+            selectedFilters.type = [...types];
+            selectedFilters.status = ['준공', '미준공', '종료', '미착공'];
+
+            bindFilterEvents();
+            updateFilterButtonsUI();
+            applyFilters();
+        }
+
+        function renderFilterGroup(containerId, items, key) {
+            document.getElementById(containerId).innerHTML = items.map(item => {
+                let displayName = item;
+                let extraClass = '';
+                if (key === 'status') {
+                    displayName = (STATUS_EMOJIS[item] || '') + item;
+                    extraClass = STATUS_CLASSES[item] || '';
+                }
+                return `<button class="filter-btn ${extraClass}" data-key="${key}" data-value="${item}">
+                    ${displayName} <span class="filter-badge">0건/0세대</span>
+                </button>`;
+            }).join('');
+        }
+
+        function bindFilterEvents() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const key = btn.dataset.key;
+                    const val = btn.dataset.value;
+                    const idx = selectedFilters[key].indexOf(val);
+                    if (idx > -1) selectedFilters[key].splice(idx, 1);
+                    else selectedFilters[key].push(val);
+                    updateFilterButtonsUI();
+                    applyFilters();
+                };
+            });
+        }
+
+        function updateFilterButtonsUI() {
+            const keys = ['year', 'region', 'type', 'status'];
+            keys.forEach(currentKey => {
+                const otherKeys = keys.filter(k => k !== currentKey);
+                const resultsInOtherGroups = rawData.filter(d => {
+                    return otherKeys.every(ok => {
+                        const sel = selectedFilters[ok];
+                        if (sel.length === 0) return true;
+                        const dVal = (ok === 'type') ? d.type2 : (ok === 'status' ? d.completion : d[ok]);
+                        return sel.includes(dVal);
+                    });
+                });
+
+                // 집계
+                const counts = {};
+                resultsInOtherGroups.forEach(d => {
+                    const val = currentKey === 'type' ? d.type2 : (currentKey === 'status' ? d.completion : d[currentKey]);
+                    if (!counts[val]) counts[val] = { projects: 0, units: 0 };
+                    counts[val].projects += 1;
+                    counts[val].units += (Number(d.units) || 0);
+                });
+
+                document.querySelectorAll(`.filter-btn[data-key="${currentKey}"]`).forEach(btn => {
+                    const val = btn.dataset.value;
+                    const countInfo = counts[val] || { projects: 0, units: 0 };
+                    
+                    // 숨김 처리
+                    if (countInfo.projects === 0) {
+                        btn.classList.add('hidden-filter');
+                    } else {
+                        btn.classList.remove('hidden-filter');
+                        // 배지 업데이트
+                        let badge = btn.querySelector('.filter-badge');
+                        if (!badge) {
+                            btn.insertAdjacentHTML('beforeend', ' <span class="filter-badge"></span>');
+                            badge = btn.querySelector('.filter-badge');
+                        }
+                        if (badge) {
+                            badge.innerHTML = `${countInfo.projects}건 / ${countInfo.units.toLocaleString()}세대`;
+                        }
+                    }
+
+                    // 활성화 상태 업데이트
+                    btn.classList.toggle('active', selectedFilters[currentKey].includes(val));
+                });
+
+                // 전체선택 버튼 상태 업데이트
+                // 숨겨지지 않은 버튼들만 대상으로 계산
+                const visibleBtns = Array.from(document.querySelectorAll(`.filter-btn[data-key="${currentKey}"]:not(.hidden-filter)`));
+                const allActive = visibleBtns.length > 0 && visibleBtns.every(b => b.classList.contains('active'));
+                const toggle = document.querySelector(`.all-toggle-btn[data-group="${currentKey}"]`);
+                if (toggle) toggle.innerText = allActive ? "전체해제" : "전체선택";
+            });
+        }
+
+        function applyFilters() {
+            filteredData = rawData.filter(d => {
+                const mYear = selectedFilters.year.length === 0 || selectedFilters.year.includes(d.year);
+                const mReg = selectedFilters.region.length === 0 || selectedFilters.region.includes(d.region);
+                const mType = selectedFilters.type.length === 0 || selectedFilters.type.includes(d.type2);
+                const mStat = selectedFilters.status.length === 0 || selectedFilters.status.includes(d.completion);
+                return mYear && mReg && mType && mStat;
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            updateDashboardWithoutTable(); // 표 외곽 부분 업데이트
+            renderTable(); // 표 전체 렌더링
+        }
+
+        function renderTable() {
+            let data = [...filteredData];
+            if (searchQuery) data = data.filter(d => d.project.toLowerCase().includes(searchQuery) || d.operator.toLowerCase().includes(searchQuery) || d.address.toLowerCase().includes(searchQuery));
+
+            data.sort((a, b) => {
+                let vA = a[currentSortCol];
+                let vB = b[currentSortCol];
+
+                if (currentSortCol === 'units') return currentSortAsc ? vA - vB : vB - vA;
+
+                if (!vA) vA = ''; if (!vB) vB = '';
+                return currentSortAsc ? String(vA).localeCompare(String(vB)) : String(vB).localeCompare(String(vA));
+            });
+
+            document.querySelector('#data-table tbody').innerHTML = data.map(d => `
+                <tr>
+                    <td class="col-year"><div class="text-truncate" title="${d.year}">${d.year}</div></td>
+                    <td class="col-region"><div class="text-truncate" title="${d.region}">${d.region}</div></td>
+                    <td class="col-project"><div class="text-truncate" title="${d.project}">${d.project}</div></td>
+                    <td class="col-units"><div style="font-weight: bold;">${d.units.toLocaleString()}</div></td>
+                    <td class="col-operator"><div class="text-truncate" title="${d.operator}">${d.operator}</div></td>
+                    <td class="col-type"><div class="text-truncate" title="${d.type2}">${d.type2}</div></td>
+                    <td class="col-status">
+                        <span class="status-badge ${getStatusClass(d.completion)}">${d.completion}</span>
+                    </td>
+                    <td style="font-size: 0.65rem; color: #64748b;"><div class="text-truncate" title="${d.address}">${d.address}</div></td>
+                </tr>
+            `).join('');
+
+            updateSortIcons();
+        }
+
+        function getStatusClass(s) {
+            return s === '준공' ? 'status-done' : s === '미준공' ? 'status-ing' : s === '종료' ? 'status-end' : s === '미착공' ? 'status-wait' : 'status-none';
+        }
+
+        function renderCharts() {
+            const agg = (k) => {
+                const r = {}; filteredData.forEach(d => {
+                    const key = (k === 'type') ? d.type2 : d[k];
+                    r[key] = (r[key] || 0) + d.units;
+                }); return r;
+            };
+            const draw = (id, type, dataMap) => {
+                if (charts[id]) charts[id].destroy();
+                const labels = Object.keys(dataMap).sort((a, b) => dataMap[b] - dataMap[a]);
+                charts[id] = new Chart(document.getElementById(id), {
+                    type: type,
+                    data: { labels, datasets: [{ data: labels.map(l => dataMap[l]), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'] }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9 } } } } }
+                });
+            };
+            draw('typeChart', 'doughnut', agg('type'));
+            draw('regionChart', 'bar', agg('region'));
+        }
+
+        function initMap() {
+            map = L.map('map').setView([36.5, 127.5], 7);
+            // Vworld 배경지도 (국토교통부, 국내 공공망에서 차단되지 않음)
+            L.tileLayer('https://api.vworld.kr/req/wmts/1.0.0/C15F78DF-8CB0-394F-B6F1-51B35D1A69FB/Base/{z}/{y}/{x}.png', {
+                attribution: '&copy; <a href="https://www.vworld.kr">브이월드(국토교통부)</a>',
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        function updateMarkers() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            const bounds = [];
+            filteredData.forEach(d => {
+                const isWithinKorea = d.lat >= 33 && d.lat <= 39 && d.lng >= 124 && d.lng <= 132;
+                if (d.lat && d.lng && isWithinKorea) {
+                    const m = L.circleMarker([d.lat, d.lng], { radius: 5, color: d.completion === '준공' ? '#10b981' : d.completion === '미준공' ? '#3b82f6' : '#f59e0b', fillOpacity: 0.6 }).addTo(map);
+                    m.bindPopup(`<strong>${d.project}</strong><br>${d.units}세대 / ${d.completion}<br><span style="font-size:0.75rem; color:#666;">(더블클릭하여 상세정보 보기)</span>`);
+
+                    // 더블클릭 이벤트 (조회 팝업)
+                    m.on('dblclick', () => {
+                        openInfoModal(d);
+                    });
+
+                    markers.push(m);
+                    bounds.push([d.lat, d.lng]);
+                }
+            });
+
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [30, 30] });
+            } else {
+                map.setView([36.5, 127.5], 7);
+            }
+        }
+
+        function resetToDefault() {
+            selectedFilters = {
+                year: [...new Set(rawData.map(d => d.year))].filter(v => v !== '-'),
+                region: [...new Set(rawData.map(d => d.region))].filter(v => v),
+                type: [...new Set(rawData.map(d => d.type2))].filter(v => v),
+                status: ['준공', '미준공', '종료', '미착공']
+            };
+            updateFilterButtonsUI();
+            applyFilters();
+        }
+
+        function openInfoModal(d) {
+            const modal = document.getElementById('info-modal');
+            document.getElementById('modal-title').innerText = d.project + ' 정보';
+
+            const html = `
+                <table class="info-table">
+                    <tr><th>연도</th><td>${d.year}</td></tr>
+                    <tr><th>광역</th><td>${d.region}</td></tr>
+                    <tr><th>주택명</th><td>${d.project}</td></tr>
+                    <tr><th>세대수</th><td style="font-weight:bold;">${d.units.toLocaleString()}</td></tr>
+                    <tr><th>운영사</th><td>${d.operator}</td></tr>
+                    <tr><th>유형</th><td>${d.type2}</td></tr>
+                    <tr><th>상태</th><td><span class="status-badge ${getStatusClass(d.completion)}">${d.completion}</span></td></tr>
+                    <tr><th>주소</th><td>${d.address}</td></tr>
+                </table>
+            `;
+            document.getElementById('modal-body').innerHTML = html;
+            modal.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

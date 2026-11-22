@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title xml:lang="ko">사회주택 원페이지 테마</title>
+    <description xml:lang="ko">사회주택 협회를 위한 현대적인 원페이지 테마입니다.</description>
+    <version>1.1.0</version>
+    <date>2026-04-21</date>
+    <author email="jurin@example.com" link="http://34.64.121.156/z/">
+        <name xml:lang="ko">Antigravity</name>
+    </author>
+
+    <extra_vars>
+        <group>
+            <title xml:lang="ko">기본 설정</title>
+            <var name="hero_title" type="text">
+                <title xml:lang="ko">히어로 섹션 제목</title>
+                <default>모두가 함께 사는 공간, 사회주택</default>
+            </var>
+            <var name="hero_description" type="textarea">
+                <title xml:lang="ko">히어로 섹션 설명</title>
+                <default>더 나은 주거 문화를 위해 사회주택 협회가 함께합니다.</default>
+            </var>
+            <var name="accent_color" type="color">
+                <title xml:lang="ko">포인트 컬러</title>
+                <default>FF8C00</default>
+            </var>
+        </group>
+        
+        <group>
+            <title xml:lang="ko">공지사항 슬라이더 (섹션 2)</title>
+            <var name="notice_mid" type="text">
+                <title xml:lang="ko">연동 게시판 MID</title>
+                <default>notice</default>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">최신글 위젯 1 (좌측)</title>
+            <var name="w1_title" type="text"><title xml:lang="ko">위젯 제목</title><default>공식 소식</default></var>
+            <var name="w1_mid" type="text"><title xml:lang="ko">대상 게시판 MID</title><default>notice</default></var>
+            <var name="w1_style" type="select">
+                <title xml:lang="ko">위젯 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드(갤러리)형</title></options>
+                <default>list</default>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">최신글 위젯 2 (중앙)</title>
+            <var name="w2_title" type="text"><title xml:lang="ko">위젯 제목</title><default>커뮤니티</default></var>
+            <var name="w2_mid" type="text"><title xml:lang="ko">대상 게시판 MID</title><default>free</default></var>
+            <var name="w2_style" type="select">
+                <title xml:lang="ko">위젯 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드(갤러리)형</title></options>
+                <default>list</default>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">최신글 위젯 3 (우측)</title>
+            <var name="w3_title" type="text"><title xml:lang="ko">위젯 제목</title><default>미디어</default></var>
+            <var name="w3_mid" type="text"><title xml:lang="ko">대상 게시판 MID</title><default>media</default></var>
+            <var name="w3_style" type="select">
+                <title xml:lang="ko">위젯 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드(갤러리)형</title></options>
+                <default>list</default>
+            </var>
+        </group>
+    </extra_vars>
+</layout>

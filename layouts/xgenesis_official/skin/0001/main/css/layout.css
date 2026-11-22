@@ -1,0 +1,16 @@
+
+/* 내용 */
+#bodyWrap { padding:10px 0 0 0; position:relative; width:100%;}
+#bodyWrap #header { margin:0 auto;padding:3px 0; height:65px; text-align:center;}
+#bodyWrap #header #logo { margin:0 auto;padding:0px; text-align:left; float:left; width:0px;}
+
+/* 검색 */
+#search .btn { margin: 0 0 0 -4px; position:relative; vertical-align:top; }
+#search .btn { *margin: 0 0 0 0px;}
+#search #searchWindow { padding:0 0 -10px 0;display:inline-block;height:26px;width:380px;}
+#search #searchWindow input.inputText { border:0 none; font-size:12px;font-weight:bold;height:18px;line-height:16px;margin:5px 0 0 6px;width:370px;}
+
+/* 배너 */
+#banner_searchRight { padding:10px 0 0 0;position:absolute;}
+#banner_searchRight img {width:213px; height:60px;}
+#adlink_searchBottom { padding:10px 0 0 0; position:absolute; }

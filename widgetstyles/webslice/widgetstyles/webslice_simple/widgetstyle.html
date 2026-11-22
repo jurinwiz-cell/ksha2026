@@ -1,0 +1,20 @@
+<!--@if($widgetstyle_extar_var->ws_colorset == "black")-->
+    {@ $_wsClassName = "black"}
+<!--@elseif($widgetstyle_extar_var->ws_colorset == "white")-->
+    {@ $_wsClassName = "white"}
+<!--@else-->
+    {@ $_wsClassName = $layout_info->colorset}
+<!--@end-->
+
+<!--%import("style.css")-->
+<div class="hslice" id="webslice">
+<h3 class="entry-title" style="display:none">
+{$widgetstyle_extar_var->webslice_title}</span></font>
+<abbr class="ttl" title="15"></abbr></h3>
+<a rel="entry-content" href="{$widgetstyle_extar_var->webslice_url}" style="display:none;"></a>
+<div class="simpleWidgetStyle {$_wsClassName}">
+    <h2>{$widgetstyle_extar_var->ws_title}</h2>
+    <!--@if($widgetstyle_extar_var->ws_more_url)--><a href="{$widgetstyle_extar_var->ws_more_url}" class="widgetMoreLink">{$widgetstyle_extar_var->ws_more_text}</a><!--@end-->
+    {$widget_content}
+</div>
+</div> 

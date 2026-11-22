@@ -1,0 +1,83 @@
+
+<div class="layer layer2">
+	<h1 class="h1 mpReset">
+		<a href="{$layout_info->url}">
+			<!--@if($layout_info->logo)--><img src="{$layout_info->logo}" class="iePngFix" alt="{$layout_info->name}" />
+			<!--@else-->
+				<!--@if($layout_info->colorset=="green")-->
+					<img src="img/colorset/logo_green.gif" alt="{$layout_info->name}" />
+				<!--@elseif($layout_info->colorset=="red")-->
+					<img src="img/colorset/logo_red.gif" alt="{$layout_info->name}" />
+				<!--@elseif($layout_info->colorset=="orange")-->
+					<img src="img/colorset/logo_orange.gif" alt="{$layout_info->name}" />
+				<!--@elseif($layout_info->colorset=="pink")-->
+					<img src="img/colorset/logo_pink.gif" alt="{$layout_info->name}" />
+				<!--@else-->
+					<img src="img/logo_blue.gif" alt="{$layout_info->name}" />
+				<!--@end-->
+			<!--@end-->
+		</a>
+	</h1>
+	<hr class="hr_hide" />
+	<!--@if($layout_info->description)--><p class="description">{$layout_info->description}</p><!--@end-->
+
+	<div class="logged_info">
+		<!--@if(!$is_logged)-->
+			<span class="li li0" cond="$layout_info->login_form!='Y'"><a class="a" href="{getUrl('act','dispMemberLoginForm')}">{$lang->cmd_login}</a></span>
+			<div class="li" cond="$layout_info->login_form=='Y'">
+				<form method="post" action="./" class="mpReset" onsubmit="return GS_LOGIN_AJAX(this);">
+					<input type="hidden" name="module" value="member" />
+					<input type="hidden" name="act" value="procMemberLogin" />
+					<input type="text" name="user_id" value="" placeholder="{$lang->user_id}" />
+					<input type="password" name="password" value="" placeholder="{$lang->password}" />
+					<button id="gs-login-submit" type="submit"></button>
+				</form>
+			</div>
+			<span class="li" cond="$layout_info->login_form=='Y'"><a class="submit a" href="javascript:;" for="gs-login-submit" onclick="jQuery('#gs-login-submit').parent().submit();return false;">{$lang->cmd_login}</a></span>
+			<span class="li"><a class="a" href="{getUrl('act','dispMemberSignUpForm')}" rel="nofollow">{$lang->cmd_signup}</a></span>
+			<span class="li"><a class="a" href="{getUrl('act','dispMemberFindAccount')}" rel="nofollow">{$lang->cmd_find_member_account}</a></span>
+			<!--// <span class="li"><a href="{getUrl('act','dispMemberResendAuthMail')}">{$lang->cmd_resend_auth_mail}</a></span> -->
+		<!--@else-->
+<!--//
+			<span class="li li0"><a href="#" class="member_{$logged_info->member_srl}" onclick="return false;">{$logged_info->nick_name}</a></span>
+-->
+			<span class="li"><a href="{getUrl('act','dispMemberLogout')}">{$lang->cmd_logout}</a></span>
+			<span class="li"><a href="{getUrl('act','dispMemberInfo')}">{$lang->cmd_view_member_info}</a></span>
+			<!--@if($logged_info->is_admin=="Y")--><span class="li">
+				<a href="{getUrl('','module','admin','act','dispLayoutAdminModify','layout_srl',$layout_info->layout_srl)}">{$lang->cmd_management}</a>
+				<a href="{getUrl('','module','admin','act','dispLayoutAdminModify','layout_srl',$layout_info->layout_srl)}" onclick="window.open(this.href);return false;" title="New window">(새창)</a>
+			</span><!--@end-->
+		<!--@end-->
+	</div>
+	<div class="right-top" cond="$layout_info->right_top">
+		{$layout_info->right_top}
+	</div>
+	<hr class="hr_hide" />
+
+	<div cond="count($lang_supported)>1 && !$layout_info->right_top" class="language mpReset">
+		<label class="label" for="language">Select Language</label>
+		<div class="ul">
+			<span class="li on"><button type="button" id="language">{$lang_supported[$lang_type]}</button></span>
+			<!--@foreach($lang_supported as $key => $val)--><!--@if($key!= $lang_type)-->
+			<span class="li off"><button type="button" onclick="doChangeLangType('{$key}');return false;">{$val}</button></span>
+			<!--@end--><!--@end-->
+		</div>
+	</div>
+	<hr class="hr_hide" />
+
+	<!--@if($layout_info->search_hide!='Y' && $layout_info->search_html)-->
+	<div class="search mpReset">
+		<form class="form" action="{getUrl()}" method="get" class="iePngFix">
+			<input type="hidden" name="vid" value="{$vid}" />
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="act" value="IS" />
+			<input type="text" name="is_keyword" class="iText" value="{$is_keyword}" accesskey="S" />
+			<span class="submit"><input type="submit" title="{$lang->cmd_search}" value="{$lang->cmd_search}" /></span>
+		</form>
+	</div>
+	<hr class="hr_hide" />
+	<!--@end-->
+
+</div>
+
+<div class="search_html" cond="$layout_info->search_html">{$layout_info->search_html}</div>

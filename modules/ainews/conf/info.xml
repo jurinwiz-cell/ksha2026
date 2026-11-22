@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="ko">AI 뉴스 요약 및 뉴스레터</title>
+    <description xml:lang="ko">안티그래비티 에이전트와 연동하여 뉴스를 수집하고 AI 요약본을 발행하는 모듈입니다.</description>
+    <version>1.0.0</version>
+    <date>2026-04-23</date>
+    <category>service</category>
+    <author email="admin@example.com" link="https://rhymix.org">
+        <name xml:lang="ko">관리자</name>
+    </author>
+</module>

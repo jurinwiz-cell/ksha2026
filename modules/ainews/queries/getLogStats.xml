@@ -1,0 +1,12 @@
+<query id="getLogStats" action="select">
+    <tables>
+        <table name="ainews_log" />
+    </tables>
+    <columns>
+        <column name="status" />
+        <column name="count(*)" alias="cnt" />
+    </columns>
+    <group>
+        <column name="status" />
+    </group>
+</query>

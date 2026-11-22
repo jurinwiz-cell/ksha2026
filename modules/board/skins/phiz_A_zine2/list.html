@@ -1,0 +1,4 @@
+<include target="_header.html" />
+<include cond="$oDocument->isExists()" target="_read.html" />
+<include cond="!$oDocument->isExists()" target="_list.html" />
+<include target="_footer.html" />

@@ -1,0 +1,17 @@
+.widget_update_document_skin { position:relative; overflow:hidden; line-height:normal; font-size:12px; color:#000; }
+.widget_update_document_skin a { color:#000; }
+
+.widget_update_document_skin .module_list { position:relative; margin-bottom:10px; }
+
+.widget_update_document_skin .document_list { position:relative; }
+.widget_update_document_skin .document_list table { padding:0px; margin:0px; border-bottom:1px solid #000; border-right:1px solid #000; }
+.widget_update_document_skin .document_list table th { padding:5px; border-top:1px solid #000; border-left:1px solid #000; white-space:nowrap; background:#efefef; }
+.widget_update_document_skin .document_list table td { padding:5px; border-top:1px solid #000; border-left:1px solid #000; text-align:center; white-space:nowrap; }
+.widget_update_document_skin .document_list table td.title { width:100%; text-align:left; }
+.widget_update_document_skin .document_list table td .input_number { width:50px; }
+.widget_update_document_skin .document_list table td .input_date { width:60px; }
+
+.widget_update_document_skin .document_list .pagination { position:relative; margin-top:20px; text-align:center; }
+.widget_update_document_skin .document_list .pagination .btn_page { padding:0px 7px; height:20px; line-height:20px; display:inline-block; }
+.widget_update_document_skin .document_list .pagination .btn_page_on { background:#efefef; }
+.widget_update_document_skin .document_list .pagination .btn_page:hover { background:#efefef; }

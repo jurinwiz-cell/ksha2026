@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<!-- 언어셋 -->
+	<meta http-equiv="Content-Type" charset="utf-8">
+	<!-- 기록된 언어 -->
+	<meta name="content-language" content="kr">
+	<!-- 뷰포트 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<!-- 캐쉬 설정 -->
+	<meta http-equiv="Cache-Control" content="No-Cache">
+	<meta http-equiv="Pragma" content="No-Cache">
+
+	<!-- 하위브라우저 미디어 쿼리 사용 -->
+	<script src="js/respond.min.js"></script>
+	<!-- 스크립트 -->
+	<script src="js/main.js"></script>
+	<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<!-- 구글 웹폰트 -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<!-- 폰트 어썸 -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<!-- CSS 리셋 -->
+	<load target="css/reset.css" />
+	<!-- 기본 셋팅 -->
+	<load target="css/setting.css" />
+	<!-- 스타일 -->
+	<load target="css/main.css" />
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=Cutive%20Mono:400);
+	</style>
+</head>
+
+<body>
+	<!-- 헤더 영역 -->
+	<header class="header center">
+		<div class="header-content">
+			<div class="logo">
+				<a href="{$layout_info->logo_url}" cond="$layout_info->logo_img">
+					<img src="{$layout_info->logo_img}" alt="">
+				</a>				
+			</div>
+			<nav class="navigation" role="navigation">
+				<ul>
+					<li loop="$GNB->list=>$key1,$val1" class="active"|cond="$val1['selected']">
+						<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+					</li>
+				</ul>
+			</nav>
+			<a href="#" class="nav-toggle"><span></span></a>
+		</div>
+	</header>
+
+	<!-- 메인 컨텐츠 영역-->
+	<main class="container">
+		<section class="content main_text">
+			<div class="grid-lg-7 grid-sm-12 main_text_01">
+				<h1>{$layout_info->top_text_01}</h1>
+			</div>
+			<div class="grid-lg-5 grid-sm-12 main_text_02">
+				{$layout_info->top_text_02}
+			</div>
+		</section>
+		<hr/>
+		<section class="grid-lg-12">
+			{$content}
+		</section>
+	</main>
+
+	<!-- 푸터 영역 -->
+	<footer class="footer">
+		<section class="content center">
+			<div class="grid-lg-6 grid-sm-12">
+				<h4>{$layout_info->bottom_text}</h4>
+				<p>
+					Call: {$layout_info->phone} OR Email : <a href="mailto:{$layout_info->email}"> {$layout_info->email}</a>
+				</p>
+			</div>
+			<div class="grid-lg-6 grid-sm-12">
+				<p>
+					© 2018 All rights reserved. All Rights Reserved<br>
+					Made with <i class="fa fa-heart pulse"></i> by <a href="{$layout_info->logo_url}">{$layout_info->author}</a>
+				</p>
+			</div>
+		</section>
+	</footer>
+</body>
+</html>

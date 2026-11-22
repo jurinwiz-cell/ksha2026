@@ -1,0 +1,30 @@
+<load target="css/default.css" />
+<load target="css/default.js" type="body" />
+<!--@if($order_type == "desc")-->
+    {@ $order_type = "asc"; }
+<!--@else-->
+    {@ $order_type = "desc"; }
+<!--@end-->
+<block cond="!$module_info->duration_new = (int)$module_info->duration_new">{@ $module_info->duration_new = 12 }</block>
+{@ $cate_list = array(); $current_key = null; }
+<!--@foreach($category_list as $key=>$val)-->
+	<!--@if(!$val->depth)-->
+		{@
+			$cate_list[$key] = $val;
+			$cate_list[$key]->children = array();
+			$current_key = $key;
+		}
+	<!--@elseif($current_key)-->
+		{@ $cate_list[$current_key]->children[] = $val }
+	<!--@end-->
+<!--@end-->
+<div class="board">
+
+     <style>
+    .title_image{width: {$module_info->nl_w}px !important}
+	.title_image img{max-width: {$module_info->nl_w}px !important}
+     </style>
+
+	<div class="board_header" cond="$module_info->title_image || $grant->manager">
+		<div class="title_image" cond="$module_info->title_image"><a href="{getUrl('','mid',$mid)}"><img src="{$module_info->title_image}" alt="{$module_info->title_alt}" /></a></div>
+	</div>

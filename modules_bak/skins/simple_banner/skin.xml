@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">심플 배너</title>
+    <description xml:lang="ko">심플한 북마크 게시판입니다.</description>
+    <version>1.1</version>
+    <date>2016-6-16</date>
+    <author>
+        <name xml:lang="ko">LAZARUS</name>
+    </author>
+    <license>LGPL v2</license>
+    <extra_vars>
+        <var name="title_image" type="image">
+            <title xml:lang="ko">타이틀 이미지</title>
+			<description xml:lang="ko">타이틀에 이미지를 삽입합니다. 이미지 넓이는 공지사항 넓이와 맞추시면 됩니다.</description>
+        </var>
+		<var name="no_banner" type="image">
+            <title xml:lang="ko">기본 배너</title>
+			<description xml:lang="ko">배너가 없어도 등록을 허용할 때 기본 배너를 설정해주세요.</description>
+        </var>
+		<var name="use_tag" type="checkbox">
+            <title xml:lang="ko">태그 사용</title>
+			<description xml:lang="ko">태그를 사용할시 체크해주세요.</description>
+        </var>
+		<var name="nl_w" type="text">
+            <title xml:lang="ko">공지사항 넓이</title>
+			<description xml:lang="ko">배너리스트 넓이를 고려하여 숫자만 넣어주세요. 기본은 700(px)입니다. </description>
+        </var>
+		<var name="bl_w" type="text">
+            <title xml:lang="ko">배너리스트 넓이</title>
+			<description xml:lang="ko">배너 한 칸당 100px을 고려하여 숫자만 넣어 주세요. 기본은 배너 7개 기준 700(px)입니다.</description>
+        </var>
+    </extra_vars>
+</skin>
+

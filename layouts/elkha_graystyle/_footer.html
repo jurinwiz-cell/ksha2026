@@ -1,0 +1,49 @@
+
+<div class="map Wrapper mpReset" cond="$sitemap->list">
+	{@
+		$menu_depth = 1;
+		$menu_vars[$menu_depth] = &$sitemap->list;
+	}
+	<include target="_navi.html" />
+	<!--// 사이트맵이 5개 초과할 경우 masonry 라이브러리 로딩하여 높이를 적절히 맞춰준다 -->
+	<block cond="count($sitemap->list) > 5">
+		<load target="js/masonry.pkgd.min.js" />
+		<script type="text/javascript">//<![CDATA[
+		(function($){
+			$('#footer .map .ul1').each(function(){
+				var msnry = new Masonry( this);
+			});
+		})(jQuery);
+		//]]></script>
+	</block>
+</div>
+
+<div class="layer mpReset">
+
+	<!--@if($sta->list)-->{@$tmp = 0}
+		<ul class="sta">
+			<!--@foreach($sta->list as $val)--><!--@if($val["link"])-->
+				<li class="li{$tmp++}"><a href="{$val['href']}"<!--@if($val["open_window"]=="Y")--> onclick="window.open(this.href); return false;"<!--@end-->>{$val["link"]}</a></li>
+			<!--@end--><!--@end-->
+		</ul>
+	<!--@end-->
+
+	<hr class="hr_hide" />
+
+	<address class="copyright">
+		<!--@if($layout_info->copyright)-->
+			{$layout_info->copyright}
+		<!--@else-->
+			&copy; <strong><a href="{$layout_info->url}">{$layout_info->name}</a></strong>
+		<!--@end-->
+
+		<!--
+			Skin 문구를 지우려면 프리미엄 라이센스를 구입해야 합니다.
+			http://elkha.kr/xe/graystyle2
+		-->
+		<span class="powered">
+			<!--// Powered by <a href="http://www.xpressengine.com/" onclick="window.open(this.href); return false;">XE</a><br /> -->
+			Skin by <a href="http://elkha.kr/" target="_blank">Elkha</a>
+		</span>
+	</address>
+</div>

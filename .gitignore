@@ -18,8 +18,9 @@ Thumbs.db
 
 # 대용량 바이너리/런타임 데이터
 files/
-shm/
 
 # layouts 폴더의 vendor는 예외
 !layouts/root_basic_layout/vendor/
 !layouts/social_housing_onepage/vendor/
+shm/.git.disabled/
+shm/includes/sns_config.php

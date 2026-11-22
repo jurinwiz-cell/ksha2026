@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config version="0.2">
+	<actions>
+		<!-- Admin Actions -->
+		<action name="dispAinewsAdminIndex" type="view" standalone="true" admin_index="true" />
+		<action name="procAinewsAdminSaveConfig" type="controller" standalone="true" />
+		
+		<!-- Agent API Actions -->
+		<action name="procAinewsInsertArticle" type="controller" standalone="true" />
+		<action name="procAinewsGenerateNewsletter" type="controller" standalone="true" />
+
+		<!-- View Actions -->
+		<action name="dispAinewsIndex" type="view" standalone="true" index="true" />
+	</actions>
+	
+	<menus>
+		<menu name="ainews" type="admin">
+			<title xml:lang="ko">AI 뉴스레터 관리</title>
+		</menu>
+	</menus>
+</config>

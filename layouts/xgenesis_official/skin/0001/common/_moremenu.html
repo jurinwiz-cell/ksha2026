@@ -1,0 +1,11 @@
+<div id="moreMenuPanel" class="{$layout_info->skin_colorset}">
+	<button type="button" class="close {$layout_info->skin_colorset}" onclick="jQuery('#moreMenuPanel').toggleClass('active');" accesskey="X"><span>닫기</span></button>
+	<div class="moreMenu {$layout_info->skin_colorset}">더보기</div>
+	<ul class="{$layout_info->skin_colorset}">
+		<!--@foreach($gnb_menu->list as $key => $val)-->
+		<!--@if($val['href'] && $val['text'])-->
+		<li><a href="{$val['href']}" <!--@if($val['open_window']=='Y')-->onclick="window.open(this.href);return false;"<!--@end--> title="{$val['text']}">{$val['link']}</a></li>
+		<!--@end-->
+		<!--@endforeach-->
+	</ul>
+</div>

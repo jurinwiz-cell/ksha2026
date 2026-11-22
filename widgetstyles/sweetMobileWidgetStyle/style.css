@@ -1,0 +1,15 @@
+
+.sweetMobileWrap { padding:5px; }
+.sweetMobileWrap .sweetMobile { background:#fff; box-shadow: 0 0 2px rgba(0,0,0,0.1); border-radius:3px; overflow:hidden; }
+.sweetMobileWrap .sweetMobile .smTitle { height:34px; border-bottom:1px solid #f2f2f2; position:relative; }
+.sweetMobileWrap .sweetMobile .smTitle h3 { line-height:34px; padding:0 40px 0 10px; margin:0; font-size: 1.2em; letter-spacing:0; }
+.sweetMobileWrap .sweetMobile .smTitle a { position:absolute; display:block; color:transparent; font-size:1px; width:24px; height:24px; background:url(more.png) no-repeat 0 0; background-size:24px; top:5px; right:5px; }
+
+@media screen and (max-width:639px){
+	.sweetMobileWrap { width: 100%; box-sizing:border-box; }
+
+}
+  @media screen and (min-width: 640px){
+	.sweetMobileWrap { width: 50%; box-sizing:border-box; }
+
+}

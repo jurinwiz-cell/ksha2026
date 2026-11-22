@@ -1,0 +1,123 @@
+<include target="_header.html" />
+
+{{-- 발송 통계 대시보드 추가 --}}
+<div class="xm_row">
+    <div class="xm_span12">
+        <div class="xm_block">
+            <div class="xm_block_header">
+                <h2><i class="ph ph-chart-pie"></i> 이메일 발송 현황 통계</h2>
+            </div>
+            <div class="xm_block_body">
+                <div class="xm_row">
+                    <div class="xm_span4 xm_text_center">
+                        <canvas id="sendStatsChart" width="200" height="200" style="max-height: 200px; margin: 0 auto;"></canvas>
+                    </div>
+                    <div class="xm_span8">
+                        <table class="xm_table">
+                            <thead>
+                                <tr>
+                                    <th>항목</th>
+                                    <th>건수</th>
+                                    <th>비율</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="xm_text_success"><i class="ph-fill ph-check-circle"></i> 발송 성공</span></td>
+                                    <td>{{ number_format($log_stats['S']) }}건</td>
+                                    <td>{{ $total_log_count > 0 ? round(($log_stats['S'] / $total_log_count) * 100, 1) : 0 }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="xm_text_error"><i class="ph-fill ph-warning-circle"></i> 발송 실패</span></td>
+                                    <td>{{ number_format($log_stats['F']) }}건</td>
+                                    <td>{{ $total_log_count > 0 ? round(($log_stats['F'] / $total_log_count) * 100, 1) : 0 }}%</td>
+                                </tr>
+                                <tr class="xm_text_bold">
+                                    <td>합계</td>
+                                    <td>{{ number_format($total_log_count) }}건</td>
+                                    <td>100%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="./" method="post" class="xm_form-horizontal">
+    <input type="hidden" name="module" value="admin" />
+    <input type="hidden" name="act" value="procAinewsAdminInsertConfig" />
+
+    <div class="xm_block">
+        <div class="xm_block_header">
+            <h2>AI 뉴스레터 기본 설정</h2>
+        </div>
+        <div class="xm_block_body">
+            <div class="xm_control-group">
+                <label class="xm_control-label">대상 게시판 선택</label>
+                <div class="xm_controls">
+                    <select name="target_module_srl">
+                        <option value="">-- 발행할 게시판을 선택하세요 --</option>
+                        @foreach($board_list as $board)
+                        <option value="{{ $board->module_srl }}" selected="selected"
+                            |cond="$config->target_module_srl == $board->module_srl">
+                            {{ $board->browser_title }} ({{ $board->mid }})
+                        </option>
+                        @endforeach
+                    </select>
+                    <p class="xm_help-block">AI가 분석한 뉴스를 발행할 라이믹스 게시판을 지정합니다.</p>
+                </div>
+            </div>
+            <div class="xm_control-group">
+                <label class="xm_control-label">이메일 발송 사용</label>
+                <div class="xm_controls">
+                    <label><input type="radio" name="use_email" value="Y" checked="checked"
+                            |cond="$config->use_email == 'Y'" /> 사용</label>
+                    <label><input type="radio" name="use_email" value="N" checked="checked"
+                            |cond="$config->use_email != 'Y'" /> 미사용</label>
+                </div>
+            </div>
+            <div class="xm_control-group">
+                <label class="xm_control-label">수신 이메일 주소</label>
+                <div class="xm_controls">
+                    <input type="text" name="receiver_emails" value="{{ $config->receiver_emails }}"
+                        class="xm_input-xlarge" />
+                    <p class="xm_help-block">발행 시 뉴스를 함께 받을 이메일 주소를 입력하세요. 여러 명일 경우 쉼표(,)로 구분합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="xm_block_footer">
+            <button type="submit" class="xm_btn xm_btn_primary">설정 저장</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    (function() {
+        const ctx = document.getElementById('sendStatsChart').getContext('2d');
+        const statsData = {
+            labels: ['성공', '실패'],
+            datasets: [{
+                data: [{{ (int)$log_stats['S'] }}, {{ (int)$log_stats['F'] }}],
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 0
+            }]
+        };
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: statsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                cutout: '60%'
+            }
+        });
+    })();
+</script>
+<include target="_footer.html" />

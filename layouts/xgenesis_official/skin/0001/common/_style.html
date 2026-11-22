@@ -1,0 +1,53 @@
+<style type="text/css">
+<!--@if($layout_info->skin_width==null)-->{@ $layout_info->skin_width = "950";}<!--@end-->
+#gnb_utility {width:{$layout_info->skin_width}px;}
+#header {width:{$layout_info->skin_width}px;}
+#mainMenuBox {width:{$layout_info->skin_width}px;}
+{@ $siteMapBox_width = $layout_info->skin_width - 16;}
+#siteMapBox {width:{$siteMapBox_width}px;}
+
+#advertise_mainMenuBottom {width:{$layout_info->skin_width}px;}
+#contentBody {width:{$layout_info->skin_width}px;}
+{@ $content_right_width = $layout_info->skin_width - 210;}
+#contentRight {width:{$content_right_width}px;}
+#footer {width:{$layout_info->skin_width}px;}
+#footer ul.bottomMenu {width:{$layout_info->skin_width}px;}
+
+<!--@if($layout_info->banner_searchRight_top==null)-->{@ $layout_info->banner_searchRight_top = "3";}<!--@end-->
+<!--@if($layout_info->banner_searchRight_left==null)-->{@ $layout_info->banner_searchRight_left = "870";}<!--@end-->
+{@ $banner_searchRight_left_for_ie = $layout_info->banner_searchRight_left - 10;}
+#banner_searchRight {top:{$layout_info->banner_searchRight_top}px; left:{$layout_info->banner_searchRight_left}px;}
+#banner_searchRight {*left:{$banner_searchRight_left_for_ie}px;}
+
+<!--@if($layout_info->adlink_searchBottom_top==null)-->{@ $layout_info->adlink_searchBottom_top = "50";}<!--@end-->
+<!--@if($layout_info->adlink_searchBottom_left==null)-->{@ $layout_info->adlink_searchBottom_left = "407";}<!--@end-->
+{@ $adlink_searchBottom_left_for_ie = $layout_info->adlink_searchBottom_left - 3;}
+#adlink_searchBottom {top:{$layout_info->adlink_searchBottom_top}px; left:{$layout_info->adlink_searchBottom_left}px;}
+#adlink_searchBottom {*left:{$adlink_searchBottom_left_for_ie}px;}
+
+<!--@if($layout_info->banner_mainLeft_top==null)-->{@ $layout_info->banner_mainLeft_top = "3";}<!--@end-->
+<!--@if($layout_info->banner_mainLeft_left==null)-->{@ $layout_info->banner_mainLeft_left = "-110";}<!--@end-->
+#banner_mainLeft {top:{$layout_info->banner_mainLeft_top}px; left:{$layout_info->banner_mainLeft_left}px;}
+
+<!--@if($layout_info->banner_mainRight_top==null)-->{@ $layout_info->banner_mainRight_top = "3";}<!--@end-->
+<!--@if($layout_info->banner_mainRight_right==null)-->{@ $layout_info->banner_mainRight_right = "-110";}<!--@end-->
+#banner_mainRight {top:{$layout_info->banner_mainRight_top}px; right:{$layout_info->banner_mainRight_right}px;}
+
+<!--@if($layout_info->advertise_mainLeft_top==null)-->{@ $layout_info->advertise_mainLeft_top = "3";}<!--@end-->
+<!--@if($layout_info->advertise_mainLeft_left==null)-->{@ $layout_info->advertise_mainLeft_left = "-130";}<!--@end-->
+#advertise_mainLeft {top:{$layout_info->advertise_mainLeft_top}px; left:{$layout_info->advertise_mainLeft_left}px;}
+
+<!--@if($layout_info->advertise_mainRight_top==null)-->{@ $layout_info->advertise_mainRight_top = "3";}<!--@end-->
+<!--@if($layout_info->advertise_mainRight_right==null)-->{@ $layout_info->advertise_mainRight_right = "-130";}<!--@end-->
+#advertise_mainRight {top:{$layout_info->advertise_mainRight_top}px; right:{$layout_info->advertise_mainRight_right}px;}
+
+<!--@if(count($gnb_menu->list)==0)-->
+#memberPanel {right:0px};
+<!--@end-->
+<!--@if($layout_info->memberPanel_right==null)-->{@ $layout_info->memberPanel_right = "430";}<!--@end-->
+#memberPanel {right:{$layout_info->memberPanel_right}px;}
+<!--@if($layout_info->moreMenuPanel_right==null)-->{@ $layout_info->moreMenuPanel_right = "185";}<!--@end-->
+#moreMenuPanel {right:{$layout_info->moreMenuPanel_right}px;}
+
+// 로고위치
+</style>

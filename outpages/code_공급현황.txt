@@ -1,0 +1,841 @@
+<p><meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> </p>
+<title></title>
+<p><script src="https://cdn.tailwindcss.com"></script> </p>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
+<p>
+<style type="text/css">        body { font-family: 'Pretendard', sans-serif; }
+        .main-tab-content, .sub-tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .main-tab-content.active, .sub-tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom styles for details/summary accordion */
+        details > summary::-webkit-details-marker { display: none; }
+   
+</style>
+</p>
+
+<p><!-- 최상위 Div 폭 100% (가로 여백 없음) --> </p>
+
+<div class="w-full bg-white shadow-xl md:rounded-2xl overflow-hidden"><!-- App Header --> 
+<div class="bg-indigo-800 text-white p-6 md:p-8 text-center relative">
+<h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">공공임대주택 통합 안내 포털</h1>
+
+
+<p class="text-indigo-200 text-lg">민간참여형 특화 및 공공주체별 사업 공모 안내</p>
+</div>
+<!-- Main Tab Navigation (Level 1) --> 
+
+<div class="flex flex-col sm:flex-row bg-indigo-50 border-b-2 border-indigo-200"><button class="main-tab-link active flex-1 text-center py-4 px-4 font-bold text-indigo-800 border-b-4 border-indigo-800 bg-white whitespace-nowrap transition text-base md:text-lg" onclick="openMainTab(event, 'main-doc-1')">2026년 상반기 특화형 공고 </button> <button class="main-tab-link flex-1 text-center py-4 px-4 font-bold text-gray-500 border-b-4 border-transparent hover:bg-indigo-100 hover:text-indigo-700 whitespace-nowrap transition text-base md:text-lg" onclick="openMainTab(event, 'main-doc-2')">공공주체별 공모 안내 </button> <button class="main-tab-link flex-1 text-center py-4 px-4 font-bold text-gray-500 border-b-4 border-transparent hover:bg-indigo-100 hover:text-indigo-700 whitespace-nowrap transition text-base md:text-lg" onclick="openMainTab(event, 'main-doc-3')">연도별 현황 </button> </div>
+<!-- ==========================================
+             MAIN DOCUMENT 1 : 2026 특화형 모집공고
+        =========================================== --> 
+
+<div class="main-tab-content active" id="main-doc-1"><!-- Doc 1 Header --> 
+<div class="bg-blue-600 text-white p-6 md:p-8 text-center relative">
+<p class="absolute top-4 right-6 text-sm text-blue-200">공고일: 2026.04.03</p>
+
+
+<h2 class="text-2xl md:text-3xl font-bold mt-2 mb-2">2026년 상반기 특화형 임대주택 모집 공고</h2>
+
+
+<p class="text-lg text-blue-100">(민간제안형)</p>
+
+
+<div class="mt-4 inline-flex space-x-4 text-sm bg-blue-700/50 rounded-full px-5 py-2"><span><strong class="text-white">공모규모:</strong> 1,000호 내외</span> <span>|</span> <span><strong class="text-white">접수:</strong> ~ 26.5.11(월) 17시</span> </div>
+</div>
+<!-- Doc 1 Sub Tabs (Level 2) --> 
+
+<div class="flex overflow-x-auto border-b border-gray-200 bg-gray-50 text-sm md:text-base sticky top-0 z-10"><button class="doc1-tab-link active flex-1 text-center py-4 px-4 font-semibold text-blue-600 border-b-2 border-blue-600 whitespace-nowrap hover:bg-gray-100 transition" onclick="openSubTab(event, 'doc1-sub1', 'doc1-sub-content', 'doc1-tab-link')">1. 공모개요 </button> <button class="doc1-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc1-sub2', 'doc1-sub-content', 'doc1-tab-link')">2. 신청자격 </button> <button class="doc1-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc1-sub3', 'doc1-sub-content', 'doc1-tab-link')">3. 주요 계획기준 </button> <button class="doc1-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc1-sub4', 'doc1-sub-content', 'doc1-tab-link')">4. 신청방법 등 </button> </div>
+<!-- Doc 1 Contents --> 
+
+<div class="p-6 md:p-10 min-h-[500px]"><!-- 공모개요 --> 
+<div class="sub-tab-content doc1-sub-content active" id="doc1-sub1">
+<h3 class="text-xl font-bold mb-6 text-blue-700 border-l-4 border-blue-600 pl-3">공모개요</h3>
+
+
+<ul class="space-y-4 text-gray-700 mb-8">
+	<li></li>
+	<li class="flex items-start"><span class="font-bold text-blue-600 mr-2">■</span> 
+	<div><strong>(사업구조)</strong> 민간사업자가 자유롭게 테마를 제안하여 기획&middot;설계&middot;시공하여 공사가 매입 후 민간사업자가 테마에 따른 입주자 선발 및 차별화된 주거 서비스 제공 등 임대 운영관리까지 수행</div>
+	</li>
+	<li></li>
+	<li class="flex items-start"><span class="font-bold text-blue-600 mr-2">■</span> 
+	<div><strong>(운영테마)</strong> 돌봄&middot;육아&middot;교육, 일자리&middot;창업지원, 귀농&middot;귀촌, 장애인&middot;자립지원 등 사업시행자가 자유롭게 제안</div>
+	</li>
+	<li></li>
+	<li class="flex items-start"><span class="font-bold text-blue-600 mr-2">■</span> 
+	<div><strong>(공모규모)</strong> 1,000호 내외 
+	<p class="text-sm text-red-500 mt-1">※ 공모 규모 범위 내에서 선정하되, 수요부족, 건축계획 등이 부적합할 경우 공모 규모에도 불구하고 선정하지 아니할 수 있음</p>
+	</div>
+	</li>
+	<li></li>
+	<li class="flex items-start"><span class="font-bold text-blue-600 mr-2">■</span> 
+	<div><strong>(공모지역)</strong> 인구 8만 이상의 전국 대상 
+	<p class="text-sm text-gray-500 mt-1">- 단, 인구 8만 미만의 소도시&middot;농산어촌 지역의 경우 읍, 면, 행정복지센터 소재지에 한하여 허용</p>
+	</div>
+	</li>
+	<li></li>
+</ul>
+
+
+<h4 class="font-bold text-lg mb-4">■ 공모절차</h4>
+<!-- 넓어진 화면에 맞춰 그리드를 최대 6열로 확장 --> 
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">① 사업 공모<br />
+(본사)</div>
+
+
+<div class="text-gray-600 text-sm">&lsquo;26.4.3(금)</div>
+</div>
+
+
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">② 사업 신청접수<br />
+(본사)</div>
+
+
+<div class="text-red-600 font-bold text-sm break-keep">&lsquo;26.4.27(월)<br />
+~5.11(월) 17시</div>
+</div>
+
+
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">③ 서류심사 결과통보<br />
+(본사)</div>
+
+
+<div class="text-gray-600 text-sm">&lsquo;26.6.17(수)</div>
+</div>
+
+
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">④ 본심사 결과통보<br />
+(본사&amp;지역본부)</div>
+
+
+<div class="text-gray-600 text-sm">&lsquo;26.7.16(목)</div>
+</div>
+
+
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">⑤ 도면협의 / 1차 감정평가</div>
+
+
+<div class="text-gray-600 text-sm">&lsquo;26.8월~9월<br />
+(지역본부)</div>
+</div>
+
+
+<div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col justify-center">
+<div class="text-blue-800 font-bold mb-1">⑥ 매입약정체결<br />
+(지역본부)</div>
+
+
+<div class="text-gray-600 text-sm">&lsquo;26.10월말</div>
+</div>
+</div>
+</div>
+<!-- 신청자격 --> 
+
+<div class="sub-tab-content doc1-sub-content" id="doc1-sub2">
+<h3 class="text-xl font-bold mb-6 text-blue-700 border-l-4 border-blue-600 pl-3">신청자격</h3>
+
+
+<p class="mb-4 text-gray-700 bg-yellow-50 p-4 rounded border border-yellow-200">사업 시행자는 본 사업을 시행(일괄운영-마스터리스방식)하고자 하는 자로 <strong class="text-blue-600">공고일(2026.4.3.) 기준</strong> 아래 각 호 중 어느 하나의 자격을 충족하여야 함.<br />
+<span class="text-sm mt-2 block">※ 법인 정관에 <u>주택의 임대운영을 사업목적으로 정하고 있거나 주택(기숙사) 임대운영 실적이 있는 자</u></span> </p>
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-gray-700 ml-4 mb-8">
+<p>① 「민법」 제32조에 따라 허가를 얻은 <strong>비영리법인</strong></p>
+
+
+<p>② 「공익법인의 설립&middot;운영에 관한 법률」 제2조에 따른 <strong>공익법인</strong></p>
+
+
+<p>③ 「협동조합 기본법」에 따른 <strong>협동조합 및 사회적 협동조합</strong></p>
+
+
+<p>④ 「사회적기업 육성법」에 따른 <strong>사회적기업</strong></p>
+
+
+<p>⑤ 「고등교육법」에 따른 <strong>학교</strong></p>
+
+
+<p>⑥ 「민간임대주택에 관한 특별법」에 따른 <strong>주택임대관리업자</strong></p>
+
+
+<p>⑦ 「중소기업기본법」에 따른 <strong>중소기업</strong></p>
+
+
+<p>⑧ 「소비자생활협동조합법」에 따라 설립한 <strong>조합</strong></p>
+
+
+<p>⑨ <strong>국토교통형 예비사회적 기업</strong>(도시재생분야)</p>
+
+
+<p>⑩ 「공공기관의 운영에 관한 법률」에 따른 <strong>공공기관</strong></p>
+
+
+<p>⑪ <strong>한국사학진흥재단이 출자한 특수 목적 법인</strong></p>
+</div>
+
+
+<div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+<h4 class="font-bold text-lg mb-2 text-gray-800 flex items-center"><svg class="w-5 h-5 mr-1 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 컨소시엄 구성 안내 </h4>
+
+
+<p class="text-gray-700 mb-2">사업 시행자는 컨소시엄을 구성할 수 있으며, 이 경우 <strong>주택의 운영관리를 할 자가 대표법인</strong>이어야 하고 <strong>토지소유자를 반드시 구성원에 포함</strong>하여야 합니다. (매입약정서상 매도인을 토지소유자로 함)</p>
+
+
+<ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
+	<li></li>
+	<li>각 구성원별로 업무 및 책임분담 등이 명기된 &lsquo;컨소시엄 구성 및 대표법인 선임서&rsquo;를 제출하여야 함</li>
+	<li></li>
+	<li>LH는 대표법인에 대한 통지와 협의로써 동 컨소시엄 구성원 전체에 대한 통지와 협의를 갈음함</li>
+	<li></li>
+</ul>
+</div>
+</div>
+<!-- 주요 계획기준 --> 
+
+<div class="sub-tab-content doc1-sub-content" id="doc1-sub3">
+<h3 class="text-xl font-bold mb-6 text-blue-700 border-l-4 border-blue-600 pl-3">주요 계획기준</h3>
+<!-- 넓어진 화면을 활용하여 좌우 단 나누기 --> 
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-gray-700">
+<div class="space-y-8"><!-- 규모 --> 
+<section>
+<h4 class="font-bold text-lg flex items-center mb-3"><span class="text-blue-600 mr-2">■</span> (규모) <span class="font-normal text-base ml-2">지역에 따라 동별 10호 이상 100호 미만의 집합화된 주택</span></h4>
+
+
+<div class="bg-gray-50 border border-gray-200 rounded p-4 text-sm space-y-2">
+<p class="font-bold text-gray-800">신청 건별 규모 상세 기준</p>
+
+
+<p>① <strong>광역시는 100호 미만, 비수도권 지역은 50호 미만</strong>으로 계획</p>
+
+
+<p>② <strong>소도시&middot;농산어촌지역</strong>(인구 8만 미만)은 <strong>10호 이상 30호 미만</strong>으로 계획</p>
+
+
+<p>③ <strong>수도권의 경우 100호 이상</strong>으로 계획가능하나, <strong>150호 초과는 &lsquo;자기관리형 주택임대관리업&rsquo; 자격 必</strong></p>
+</div>
+</section>
+<!-- 커뮤니티시설 --> 
+
+<section>
+<h4 class="font-bold text-lg flex items-center mb-2"><span class="text-blue-600 mr-2">■</span> (커뮤니티시설)</h4>
+
+
+<ul class="list-disc pl-8 space-y-2 text-sm bg-gray-50 p-4 rounded border border-gray-200">
+	<li></li>
+	<li>규모와 관계없이 <strong>세대당 1.5㎡ 이상 의무 설치</strong> <span class="text-blue-600">(소도시&middot;농산어촌지역은 2.5㎡ 이상)</span></li>
+	<li></li>
+	<li><strong>지상 1층 설치가 원칙</strong> (여건에 따라 1층 외 계획 가능)</li>
+	<li></li>
+</ul>
+</section>
+</div>
+<!-- 전용면적 (테이블이 넓으므로 우측 단을 전체 사용) --> 
+
+<div class="space-y-8">
+<section>
+<h4 class="font-bold text-lg flex items-center mb-3"><span class="text-blue-600 mr-2">■</span> (전용면적) <span class="font-normal text-base ml-2">주거전용면적 85㎡ 이하 (혼합 입주자 유형 지양)</span></h4>
+
+
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-center border-collapse border border-gray-300">
+	<thead class="bg-gray-100 font-bold">
+		<tr>
+			<th class="border border-gray-300 py-3 px-4" rowspan="2">입주자유형</th>
+			<th class="border border-gray-300 py-3 px-4" rowspan="2">입주자격</th>
+			<th class="border border-gray-300 py-3 px-4" colspan="2">최소기준</th>
+		</tr>
+		<tr>
+			<th class="border border-gray-300 py-2 px-4">전용면적</th>
+			<th class="border border-gray-300 py-2 px-4">방 개수</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="border border-gray-300 py-2 font-bold">청년(기숙사형)</td>
+			<td class="border border-gray-300 py-2">19~39세의 미혼 청년</td>
+			<td class="border border-gray-300 py-2">19㎡ 이상 ~ 60㎡ 이하</td>
+			<td class="border border-gray-300 py-2">1개 이상</td>
+		</tr>
+		<tr>
+			<td class="border border-gray-300 py-2 font-bold">다자녀</td>
+			<td class="border border-gray-300 py-2">2자녀 이상 가구</td>
+			<td class="border border-gray-300 py-2">46㎡ 이상</td>
+			<td class="border border-gray-300 py-2">2개 이상</td>
+		</tr>
+		<tr>
+			<td class="border border-gray-300 py-2 font-bold">신혼&middot;신생아Ⅰ</td>
+			<td class="border border-gray-300 py-2">혼인 7년 이내, 한부모, 예비, 신생아 가구</td>
+			<td class="border border-gray-300 py-2">36㎡ 이상</td>
+			<td class="border border-gray-300 py-2">2개 이상</td>
+		</tr>
+		<tr>
+			<td class="border border-gray-300 py-2 font-bold">고령자</td>
+			<td class="border border-gray-300 py-2">65세 이상의 고령자</td>
+			<td class="border border-gray-300 py-2">29㎡ 이상</td>
+			<td class="border border-gray-300 py-2">1개 이상</td>
+		</tr>
+		<tr>
+			<td class="border border-gray-300 py-2 font-bold">일반</td>
+			<td class="border border-gray-300 py-2">상기 유형에 해당되지 않는 저소득계층</td>
+			<td class="border border-gray-300 py-2">20㎡ 이상</td>
+			<td class="border border-gray-300 py-2">1개 이상</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- 신청방법 등 --> 
+
+<div class="sub-tab-content doc1-sub-content" id="doc1-sub4">
+<h3 class="text-xl font-bold mb-6 text-blue-700 border-l-4 border-blue-600 pl-3">신청방법 및 문의처</h3>
+<!-- 넓어진 화면 활용 가로 배치 --> 
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-6 flex flex-col justify-center">
+<div class="mb-4">
+<div class="text-sm text-gray-500 font-bold mb-1">접수기간</div>
+
+
+<div class="text-xl font-bold text-red-600">&lsquo;26.4.27(월) 09:00 ~ &lsquo;26.5.11(월) 17:00</div>
+</div>
+
+
+<div class="mb-4">
+<div class="text-sm text-gray-500 font-bold mb-1">접수방법</div>
+
+
+<div class="text-lg text-gray-800 font-medium">서류 원본 모두 PDF 변환 후 <strong class="text-blue-700">이메일 제출</strong></div>
+
+
+<div class="text-sm mt-1">제출처 : <a class="text-blue-600 hover:underline font-bold" href="mailto:lh12345@lh.or.kr">lh12345@lh.or.kr</a></div>
+</div>
+
+
+<div>
+<div class="text-sm text-gray-500 font-bold mb-1">제출서류</div>
+
+
+<div class="text-gray-800">사업신청서 및 설계도면 등 관련서류 일체</div>
+</div>
+</div>
+
+
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-6 flex flex-col justify-center">
+<div class="flex items-center mb-4"><svg class="w-8 h-8 text-gray-600 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 
+
+<h4 class="font-bold text-xl">문의처</h4>
+</div>
+
+
+<p class="text-gray-700 text-lg">경남 진주시 충의로 19<br />
+LH 매입임대사업처 매입임대공급운영팀</p>
+
+
+<p class="font-bold text-blue-700 text-2xl mt-4">☎ 055-922-3464, 3465</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ==========================================
+             MAIN DOCUMENT 2 : 공공주체별 공모사업 안내
+        =========================================== --> 
+
+<div class="main-tab-content" id="main-doc-2"><!-- Doc 2 Header --> 
+<div class="bg-cyan-700 text-white p-6 md:p-8 text-center relative">
+<h2 class="text-2xl md:text-3xl font-bold mb-3">공공주체별 공모사업 안내</h2>
+
+
+<p class="text-lg text-cyan-100">민간참여형(민관협력형) 공공임대주택</p>
+</div>
+<!-- 공통 안내 사항 --> 
+
+<div class="bg-slate-50 p-6 md:p-8 border-b border-gray-200">
+<ul class="space-y-3 text-gray-700">
+	<li></li>
+	<li class="flex items-start"><svg class="w-5 h-5 mr-3 text-cyan-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> <span>민간참여형(민관협력형) 공공임대주택 사업공모들을 공공주체별로 모아 공유</span> </li>
+	<li></li>
+	<li class="flex items-start"><svg class="w-5 h-5 mr-3 text-cyan-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> <span>공공주택특별법 및 민간임대주택특별법 등에 따라 다양한 공공주체가 사업 공고를 발표하고 있음</span> </li>
+	<li></li>
+	<li class="flex items-start"><svg class="w-5 h-5 mr-3 text-cyan-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> <span>국가 예산 및 기금운용계획 등이 발표된 후 연초 세부추진계획에 따라 공급량 할당, 예산배분 등이 진행됨</span> </li>
+	<li></li>
+	<li class="flex items-start"><svg class="w-5 h-5 mr-3 text-cyan-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> <span><strong>LH가 약 70%를 담당</strong>하고 지자체 및 지방공사가 나머지를 맡고 있음</span> </li>
+	<li></li>
+</ul>
+</div>
+<!-- Doc 2 Sub Tabs (Level 2) --> 
+
+<div class="flex overflow-x-auto border-b border-gray-200 bg-white sticky top-0 z-10 text-sm md:text-base shadow-sm"><button class="doc2-tab-link active flex-1 text-center py-4 px-4 font-semibold text-cyan-700 border-b-2 border-cyan-700 bg-cyan-50 whitespace-nowrap transition" onclick="openSubTab(event, 'doc2-sub1', 'doc2-sub-content', 'doc2-tab-link', 'cyan')">LH 한국토지주택공사 </button> <button class="doc2-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-cyan-700 hover:border-cyan-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc2-sub2', 'doc2-sub-content', 'doc2-tab-link', 'cyan')">SH 서울주택도시공사 </button> <button class="doc2-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-cyan-700 hover:border-cyan-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc2-sub3', 'doc2-sub-content', 'doc2-tab-link', 'cyan')">GH 경기주택도시공사 </button> <button class="doc2-tab-link flex-1 text-center py-4 px-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-cyan-700 hover:border-cyan-300 whitespace-nowrap transition" onclick="openSubTab(event, 'doc2-sub4', 'doc2-sub-content', 'doc2-tab-link', 'cyan')">전북 전주시 </button> </div>
+<!-- Doc 2 Contents --> 
+
+<div class="p-6 md:p-10 min-h-[400px]"><!-- LH --> 
+<div class="sub-tab-content doc2-sub-content active" id="doc2-sub1">
+<h3 class="text-2xl font-bold mb-6 text-cyan-900 border-l-4 border-cyan-600 pl-3">LH 한국토지주택공사</h3>
+
+
+<div class="bg-cyan-50/50 rounded-lg p-6 md:p-8 border border-cyan-100">
+<p class="font-bold text-gray-900 text-lg mb-5 flex items-start"><span class="text-cyan-600 mr-2 mt-0.5">■</span> <span>LH는 기존주택매입, 일반매입약정, 특화형 매입약정 등으로 <a class="text-cyan-700 underline hover:text-cyan-900 font-extrabold" href="https://apply.lh.or.kr/lhapply/apply/pch/list.do?mi=1076" target="_blank">청약플러스</a>를 통해 공고합니다.</span> </p>
+
+
+<ul class="list-disc pl-8 space-y-3 text-gray-700 leading-relaxed marker:text-cyan-400">
+	<li></li>
+	<li>일반적으로 LH 본사에서 개괄적인 방침을 담은 사전공고를 내고 이어 지역본부에서 개별 공고를 진행</li>
+	<li></li>
+	<li>특화형 매입임대 등은 LH 본사가 직접 공고, 선정 후 지역본부에서 사업관리</li>
+	<li></li>
+	<li>2024년 상반기 사업 공모 공고, 선정 후 추진중</li>
+	<li></li>
+	<li>2024년 하반기 공모 공고, 접수는 25년 2월부터 예정</li>
+	<li></li>
+	<li>2025년 2~3월 2024년 하반기 공모 접수, 선정 후 추진중</li>
+	<li></li>
+</ul>
+</div>
+</div>
+<!-- SH --> 
+
+<div class="sub-tab-content doc2-sub-content" id="doc2-sub2">
+<h3 class="text-2xl font-bold mb-6 text-cyan-900 border-l-4 border-cyan-600 pl-3">SH 서울주택도시공사</h3>
+
+
+<div class="bg-gray-50 rounded-lg p-6 md:p-8 border border-gray-200">
+<p class="font-bold text-gray-900 text-lg mb-5 flex items-start"><span class="text-cyan-600 mr-2 mt-0.5">■</span> <span>SH는 일반 매입임대공고(주로 매입약정방식)가 진행되고 있습니다.</span> </p>
+
+
+<ul class="list-disc pl-8 space-y-3 text-gray-700 leading-relaxed marker:text-gray-400">
+	<li></li>
+	<li>자치구를 통한 수요자맞춤형 공모가 급감됨</li>
+	<li></li>
+	<li>서울형 사회주택은 2021년 이래로 신규 공모가 전혀 없음</li>
+	<li></li>
+</ul>
+</div>
+</div>
+<!-- GH --> 
+
+<div class="sub-tab-content doc2-sub-content" id="doc2-sub3">
+<h3 class="text-2xl font-bold mb-6 text-cyan-900 border-l-4 border-cyan-600 pl-3">GH 경기주택도시공사</h3>
+
+
+<div class="bg-gray-50 rounded-lg p-6 md:p-8 border border-gray-200">
+<p class="font-bold text-gray-900 text-lg mb-5 flex items-start"><span class="text-cyan-600 mr-2 mt-0.5">■</span> <span>GH는 기존주택매입방식 위주에서 매입약정형이 확대되고 있습니다.</span> </p>
+
+
+<ul class="list-disc pl-8 space-y-3 text-gray-700 leading-relaxed marker:text-gray-400">
+	<li></li>
+	<li>2020년부터 일반 매입약정형 시범사업을 추진, 2023년에는 500호를 진행</li>
+	<li></li>
+	<li>2023년 하반기에 비주택 용도변경형 리모델링 공모를 통해 특화형 매입임대 진행</li>
+	<li></li>
+	<li>2024년 5월 특화형 매입임대, 비주택 리모델링 공모를 동시에 발표</li>
+	<li></li>
+	<li>2025년 6월 청년창업지원 특화형 임대 공모 발표</li>
+	<li></li>
+	<li>2025년 7월 하남풍산 특화형 임대 공모 발표</li>
+	<li></li>
+	<li>2025년 11월 민간제안형 특화형 임대 공모 발표</li>
+	<li></li>
+	<li>2025년 12월 GH Care Hub 특화형 임대(위탁운영형) 발표</li>
+	<li></li>
+</ul>
+</div>
+</div>
+<!-- 전주시 --> 
+
+<div class="sub-tab-content doc2-sub-content" id="doc2-sub4">
+<h3 class="text-2xl font-bold mb-6 text-cyan-900 border-l-4 border-cyan-600 pl-3">전북 전주시</h3>
+
+
+<div class="bg-gray-50 rounded-lg p-6 md:p-8 border border-gray-200">
+<p class="font-bold text-gray-900 text-lg mb-5 flex items-start"><span class="text-cyan-600 mr-2 mt-0.5">■</span> <span>전주시는 다년간 전주형 사회주택(리모델링)들을 공급, 전주시 특화형 임대 추진중입니다.</span> </p>
+
+
+<ul class="list-disc pl-8 space-y-3 text-gray-700 leading-relaxed marker:text-gray-400">
+	<li></li>
+	<li>신축 사회주택으로 선정된 사업지를 전주시 특화형 임대주택 사업으로 전환, 시공중</li>
+	<li></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- ==========================================
+             MAIN DOCUMENT 3 : 연도별 현황 (새로 추가됨)
+        =========================================== --> 
+
+<div class="main-tab-content" id="main-doc-3"><!-- Doc 3 Header --> 
+<div class="bg-emerald-700 text-white p-6 md:p-8 text-center relative">
+<h2 class="text-2xl md:text-3xl font-bold mb-3">연도별 공모 현황 및 결과</h2>
+
+
+<p class="text-lg text-emerald-100">최근 공모사업 진행 상황부터 과거 공모 결과까지 안내</p>
+</div>
+<!-- Doc 3 Contents --> 
+
+<div class="p-6 md:p-10 space-y-12"><!-- 2025년 현황 --> 
+<section>
+<h3 class="text-2xl font-bold mb-6 text-emerald-800 border-l-4 border-emerald-600 pl-3">2025년 주요 공모 현황</h3>
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- 11월 공모 --> 
+<div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+<div class="bg-emerald-50 p-4 border-b border-gray-200 flex justify-between items-center">
+<h4 class="font-bold text-emerald-900 text-lg">GH 특화형(11월)</h4>
+<span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded">진행중</span> </div>
+
+
+<div class="p-5 text-sm text-gray-700 space-y-3">
+<p><strong class="text-gray-900">민간제안형</strong> - 청년, 신혼부부 등 경기도 주민들의 주거안정을 위한 공공민간협력 공급</p>
+
+
+<ul class="list-disc pl-5 space-y-1 marker:text-emerald-500">
+	<li></li>
+	<li>대상주택: 착공신고 전 건축 예정 주택</li>
+	<li></li>
+	<li>대상지역: 경기도 전역</li>
+	<li></li>
+	<li>접수기간: &#39;26.1.5 ~ &#39;26.1.30 (우편접수)</li>
+	<li></li>
+</ul>
+<a class="inline-block mt-2 text-emerald-600 font-semibold hover:underline" href="http://www.socialhousing.kr/notice2/427862" target="_blank">공고문 바로가기 &rarr;</a> </div>
+</div>
+<!-- 12월 공모 --> 
+
+<div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+<div class="bg-emerald-50 p-4 border-b border-gray-200 flex justify-between items-center">
+<h4 class="font-bold text-emerald-900 text-lg">GH Care Hub(12월)</h4>
+<span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded">진행중</span> </div>
+
+
+<div class="p-5 text-sm text-gray-700 space-y-3">
+<p><strong class="text-gray-900">위탁운영형</strong> - 공공매입임대주택의 지역문제해결을 위한 케어허브 역할 모색</p>
+
+
+<ul class="list-disc pl-5 space-y-1 marker:text-emerald-500">
+	<li></li>
+	<li>상가 및 공유오피스 운영 자격 및 경력 보유기업 우대</li>
+	<li></li>
+	<li>접수기간: &#39;26.2.9 ~ 2.12</li>
+	<li></li>
+</ul>
+<a class="inline-block mt-2 text-emerald-600 font-semibold hover:underline" href="http://www.socialhousing.kr/notice2/427862" target="_blank">공고문 바로가기 &rarr;</a> </div>
+</div>
+<!-- 6월 공모 (선정완료) --> 
+
+<div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+<div class="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center">
+<h4 class="font-bold text-gray-800 text-lg">GH 청년창업 &amp; 하남풍산(6월)</h4>
+<span class="bg-gray-200 text-gray-700 text-xs font-bold px-2.5 py-1 rounded">선정완료</span> </div>
+
+
+<div class="p-5 text-sm text-gray-700 space-y-4">
+<div>
+<p class="font-bold text-emerald-700 mb-1">▶ 청년창업지원 특화형(위탁운영형)</p>
+
+
+<p class="text-xs text-gray-500 mb-1">창업지원을 위한 공유오피스 구성/운영 (210세대)</p>
+
+
+<p class="text-emerald-600 font-bold text-xs bg-emerald-50 inline-block px-2 py-1 rounded">결과: (사)나눔과미래 컨소시엄 선정</p>
+</div>
+
+
+<div class="border-t border-gray-200 pt-3">
+<p class="font-bold text-emerald-700 mb-1">▶ 하남풍산 특화형(토지제공형)</p>
+
+
+<p class="text-xs text-gray-500 mb-1">GH 시범사업지 제공, 모듈러주택 5층 30호 규모</p>
+
+
+<p class="text-emerald-600 font-bold text-xs bg-emerald-50 inline-block px-2 py-1 rounded">결과: 피치마켓511협동조합 컨소시엄 선정</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2024년 현황 --> 
+
+<section>
+<h3 class="text-2xl font-bold mb-6 text-emerald-800 border-l-4 border-emerald-600 pl-3">2024년 주요 공모 현황</h3>
+
+
+<div class="space-y-4">
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-5 md:p-6">
+<h4 class="font-bold text-lg text-gray-900 mb-3">2024 LH 신축 특화형 임대주택 공모사업 <span class="text-sm font-normal text-gray-500 ml-2">(6/7 상반기, 11월 하반기)</span></h4>
+
+
+<ul class="list-disc pl-5 space-y-2 text-gray-700 text-sm marker:text-gray-400">
+	<li></li>
+	<li><strong class="text-gray-900">민간 자유제안형(1,300호):</strong> 민간이 자유롭게 제안한 테마가 있는 주택</li>
+	<li></li>
+	<li><strong class="text-gray-900">특정테마형(1,700호):</strong> 예술/체육인 지원(360호), 장애인 자립지원(340호), 고령자 특화(1,000호)</li>
+	<li></li>
+	<li><strong class="text-gray-900">공사비연동형 건물매입가격 산정방식:</strong> 수도권/광역시 50가구 이상 추가 
+	<div class="mt-2 flex gap-3 text-xs"><a class="text-emerald-600 hover:underline" href="http://www.socialhousing.kr/?module=file&amp;act=procFileDownload&amp;file_srl=261088&amp;sid=c929891626da9990403bb09f165e49d0&amp;module_srl=118462">표준공고문 다운로드</a> <a class="text-emerald-600 hover:underline" href="http://www.socialhousing.kr/?module=file&amp;act=procFileDownload&amp;file_srl=261089&amp;sid=90edb782f93138e68d4a9399362aa7ec&amp;module_srl=118462">첨부파일 다운로드</a> </div>
+	</li>
+	<li></li>
+</ul>
+</div>
+
+
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-5 md:p-6">
+<h4 class="font-bold text-lg text-gray-900 mb-3">2024 GH 특화형 임대주택 공모사업 <span class="text-sm font-normal text-gray-500 ml-2">(5/29 공고)</span></h4>
+
+
+<ul class="list-disc pl-5 space-y-2 text-gray-700 text-sm marker:text-gray-400">
+	<li></li>
+	<li><strong class="text-gray-900">신축 특화형 청년형(250호):</strong> 자유 테마로 기획/건축 후 공사에 매각 후 위탁운영 약정</li>
+	<li></li>
+	<li><strong class="text-gray-900">GH 토지제공형(사회주택 시범사업):</strong> 30호 수준 기획 (특화형 250호 물량에 포함), 토지선금 없음</li>
+	<li></li>
+	<li><strong class="text-gray-900">비주택 리모델링 청년형(112호):</strong> 호텔, 업무, 근생 등 용도변경 가능한 비주택 리모델링</li>
+	<li></li>
+	<li class="text-gray-500">※ 공통조건: 전용 19~60㎡ 이하, 호당 4.5억원 이하, 사업자당 연간 2건 이내 신청</li>
+	<li></li>
+</ul>
+</div>
+</div>
+</section>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><!-- 공공주체별 세부 링크 --> 
+<section>
+<h3 class="text-xl font-bold mb-4 text-gray-800 flex items-center"><svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 공공주체별 공고 세부 링크</h3>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> LH 한국토지주택공사 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg">
+<ul class="list-disc pl-5 space-y-2 marker:text-emerald-400">
+	<li></li>
+	<li><a class="text-emerald-700 hover:underline font-semibold" href="https://www.lh.or.kr/board.es?mid=a10601010000&amp;bid=0033" target="_blank">LH 공지사항 (새소식)</a></li>
+	<li></li>
+	<li><a class="text-emerald-700 hover:underline font-semibold" href="https://apply.lh.or.kr/lhapply/apply/pch/list.do?mi=1076" target="_blank">LH 청약홈 - 주택매도</a> 
+	<ul class="list-circle pl-5 mt-1 space-y-1 text-gray-500">
+		<li></li>
+		<li>기존주택 및 약정형 매입임대 매입공고</li>
+		<li></li>
+		<li>건물공사비 연동형(서울 50세대 이상 추가)</li>
+		<li></li>
+	</ul>
+	</li>
+	<li></li>
+</ul>
+</div>
+</details>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> SH 서울주택도시공사 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg">
+<ul class="list-disc pl-5 space-y-2 marker:text-emerald-400">
+	<li></li>
+	<li><a class="text-emerald-700 hover:underline font-semibold" href="https://www.i-sh.co.kr/main/lay2/program/S1T294C3379/www/brd/m_247/list.do?multi_itm_seq=512" target="_blank">SH 공고 및 공지 - 주택매입</a> 
+	<ul class="list-circle pl-5 mt-1 space-y-1 text-gray-500">
+		<li></li>
+		<li>신축약정 매입임대주택 / 기존주택(반지하) 매입공고</li>
+		<li></li>
+	</ul>
+	</li>
+	<li></li>
+	<li><a class="text-emerald-700 hover:underline font-semibold" href="https://www.i-sh.co.kr/main/lay2/S1T3352C3353/contents.do" target="_blank">매입임대주택사업 개요</a></li>
+	<li></li>
+</ul>
+</div>
+</details>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> GH 경기주택도시공사 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg">
+<ul class="list-disc pl-5 space-y-2 marker:text-emerald-400">
+	<li></li>
+	<li><a class="text-emerald-700 hover:underline font-semibold" href="https://gh.or.kr/gh/announcement-of-salerental001.do?srCategoryId=15" target="_blank">GH 분양임대공고 - 주택매입</a> 
+	<ul class="list-circle pl-5 mt-1 space-y-1 text-gray-500">
+		<li></li>
+		<li>특화형 매입임대주택 매입공고</li>
+		<li></li>
+		<li>하남풍산 특화형 매입공고</li>
+		<li></li>
+		<li>비주택 리모델링 매입임대주택 공고</li>
+		<li></li>
+	</ul>
+	</li>
+	<li></li>
+</ul>
+</div>
+</details>
+</section>
+<!-- 과거 공모 결과 (아코디언) --> 
+
+<section>
+<h3 class="text-xl font-bold mb-4 text-gray-800 flex items-center"><svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 과거 공모사업 결과</h3>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 2024년 공모결과 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg">
+<ul class="list-disc pl-5 marker:text-emerald-400">
+	<li></li>
+	<li><strong>2024 LH특화형 임대주택 공모사업:</strong> 마감됨</li>
+	<li></li>
+</ul>
+</div>
+</details>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 2023년 공모결과 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg space-y-3">
+<div><strong class="text-gray-900 block mb-1">▶ 2023 LH특화형 임대주택 (협회 회원사 2개 사업지 226세대 선정)</strong> 
+
+<ul class="list-circle pl-5 text-gray-600">
+	<li></li>
+	<li>민간제안형(기획운영방식): 자유 테마 기획 후 공사 매각 및 위탁운영</li>
+	<li></li>
+	<li>특정테마형: 장애인, 예술인 특화 등 관계부처 맞춤테마 공급</li>
+	<li></li>
+</ul>
+</div>
+
+
+<div><strong class="text-gray-900 block mb-1">▶ 2023 GH 용도변경형 리모델링 매입임대</strong> 
+
+<p class="pl-5 text-gray-600">심사 결과: 1건 선정, 매입약정 추진중</p>
+</div>
+
+
+<div><strong class="text-gray-900 block mb-1">▶ 2023 LH 테마형 매입임대(위탁운영형)</strong> 
+
+<p class="pl-5 text-gray-600">심사 결과: 1건 선정, 운영중 (서초 예술인주택)</p>
+</div>
+</div>
+</details>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 2022년 공모결과 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg"><strong class="text-gray-900 block mb-1">▶ 2022 LH 테마형 매입임대 (본사업)</strong> 
+
+<ul class="list-circle pl-5 text-gray-600 space-y-1">
+	<li></li>
+	<li>2차 심사 결과: 10여 건 선정(협회 회원사 4건), 5~6건 약정 추진중</li>
+	<li></li>
+	<li>위탁운영형: 7건, 264호 선정 및 운영중</li>
+	<li></li>
+</ul>
+</div>
+</details>
+
+
+<details class="mb-3 bg-white border border-gray-200 rounded-lg group"><summary class="cursor-pointer list-none flex justify-between items-center p-4 font-bold text-gray-800 hover:bg-gray-50 rounded-lg group-open:border-b group-open:rounded-b-none transition-colors"> </summary>
+
+<div class="flex items-center"><svg class="w-5 h-5 mr-2 text-emerald-600 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> 2021년 공모결과 </div>
+
+
+<div class="p-5 text-sm text-gray-700 bg-gray-50/50 rounded-b-lg space-y-3">
+<div><strong class="text-gray-900 block mb-1">▶ 2021 LH 테마형 매입임대 (시범사업)</strong> 
+
+<p class="pl-5 text-gray-600">2차 심사 결과 11건(660호) 선정 &rarr; 최종 3건(117호) 추진중</p>
+</div>
+
+
+<div><strong class="text-gray-900 block mb-1">▶ 2021 LH 용도변경형 매입임대</strong> 
+
+<p class="pl-5 text-gray-600">상반기 5건 선정(2개 추진중) / 하반기 11건 선정(5~6개 추진중)</p>
+</div>
+
+
+<div><strong class="text-gray-900 block mb-1">▶ 서울 토지지원리츠 2021 상반기</strong> 
+
+<p class="pl-5 text-gray-600">13개 접수 후 심사단계 중단 (실질적 취소통보)</p>
+</div>
+</div>
+</details>
+</section>
+</div>
+</div>
+</div>
+</div>
+
+<p><script>
+        // 대분류 탭 (Main Tab) 전환 함수
+        function openMainTab(evt, tabId) {
+            // 모든 메인 탭 컨텐츠 숨기기
+            const mainContents = document.getElementsByClassName("main-tab-content");
+            for (let i = 0; i < mainContents.length; i++) {
+                mainContents[i].classList.remove("active");
+            }
+
+            // 모든 메인 탭 버튼 스타일 초기화
+            const mainLinks = document.getElementsByClassName("main-tab-link");
+            for (let i = 0; i < mainLinks.length; i++) {
+                mainLinks[i].classList.remove("text-indigo-800", "border-indigo-800", "bg-white");
+                mainLinks[i].classList.add("text-gray-500", "border-transparent");
+            }
+
+            // 선택된 메인 탭 보이기 및 스타일 적용
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.remove("text-gray-500", "border-transparent");
+            evt.currentTarget.classList.add("text-indigo-800", "border-indigo-800", "bg-white");
+        }
+
+        // 소분류 탭 (Sub Tab) 전환 함수
+        // theme 인자를 통해 doc1(blue)와 doc2(cyan) 색상을 구분합니다.
+        function openSubTab(evt, tabId, groupClass, linkClass, theme = 'blue') {
+            // 해당 그룹의 모든 서브 탭 컨텐츠 숨기기
+            const subContents = document.getElementsByClassName(groupClass);
+            for (let i = 0; i < subContents.length; i++) {
+                subContents[i].classList.remove("active");
+            }
+
+            // 해당 그룹의 모든 서브 탭 버튼 스타일 초기화
+            const subLinks = document.getElementsByClassName(linkClass);
+            for (let i = 0; i < subLinks.length; i++) {
+                subLinks[i].classList.remove(`text-${theme}-600`, `text-${theme}-700`, `border-${theme}-600`, `border-${theme}-700`, `bg-${theme}-50`);
+                subLinks[i].classList.add("text-gray-500", "border-transparent");
+            }
+
+            // 선택된 서브 탭 보이기 및 스타일 적용
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.remove("text-gray-500", "border-transparent");
+            
+            if(theme === 'blue') {
+                evt.currentTarget.classList.add("text-blue-600", "border-blue-600", "bg-gray-100");
+            } else {
+                evt.currentTarget.classList.add("text-cyan-700", "border-cyan-700", "bg-cyan-50");
+            }
+        }
+    </script></p>

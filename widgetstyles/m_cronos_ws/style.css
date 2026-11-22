@@ -1,0 +1,4 @@
+div.m_cronos_ws { position:relative;overflow:hidden; *zoom:1; padding: 15px; margin:0 2px 3px; overflow: hidden;height:420px;}
+div.m_cronos_ws h2 { margin:0 0 10px 0; padding:0 0 8px 0; border-bottom:1px solid #d8d8d8; color: #222; font-size:1.2em;}
+div.m_cronos_ws a.widgetMoreLink { position:absolute; top:20px; right:20px; font:11px Dotum; text-decoration:none;  color:#888;}
+div.m_cronos_ws_r6{padding:10px; margin: 10px; border-top:3px solid #2a3044;  -webkit-border-radius: 8px;-moz-border-radius: 8px;border-radius: 8px; margin-bottom:7px; -webkit-box-shadow: #999 0px 1px 2px;-moz-box-shadow: #999 0px 1px 2px;box-shadow: #999 0px 1px 2px;}

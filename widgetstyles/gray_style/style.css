@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+div.grayWidgetStyle_blank { display:block; clear:both; height:0; width:0; overflow:hidden;}
+
+div.grayWidgetStyle { overflow:hidden;}
+div.grayWidgetStyle h2.title { color:#f3f3f3; margin:0; padding:0 0 0 15px; height:30px; background:#a5a5a5; font:bold 14px Arial;}
+div.grayWidgetStyle h2.title span.title { padding:7px 0; display:block;}
+div.grayWidgetStyle h2.blue { background:#0189dd;}
+div.grayWidgetStyle h2.orange { background:#f89a20;}
+div.grayWidgetStyle h2.green { background:#8cc01d;}
+div.grayWidgetStyle h2.red { background:#cc0000;}
+div.grayWidgetStyle h2.lightgray { background:#f6f6f6; color:#696969; height:29px; border-bottom:1px solid #ddd;}
+div.grayWidgetStyle h2.title span.title a { color:#eee; text-decoration:none;}
+div.grayWidgetStyle h2.lightgray span.title a { color:#444;}
+div.grayWidgetStyle h2.title span.title a:hover { text-decoration:underline;}
+
+div.grayWidgetStyle_content { margin:10px 15px; overflow:hidden; display:block;}
+
+div.grayWS_button h2.title { overflow:hidden; height:29px; background:url(img/button_h2_gray.png) no-repeat left top;}
+div.grayWS_button h2.title span.title { padding:6px 0;}
+div.grayWS_button h2.blue { background:url(img/button_h2_blue.png) no-repeat left top;}
+div.grayWS_button h2.orange { background:url(img/button_h2_orange.png) no-repeat left top;}
+div.grayWS_button h2.green { background:url(img/button_h2_green.png) no-repeat left top;}
+div.grayWS_button h2.red { background:url(img/button_h2_red.png) no-repeat left top;}
+div.grayWS_button h2.lightgray { background:url(img/button_h2_lightgray.png) no-repeat left top;}
+div.grayWS_button h2 span.title { background:url(img/button_h2_gray.png) no-repeat right top;}
+div.grayWS_button h2.blue span.title { background:url(img/button_h2_blue.png) no-repeat right top;}
+div.grayWS_button h2.orange span.title { background:url(img/button_h2_orange.png) no-repeat right top;}
+div.grayWS_button h2.green span.title { background:url(img/button_h2_green.png) no-repeat right top;}
+div.grayWS_button h2.red span.title { background:url(img/button_h2_red.png) no-repeat right top;}
+div.grayWS_button h2.lightgray span.title { background:url(img/button_h2_lightgray.png) no-repeat right top;}
+
+div.grayWS_button div.grayWidgetStyle_content_Wrapper { margin-top:10px; border:1px solid #ddd;}
+div.grayWS_button div.grayWidgetStyle_content { margin:7px;}
+

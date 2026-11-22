@@ -1,0 +1,12 @@
+<filter name="login_modal" module="member" act="procMemberLogin">
+  <form>
+    <node target="user_id_modal" required="true" filter="user_id"/>
+    <node target="password_modal" required="true" />
+  </form>
+  <parameter>
+  	<!-- param name="컬럼이름" target="폼네임"-->
+    <param name="user_id" target="user_id_modal" />
+   	<param name="password" target="password_modal" />
+	</parameter>
+  <response />
+</filter>

@@ -1,0 +1,70 @@
+{@ $skin_path = $tpl_path}
+<load target="./xml/login.xml" cond="!$logged_info" />
+<load target="///cdn.jsdelivr.net/xeicon/2.0.0/xeicon.min.css" />
+<load target="./css/widget.css" />
+
+<include target="social_login_js.html" />
+
+
+
+<div class="widget_social_login_skin">
+  <!--//로그인폼-->
+  <form class="xe_login" action="{getUrl('','act','procMemberLogin')}" method="post" ruleset="@login" class="account" cond="!$logged_info">
+	  <fieldset id="acField">
+		  <input type="hidden" name="act" value="procMemberLogin" />
+		  <input type="hidden" name="success_return_url" value="{htmlspecialchars(getRequestUriByServerEnviroment(), ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+		  <input type="hidden" name="xe_validator_id" value="widgets/widget_social_login_skin/widget_social_login_skin/social_login/1" />
+		  <div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'widgets/widget_social_login_skin/widget_social_login_skin/social_login/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+			  <p>{$XE_VALIDATOR_MESSAGE}</p>
+		  </div>
+		  <div class="idpw">
+		    <span class="user_id_area user_area">
+  			  <label for="user_id" cond="$member_config->identifier != 'email_address'">{$lang->user_id}</label>
+	  		  <input name="user_id" id="user_id" type="text" required placeholder="{$lang->user_id}" cond="$member_config->identifier != 'email_address'" />
+  			  <label for="user_id" cond="$member_config->identifier == 'email_address'">{$lang->email_address}</label>
+	  		  <input name="user_id" id="user_id" type="email" required placeholder="{$lang->email_address}" cond="$member_config->identifier == 'email_address'" />
+        </span>
+        <span class="user_pw user_area">
+  			  <label for="user_pw">{$lang->password}</label>
+	  		  <input name="password" id="user_pw" type="password" required placeholder="{$lang->password}" />
+        </span>
+  		  <input class="btn_login" type="submit" value="{$lang->cmd_login}" />
+
+    	  <p class="keep">
+	  		  <input type="checkbox" name="keep_signed" id="keep_signed" value="Y" />
+		  	  <label for="keep_signed">{$lang->keep_signed}</label>
+  		  </p>
+  		  <ul class="help">
+	  		  <li><a href="{getUrl('act','dispMemberSignUpForm')}">{$lang->cmd_signup}</a></li>
+		  	  <li><a href="{getUrl('act','dispMemberFindAccount')}">{$lang->cmd_find_member_account}</a></li>
+  		  </ul>
+		  </div>
+		  <p class="warning">{$lang->about_keep_warning}</p>
+	  </fieldset>
+  </form>
+
+  <!--//소셜 로그인 버튼-->
+  <div class="social_login" cond="!$logged_info">
+    <span class="social_label">소셜 {$lang->cmd_login}</span>
+    <include cond="$social_obj->facebook_app_id" target="social_login_facebook.html" />
+    <include cond="$social_obj->twitter_consumer_key && $social_obj->twitter_consumer_secret" target="social_login_twitter.html" />
+    <include cond="$social_obj->google_client_id" target="social_login_google.html" />
+    <include cond="$social_obj->naver_client_id" target="social_login_naver.html" />
+    <include cond="$social_obj->kakao_rest_key" target="social_login_kakao.html" />
+  </div>
+
+  <!--//소셜 로그인 전 이메일 입력창-->
+  <div class="social_email" cond="!$logged_info">
+    <div class="email_input">
+      <input type="email" value="" placeholder="{$lang->email_address}" />
+      <p>{$social_obj->text_input_email_description}</p>
+      <a class="send_social_login" href="#">소셜 {$lang->cmd_login}</a>
+    </div>
+    <a class="btn_close" href="#"><i class="xi-close"></i></a>
+  </div>
+
+
+
+  <!--//로그인 후 회원정보-->
+  <include cond="$logged_info" target="social_login_info.html" />
+</div>

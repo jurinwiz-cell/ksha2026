@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="1.1">
+    <title xml:lang="ko">XEDITION0 GALLERY</title>
+	<description>ver1.1 링크불량 및 레이아웃 꺠짐 개선, 태그기능 추가</description>
+    <version>1.1</version>
+    <date>2022-05-12</date>
+    <author email_address="general@quckcube.xyz" link="https://quckcube.xyz/">
+        <name xml:lang="ko">QUCKCUBE CORP.</name>
+    </author>
+    <license>GPL v2</license>
+    <extra_vars>
+    </extra_vars>
+</skin>
+

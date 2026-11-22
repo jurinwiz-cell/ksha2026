@@ -1,0 +1,6 @@
+div.simpleWidgetStyle { position:relative; margin-bottom:20px; overflow:hidden; *zoom:1;}
+div.simpleWidgetStyle #lTitleBg{ position:relative; background:url(../img/lTitleBar.gif) no-repeat; padding-left:32px; height:55px; }
+div.simpleWidgetStyle #rTitleBg{ background:url(../img/rTitleBar.gif) no-repeat right top; padding-right:30px; height:55px; }
+div.simpleWidgetStyle h2 { margin:0 0 10px 0; padding:15px 0 15px 10px; font:bold 12px "Malgun Gothic", AppleGothic, Dotum, Sans-serif; background:url(../img/titleBar.gif) repeat-x; color:#686868; }
+div.simpleWidgetStyle a.widgetMoreLink { position:absolute; top:16px; right:20px; font:11px Dotum; text-decoration:none;  color:#939393;}
+div.simpleWidgetStyle.black h2 { color:#999; }

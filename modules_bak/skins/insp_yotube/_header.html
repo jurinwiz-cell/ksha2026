@@ -1,0 +1,107 @@
+<!--//<load target="board.default.css" />-->
+<!--//<load target="board.default.js" type="body" />-->
+<load target="css/default.css"/>
+<load target="../../../../common/xeicon/xeicon.min.css" />
+<load target="board.default.js"/>
+
+<!--//기본설정-->
+{@
+	$thumbnail_ratio_x = $module_info->thumbnail_ratio_x ?: '16';
+	$thumbnail_ratio_y = $module_info->thumbnail_ratio_y ?: '9';
+
+	$tempa = $thumbnail_ratio_x/100;
+	$thumbnail_ratio_y =  $thumbnail_ratio_y / $tempa;
+
+	//echo $thumbnail_ratio_y;
+
+	$module_info->thumbnail_width = $module_info->thumbnail_width ?: 480;
+	//$module_info->thumbnail_height = $module_info->thumbnail_height ?: 360;
+	$module_info->thumbnail_height = $module_info->thumbnail_width * ($thumbnail_ratio_y / 100);
+	$module_info->thumbnil_type = $module_info->thumbnil_type ?: 'crop';
+	$module_info->ipSET_fileShow = $module_info->ipSET_fileShow ?: 'N';
+
+	$view_type = $module_info->board_view_type;
+	$ipSET_noticecolor = $module_info->ipSET_noticecolor;
+	$ipSET_summary_cut = $module_info->ipSET_summary_cut ?: 70;
+
+	//리스트아이템
+	$ipSET_list_t_used = $module_info->ipSET_list_t_used ?: 'Y';
+	$ipSET_list_t_txt1 = $module_info->ipSET_list_t_txt1 ?: 'Y';
+	$ipSET_list_t_txt2 = $module_info->ipSET_list_t_txt2 ?: 'Y';
+	$ipSET_list_t_txt3 = $module_info->ipSET_list_t_txt3 ?: 'Y';
+	$ipSET_list_b_used = $module_info->ipSET_list_b_used ?: 'Y';
+	$ipSET_list_b_txt1 = $module_info->ipSET_list_b_txt1 ?: 'Y';
+	$ipSET_list_b_txt2 = $module_info->ipSET_list_b_txt2 ?: 'Y';
+	$ipSET_list_b_txt3 = $module_info->ipSET_list_b_txt3 ?: 'N';
+	$ipSET_list_tag = $module_info->ipSET_list_tag ?: 'N';
+	$ipSET_top_tag_sum = $module_info->ipSET_top_tag_sum  ?: 'Y';
+	$ipSET_top_tag_shuffle = $module_info->ipSET_top_tag_shuffle ?: 'Y';
+
+	//ajax
+	$ipSET_Ajax = $module_info->ipSET_Ajax ?: 'N';
+	$ipSET_Ajax_type = $module_info->ipSET_Ajax_type ?: 'click';
+
+	$ipSET_top_tag = $module_info->ipSET_top_tag ?: 'N';
+	$ipSET_top_tag_count = $module_info->ipSET_top_tag_count ?: 30;
+
+	$ipSET_btn_box_t = $module_info->ipSET_btn_box_t ?: 'N';
+	$ipSET_btn_box_b = $module_info->ipSET_btn_box_b ?: 'Y';
+}
+
+{@
+	$oDocumentModel = getModel('document');
+	$module_srl = $module_info->module_srl;
+	$getExtraKeys = $oDocumentModel->getExtraKeys($module_srl);
+	$xx_eid_name = $module_info->ipSET_embed_eid ?: 'dex_embed_srl'; //eid 기본설정값
+	$xx_idx = 1; //기본 idx값
+	$xx_update = true //업데이트확인
+}
+
+<!--@if($getExtraKeys)-->
+<!--//이미 기존의 게시판에 사용자정의가 있을경우 제일 마지막에 추가-->
+{@$xx_idx = count($getExtraKeys) + 1}
+	<!--@foreach($getExtraKeys as $val)-->
+		<!--@if($val->eid == $xx_eid_name)-->
+			{@$xx_update = false}
+		<!--@end-->
+	<!--@end-->
+<!--@end-->
+
+<!--@if($xx_update)-->
+	{@
+		$oDocumentController = getController('document');
+		$oDocumentController->insertDocumentExtraKey($module_srl, $xx_idx, '동영상URL', 'text', 'N', 'N', '', '', $xx_eid_name);
+	}
+<!--@end-->
+
+
+<!--@if($order_type == "desc")-->
+    {@ $order_type = "asc"; }
+<!--@else-->
+    {@ $order_type = "desc"; }
+<!--@end-->
+
+<style>
+.boskin_gall_image{padding-top:{$thumbnail_ratio_y}%}
+
+</style>
+
+
+<block cond="!$module_info->duration_new = (int)$module_info->duration_new">{@ $module_info->duration_new = 24 }</block>
+
+{@ $cate_list = array(); $current_key = null; }
+<!--@foreach($category_list as $key=>$val)-->
+	<!--@if(!$val->depth)-->
+		{@
+			$cate_list[$key] = $val;
+			$cate_list[$key]->children = array();
+			$current_key = $key;
+		}
+	<!--@elseif($current_key)-->
+		{@ $cate_list[$current_key]->children[] = $val }
+	<!--@end-->
+<!--@end-->
+<div class="board">
+	{$module_info->header_text}
+
+	<div class="c_box3 mb10" cond="$module_info->description">{$module_info->description}</div>

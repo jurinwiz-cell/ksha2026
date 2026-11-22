@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title xml:lang="ko">사회주택 원페이지 프리미엄 테마</title>
+    <description xml:lang="ko">doorweb 스타일의 다양한 구성요소를 포함한 사회주택 협회 전용 테마입니다.</description>
+    <version>1.2.0</version>
+    <date>2026-04-21</date>
+    <author email="jurin@example.com" link="http://34.64.121.156/z/">
+        <name xml:lang="ko">Antigravity</name>
+    </author>
+
+    <extra_vars>
+        <group>
+            <title xml:lang="ko">헤더 및 공통 설정</title>
+            <var name="site_logo" type="image">
+                <title xml:lang="ko">사이트 로고</title>
+            </var>
+            <var name="accent_color" type="color">
+                <title xml:lang="ko">포인트 컬러</title>
+                <default>FF8C00</default>
+            </var>
+            <var name="sns_facebook" type="text">
+                <title xml:lang="ko">페이스북 URL</title>
+            </var>
+            <var name="sns_instagram" type="text">
+                <title xml:lang="ko">인스타그램 URL</title>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">섹션 1: 히어로 (대문)</title>
+            <var name="hero_img" type="image">
+                <title xml:lang="ko">배경 이미지 (미등록 시 그라데이션)</title>
+            </var>
+            <var name="hero_title" type="text">
+                <title xml:lang="ko">메인 제목</title>
+                <default>모두가 함께 사는 공간, 사회주택</default>
+            </var>
+            <var name="hero_description" type="textarea">
+                <title xml:lang="ko">서브 설명</title>
+                <default>더 나은 주거 문화를 위해 사회주택 협회가 함께합니다.</default>
+            </var>
+        </group>
+        
+        <group>
+            <title xml:lang="ko">섹션 2: 공지사항 슬라이더</title>
+            <var name="notice_target" type="module_srl_list">
+                <title xml:lang="ko">연동 게시판 선택 (여러 개 가능)</title>
+            </var>
+            <var name="notice_extra_var_name" type="text">
+                <title xml:lang="ko">필터링 확장변수 이름 (선택사항)</title>
+                <description xml:lang="ko">특정 확장변수로 필터링할 경우 이름을 입력하세요. (예: type)</description>
+            </var>
+            <var name="notice_extra_var_value" type="text">
+                <title xml:lang="ko">필터링 확장변수 값 (선택사항)</title>
+                <description xml:lang="ko">위 확장변수의 특정 값을 입력하세요. (예: 공지)</description>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">섹션 3: 3열 최신글 위젯</title>
+            <!-- 위젯 1 -->
+            <var name="w1_title" type="text"><title xml:lang="ko">위젯 1 제목</title><default>공식 소식</default></var>
+            <var name="w1_target" type="module_srl_list"><title xml:lang="ko">위젯 1 게시판 선택 (여러 개 가능)</title></var>
+            <var name="w1_extra_var_name" type="text"><title xml:lang="ko">위젯 1 필터링 확장변수 이름</title></var>
+            <var name="w1_extra_var_value" type="text"><title xml:lang="ko">위젯 1 필터링 확장변수 값</title></var>
+            <var name="w1_style" type="select">
+                <title xml:lang="ko">위젯 1 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드형</title></options>
+                <default>list</default>
+            </var>
+            <hr />
+            <!-- 위젯 2 -->
+            <var name="w2_title" type="text"><title xml:lang="ko">위젯 2 제목</title><default>커뮤니티</default></var>
+            <var name="w2_target" type="module_srl_list"><title xml:lang="ko">위젯 2 게시판 선택 (여러 개 가능)</title></var>
+            <var name="w2_extra_var_name" type="text"><title xml:lang="ko">위젯 2 필터링 확장변수 이름</title></var>
+            <var name="w2_extra_var_value" type="text"><title xml:lang="ko">위젯 2 필터링 확장변수 값</title></var>
+            <var name="w2_style" type="select">
+                <title xml:lang="ko">위젯 2 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드형</title></options>
+                <default>list</default>
+            </var>
+            <hr />
+            <!-- 위젯 3 -->
+            <var name="w3_title" type="text"><title xml:lang="ko">위젯 3 제목</title><default>미디어</default></var>
+            <var name="w3_target" type="module_srl_list"><title xml:lang="ko">위젯 3 게시판 선택 (여러 개 가능)</title></var>
+            <var name="w3_extra_var_name" type="text"><title xml:lang="ko">위젯 3 필터링 확장변수 이름</title></var>
+            <var name="w3_extra_var_value" type="text"><title xml:lang="ko">위젯 3 필터링 확장변수 값</title></var>
+            <var name="w3_style" type="select">
+                <title xml:lang="ko">위젯 3 스타일</title>
+                <options value="list"><title xml:lang="ko">목록형</title></options>
+                <options value="webzine"><title xml:lang="ko">웹진형</title></options>
+                <options value="gallery"><title xml:lang="ko">슬라이드형</title></options>
+                <default>list</default>
+            </var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">섹션 4: 자료실 (Archive)</title>
+            <var name="archive_title" type="text"><title xml:lang="ko">자료실 제목</title><default>자료실</default></var>
+            <var name="archive_desc" type="textarea"><title xml:lang="ko">자료실 설명</title><default>사회주택과 관련된 각종 보고서 및 자료를 내려받으실 수 있습니다.</default></var>
+        </group>
+
+        <group>
+            <title xml:lang="ko">풋터 설정</title>
+            <var name="footer_info" type="textarea">
+                <title xml:lang="ko">하단 정보 (주소, 연락처 등)</title>
+                <default>서울특별시 OO구 OO로 123 사회주택협회 | TEL: 02-123-4567</default>
+            </var>
+            <var name="copyright" type="text">
+                <title xml:lang="ko">카피라이트</title>
+                <default>© 2026 Social Housing Association. All rights reserved.</default>
+            </var>
+        </group>
+    </extra_vars>
+</layout>

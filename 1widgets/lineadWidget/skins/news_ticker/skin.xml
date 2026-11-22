@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">전광판 출력 위젯 기본 스킨</title>
+	<description xml:lang="ko">전광판(뉴스티커) 형식으로 한 줄씩 스크롤 되는 방식의 위젯 스킨입니다.</description>
+	<version>0.2</version>
+	<date>2019-11-21</date>
+	<link>https://funnyxe.com</link>
+
+	<author email_address="funnyxe@simplesoft.io" link="https://funnyxe.com">
+		<name xml:lang="ko">퍼니XE</name>
+	</author>
+
+	<colorset>
+		<color name="none">
+			<title xml:lang="ko">내용만 출력</title>
+		</color>
+		<color name="none_black">
+			<title xml:lang="ko">내용만 출력 (검은 바탕용)</title>
+		</color>
+		<color name="gray">
+			<title xml:lang="ko">회색 배경</title>
+		</color>
+		<color name="red">
+			<title xml:lang="ko">붉은 배경</title>
+		</color>
+		<color name="blue">
+			<title xml:lang="ko">파란 배경</title>
+		</color>
+		<color name="green">
+			<title xml:lang="ko">녹색 배경</title>
+		</color>
+		<color name="yellow">
+			<title xml:lang="ko">노란 배경</title>
+		</color>
+		<color name="black">
+			<title xml:lang="ko">검은 배경</title>
+		</color>
+	</colorset>
+</skin>

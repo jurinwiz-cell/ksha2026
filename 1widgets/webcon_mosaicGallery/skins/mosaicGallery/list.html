@@ -1,0 +1,149 @@
+<!--%import("normal.css")-->
+{@ 	$unique = rand(0,100);}
+<div id="mosaicGallery_{$unique}" class="mosaicGallery" style="position:relative;width:{$widget_info->thumbnail_size*$widget_info->list_count}px;height:{$widget_info->thumbnail_size*$widget_info->list_count}px;">
+	<ul style="list-style: none;" class="mosaicGallery_wrap">
+      <!--@for($i=0;$i<$widget_info->list_count-2;$i++)-->
+          <!--@for($j= ($widget_info->list_count*$i)+$widget_info->list_count+1 ; $j < (($widget_info->list_count*$i)+$widget_info->list_count+1)+($widget_info->list_count-2) ; $j++)-->
+       		{@ array_splice($widget_info->document_list, $j, 0, "");}
+          <!--@end-->
+      <!--@end-->
+      <!--@for($i=0; $i < $widget_info->list_count ; $i++)-->
+           <!--@for($j=0; $j < $widget_info->list_count ; $j++)-->
+                  {@ $oDocument = $widget_info->document_list[$i*$widget_info->list_count+$j];}
+                  <!--@if($oDocument->document_srl)--> 
+                      {@ 
+                      	$_existsThumbnail = $oDocument->thumbnailExists($widget_info->thumbnail_size,$widget_info->thumbnail_size,$widget_info->thumbnail_type);
+                        $title = str_replace("\"","",$oDocument->getTitle($widget_info->subject_cut_size));
+                      }
+                      <!--@if($_existsThumbnail)-->                  		
+                              <li class="mosaicGalleryThum" style="top:{$i*$widget_info->thumbnail_size}px;left:{$j*$widget_info->thumbnail_size}px;width:{$widget_info->thumbnail_size}px;height:{$widget_info->thumbnail_size}px;">
+                                    <a href="{$oDocument->getPermanentUrl()}">
+                                        <img src="{$oDocument->getThumbnail($widget_info->thumbnail_size,$widget_info->thumbnail_size,$widget_info->thumbnail_type)}" border="0" />
+                                    </a>
+                                    <span class="data-content" style="display:none">{$oDocument->getTitle($widget_info->subject_cut_size)}</span>
+                                    <span class="data-position" style="display:none"></span>
+                              </li>  
+                      <!--@else-->
+                              <li class="mosaicGalleryThum" style="top:{$i*$widget_info->thumbnail_size}px;left:{$j*$widget_info->thumbnail_size}px;;width:{$widget_info->thumbnail_size}px;height:{$widget_info->thumbnail_size}px;">
+                               		<a href="{$oDocument->getPermanentUrl()}"><div class="no_img" style="width:{$widget_info->thumbnail_size}px;height:{$widget_info->thumbnail_size}px;"></div></a>
+                              		<span class="data-content" style="display:none">{$oDocument->getTitle($widget_info->subject_cut_size)}</span> 
+                                    <span class="data-position" style="display:none"></span>
+                              </li>                                          
+                      <!--@end-->
+                  <!--@else-->
+                        <li class="mosaicGalleryThum" style="top:{$i*$widget_info->thumbnail_size}px;left:{$j*$widget_info->thumbnail_size}px;;width:{$widget_info->thumbnail_size}px;height:{$widget_info->thumbnail_size}px;"></li>
+                  <!--@end-->
+            <!--@end-->
+	  <!--@end-->
+	</ul>
+
+	<!--@for($t=0; $t < $widget_info->list_count*$widget_info->list_count ; $t++)-->
+    {@ $oDocument = $widget_info->document_list[$t];}
+        <!--@if($oDocument->document_srl)--> 
+          {@ $_existsThumbnail = $oDocument->thumbnailExists($widget_info->thumbnail_size,$widget_info->thumbnail_size,$widget_info->thumbnail_type) }
+          <!--@if($_existsThumbnail)-->                  		
+                <div id="b_thumb_{$t}" class="b_thumb_wrap" style="position:absolute;display: none;width:{$widget_info->thumbnail_size*($widget_info->list_count-1)}px;height:{$widget_info->thumbnail_size*($widget_info->list_count-1)}px;">
+                    <div class="b_thumb">
+                        <a href="{$oDocument->getPermanentUrl()}">
+                        	<img src="{$oDocument->getThumbnail($widget_info->thumbnail_size*($widget_info->list_count-1),$widget_info->thumbnail_size*($widget_info->list_count-1),$widget_info->thumbnail_type)}" border="0" />
+                        </a>
+                        <div style="width:{$widget_info->thumbnail_size*($widget_info->list_count-1)-10}px;position:absolute;background:#000; opacity:.7;color:#fff; font-size:12px;overflow:hidden;bottom:0px;padding:10px 5px;">
+                        	{$oDocument->getSummary($widget_info->content_cut_size)}
+                        </div>
+                    </div>
+                </div>
+          <!--@else-->
+          		<div id="b_thumb_{$t}" class="b_thumb_wrap" style="position:absolute;display: none; background:#fff;width:{$widget_info->thumbnail_size*($widget_info->list_count-1)}px;height:{$widget_info->thumbnail_size*($widget_info->list_count-1)}px;">
+                    <a href="{$oDocument->getPermanentUrl()}"><div class="no_img" style="width:{$widget_info->thumbnail_size*($widget_info->list_count-1)-10}px;height:{$widget_info->thumbnail_size*($widget_info->list_count-1)-10}px;"></div></a>
+                    <div style="width:{$widget_info->thumbnail_size*($widget_info->list_count-1)-10}px;position:absolute;background:#000; opacity:.7;color:#fff; font-size:12px;overflow:hidden;bottom:0px;padding:10px 5px;">
+                        {$oDocument->getSummary($widget_info->content_cut_size)}
+                    </div>
+                </div>          
+          <!--@end-->
+        <!--@else-->
+        	<div id="b_thumb_{$t}" class="b_thumb_wrap" style="position:absolute;display: none;"></div>
+        <!--@end-->
+    <!--@end-->
+</div>
+<script type="text/javascript" src="../../js/jquery.balloon.js"></script>
+<script>
+ jQuery(function($){
+	 var thumb_index;
+	 var this_t;
+	 var this_l;
+	 var this_w;
+	 var this_wh;
+	 
+	 $("#mosaicGallery_{$unique} > .mosaicGallery_wrap > li").eq(0).addClass("on");
+	 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(0).css("display","block");
+	 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(0).css("bottom","0px");
+	 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(0).css("right","0px");
+	 
+	 $("#mosaicGallery_{$unique} > .mosaicGallery_wrap > li").mouseover(function(){
+		 $("#mosaicGallery_{$unique} > .mosaicGallery_wrap > li").removeClass("on");
+		 $(this).addClass("on");
+		 thumb_index = $(this).index();
+		 this_t = $(this).css("top").replace("px","");
+		 this_l = $(this).css("left").replace("px","");
+		 this_w = $(this).css("width").replace("px","");
+		 		 
+		 $("#mosaicGallery_{$unique} > .b_thumb_wrap").css("display","none");
+		 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("display","block");
+		 if(this_t == 0){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("bottom","0px");
+		 }else if(this_t <= this_wh/2){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("top","0px");
+		 }else if(this_t > this_wh/2){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("top","0px");
+		 }
+		 if(this_l == 0){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("right","0px");
+		 }else if(this_l <= this_wh/2){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("left","0px");
+		 }else if(this_l > this_wh/2){
+			 $("#mosaicGallery_{$unique} > .b_thumb_wrap").eq(thumb_index).css("left","0px");
+		 }
+	 });
+	 
+	 $("#mosaicGallery_{$unique} > .mosaicGallery_wrap > li").each(function(){
+		 this_t = $(this).css("top").replace("px","");
+		 this_l = $(this).css("left").replace("px","");
+		 this_w = $(this).css("width").replace("px","");
+		 this_wh = $("#mosaicGallery_{$unique}.mosaicGallery").width();
+		 
+		 if(this_t == 0) tooltipPosition = 'top';
+		 else {
+			 if(this_t == this_w*(this_wh/this_w-1) ){
+			 	 tooltipPosition = 'bottom';
+			 }else{
+				 if(this_l == 0) tooltipPosition = 'left';
+				 else tooltipPosition = 'right';
+			 }
+		 }
+		 
+		 $(this).children(".data-position").text(tooltipPosition);
+		 
+		 $(this).balloon({
+			 showDuration: 300, hideDuration: 0,
+			 minLifetime: 0,
+			 position: $(this).children(".data-position").text(),
+			 contents: $(this).children(".data-content").text(),
+			 tipSize: 11,
+			 css: {
+				 border: 'solid 2px #ffffff',
+				 padding: '2px',
+				 fontSize: '11px',
+				 fontWeight: 'normal',
+				 lineHeight: '2',
+				 backgroundColor: '#ec2b78',
+				 color: '#fff',
+				 radius: '5px',
+				 width:'120px'
+			 }
+		 });
+	 });
+	
+	 
+ });
+
+</script>

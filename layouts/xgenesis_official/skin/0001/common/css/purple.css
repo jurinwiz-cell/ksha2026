@@ -1,0 +1,69 @@
+/* 기본링크 - 컬러셋 */
+.purple a:link { color:#aa1fc3;}
+.purple a:visited { color:#aa1fc3; }
+.purple a:hover { color: #C0C0C0; }
+.purple a:active { color:#aa1fc3; }
+
+/* GNB - 컬러셋설정 */
+#gnb.purple {background:#FAFAFA none repeat scroll 0 0; border-bottom:1px solid #EEEEEE;}
+#gnb #gnb_utility.purple #account li { color:#555555; background:transparent url(../images/purple/gnb_bar.gif) no-repeat scroll left 50%;}
+#gnb #gnb_utility.purple #account li.first-child { background:transparent none repeat scroll 0 0;padding-left:0;}
+
+/* 회원메뉴 - 컬러셋설정 */
+#memberPanel.purple { background:#ffffff; border:1px solid #708090; }
+#memberPanel div.purple { color:#808080;}
+#memberPanel button.purple {background:transparent url(../images/purple/btn_closeX.gif) no-repeat center center; }
+#memberPanel ul.purple { border:1px solid #f2f2f2; background:#fcfcfc; }
+
+/* 더보기메뉴 - 컬러셋설정 */
+#moreMenuPanel.purple { background:#ffffff; border:1px solid #708090; }
+#moreMenuPanel div.purple { color:#808080;}
+#moreMenuPanel button.purple { background:transparent url(../images/purple/btn_closeX.gif) no-repeat center center; }
+#moreMenuPanel ul.purple { border:1px solid #f2f2f2; background:#fcfcfc; }
+
+/* 메인메뉴 - 컬러셋설정 */
+#mainMenuBox.purple { background:#aa1fc3; border-bottom:3px solid #C0C0C0;}
+#mainMenuBox #mainMenu.purple li { color:#808080; }
+#mainMenuBox #mainMenu.purple a:link { color:#FFFFFF; }
+#mainMenuBox #mainMenu.purple a:visited { color:#FFFFFF; }
+#mainMenuBox #mainMenu.purple a:hover { color: #FFD700; }
+#mainMenuBox #mainMenu.purple a:active { color:#FFFFFF; }
+
+/* 사이트맵보기버튼 - 컬러셋설정*/
+#mainMenuBox.purple #sitemapView a:link { color:#FFD700; text-decoration:none; }
+#mainMenuBox.purple #sitemapView a:visited { color:#FFD700; text-decoration:none; }
+#mainMenuBox.purple #sitemapView a:hover { color: #FFD700; text-decoration:underline; }
+#mainMenuBox.purple #sitemapView a:active { color:#FFD700; text-decoration:none; }
+
+/* 사이트맵 - 컬러셋설정 */
+#siteMapBox.purple { background-color:#fae0ff; border-left:3px solid #AA1FC3; border-bottom:3px solid #AA1FC3;border-right:3px solid #AA1FC3;}
+
+/* 하단 - 컬러셋 */
+#footer.purple {border-top:2px solid #aa1fc3;}
+#footer.purple #footerBox {background:#fae0ff none repeat scroll 0 0;border-left:1px solid #EBEBEB; border-bottom:1px solid #EBEBEB;border-right:1px solid #EBEBEB; }
+
+/* 패밀리사이트 - 컬러셋 */
+#familySite.purple {background:transparent url(../images/bg_familySite.gif) no-repeat scroll 0 0;}
+#familySite.purple #siteList {background:#FFFFFF none repeat scroll 0 0;border-color:#D5D5D5;}
+
+/* 하단메뉴 - 컬러셋 */
+#footer.purple #bottomMenu li {background:transparent url(../images/purple/footer_bar.gif) no-repeat scroll left 0;}
+#footer.purple #bottomMenu li.first-child { background:transparent none repeat scroll 0 0;padding-left:0;}
+
+/* 정보 - 컬러셋 */
+#footer.purple #info {color:#AAAAAA;}
+
+/* 저작권 - 컬러셋  */
+#footer.purple #copyright {color:#f1a2ff;}
+
+/* RSS - 컬러셋 */
+#footer.purple .rss_icon {background:transparent url(../images/icon_feed.gif) no-repeat scroll left 50%;}
+
+/* 주소 - 컬러셋 */
+#footer.purple address {color:#f1a2ff;}
+
+
+
+
+
+

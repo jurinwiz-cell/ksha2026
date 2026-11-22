@@ -1,0 +1,20 @@
+#verticalTab{padding:0px; margin:0px;}
+#verticalTab .verticalTab #vTab{margin-top:0px; position:relative;}
+#verticalTab .verticalTab #vTab .tab_module{background:#fff;}
+#verticalTab .verticalTab #vTab .tab_module > a{display:block; width:20%; height:50px;  border-bottom:1px solid #d6d6d6;  border-left:0px solid #d6d6d6; text-indent:0px; overflow:hidden;text-align: center;line-height: 50px;}
+#verticalTab .verticalTab #vTab .tab_module > a:hover,#verticalTab .verticalTab #vTab .tab_module.on > a{background-color:#f3f3f5; color:#797979;}
+
+#verticalTab .vTabContent{background:#f3f3f5; width:80%; color:#7f99b7; overflow:hidden; position:absolute; top:0; left:20%; z-index:5; display:none;   border-left:0px solid #d6d6d6;border-right:0px solid #d6d6d6; border-bottom:0px solid #f3f3f5;}
+#verticalTab .vTabContent .vTabContentBox ul > li{position:relative;clear: both;overflow: hidden; padding:5px; }
+#verticalTab .vTabContent .vTabContentBox ul > li:hover > img{opacity:.5;}
+#verticalTab .vTabContent .vTabContentBox ul > li:hover{background:#fff; border:1px solid #d6d6d6; border-radius:5px; -webkit-border-radius:5px;}
+#verticalTab .vTabContent .vTabContentBox ul > li > a img{position: relative;display: block;margin-right: 6px;border: 1px solid #d6d6d6;float: left;}
+#verticalTab .vTabContent .vTabContentBox{margin:10px; line-height:1.6;}
+
+#verticalTab .vTabContent .vTabContentBox p.title{font-size: 12px;color: #797979;font-weight:normal;margin-bottom: 5px;margin-right: 30px;}
+#verticalTab .vTabContent .vTabContentBox .authorBox { margin-top:0px; margin-bottom: 10px;}
+#verticalTab .vTabContent .vTabContentBox .authorBox img{margin-right:3px; width:12px; height:12px;}
+#verticalTab .vTabContent .vTabContentBox .authorBox .regdate,#verticalTab .vTabContent .vTabContentBox .authorBox .author,#verticalTab .vTabContent .vTabContentBox .authorBox .readed{ margin-right:12px; font-size:10px; }
+
+#verticalTab .vTabContent .vTabContentBox p.title a{color:#797979;}
+#verticalTab .vTabContent .vTabContentBox p.title a:hover{color:#c4cca5;}

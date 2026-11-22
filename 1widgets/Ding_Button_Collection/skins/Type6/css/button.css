@@ -1,0 +1,43 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+div.widgetBorder > div:nth-child(1n) {height: 100%;}
+
+div.xe-widget-wrapper > div:nth-child(1n) {height: 100%;}
+
+.default-btn
+{
+    display: block;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/*기후변화포럼 http://climatehealth.kr/*/
+.type6
+{
+    position: relative;
+    left: 2px;
+    top: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+
+    background: none repeat scroll 0% 0% #F5F5F5;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    box-shadow:0 1px 2px #969696;
+    -webkit-box-shadow:0 1px 2px #969696;
+    margin-bottom:10px;
+    color: #666666;
+}
+
+.type6:hover
+{
+    background:#a3c255;
+    color: #ffffff;
+}
+
+
+.button_text
+{
+    position: relative;
+}

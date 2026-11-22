@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <namespaces>
+        <namespace name="Richrix\Modules\DbAdminer" />
+    </namespaces>
+    <actions>
+        <action name="dispDb_adminerAdminIndex"
+                type="view"
+                class="Controllers\AdminController"
+                admin_index="true"
+                menu_name="db_adminer"
+                menu_index="true" />
+    </actions>
+    <menus>
+        <menu name="db_adminer">
+            <title xml:lang="ko">DB Adminer</title>
+            <title xml:lang="en">DB Adminer</title>
+        </menu>
+    </menus>
+</module>

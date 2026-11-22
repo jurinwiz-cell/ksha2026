@@ -1,0 +1,14 @@
+<table name="ainews_articles">
+	<column name="article_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+	<column name="module_srl" type="number" size="11" notnull="notnull" index="idx_module_srl" />
+	<column name="title" type="varchar" size="250" notnull="notnull" />
+	<column name="content" type="text" />
+	<column name="summary" type="text" />
+	<column name="original_url" type="varchar" size="500" />
+	<column name="source" type="varchar" size="100" />
+	<column name="cluster_id" type="number" size="11" index="idx_cluster_id" />
+	<column name="is_representative" type="char" size="1" default="N" />
+	<column name="section" type="varchar" size="50" index="idx_section" />
+	<column name="regdate" type="date" />
+	<column name="status" type="varchar" size="20" default="TEMP" />
+</table>

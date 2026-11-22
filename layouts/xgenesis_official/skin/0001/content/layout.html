@@ -1,0 +1,95 @@
+<!--// js 파일 import -->
+<!--%import("../../../js/layout.js")-->
+<!--%import("../../../js/chrome.js")-->
+
+<!--// 레이아웃과 연동될 css 파일 import -->
+<!--%import("../common/css/layout.css")-->
+<!-- 컬러셋에 따른 css 파일 import -->
+<!--@if($layout_info->skin_colorset=='blue')-->
+<!--%import("../common/css/blue.css")-->
+<!--@elseif($layout_info->skin_colorset=='green')-->
+<!--%import("../common/css/green.css")-->
+<!--@elseif($layout_info->skin_colorset=='orange')-->
+<!--%import("../common/css/orange.css")-->
+<!--@elseif($layout_info->skin_colorset=='purple')-->
+<!--%import("../common/css/purple.css")-->
+<!--@elseif($layout_info->skin_colorset=='red')-->
+<!--%import("../common/css/red.css")-->
+<!--@elseif($layout_info->skin_colorset=='yellow')-->
+<!--%import("../common/css/yellow.css")-->
+<!--@else-->
+<!--%import("../common/css/black.css")-->
+<!--@end-->
+<!--%import("css/layout.css")-->
+<!--@if($layout_info->skin_colorset=='blue')-->
+<!--%import("css/blue.css")-->
+<!--@elseif($layout_info->skin_colorset=='green')-->
+<!--%import("css/green.css")-->
+<!--@elseif($layout_info->skin_colorset=='orange')-->
+<!--%import("css/orange.css")-->
+<!--@elseif($layout_info->skin_colorset=='purple')-->
+<!--%import("css/purple.css")-->
+<!--@elseif($layout_info->skin_colorset=='red')-->
+<!--%import("css/red.css")-->
+<!--@elseif($layout_info->skin_colorset=='yellow')-->
+<!--%import("css/yellow.css")-->
+<!--@else-->
+<!--%import("css/black.css")-->
+<!--@end-->
+
+<!-- 스타일 재설정 -->
+<!--#include("../common/_style.html")-->
+
+<!-- GNB -->
+<!--#include("../common/_gnb.html")-->
+
+<!-- 회원메뉴 -->
+<!--#include("../common/_membermenu.html")-->
+
+<!-- 더보기 메뉴 -->
+<!--#include("../common/_moremenu.html")-->
+
+<!-- Body 시작 -->
+<div id="bodyWrap">
+	<!-- Header-->
+	<!--#include("../common/_header.html")-->
+
+	<!--  Main 메뉴 & 사이트맵 -->
+	<!--#include("../common/_mainmenu.html")-->
+	
+	<!-- 사이트맵 -->
+	<!--#include("../common/_sitemap.html")-->
+	
+	<!--@if($layout_info->advertise_mainMenuBottom)-->
+	<!-- [광고] 메인메뉴 하단 -->
+	<div id="advertise_mainMenuBottom">{$layout_info->advertise_mainMenuBottom}</div>
+	<!--@end-->
+	
+	<div id="contentBody">
+		<div id="contentLeft">
+			<!-- 로그인위젯 -->
+			<img src="./images/blank.gif" class="zbxe_widget_output" widget="xgenesis_login" skin="default" colorset="{$layout_info->skin_colorset}" />
+
+			<!-- LNB 위젯 -->
+			<img src="./images/blank.gif" class="zbxe_widget_output" widget="lnb_menu" skin="default" advertise_lnb_menu_bottom="{$layout_info->advertise_lnb_menu_bottom}" lnb_menu_colorset="{$layout_info->skin_colorset}" />
+		</div>
+		<!-- 컨텐츠 -->
+		<div id="contentRight">{$content}</div>
+		<!-- 배너/광고 -->
+		<!--#include("../common/_banner.html")-->
+	</div>
+	
+	<!-- footer -->
+	<!--#include("../common/_footer.html")-->
+</div>
+
+<!-- dropdown sub_menu -->
+<!--#include("../common/_dropdown.html")-->
+
+<!-- Google Analytics -->
+<!--@if($layout_info->analytics=="Y")-->
+{$layout_info->analyticsCode}
+<!--@end-->
+
+<!-- 로그인창 -->
+<!--#include("../common/_login.html")-->

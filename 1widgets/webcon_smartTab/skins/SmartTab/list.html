@@ -1,0 +1,235 @@
+<!--%import("normal.css")-->
+{@ 
+   $unique = rand(0,100);
+   $midCount = count($widget_info->midCount);
+   $cateInfo = $widget_info->cateInfo;
+   $cateTitle = $widget_info->cateTitle;
+}
+<div id="webcon_quickGallery_container_{$unique}" style="overflow: hidden;margin-left: auto;margin-right: auto;">
+    <ul id="webcon_quickGallery_tab" class="tab_nav"> 
+    	<li class="all" id=""><a href="#">전체보기</a></li>
+        <!--@for($j=0;$j<$midCount;$j++)-->      
+            <li class="{$widget_info->midCount[$j]}" id="" title="{$widget_info->mid_name[$j]}"><a href="#">{$widget_info->module_name[$j]}</a>
+            <!--@if(count($cateInfo)>0 )-->
+                <ul class="sub_category">
+                <!--@for($c=0 ; $c < count($cateInfo[$j]) ; $c++)--> 	
+                	<!--@if($widget_info->cateparentSrl[$cateInfo[$j][$c]] == 0)-->
+                      	<li class="{$cateInfo[$j][$c]}" id="{$cateInfo[$j][$c]}"><a href="#">{$cateTitle[$j][$c]} </a></li>
+                    <!--@end-->
+                <!--@end-->	
+                </ul>  
+            <!--@end-->	
+            </li>
+        <!--@end-->
+        <div class="more_arrow"><a href=""></a></div>
+    </ul>
+    <ul id="webcon_quickGallery" class="image-grid">
+    {@$_idx=0}
+    <!--@for($i=0;$i<$widget_info->rows_list_count*$midCount;$i++)-->
+        {@  $oDocument = $widget_info->document_list[$i]; }
+        <!--@if($oDocument->document_srl)--> 
+            {@ $_existsThumbnail = $oDocument->thumbnailExists($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type) }
+            {@
+	            $today_date = date("Ymd");
+                $write_date = $oDocument->getRegdate("Ymd");
+    	        $write_date_full =  $oDocument->getRegdate("YmdHis");
+                $write_update = $oDocument->getUpdate("Ymd");
+        	    $write_update_full =  $oDocument->getUpdate("YmdHis");
+            }
+            <!--@if($widget_info->cateparentSrl[$oDocument->get('category_srl')])-->
+            <li data-id="content_{$_idx}" data-type="{$oDocument->get('module_srl')}"  data-cate="{$widget_info->cateparentSrl[$oDocument->get('category_srl')]}" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height+90}px;" class="quickGallery-item">
+            <!--@else-->
+            <li data-id="content_{$_idx}" data-type="{$oDocument->get('module_srl')}"  data-cate="{$oDocument->get('category_srl')}" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height+90}px;" class="quickGallery-item">
+            <!--@end-->	
+                                
+	            <!--@if($today_date <= $write_date+1)-->
+                    <div class="n_mark">N</div>
+                    <!--@if($write_date_full < $write_update_full)-->
+                    	<!--@if($today_date < $write_update+1)-->
+	                        <div class="u_mark" style="margin-right:23px;">U</div>		                	
+                    	<!--@end-->    
+                    <!--@end-->
+                <!--@else-->
+                	<!--@if($write_date_full < $write_update_full)-->
+                    	<!--@if($today_date < $write_update+1)-->
+	    	                <div class="u_mark">U</div>		                
+                        <!--@end-->    
+                    <!--@end-->
+                <!--@end-->
+                
+                <div class="member_info_container">
+                    <div class="member_info_profile">
+                    <!--@if($oDocument->getProfileImage('member_srl'))-->
+                        <img src="{$oDocument->getProfileImage('member_srl')}" width="30" height="30" />
+                    <!--@else-->    
+                        <img src="../../images/no_profile.png" width="30" height="30" />
+                    <!--@end-->    
+                    </div>
+                    <div class="member_info_nickname">{$oDocument->getNickName()} </div>
+                    <div class="member_info_date">{$oDocument->getRegdate("Y.m.d")}</div>
+                    <div class="member_info_content"> <!--@if($oDocument->variables[status] == "SECRET")--> <font style="color:#ff0000">※본 게시물은 비밀글 입니다.</font><!--@else-->{$oDocument->getSummary($widget_info->content_cut_size)}<!--@end--></div>
+                    <!--@if($_existsThumbnail)-->
+                    <div class="content_info">
+                    	<ul>
+                        	<li><img src="../../images/eye_icon.png" />{$oDocument->get('readed_count')}</li>
+                            <li><img src="../../images/comment_icon.png" />{$oDocument->getCommentCount()}</li>
+                            <!--@if($oDocument->variables[status] == "SECRET")-->
+                            <li><img src="../../images/lock_icon.png" /></li>
+                            <!--@end-->
+                        </ul>
+                    </div>
+                    <!--@end-->
+                </div>
+                 <!--@if($_existsThumbnail)-->
+                    <div class="img_container mo_fade" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px">
+                        <a href="{$oDocument->getPermanentUrl()}" class="mosaic-overlay" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px">
+                            <div class="details"><h4>{$oDocument->getTitle($widget_info->subject_cut_size)}</h4></div>
+                        </a>
+                        <div class="backdrop"><img src="{$oDocument->getThumbnail($widget_info->thumbnail_width,$widget_info->thumbnail_height,$widget_info->thumbnail_type)}" border="0" /></div>
+                    </div>
+                <!--@else-->   
+                	<!--@if($oDocument->variables[status] == "SECRET")--> 
+                    	<div class="img_container mo_secret" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px">
+                    	<!--@if($logged_info->is_admin =="Y")-->
+			                  <a href="{$oDocument->getPermanentUrl()}" class="mosaic-overlay" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px; cursor:pointer;"></a>
+                        <!--@else-->
+		                     <a class="mosaic-overlay" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px; cursor:pointer;"></a>                        
+                        <!--@end-->                   
+                    <!--@else-->
+                    <div class="img_container mo_circle" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px">
+                    <a href="{$oDocument->getPermanentUrl()}" class="mosaic-overlay" style="width:{$widget_info->thumbnail_width}px; height:{$widget_info->thumbnail_height}px"></a>
+                    <!--@end-->
+                        
+                        <div class="noImgTilte">
+                            {$oDocument->getTitle($widget_info->subject_cut_size)}
+                        </div>
+                        <div class="backdrop">
+                            <div class="noImg_content_info" style="width:{$widget_info->thumbnail_width}px;">
+                                <ul>
+                                    <!--@if($oDocument->variables[status] == "SECRET")-->
+                                    <li><img src="../../images/lock_icon.png" /></li>
+                                    <!--@end-->
+                                    <li><img src="../../images/comment_icon.png" />{$oDocument->getCommentCount()}</li>
+                                    <li><img src="../../images/eye_icon.png" />{$oDocument->get('readed_count')}</li>
+                                </ul>
+                            </div>
+                         </div>
+                    </div>
+                <!--@end-->
+                <span data-type="data-date" style="display:none;">{$write_update_full}</span>
+            </li>
+            
+          <!--@end-->
+         {@$_idx++}
+    <!--@end-->
+    </ul>  
+</div>
+<script type="text/javascript" src="../../js/jquery.quicksand.js"></script>
+<script type="text/javascript" src="../../js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="../../js/jquery.mosaic.min.js"></script>
+<script type="text/javascript" src="../../js/jquery.cufon-yui.js"></script>
+<script type="text/javascript" src="../../js/nanumP_400.font.js"></script>
+<script>
+jQuery(function($){
+	
+	var minHeight = $("#webcon_quickGallery_container_{$unique}").parent().parent().height();
+	$("#webcon_quickGallery_container_{$unique}").parent().parent().css("min-height","100px");
+	$("#webcon_quickGallery_container_{$unique}").parent().parent().css("height","auto");
+	
+	for(var i=0 ; i < $(".noImgTilte").length; i++){
+		var f_color = "#"+(parseInt(Math.random()*0xffffff)).toString(16);
+		$("#webcon_quickGallery_container_{$unique}  #webcon_quickGallery li .noImgTilte").eq(i).css("color",f_color);
+	}	
+	
+	if (jQuery().quicksand) {
+		var $data = $("#webcon_quickGallery_container_{$unique} .image-grid").clone();
+		$('#webcon_quickGallery_container_{$unique} .tab_nav > li,#webcon_quickGallery_container_{$unique} ul.sub_category > li').click(function(e) {					
+			var filterID=$(this).attr('id').split(' ').slice(-1)[0];			
+			if(filterID){
+				var filterClass=$(this).attr('class').split(' ').slice(-1)[0];
+				var $filteredData = $data.find('li[data-cate=' + filterClass + ']');
+			}else{
+				$("#webcon_quickGallery_container_{$unique} .tab_nav > li").removeClass("active");	
+				$("#webcon_quickGallery_container_{$unique} ul.sub_category").removeClass("active");
+				var filterClass=$(this).attr('class').split(' ').slice(-1)[0];				
+				if (filterClass == 'all') {
+					$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow").css("visibility","hidden");
+					var $sortData = $data.find('li');
+					var $filteredData = $sortData.sorted({
+						by: function(v) {
+						  return $(v).find('span[data-type=data-date]').text();
+						}
+   				   });
+				} else {
+					$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow").css("visibility","visible");
+					$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow a").text($(this).children("a").text()+" 더보기");
+					$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow a").attr("href",$(this).attr("title"));
+					var $filteredData = $data.find('li[data-type=' + filterClass + ']');
+				}
+			}
+			$("#webcon_quickGallery_container_{$unique} #webcon_quickGallery").quicksand($filteredData,{
+				duration: 600,
+				adjustHeight: 'auto',
+				easing:'swing'
+			},function(){
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_fade').mosaic({});	
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_circle').mosaic({opacity:1});		
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_secret').mosaic({opacity:1});				
+			});	
+			Cufon.replace('.noImgTilte', { 
+				 hover: true,
+				 fontFamily: 'nanumP'
+			});
+			if(!filterID){
+				$(this).addClass("active"); 
+				$("#webcon_quickGallery_container_{$unique} ul.sub_category").eq( $(this).index()-1 ).addClass("active");		
+			}
+			return false;
+		});
+				
+		initQuick();		
+		function initQuick(){
+			var $filteredData = $data.find('li[data-type=' + $('#webcon_quickGallery_container_{$unique} .tab_nav > li').eq(1).attr('class') + ']');
+			$("#webcon_quickGallery_container_{$unique} #webcon_quickGallery").quicksand($filteredData,{
+				duration: 600,
+				adjustHeight: 'auto',
+				easing:'swing'
+			},function(){
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_fade').mosaic({});	
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_circle').mosaic({opacity:1});	
+				$('#webcon_quickGallery_container_{$unique} #webcon_quickGallery > li .mo_secret').mosaic({opacity:1});					
+			});		
+			$('#webcon_quickGallery_container_{$unique} .tab_nav > li').eq(1).addClass("active");
+			$('#webcon_quickGallery_container_{$unique} .sub_category').eq(0).addClass("active");
+			Cufon.replace('.noImgTilte', { 
+				 hover: true,
+				 fontFamily: 'nanumP'				
+			});
+			$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow a").text($('#webcon_quickGallery_container_{$unique} .tab_nav > li').eq(1).children("a").text()+" 더보기");
+			$("#webcon_quickGallery_container_{$unique} .tab_nav .more_arrow a").attr("href",$('#webcon_quickGallery_container_{$unique} .tab_nav > li').eq(1).attr("title"));
+		}
+	}	
+});
+
+(function($) {
+  $.fn.sorted = function(customOptions) {
+    var options = {
+      	reversed: true,
+      	by: function(a) { return a.text(); }
+    };
+    $.extend(options, customOptions);
+    $data = $(this);
+    arr = $data.get();
+    arr.sort(function(a, b) {
+      var valA = options.by($(a));
+      var valB = options.by($(b));
+      if (options.reversed) {
+      	  return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
+      } else {		
+     	  return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
+      }
+    });
+    return $(arr);
+  };
+})(jQuery);
+</script>

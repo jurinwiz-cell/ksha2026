@@ -1,0 +1,8 @@
+.lineadWidget { height:34px; overflow:hidden; clear:both; white-space:nowrap}
+.lineadWidget ul { margin:0; padding:0; white-space:nowrap; overflow:hidden}
+.lineadWidget ul li { margin:0; padding:0 0 0 5px; list-style:none; height:34px; line-height:200%; overflow:hidden; white-space:nowrap; font-size:9pt}
+.lineadWidget ul li strong { font-size:9pt; white-space:nowrap; margin:0 5px 0 0; vertical-align:middle}
+.lineadWidget ul li .title { font-size:9pt; vertical-align:middle}
+.lineadWidget ul li .title a { text-decoration:none}
+
+.lineadWidget .bx-wrapper { width: 100%; background: transparent; border: 0 none; -moz-webkit-box-shadow: 0 none; -webkit-box-shadow:0 none;box-shadow: 0 none;}

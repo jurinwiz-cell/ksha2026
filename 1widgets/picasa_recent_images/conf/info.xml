@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+	<title xml:lang="ko">구글 웹앨범 이미지 출력</title>
+	<description xml:lang="ko">작성된 글의 내용에 포함된 이미지를 출력하는 위젯입니다.</description>
+	<version>0.1</version>
+	<date>2010-04-04</date>
+	<author email_address="soonj@nate.com" link="http://www.wildgreen.co.kr">
+		<name xml:lang="ko">카르마</name>
+	</author>
+	<extra_vars>
+		<var id="widgettitle">
+            <type>text</type>
+            <name xml:lang="ko">제목</name>
+            <description xml:lang="ko">위젯제목을 입력하십시요.</description>
+        </var>
+		<var id="cols_list_count">
+			<type>text</type>
+			<name xml:lang="ko">가로 이미지 수</name>
+			<description xml:lang="ko">출력될 가로 이미지의 수를 정하실 수 있습니다. (기본 5개)</description>
+		</var>
+		<var id="rows_list_count">
+			<type>text</type>
+			<name xml:lang="ko">세로 이미지 수</name>
+			<description xml:lang="ko">출력될 세로 이미지의 수를 정하실 수 있습니다. (기본 1개)</description>
+		</var>
+		<var id="display_timestamp">
+			<type>select</type>
+			<name xml:lang="ko">Timestamp 표시</name>
+			<description />
+			<options>
+				<value>Y</value>
+				<name xml:lang="ko">표시</name>
+			</options>
+			<options>
+				<value>N</value>
+				<name xml:lang="ko">표시하지 않음</name>
+			</options>
+		</var>
+	</extra_vars>
+</widget>
+

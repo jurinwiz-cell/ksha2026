@@ -1,0 +1,12 @@
+<ul class="rx_sr_nt_list">
+	<li loop="$widget_info->content_items => $key, $item" class="rx_sr_nt_pad_R"|cond="array_search('nickname', $widget_info->option_view_arr)">
+		<a href="{$item->getLink()}" class="rx_sr_nt_a" target="_blank"|cond="$widget_info->new_window">
+			<div class="rx_sr_nt_items content_title">
+				{str_replace(array('&amp;amp;','&amp;lt;','&amp;gt;','&amp;quot;','&amp;apos;'),array('&amp;','&lt;','&gt;','&quot;','&apos;'),$item->getTitle($widget_info->subject_cut_size))}
+			</div>
+			<div class="content_nickname" cond="array_search('nickname', $widget_info->option_view_arr)">
+				{$item->getNickName($widget_info->nickname_cut_size)}
+			</div>
+		</a>
+	</li>
+</ul>

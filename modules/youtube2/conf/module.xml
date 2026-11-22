@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants>
+		<grant name="manager" default="manager">
+			<title xml:lang="ko">관리자</title>
+		</grant>
+	</grants>
+	<permissions>
+		<permission action="dispYoutube2AdminIndex" target="manager" />
+	</permissions>
+	<actions>
+		<!-- Admin Actions -->
+		<action name="dispYoutube2AdminIndex" type="view" standalone="true" admin_index="true" />
+		<action name="procYoutube2AdminConfig" type="controller" standalone="true" />
+	</actions>
+</module>

@@ -1,0 +1,13 @@
+<query id="getTags" action="select">
+    <tables>
+        <table name="document_Tags" />
+    </tables>
+    <columns>
+        <column name="is_notice" />
+        <column name="module_srl" />
+        <column name="title" />
+    </columns>
+    <conditions>
+        <condition operation="in" column="is_notice" var="is_notice" filter="Y" notnull="notnull" />
+    </conditions>
+</query>

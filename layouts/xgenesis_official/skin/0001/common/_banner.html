@@ -1,0 +1,20 @@
+<!--@if($layout_info->banner_mainLeft_image)-->
+<!-- [배너] 메인 왼쪽 배너 이미지 -->
+<div id="banner_mainLeft">
+	<a href="{$layout_info->banner_mainLeft_url}" <!--@if($layout_info->banner_mainLeft_newWindow)-->target="_blank"<!--@end-->><img src="{$layout_info->banner_mainLeft_image}"/></a>
+</div>
+<!--@end-->
+<!--@if($layout_info->banner_mainRight_image)-->
+<!-- [배너] 메인 오른쪽 배너 이미지 -->
+<div id="banner_mainRight">
+	<a href="{$layout_info->banner_mainRight_url}" <!--@if($layout_info->banner_mainRight_newWindow)-->target="_blank"<!--@end-->><img src="{$layout_info->banner_mainRight_image}"/></a>
+</div>
+<!--@end-->
+<!--@if($layout_info->advertise_mainLeft)-->
+<!-- [광고] 메인 왼쪽  -->
+<div id="advertise_mainLeft">{$layout_info->advertise_mainLeft}</div>
+<!--@end-->
+<!--@if($layout_info->advertise_mainRight)-->
+<!-- [광고] 메인 오른쪽  -->
+<div id="advertise_mainRight">{$layout_info->advertise_mainRight}</div>
+<!--@end-->

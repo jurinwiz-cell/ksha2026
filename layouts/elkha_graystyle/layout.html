@@ -1,0 +1,52 @@
+{@
+// 레이아웃 기초 설정
+$layout_info->colorset = ($layout_info->colorset)? $layout_info->colorset : "default";
+$layout_info->name = ($layout_info->name)? $layout_info->name : $layout_info->layout_title;
+$layout_info->url = ($layout_info->url)? $layout_info->url : './';
+$layout_info->widget = ($layout_info->widget)? preg_replace('/[^0-9]/', '', $layout_info->widget) : 200;
+$layout_info->padding = ($act && $act!="dispPageAdminContentModify")? "no_margin" : $layout_info->padding;
+$L_CATEGORY = array();
+
+$layout_info->REQUEST_URI = htmlspecialchars(getenv('REQUEST_URI')); // $_SERVER['REQUEST_URI']
+}
+<load target="css/default.css" />
+<load target="css/style.css" />
+<load target="js/script.js" type="body" />
+
+<style type="text/css">
+#container { background-position:-{(4000-$layout_info->widget-30)}px 0; }
+#container.ce { background-position:{(960-30-$layout_info->widget)}px 0; }
+#column .ext .sec { width:{$layout_info->widget}px; }
+#content { width:{(960-60-$layout_info->widget)}px; }
+#content.no_margin { width:{(960-30-$layout_info->widget)}px; }
+#column .ext .t { *width:{$layout_info->widget+30}px; }
+</style>
+
+<div id="wrap" class="Wrapper {$layout_info->colorset}">
+	<a href="#content" class="skipTo">Skip to content</a>
+
+	<div id="header">
+		<header>
+			<include target="_header.html" />
+		</header>
+		<nav id="gnb" class="Wrapper mpReset" data-ani="{(INT)($layout_info->navi_ani!='disabled')}">
+		{@
+			$menu_depth = 1;
+			$menu_vars[$menu_depth] = &$gnb->list;
+		}
+			<include target="_navi.html" />
+			<hr class="hr_hide" />
+		</nav>
+	</div>
+{@
+	$layout_info->align = ( $selected || $layout_info->widget_1 || $layout_info->widget_2 || $layout_info->widget_3 || $layout_info->widget_4 || $layout_info->widget_5)? $layout_info->align : "c";
+}
+	<div id="container" class="{$layout_info->align}">
+		{@ if(function_exists('layout_chat')) echo layout_chat(); }
+		<include target="_container.html" />
+	</div>
+
+	<footer id="footer" class="mpReset">
+		<include target="_footer.html" />
+	</footer>
+</div>

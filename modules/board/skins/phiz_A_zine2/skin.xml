@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">phiz webzine 2</title>
+    <description xml:lang="ko">phiz webzine 2</description>
+    <version>1.0</version>
+    <date>2013-10-10</date>
+    <author email_address="phiz@phiz.kr" link="http://phiz.kr/">
+        <name xml:lang="ko">phiz</name>
+    </author>
+
+    <extra_vars>
+        <var name="title_image" type="image">
+            <title xml:lang="ko">게시판 제목 이미지</title>
+			<description xml:lang="ko">작성하면 화면에 표시 됨</description>
+        </var>
+        <var name="title_alt" type="text">
+            <title xml:lang="ko">게시판 제목 이미지 alt</title>
+			<description xml:lang="ko">게시판 제목 이미지 대체 텍스트</description>
+        </var>
+
+            <var name="cols_list_count" type="text">
+                <title xml:lang="ko">가로 열 수</title>
+                <title xml:lang="en">Number of cols</title>
+                <description xml:lang="ko">출력될 가로 열의 수를 정할 수 있습니다. (기본 2개)</description>
+                <description xml:lang="en">You can set the number of columns to display. (2 as default)</description>
+            </var>
+		<var name="subject_cut_size" type="text">
+			<title xml:lang="ko">제목 글자수</title>
+			<title xml:lang="en">Length of Subject</title>
+			<description xml:lang="ko">제목 글자수를 지정할 수 있습니다. (0또는 비워주시면 자르지 않습니다)</description>
+			<description xml:lang="en">You may set length of title. (0 or blank value will not restrict the length)</description>
+		</var>
+		<var name="content_cut_size" type="text">
+			<title xml:lang="ko">내용 글자수</title>
+			<title xml:lang="en">Length of Content</title>
+			<description xml:lang="ko">내용 글자수를 지정할 수 있습니다. (기본 240)</description>
+			<description xml:lang="en">Length of Content can be assigned. (default 240)</description>
+		</var>
+		<var name="duration_new" type="text" default="24">
+			<title xml:lang="ko">new표시 시간 (hours)</title>
+			<title xml:lang="en">Duration of indication for new item</title>
+			<description xml:lang="ko">새로 등록된 게시물의 new 표시시간을 정할 수 있습니다. </description>
+			<description xml:lang="en">You may set the duration of indication for fresh item. </description>
+		</var>
+		<var name="thumbnail_type" type="select">
+			<title xml:lang="ko">썸네일 생성 방법</title>
+			<title xml:lang="en">Type of Thumbnail</title>
+			<description xml:lang="ko">썸네일 생성 방법을 선택할 수 있습니다.</description>
+			<description xml:lang="en">Choose the type to create the thumnail.</description>
+			<options value="crop">
+				<title xml:lang="ko">꽉 채우기</title>
+				<title xml:lang="en">crop</title>
+			</options>
+			<options value="ratio">
+				<title xml:lang="ko">비율 맞추기</title>
+				<title xml:lang="en">ratio</title>
+			</options>
+		</var>
+		<var name="thumbnail_width" type="text" default="130">
+			<title xml:lang="ko">썸네일 가로크기</title>
+			<title xml:lang="en">Width of Thumbnail</title>
+			<description xml:lang="ko">썸네일의 가로 크기를 지정할 수 있습니다. (기본 130px)</description>
+			<description xml:lang="en">Set the width of thumbnail. Default is 130px.</description>
+		</var>
+		<var name="thumbnail_height" type="text" default="100">
+			<title xml:lang="ko">썸네일 세로크기</title>
+			<title xml:lang="en">Height of Thumbnail</title>
+			<description xml:lang="ko">썸네일의 세로 크기를 지정할 수 있습니다. (기본 100px)</description>
+			<description xml:lang="en">Set the height of thumbnail. Default is 100px.</description>
+		</var>
+    </extra_vars>
+</skin>
+

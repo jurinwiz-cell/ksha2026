@@ -1,0 +1,529 @@
+﻿
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 사회주택 공급 현황 대시보드 (통합본)</title>
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="/static/vendor/css/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { height: 400px; width: 100%; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Filter Styles */
+        .filter-chip {
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.4rem;
+            font-size: 9px; 
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .filter-chip.active { background-color: #2563eb; color: white; border-color: #2563eb; }
+        
+        .filter-scroll-area {
+            max-height: 200px; /* 필터 섹션 높이 200px */
+            overflow-y: auto;
+        }
+        
+        .tab-btn.active { border-bottom-color: #2563eb; color: #2563eb; }
+        
+        /* Table Styles */
+        th .sort-icon { font-size: 0.7rem; margin-left: 0.25rem; color: #94a3b8; }
+        th.active-sort { color: #2563eb !important; background-color: #eff6ff; }
+        th.active-sort .sort-icon { color: #2563eb; }
+        
+        /* Badge Styles */
+        .type2-badge {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #dbeafe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+        }
+        .icon-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .icon-btn.all { color: #2563eb; }
+        .icon-btn.none { color: #ef4444; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div id="app" class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4">
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                    📊 사회주택 공급 현황 대시보드
+                </h1>
+                <p id="status-message" class="text-slate-400 mt-0.5 font-medium italic text-xs">데이터를 불러오는 중입니다...</p>
+            </div>
+            <button onclick="resetAllFilters()" class="mt-4 sm:mt-0 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-all shadow-md active:scale-95">
+                🔄 초기화
+            </button>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">총 공급 세대수</p>
+                <h2 id="stat-total-units" class="text-3xl font-black text-blue-600">0</h2>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">총 공급 건수</p>
+                <h2 id="stat-total-count" class="text-3xl font-black text-emerald-600">0</h2>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">참여 운영사</p>
+                <h2 id="stat-total-operators" class="text-3xl font-black text-indigo-600">0</h2>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Search -->
+                <div class="lg:col-span-3 border-r border-slate-100 pr-4">
+                    <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-4 bg-blue-600 rounded-full"></span> 검색
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-tight">사업명 / 운영사 / 공공주체</label>
+                            <input type="text" id="search-input" oninput="debounceFilter()" placeholder="검색어 입력..." 
+                                class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtering -->
+                <div class="lg:col-span-9">
+                    <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-4 bg-emerald-500 rounded-full"></span> 상세 필터링
+                    </h3>
+                    <div id="dynamic-filters" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 filter-scroll-area custom-scrollbar pr-2">
+                        <!-- Filters injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ratio Charts -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+            <div class="flex items-center justify-between border-b border-slate-100 mb-4">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2 pb-2">
+                    <span class="w-1 h-4 bg-blue-400 rounded-full"></span> 📈 비중 분석
+                </h3>
+                <div class="flex gap-1">
+                    <button onclick="switchRatioTab('completion')" id="btn-tab-completion" class="tab-btn active px-3 py-2 text-xs font-bold border-b-2 border-transparent transition-all">준공여부</button>
+                    <button onclick="switchRatioTab('type')" id="btn-tab-type" class="tab-btn px-3 py-2 text-xs font-bold border-b-2 border-transparent transition-all">유형별</button>
+                    <button onclick="switchRatioTab('type2')" id="btn-tab-type2" class="tab-btn px-3 py-2 text-xs font-bold border-b-2 border-transparent transition-all">대분류별</button>
+                </div>
+            </div>
+            <div id="ratio-chart" class="chart-container" style="height: 300px;"></div>
+        </section>
+
+        <!-- Map & Detail -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-7 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative" style="height: 500px;">
+                <div id="map-chart" class="w-full h-full"></div>
+                <div class="absolute top-4 left-4 bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-100 text-[9px] font-black text-slate-400 uppercase pointer-events-none">지리적 분포</div>
+            </div>
+            <div id="detail-panel" class="lg:col-span-5 p-8 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-y-auto custom-scrollbar" style="height: 500px;"></div>
+        </section>
+
+        <!-- Data Table -->
+        <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                <h3 class="text-sm font-bold text-slate-800">📋 상세 공급 목록</h3>
+                <span id="table-count" class="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full border border-slate-200">0건</span>
+            </div>
+            <div class="overflow-x-auto max-h-[500px] custom-scrollbar">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="sticky top-0 bg-slate-50/90 backdrop-blur-md z-10">
+                        <tr>
+                            <th class="p-3 font-bold text-blue-600 border-b border-slate-100 cursor-pointer" data-sort-key="심사연도" onclick="sortTable('심사연도')">연도 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="name" onclick="sortTable('name')">사업명 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="type" onclick="sortTable('type')">유형 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="type2" onclick="sortTable('type2')">대분류 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="public" onclick="sortTable('public')">공공주체 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="operator" onclick="sortTable('operator')">운영사 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer" data-sort-key="region" onclick="sortTable('region')">지역 <span class="sort-icon"></span></th>
+                            <th class="p-3 font-bold text-slate-500 border-b border-slate-100 cursor-pointer text-right" data-sort-key="units" onclick="sortTable('units')">세대수 <span class="sort-icon"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-50"></tbody>
+                </table>
+            </div>
+        </section>
+        
+        <footer class="text-center py-8 text-slate-300 text-[10px] font-bold tracking-widest uppercase">
+            Social Housing Supply Dashboard 2025
+        </footer>
+    </div>
+
+    <script>
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1yX14R6IwkXMXel1TB7W1X5HPLwWoImYJus_pitE1lgg/export?format=csv&gid=1763307000";
+        const KOREA_GEO_URL = "https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea_provinces_geo.json";
+
+        let rawData = [];
+        let filteredByGlobal = []; // 상단 필터만 적용 (지도 시각화용)
+        let filteredByMap = [];    // 상단 필터 + 지도 선택 지역 적용 (통계, 테이블용)
+        
+        let filterCategories = { completion: [], type2: [], type: [], public: [] };
+        let currentFilters = { completion: [], type2: [], type: [], public: [], search: '' };
+        let type2ToTypeMap = {}; 
+        let activeRatioTab = 'completion';
+        let selectedRegion = null;
+        let sortConfig = { key: '심사연도', direction: 'desc' };
+        let charts = {};
+
+        const normalizeMapName = (n) => {
+            if (!n) return '(미정)';
+            const name = String(n).trim();
+            if (name.includes('서울')) return '서울특별시';
+            if (name.includes('경기')) return '경기도';
+            if (name.includes('인천')) return '인천광역시';
+            if (name.includes('부산')) return '부산광역시';
+            if (name.includes('대구')) return '대구광역시';
+            if (name.includes('광주')) return '광주광역시';
+            if (name.includes('대전')) return '대전광역시';
+            if (name.includes('울산')) return '울산광역시';
+            if (name.includes('세종')) return '세종특별자치시';
+            if (name.includes('강원')) return '강원도';
+            if (name.includes('충북')) return '충청북도';
+            if (name.includes('충남')) return '충청남도';
+            if (name.includes('전북')) return '전라북도';
+            if (name.includes('전남')) return '전라남도';
+            if (name.includes('경북')) return '경상북도';
+            if (name.includes('경남')) return '경상남도';
+            if (name.includes('제주')) return '제주특별자치도';
+            return name;
+        };
+
+        window.toggleFilter = function(key, value) {
+            const index = currentFilters[key].indexOf(value);
+            if (index > -1) currentFilters[key].splice(index, 1);
+            else currentFilters[key].push(value);
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.setFilterAll = function(key, state) {
+            let options = filterCategories[key];
+            if (key === 'type' && currentFilters.type2.length > 0 && currentFilters.type2.length < filterCategories.type2.length) {
+                const availableTypes = new Set();
+                currentFilters.type2.forEach(t2 => { if (type2ToTypeMap[t2]) type2ToTypeMap[t2].forEach(t => availableTypes.add(t)); });
+                options = [...availableTypes].sort();
+            }
+            
+            if (state) {
+                currentFilters[key] = [...new Set([...currentFilters[key], ...options])];
+            } else {
+                const optionSet = new Set(options);
+                currentFilters[key] = currentFilters[key].filter(item => !optionSet.has(item));
+            }
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.debounceFilter = function() {
+            clearTimeout(window._debounceTimer);
+            window._debounceTimer = setTimeout(() => {
+                currentFilters.search = document.getElementById('search-input').value;
+                updateDashboard();
+            }, 300);
+        };
+
+        window.resetAllFilters = function() {
+            Object.keys(currentFilters).forEach(key => {
+                if(key === 'search') currentFilters[key] = '';
+                else if(filterCategories[key]) currentFilters[key] = [...filterCategories[key]];
+            });
+            document.getElementById('search-input').value = '';
+            selectedRegion = null;
+            renderFilters();
+            updateDashboard();
+        };
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initCharts();
+            renderFilters();
+            updateDashboard();
+            window.addEventListener('resize', () => Object.values(charts).forEach(c => c.resize()));
+        });
+
+        async function loadData() {
+            return new Promise((resolve) => {
+                Papa.parse(CSV_URL, {
+                    download: true, header: true, skipEmptyLines: true,
+                    complete: (results) => {
+                        const data = results.data;
+                        const metaFields = results.meta.fields || [];
+                        const cleanHeaderMap = {};
+                        metaFields.forEach(f => {
+                            const clean = f.trim().replace(/\s/g, '').toLowerCase();
+                            cleanHeaderMap[clean] = f;
+                        });
+                        const findVal = (row, candidates) => {
+                            for (let cand of candidates) {
+                                const cleanCand = cand.replace(/\s/g, '').toLowerCase();
+                                const actualKey = cleanHeaderMap[cleanCand];
+                                if (actualKey && row[actualKey] !== undefined) return row[actualKey].trim();
+                            }
+                            return undefined;
+                        };
+                        const parseNum = (val) => {
+                            if (!val) return 0;
+                            const cleaned = String(val).replace(/,/g, "").replace(/[^0-9]/g, "");
+                            return parseInt(cleaned) || 0;
+                        };
+
+                        rawData = data.map(row => {
+                            const t = findVal(row, ['유형']) || '(미정)';
+                            const t2 = findVal(row, ['대분류', '유형2', '유형2(대분류)']) || '(미정)';
+                            if (t2 !== '(미정)' && t !== '(미정)') {
+                                if (!type2ToTypeMap[t2]) type2ToTypeMap[t2] = new Set();
+                                type2ToTypeMap[t2].add(t);
+                            }
+                            return {
+                                심사연도: parseNum(findVal(row, ['심사연도', '연도', '사업심사년도'])),
+                                completion: findVal(row, ['준공여부', '상태']) || '(미정)',
+                                type: t, type2: t2,
+                                public: findVal(row, ['공공', '사업주체', '공공주체']) || '(미정)',
+                                operator: findVal(row, ['운영사', '공급주체', '운영기관', '단체명', '운영주체']) || '(미정)',
+                                region: findVal(row, ['광역', '지역']) || '(미정)',
+                                units: parseNum(findVal(row, ['세대', '세대수', '총세대수', '공급세대수'])),
+                                name: findVal(row, ['사업명', '주택명', '건물명', '현장명']) || '(미등록 사업)'
+                            };
+                        }).filter(d => ['준공', '미준공', '미착공'].includes(d.completion) && !['공공임대', '공동체주택'].includes(d.type2));
+
+                        ['completion', 'type2', 'type', 'public'].forEach(key => {
+                            filterCategories[key] = [...new Set(rawData.map(d => d[key]))].filter(v => v !== '(미정)' && v !== '').sort();
+                            currentFilters[key] = [...filterCategories[key]];
+                        });
+                        
+                        document.getElementById('status-message').textContent = `로드 완료 (${rawData.length.toLocaleString()}건)`;
+                        resolve();
+                    }
+                });
+            });
+        }
+
+        function filterData() {
+            // 1단계: 상단 필터링 적용 (Global)
+            filteredByGlobal = rawData.filter(d => {
+                const searchStr = currentFilters.search.toLowerCase();
+                const ms = !searchStr || d.name.toLowerCase().includes(searchStr) || d.operator.toLowerCase().includes(searchStr) || d.public.toLowerCase().includes(searchStr);
+                
+                const mf = Object.keys(currentFilters).every(key => {
+                    if (key === 'search') return true;
+                    return currentFilters[key].includes(d[key]);
+                });
+                return ms && mf;
+            });
+
+            // 2단계: 지도 선택 지역 추가 필터링 (Selection)
+            filteredByMap = filteredByGlobal.filter(d => {
+                if (!selectedRegion) return true;
+                return normalizeMapName(d.region) === selectedRegion;
+            });
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('dynamic-filters');
+            if (!container) return; container.innerHTML = '';
+            const labels = { completion: '준공여부', type2: '대분류', type: '유형', public: '공공주체' };
+            ['completion', 'type2', 'type', 'public'].forEach(key => {
+                let options = filterCategories[key];
+                if (key === 'type' && currentFilters.type2.length > 0 && currentFilters.type2.length < filterCategories.type2.length) {
+                    const availableTypes = new Set();
+                    currentFilters.type2.forEach(t2 => { if (type2ToTypeMap[t2]) type2ToTypeMap[t2].forEach(t => availableTypes.add(t)); });
+                    options = [...availableTypes].sort();
+                }
+                
+                const div = document.createElement('div');
+                div.className = "flex flex-col mb-4";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1.5 px-1">
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${labels[key]}</label>
+                        <div class="flex gap-1">
+                            <button type="button" title="모두 선택" onclick="setFilterAll('${key}', true)" class="icon-btn all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                            <button type="button" title="모두 해제" onclick="setFilterAll('${key}', false)" class="icon-btn none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${options.map(opt => `<button type="button" onclick="toggleFilter('${key}', '${opt}')" class="filter-chip border border-slate-100 ${currentFilters[key].includes(opt) ? 'active shadow-sm' : 'bg-slate-50 text-slate-500 hover:border-blue-200'}">${opt}</button>`).join('')}
+                    </div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateDashboard() {
+            filterData(); 
+            renderStats(); 
+            renderRatioChart(); 
+            renderMap();      // Map uses filteredByGlobal
+            renderTable();    // Table uses filteredByMap
+            renderDetailPanel(); // Detail uses filteredByMap
+        }
+
+        function renderStats() {
+            document.getElementById('stat-total-units').innerText = filteredByMap.reduce((s, d) => s + d.units, 0).toLocaleString();
+            document.getElementById('stat-total-count').innerText = filteredByMap.length.toLocaleString();
+            const operators = new Set(filteredByMap.map(d => d.operator).filter(o => o !== '(미정)' && o !== ''));
+            document.getElementById('stat-total-operators').innerText = operators.size.toLocaleString();
+        }
+
+        function initCharts() {
+            charts.ratio = echarts.init(document.getElementById('ratio-chart'));
+            charts.map = echarts.init(document.getElementById('map-chart'));
+            charts.map.on('click', (params) => { 
+                selectedRegion = (selectedRegion === params.name) ? null : params.name; 
+                updateDashboard(); // 지도를 클릭하면 전체 대시보드 업데이트
+            });
+        }
+
+        window.switchRatioTab = function(tab) {
+            activeRatioTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === `btn-tab-${tab}`));
+            renderRatioChart();
+        };
+
+        function renderRatioChart() {
+            const agg = {}; 
+            filteredByMap.forEach(d => { 
+                if(d[activeRatioTab] && d[activeRatioTab] !== '(미정)') 
+                    agg[d[activeRatioTab]] = (agg[d[activeRatioTab]] || 0) + d.units; 
+            });
+            charts.ratio.setOption({ tooltip: { trigger: 'item' }, legend: { bottom: 0, icon: 'circle', itemStyle: { fontSize: 10 } }, series: [{ type: 'pie', radius: ['40%', '65%'], avoidLabelOverlap: true, itemStyle: { borderRadius: 8, borderColor: '#fff', borderWidth: 1 }, label: { show: false }, data: Object.entries(agg).map(([name, value]) => ({ name, value })) }] }, true);
+        }
+
+        async function renderMap() {
+            if (!charts.map._geoLoaded) { const geo = await fetch(KOREA_GEO_URL).then(r => r.json()); echarts.registerMap('korea', geo); charts.map._geoLoaded = true; }
+            
+            // 지도는 상단 필터만 적용된 filteredByGlobal을 사용하여 전체 분포를 보여줌
+            const agg = {}; 
+            filteredByGlobal.forEach(d => { 
+                const r = normalizeMapName(d.region); 
+                agg[r] = (agg[r] || 0) + d.units; 
+            });
+            
+            const data = Object.entries(agg).map(([name, value]) => ({ name, value }));
+            charts.map.setOption({
+                visualMap: {
+                    min: 0, max: Math.max(...data.map(d => d.value), 1),
+                    left: 'center', bottom: 20, orient: 'horizontal',
+                    text: ['높음', '낮음'], inRange: { color: ['#eff6ff', '#2563eb', '#1e3a8a'] }, calculable: true,
+                    textStyle: { fontSize: 9, fontWeight: 'bold' }
+                },
+                series: [{ type: 'map', map: 'korea', roam: true, selectedMode: 'single', emphasis: { itemStyle: { areaColor: '#f59e0b' } }, data }]
+            }, true);
+            
+            if (selectedRegion) charts.map.dispatchAction({ type: 'mapSelect', name: selectedRegion });
+            else charts.map.dispatchAction({ type: 'mapUnSelect', all: true });
+        }
+
+        function renderDetailPanel() {
+            const panel = document.getElementById('detail-panel');
+            const data = filteredByMap; // 지도 클릭이 이미 반영된 filteredByMap 사용
+            const total = data.reduce((s, d) => s + d.units, 0);
+            const types = {}; 
+            data.forEach(d => types[d.type2] = (types[d.type2] || 0) + d.units);
+            const top5 = [...data].sort((a,b) => b.units - a.units).slice(0, 5);
+            
+            panel.innerHTML = `
+                <div class="animate-in fade-in slide-in-from-right-2 duration-300">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="text-2xl font-black text-slate-800">${selectedRegion || "전국 현황"}</h4>
+                        ${selectedRegion ? `<button onclick="selectedRegion=null; updateDashboard();" class="text-slate-300 hover:text-slate-900 cursor-pointer p-1 transition-colors">✕</button>` : ''}
+                    </div>
+                    <div class="mb-8">
+                        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-50">
+                            <p class="text-[9px] font-black text-blue-300 uppercase mb-1 tracking-widest">공급 합계</p>
+                            <p class="text-2xl font-black text-blue-700">${total.toLocaleString()}<span class="text-sm ml-1 font-normal opacity-50">세대</span></p>
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <h5 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">분류별 비중</h5>
+                        ${Object.entries(types).sort((a,b)=>b[1]-a[1]).map(([n,v]) => `<div class="mb-3"><div class="flex justify-between text-[10px] font-bold mb-1"><span>${n}</span><span>${v.toLocaleString()}세대</span></div><div class="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden"><div class="h-full bg-blue-500" style="width: ${total > 0 ? (v/total)*100 : 0}%"></div></div></div>`).join('')}
+                    </div>
+                    <div>
+                        <h5 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">주요 프로젝트</h5>
+                        <div class="space-y-2">
+                            ${top5.map(p => `<div class="p-3 bg-slate-50/50 rounded-xl flex justify-between items-center text-[11px]"><div class="truncate"><p class="font-bold text-slate-700 truncate">${p.name}</p><p class="text-[9px] text-slate-400">${p.public}</p></div><p class="font-black text-blue-600 ml-3">${p.units}</p></div>`).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderTable() {
+            // 필터링 + 지도 선택 지역이 적용된 filteredByMap 정렬
+            const sorted = [...filteredByMap].sort((a,b) => {
+                const vA = a[sortConfig.key], vB = b[sortConfig.key];
+                if (typeof vA === 'number' && typeof vB === 'number') return sortConfig.direction === 'asc' ? vA - vB : vB - vA;
+                const sA = String(vA).toLowerCase(), sB = String(vB).toLowerCase();
+                if (sA < sB) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (sA > sB) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            document.getElementById('table-count').innerText = `${filteredByMap.length.toLocaleString()}건`;
+            document.getElementById('table-body').innerHTML = sorted.map(d => `
+                <tr class="hover:bg-slate-50/50">
+                    <td class="p-3 text-blue-600 font-bold">${d.심사연도 || '-'}</td>
+                    <td class="p-3 font-bold text-slate-800">${d.name}</td>
+                    <td class="p-3 text-slate-600">${d.type}</td>
+                    <td class="p-3"><span class="type2-badge">${d.type2}</span></td>
+                    <td class="p-3 text-slate-400">${d.public}</td>
+                    <td class="p-3 text-slate-400">${d.operator}</td>
+                    <td class="p-3 text-slate-600">${d.region}</td>
+                    <td class="p-3 text-right font-black text-slate-800">${d.units.toLocaleString()}</td>
+                </tr>`).join('');
+                
+            document.querySelectorAll('th[data-sort-key]').forEach(th => {
+                const key = th.getAttribute('data-sort-key');
+                th.classList.toggle('active-sort', key === sortConfig.key);
+                const icon = th.querySelector('.sort-icon'); 
+                if (icon) icon.innerHTML = key === sortConfig.key ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '';
+            });
+        }
+
+        window.sortTable = function(key) { 
+            if (sortConfig.key === key) sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'; 
+            else { sortConfig.key = key; sortConfig.direction = 'desc'; } 
+            renderTable(); 
+        };
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,32 @@
+<!--%import("style.css")-->
+
+<!--@if($widgetstyle_extra_var->cn_no == "4")-->
+<div id="iv">
+	<div class="ta">
+    <div class="tb">
+    	<div class="title">
+        	<img src="img/la.jpg" width="13" height="35" class="l" />
+            <div class="m">
+               	{$widgetstyle_extra_var->ws_title}
+            </div>
+            <img src="img/lb.jpg" width="13" height="35" class="r" />
+        </div>
+    </div>
+	</div>
+	<div class="list">
+		{$widget_content}
+	</div>
+	<div class="ba">
+    <div class="bb">
+    {@ $ws_more_url = trim($widgetstyle_extra_var->ws_more_url); }
+        <!--@if($ws_more_url)-->
+            <!--@if(strtolower(substr($ws_more_url,0,4))=='http')-->
+                <a href="{$ws_more_url}"><img src="img/bb.jpg" width="57" height="23" /></a>
+			<!--@else-->
+                <a href="http://{$ws_more_url}"><img src="img/bb.jpg" width="57" height="23" /></a>
+        	<!--@end-->
+        <!--@end-->            
+    </div>
+	</div>
+</div>    
+<!--@end-->

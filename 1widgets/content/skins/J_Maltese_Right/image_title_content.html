@@ -1,0 +1,48 @@
+
+
+{@$_idx=0}
+<!--@foreach($widget_info->content_items as $key => $item)-->
+    <article class="post"<!--@if($_idx >= $widget_info->list_count)--> style="display:none"<!--@end-->>
+
+
+
+    <!--@for($j=0,$c=count($widget_info->option_view_arr);$j<$c;$j++)-->
+
+        <!--@if($widget_info->option_view_arr[$j]=='title')-->
+
+            <header>
+                <div class="title">
+                    <h2><a href="{$item->getLink()}" class="title" style="padding:0;" target="_self" |cond="$widget_info->new_window">{$item->getTitle($widget_info->subject_cut_size)}</a></h2>
+                </div>
+
+                <!--@if($widget_info->option_view_arr[$j+1]=='regdate')-->
+                <div class="meta">
+                    <time class="published" datetime="2015-11-01">{$item->getRegdate("Y-m-d")}<span class="hour" style="margin-left:5%;">{$item->getRegdate("H:i")}</span></time>
+                    <a href="#" onclick="return false;" class="author member_{$item->getMemberSrl()}" target="_blank" |cond="$widget_info->new_window">{$item->getNickName($widget_info->nickname_cut_size)}</a>
+                </div>
+                <!--@end-->
+            </header>
+            
+            <!--@if($item->getThumbnail())-->
+            <a href="{$item->getLink()}" class="image featured" target="_self"  style="margin: 0 auto 2em auto;text-align: center;">
+                <img src="{$item->getThumbnail()}" />
+            </a>
+            <!--@end-->
+            
+            <p>{$item->getContent()}</p>
+
+            <!--@if($widget_info->show_comment_count=='Y' && $item->getCommentCount())-->
+            <footer>
+                <ul class="actions">
+                    <li><a href="{$item->getLink()}" class="button big">Continue Reading</a></li>
+                </ul>
+                <ul class="stats">
+                    <li><a href="{$item->getLink()}#comment" target="_self" |cond="$widget_info->new_window" class="icon fa-comment">{$item->getCommentCount()}</a></li>
+                </ul>
+            </footer>
+            <!--@end-->
+        <!--@end-->
+    <!--@end-->
+    </article>
+{@$_idx++}
+<!--@end-->

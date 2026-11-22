@@ -1,0 +1,21 @@
+<!--%import("style.css")-->
+{@ $ws_more_url = trim($widgetstyle_extra_var->ws_more_url); }
+<div class="sweetMobileWrap">
+	<div class="sweetMobile">
+		<!--@if($widgetstyle_extra_var->ws_title_display == 'Y')-->
+		<div class="smTitle">
+			<h3>{$widgetstyle_extra_var->ws_title}</h3>
+			<!--@if($widgetstyle_extra_var->ws_more == 'Y')-->
+				<!--@if(strtolower(substr($ws_more_url,0,4))=='http')-->
+					<a href="{$ws_more_url}">more</a>
+				<!--@else-->
+					<a href="http://{$ws_more_url}">more</a>
+				<!--@end-->
+			<!--@end-->
+		</div>
+		<!--@end-->
+		<div class="smBody">
+			{$widget_content}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,56 @@
+﻿@charset "utf-8";
+
+.widget_social_login_skin { position:relative; width:100%; max-width:320px; padding:10px; margin:0px auto; border:1px solid #a9a9a9; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+
+/* 소셜 로그인 CSS */
+.widget_social_login_skin .xe_login { position:relative; padding:0px; margin:0px; }
+.widget_social_login_skin .xe_login #acField { padding:0px; margin:0px; border:0px; }
+.widget_social_login_skin .xe_login #acField .idpw { position:relative; }
+.widget_social_login_skin .xe_login #acField .idpw .user_area { display:block; }
+.widget_social_login_skin .xe_login #acField .idpw .user_area label { font-weight:bold; display:none; }
+.widget_social_login_skin .xe_login #acField .idpw .user_area input { width:100%; padding:5px; margin:5px 0px 5px 0px; border:1px solid #a9a9a9; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.widget_social_login_skin .xe_login #acField .idpw .btn_login { width:100%; padding:5px 0px; margin-top:5px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.widget_social_login_skin .xe_login #acField .idpw .help { position:relative; margin:10px 0px 0px 0px; overflow:hidden; float:right; }
+.widget_social_login_skin .xe_login #acField .idpw .help li { margin:0px 0px 0px 5px; display:inline-block; }
+.widget_social_login_skin .xe_login #acField .idpw .help li a { display:block; }
+.widget_social_login_skin .xe_login #acField .idpw .keep { position:relative; padding:0px; margin:5px 0px 0px 0px; overflow:hidden; float:left; }
+.widget_social_login_skin .xe_login #acField .warning { position:relative; top:5px; padding:5px; margin:0px 0px 0px 0px; overflow:hidden; border:1px solid #ccc; border-radius:0px; float:none; clear:both; display:none; }
+
+.widget_social_login_skin .social_login { position:relative; padding:10px 0px 0px 0px; margin:20px 0px 0px 0px; border-top:1px solid #a9a9a9; text-align:right; }
+.widget_social_login_skin .social_login .social_label { height:35px; float:left; line-height:35px; font-size:16px; font-weight:bold; display:inline-block; }
+.widget_social_login_skin .social_login .btn_social_login { width:33px; height:33px; border:1px solid #ccc; display:inline-block; }
+.widget_social_login_skin .social_login .btn_social_login span { display:none; }
+.widget_social_login_skin .social_login #btn_facebook_login { background:url(../images/icon_social_login.png) no-repeat -73px 0px; }
+.widget_social_login_skin .social_login #btn_twitter_login { background:url(../images/icon_social_login.png) no-repeat -110px 0px; }
+.widget_social_login_skin .social_login #btn_google_login { background:url(../images/icon_social_login.png) no-repeat -147px 0px; }
+.widget_social_login_skin .social_login #btn_naver_login { background:url(../images/icon_social_login.png) no-repeat -37px 0px; }
+.widget_social_login_skin .social_login #btn_kakao_login { background:url(../images/icon_social_login.png) no-repeat right 0px; }
+
+.widget_social_login_skin .social_email { position:absolute; top:0px; left:0px; width:100%; height:100%; padding:0px 10px; background:#fff; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; display:none; }
+.widget_social_login_skin .social_email .email_input { position:relative; top:15%; text-align:center; }
+.widget_social_login_skin .social_email .email_input input { width:100%; padding:5px; margin:5px 0px 5px 0px; border:1px solid #a9a9a9; text-align:left; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; display:inline-block; }
+.widget_social_login_skin .social_email .send_social_login { padding:10px; margin-top:30px; color:#fff; display:block; }
+.widget_social_login_skin .social_email #send_facebook_login { background:#aaa; }
+.widget_social_login_skin .social_email #send_google_login { background:#aaa; }
+.widget_social_login_skin .social_email #send_naver_login { background:#aaa; }
+.widget_social_login_skin .social_email #send_kakao_login { background:#aaa; }
+.widget_social_login_skin .social_email #send_twitter_login { background:#aaa; }
+.widget_social_login_skin .social_email .btn_close { position:absolute; top:5px; right:5px; display:inline-block; }
+
+
+#social_login_loading { position:fixed; top:0px; left:0px; width:100%; height:100%; display:none; z-index:999; }
+#social_login_loading .loading_bg { position:absolute; top:0px; left:0px; width:100%; height:100%; background:#fff; opacity: 0.7; filter: alpha(opacity=70); z-index:999; }
+#social_login_loading img { position:absolute; top:50%; left:50%; margin-top:-64px; margin-left:-64px; display:inline-block; }
+
+
+/* 소셜 로그아웃 CSS */
+.widget_social_login_skin .userName { position:relative; }
+.widget_social_login_skin .userName .nick_name { }
+.widget_social_login_skin .userName .point { }
+.widget_social_login_skin .userName .btn_logout { float:right; }
+
+.widget_social_login_skin .userMenu { position:relative; padding:5px; padding-bottom:0px; margin-top:5px; overflow:hidden; border:1px solid #ccc; }
+.widget_social_login_skin .userMenu li { position:relative; overflow:hidden; padding-right:5px; margin-bottom:5px; margin-right:5px; border-right:1px solid #ccc; float:left; display:inline-block; }
+.widget_social_login_skin .userMenu li:last-child { padding-right:0px; margin-right:0px; border-right:0px; }
+.widget_social_login_skin .userMenu li a { display:block; }
+

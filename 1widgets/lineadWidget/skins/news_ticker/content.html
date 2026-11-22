@@ -1,0 +1,76 @@
+<!--// CSS -->
+<load target="js/jquery.bxslider.js" />
+<load target="css/style.css" />
+<load target="css/jquery.bxslider.css" />
+
+<!--// 설정된 컬러셋의 종류에 따라서 css파일을 import 합니다 -->
+<!--@if($colorset=="gray")--> 
+	<!--%import("css/gray.css")-->
+<!--@elseif($colorset=="red")-->
+	<!--%import("css/red.css")-->
+<!--@elseif($colorset=="blue")-->
+	<!--%import("css/blue.css")-->
+<!--@elseif($colorset=="green")-->
+	<!--%import("css/green.css")-->
+<!--@elseif($colorset=="yellow")-->
+	<!--%import("css/yellow.css")-->
+<!--@elseif($colorset=="black")-->
+	<!--%import("css/black.css")-->
+<!--@elseif($colorset=="none_black")-->
+	{@ $colorset = 'nblack'}
+	<!--%import("css/none_black.css")-->
+<!--@else-->
+	{@ $colorset = 'none'}
+	<!--%import("css/none.css")-->
+<!--@end-->
+
+{@ $_news_ticker_id = "lineadWidget_".(time()+mt_rand(1,99)*mt_rand(1,10))}
+<div class="lineadWidget lineadWidget_{$colorset}">
+	<ul id="{$_news_ticker_id}">
+	<!--@foreach($widget_info->ad_list as $no => $oAd)-->
+	<li>
+	<!--@if($widget_info->display_notice_head == 'Y' || $widget_info->display_author == 'Y')-->
+	<!--@if($oAd->isNotice() && $widget_info->display_notice_head == 'Y')-->
+	<strong class="notice">[{$lang->notice}]</strong>
+	<!--@else-->
+	<!--@if($widget_info->display_author == 'Y')-->
+	<strong class="author">[<span<!--@if($widget_info->use_extra_info == 'Y')--> class="member_{$oAd->get('member_srl')}"<!--@end-->>{$oAd->getNickName()}</span>]</strong><!--@end-->
+	<!--@end-->
+	<!--@end-->
+	<span class="title">{$oAd->getAdContent($widget_info->subject_cut_size, true, 'text')}</span>
+	</li>
+	<!--@end-->
+	<!--@if(!count($widget_info->ad_list))-->
+	<li>
+		<strong class="author notice">[{$lang->notice}]</strong>
+		<span class="title">{$lang->ads->msg->not_exists_registered_ads}</span>
+	</li>
+	<!--@end-->
+	<li>
+		<strong class="notice">[{$lang->notice}]</strong>
+		<span class="title"><a href="{getUrl('','mid',$widget_info->linead_mid)}">{$lang->msg_register_ad}</a></span>
+	</li>
+	</ul>
+</div>
+{@
+	$scrollSpeed = intval($widget_info->scroll_rate);
+	$scrollDelay = intval($widget_info->scroll_speed);
+}
+<script>
+jQuery(function($) {
+	$(function() {
+		$('#{$_news_ticker_id}').bxSlider({
+			mode: 'vertical',
+			pager: false,
+			speed: {$scrollSpeed},
+			autoDelay: {$scrollDelay},
+			touchEnabled: false,
+			controls: false,
+			auto: true,
+			<!--@if($widget_info->scroll_stop === 'Y')-->
+			autoHover: true
+			<!--@end-->
+		});
+	});
+});
+</script>

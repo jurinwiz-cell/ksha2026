@@ -1,0 +1,101 @@
+<script>
+function sociaLoginLoading(){
+  var loagin_html = '';
+  loagin_html += '<div id="social_login_loading">';
+  loagin_html += '  <div class="loading_bg"></div>';
+  loagin_html += '  <img src="{$skin_path}images/loading.gif" />';
+  loagin_html += '</div>';
+  jQuery('body').append(loagin_html);
+  jQuery('#social_login_loading').fadeIn(300);
+}
+
+function sociaLoginLoadingRemove(){
+  jQuery('#social_login_loading').fadeOut(300);
+  setTimeout(function(){
+    jQuery('#social_login_loading').remove();
+  },300);
+}
+
+
+function socialEmailCheck(sns_provider){
+  //소셜함수실행
+  if(sns_provider=='facebook'){
+    jQuery('#btn_facebook_login_function').click();
+  } else if(sns_provider=='google'){
+    jQuery('#btn_google_login_function').click();
+  } else if(sns_provider=='naver'){
+    jQuery('#btn_naver_login_function').click();
+  }
+
+  if(sns_provider=='kakao' || sns_provider=='twitter'){
+  var regex = /^[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+)*@[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*$/;
+  var check_email = jQuery('.widget_social_login_skin .social_email input').val();
+  if(jQuery('.widget_social_login_skin .social_email').css('display')=='block'){
+    if(!check_email){
+      alert('{$social_obj->text_alert_input_email}');
+      jQuery('.widget_social_login_skin .social_email input').focus();
+    } else if(check_email.search(regex)==-1){
+      alert("{$social_obj->text_alert_wrong_email}");
+      jQuery('.widget_social_login_skin .social_email input').focus();
+    } else{
+      //로딩 아이콘 출력
+      var social_loading = new sociaLoginLoading();
+      var url = "./";
+      jQuery.ajax({
+        type: "POST",
+        url: url,
+        data: "ajax=y&mid={$mid}&social_email="+check_email+"&act={$act}",
+        success: function(data){
+          var response = jQuery(data);
+          if(response.filter("#ajax_result_text").text()){
+            var result_msg = response.filter("#ajax_result_text").text();
+          } else if(response.find("#ajax_result_text").text()){
+            var result_msg = response.find("#ajax_result_text").text();
+          }
+          if(result_msg){
+            //로딩 아이콘 제거
+            var social_loading = new sociaLoginLoadingRemove();
+            //소셜함수실행
+            if(sns_provider=='kakao'){
+              jQuery('#btn_kakao_login_function').click();
+            } else if(sns_provider=='twitter'){
+              jQuery('#btn_twitter_login_function').click();
+            }
+          }
+          return false;
+        }
+      });
+    }
+  } else{
+    jQuery('.widget_social_login_skin .social_email').fadeIn(300);
+  }
+  }
+}
+
+function socialBtnCheck(sns_provider){
+  if(sns_provider=='kakao' || sns_provider=='twitter'){
+    jQuery('.widget_social_login_skin .social_email').fadeIn(300);
+    jQuery('.widget_social_login_skin .social_email .send_social_login').attr('id','send_'+sns_provider+'_login');
+    jQuery('.widget_social_login_skin .social_email .send_social_login').attr('onclick','socialEmailCheck("'+sns_provider+'"); return false;');
+    sns_provider = sns_provider.toUpperCase();
+    jQuery('.widget_social_login_skin .social_email .send_social_login').text(sns_provider+' {$lang->cmd_login}');
+  }
+  socialEmailCheck(sns_provider);
+}
+
+
+jQuery(document).ready(function(){
+  jQuery('.widget_social_login_skin #keep_signed').change(function(){
+    if(jQuery(this).prop('checked')){
+      jQuery('.widget_social_login_skin .warning').slideDown();
+    } else{
+      jQuery('.widget_social_login_skin .warning').slideUp();
+    }
+  });
+
+  jQuery('.widget_social_login_skin .social_email .btn_close').click(function(){
+    jQuery('.widget_social_login_skin .social_email').fadeOut(300);
+    return false;
+  });
+});
+</script>

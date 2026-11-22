@@ -1,0 +1,39 @@
+<style>
+.title{margin-bottom:20px; padding-left:30px; padding-top:5px;padding-bottom:15px; background:#fafafa;}
+.des{font-size:1.2em; padding-bottom:10px; padding-left:5px;}
+.st1{border-left:10px solid #2388af;}
+.st2{border-left:10px solid #f2d377;}
+.st3{border-left:10px solid #43c0a6;}
+</style>
+
+<div class = "title st1">
+	<h2>주소</h2>
+	<div class = "des">서울시 은평구 통일로 684 서울혁신파크 미래청 310호</div>
+</div>
+<div class = "title st2">
+	<h2>연락처</h2>
+	<div class = "des">연락처 : 02-6264-5323</div>
+	<div class = "des">FAX : 02-6004-5939</div>
+	<div class = "des">이메일 : ksha@ksha.us</div>
+</div>
+
+<!-- * Daum 지도 - 지도퍼가기 -->
+<!-- 1. 지도 노드 -->
+<div class = "title st3" style = "padding-top:0; padding-bottom:0; background:#fff;">
+	<div id="daumRoughmapContainer1509366915135" class="root_daum_roughmap root_daum_roughmap_landing" style = "width:100%; max-width:100%;"></div>
+</div>
+<!--
+	2. 설치 스크립트
+	* 지도 퍼가기 서비스를 2개 이상 넣을 경우, 설치 스크립트는 하나만 삽입합니다.
+-->
+<script charset="UTF-8" class="daum_roughmap_loader_script" src="http://dmaps.daum.net/map_js_init/roughmapLoader.js"></script>
+
+<!-- 3. 실행 스크립트 -->
+<script charset="UTF-8">
+	new daum.roughmap.Lander({
+		"timestamp" : "1509366915135",
+		"key" : "k956",
+		"mapWidth" : "100%",
+		"mapHeight" : "500"
+	}).render();
+</script>			

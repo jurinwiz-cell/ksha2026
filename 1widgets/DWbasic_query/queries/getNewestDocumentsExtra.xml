@@ -1,0 +1,24 @@
+<query id="getNewestDocumentsExtra" action="select">
+    <tables>
+        <table name="documents" alias="documents" />
+        <table name="document_extra_vars" alias="extra_vars" type="left join">
+            <conditions>
+                <condition operation="equal" column="extra_vars.document_srl" default="documents.document_srl" />
+            </conditions>
+        </table>
+    </tables>
+    <columns>
+        <column name="documents.*" />
+    </columns>
+    <conditions>
+        <condition operation="in" column="documents.module_srl" var="module_srl" filter="number" notnull="notnull" pipe="and" />
+        <condition operation="equal" column="documents.is_notice" var="is_notice" pipe="and" />
+        <condition operation="in" column="documents.status" var="statusList" pipe="and" />
+        <condition operation="equal" column="extra_vars.eid" var="extra_var_eid" pipe="and" />
+        <condition operation="equal" column="extra_vars.value" var="extra_var_value" pipe="and" />
+    </conditions>
+    <navigation>
+        <index var="sort_index" default="documents.list_order" order="order_type" />
+        <list_count var="list_count" default="20" />
+    </navigation>
+</query>

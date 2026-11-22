@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">Gray WidgetStyle</title>
+    <title xml:lang="zh-CN">Gray WidgetStyle</title>
+    <title xml:lang="en">Gray WidgetStyle</title>
+    <title xml:lang="vi">Gray WidgetStyle</title>
+    <title xml:lang="zh-TW">Gray WidgetStyle</title>
+    <title xml:lang="jp">Gray WidgetStyle</title>
+    <description xml:lang="ko">Gray Style 레이아웃의 패키지입니다.</description>
+    <description xml:lang="zh-CN">Gray Style Layout Package</description>
+    <description xml:lang="en">Gray Style Layout Package</description>
+    <description xml:lang="vi">Gray Style Layout Package</description>
+    <description xml:lang="zh-TW">Gray Style Layout Package</description>
+    <description xml:lang="jp">Gray Style Layout Package</description>
+    <version>1.2.1</version>
+    <date>2010-01-30</date>
+    <preview>preview.gif</preview>
+
+    <author email_address="elkha1914@hotmail.com" link="http://notepad.wo.tc">
+        <name xml:lang="ko">엘카</name>
+        <name xml:lang="en">Elkha</name>
+		<name xml:lang="vi">Elkha</name>
+        <name xml:lang="zh-CN">Elkha</name>
+        <name xml:lang="zh-TW">Elkha</name>
+        <name xml:lang="jp">Elkha</name>
+    </author>
+    <extra_vars>
+        <var name="ws_colorset" type="select">
+            <title xml:lang="ko">컬러셋</title>
+            <title xml:lang="en">Colorset</title>
+	 			   	<title xml:lang="vi">T?o mau</title>
+            <title xml:lang="zh-CN">?色</title>
+            <title xml:lang="zh-TW">?色</title>
+            <title xml:lang="jp">カラ?セット</title>
+            <options>
+                <name xml:lang="ko">Gray</name>
+                <name xml:lang="en">Gray</name>
+								<name xml:lang="vi">Gray</name>
+                <name xml:lang="zh-CN">Gray</name>
+                <name xml:lang="zh-TW">Gray</name>
+                <name xml:lang="jp">Gray</name>
+                <value>gray</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Blue</name>
+                <name xml:lang="en">Blue</name>
+								<name xml:lang="vi">Blue</name>
+                <name xml:lang="zh-CN">Blue</name>
+                <name xml:lang="zh-TW">Blue</name>
+                <name xml:lang="jp">Blue</name>
+                <value>blue</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Red</name>
+                <name xml:lang="en">Red</name>
+								<name xml:lang="vi">Red</name>
+                <name xml:lang="zh-CN">Red</name>
+                <name xml:lang="zh-TW">Red</name>
+                <name xml:lang="jp">Red</name>
+                <value>red</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Orange</name>
+                <name xml:lang="en">Orange</name>
+								<name xml:lang="vi">Orange</name>
+                <name xml:lang="zh-CN">Orange</name>
+                <name xml:lang="zh-TW">Orange</name>
+                <name xml:lang="jp">Orange</name>
+                <value>orange</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Green</name>
+                <name xml:lang="en">Green</name>
+								<name xml:lang="vi">Green</name>
+                <name xml:lang="zh-CN">Green</name>
+                <name xml:lang="zh-TW">Green</name>
+                <name xml:lang="jp">Green</name>
+                <value>green</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Light gray</name>
+                <name xml:lang="en">Light gray</name>
+								<name xml:lang="vi">Light gray</name>
+                <name xml:lang="zh-CN">Light gray</name>
+                <name xml:lang="zh-TW">Light gray</name>
+                <name xml:lang="jp">Light gray</name>
+                <value>lightgray</value>
+            </options>
+        </var>
+        <var name="ws_form" type="select">
+            <title xml:lang="ko">형태</title>
+            <title xml:lang="en">Form</title>
+	 			   	<title xml:lang="vi">Form</title>
+            <title xml:lang="zh-CN">Form</title>
+            <title xml:lang="zh-TW">Form</title>
+            <title xml:lang="jp">Form</title>
+            <options>
+                <name xml:lang="ko">Title (default)</name>
+                <name xml:lang="en">Title (default)</name>
+								<name xml:lang="vi">Title (default)</name>
+                <name xml:lang="zh-CN">Title (default)</name>
+                <name xml:lang="zh-TW">Title (default)</name>
+                <name xml:lang="jp">Title (default)</name>
+                <value>default</value>
+            </options>
+            <options>
+                <name xml:lang="ko">Button</name>
+                <name xml:lang="en">Button</name>
+								<name xml:lang="vi">Button</name>
+                <name xml:lang="zh-CN">Button</name>
+                <name xml:lang="zh-TW">Button</name>
+                <name xml:lang="jp">Button</name>
+                <value>button</value>
+            </options>
+        </var>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <name xml:lang="en">Title</name>
+	   			 	<name xml:lang="vi">Tieu đ?</name>
+            <name xml:lang="zh-CN">?目名</name>
+            <name xml:lang="zh-TW">標題</name>
+            <name xml:lang="jp">タイトル</name>
+        </var>
+        <var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 URL</name>
+            <name xml:lang="en">more URL</name>
+	   			 	<name xml:lang="vi">URL c?a Xem them</name>
+            <name xml:lang="zh-CN">?看更多(?接)</name>
+            <name xml:lang="zh-TW">more URL</name>
+            <name xml:lang="jp">「もっと見る」URL</name>
+        </var>
+        <var name="ws_window" type="select">
+            <title xml:lang="ko">창</title>
+            <title xml:lang="en">Window</title>
+	 			   	<title xml:lang="vi">Window</title>
+            <title xml:lang="zh-CN">Window</title>
+            <title xml:lang="zh-TW">Window</title>
+            <title xml:lang="jp">Window</title>
+            <options>
+                <name xml:lang="ko">현재창 (default)</name>
+                <name xml:lang="en">Current window (default)</name>
+								<name xml:lang="vi">Current window (default)</name>
+                <name xml:lang="zh-CN">Current window (default)</name>
+                <name xml:lang="zh-TW">Current window (default)</name>
+                <name xml:lang="jp">Current window (default)</name>
+                <value>default</value>
+            </options>
+            <options>
+                <name xml:lang="ko">New window</name>
+                <name xml:lang="en">New window</name>
+								<name xml:lang="vi">New window</name>
+                <name xml:lang="zh-CN">New window</name>
+                <name xml:lang="zh-TW">New window</name>
+                <name xml:lang="jp">New window</name>
+                <value>new</value>
+            </options>
+        </var>
+        <var name="ws_content_margin" type="text">
+            <name xml:lang="ko">내용 여백 예)10px</name>
+            <name xml:lang="en">Content margin eg)10px</name>
+	   			 	<name xml:lang="vi">Content margin eg)10px</name>
+            <name xml:lang="zh-CN">Content margin eg)10px</name>
+            <name xml:lang="zh-TW">Content margin eg)10px</name>
+            <name xml:lang="jp">Content margin eg)10px</name>
+        </var>
+    </extra_vars>
+</widgetstyle>

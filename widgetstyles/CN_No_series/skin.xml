@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">CN No.series</title>
+    <title xml:lang="en">CN No.series</title>
+	<description xml:lang="ko">CN No.series 에 사용되는 위젯스타일입니다.</description>
+    <version>1.1</version>
+    <date>2011-04-22</date>
+    <preview>preview.jpg</preview>
+    <author email_address="ciendesign@gmail.com" link="http://ciendesign.com">
+        <name xml:lang="ko">시엔</name>
+        <name xml:lang="en">cien</name>
+    </author>
+
+    <extra_vars>
+
+        <var name="cn_no" type="select">
+            <name xml:lang="ko">CN No.series</name>
+			<description xml:lang="ko">CN 시리즈를 선택해주세요.</description>
+            <options>
+                <value>4</value>
+                <name xml:lang="ko">CN No.4</name>
+				<name xml:lang="en">CN No.4</name>
+            </options>
+        </var>
+	
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <description xml:lang="ko">제목을 입력해주세요.</description>
+        </var>
+		
+        <var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 주소</name>
+            <name xml:lang="en">more URL</name>
+            <description xml:lang="ko">링크될 주소를 입력해주세요.</description>
+        </var>		
+		
+	</extra_vars>
+</widgetstyle>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+    <title xml:lang="ko">Onepage Testimonial 위젯</title>
+	<description xml:lang="ko">게시판 생성하고, 게시판 설정의 사용자 정의 탭에서 사용자 정의 이름을 sub_title을 하나 만들어준 후 사용합니다.</description>
+    <version>1.00</version>
+    <date>2016-06-27</date>
+    <author email_address="jjrrtt@naver.com" link="http://kimtajo.net/">
+        <name xml:lang="ko">김타조</name>
+    </author>
+    <extra_vars>
+        <group>
+            <title xml:lang="ko">기본설정</title>
+            <var id="section_title" type="text">
+                <name xml:lang="ko">섹션 제목</name>
+            </var>
+            <var id="section_content" type="textarea">
+                <name xml:lang="ko">섹션 설명</name>
+                <description xml:lang="ko">해당 섹션의 설명을 입력합니다.(html 태그 적용가능, br 태그는 엔터로 입력)</description>
+            </var>
+	        <var id="section_name" type="text">
+		        <name xml:lang="ko">섹션명</name>
+		        <name xml:lang="en">Section Name</name>
+		        <description xml:lang="ko">layout에서 해당 위젯을 식별할 섹션명을 입력합니다.</description>
+	        </var>
+	        <var id="section_background_color" type="text">
+		        <name xml:lang="ko">섹션 배경색</name>
+		        <name xml:lang="en">Section Background Color</name>
+		        <description xml:lang="ko">해당 섹션의 배경색을 입력합니다.(기본: 포인트 색상, #까지 입력하세요.)</description>
+	        </var>
+        </group>
+		<group>
+			<title xml:lang="ko">정보 입력</title>
+			<var name="testimonial_count" type="select">
+				<name xml:lang="ko">갯수 선택</name>
+				<description xml:lang="ko">아이템 갯수를 선택합니다.(기본 6개)</description>
+				<options>
+					<value>6</value>
+					<name xml:lang="ko">6</name>
+				</options>
+				<options>
+					<value>3</value>
+					<name xml:lang="ko">3</name>
+				</options>
+			</var>
+
+			<var name="testimonial_sub1_icon" type="text">
+				<name xml:lang="ko">서브 1 아이콘</name>
+				<description xml:lang="ko">서브 1 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub1_content" type="textarea">
+				<name xml:lang="ko">서브 1 내용</name>
+				<description xml:lang="ko">서브 1 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub1_name" type="text">
+				<name xml:lang="ko">서브 1 이름</name>
+				<description xml:lang="ko">서브 1 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub1_info" type="text">
+				<name xml:lang="ko">서브 1 정보</name>
+				<description xml:lang="ko">서브 1 정보을 입력합니다.</description>
+			</var>
+
+			<var name="testimonial_sub2_icon" type="text">
+				<name xml:lang="ko">서브 2 아이콘</name>
+				<description xml:lang="ko">서브 2 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub2_content" type="textarea">
+				<name xml:lang="ko">서브 2 내용</name>
+				<description xml:lang="ko">서브 2 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub2_name" type="text">
+				<name xml:lang="ko">서브 2 이름</name>
+				<description xml:lang="ko">서브 2 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub2_info" type="text">
+				<name xml:lang="ko">서브 2 정보</name>
+				<description xml:lang="ko">서브 2 정보을 입력합니다.</description>
+			</var>
+
+			<var name="testimonial_sub3_icon" type="text">
+				<name xml:lang="ko">서브 3 아이콘</name>
+				<description xml:lang="ko">서브 3 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub3_content" type="textarea">
+				<name xml:lang="ko">서브 3 내용</name>
+				<description xml:lang="ko">서브 3 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub3_name" type="text">
+				<name xml:lang="ko">서브 3 이름</name>
+				<description xml:lang="ko">서브 3 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub3_info" type="text">
+				<name xml:lang="ko">서브 3 정보</name>
+				<description xml:lang="ko">서브 3 정보을 입력합니다.</description>
+			</var>
+
+			<var name="testimonial_sub4_icon" type="text">
+				<name xml:lang="ko">서브 4 아이콘</name>
+				<description xml:lang="ko">서브 4 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub4_content" type="textarea">
+				<name xml:lang="ko">서브 4 내용</name>
+				<description xml:lang="ko">서브 4 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub4_name" type="text">
+				<name xml:lang="ko">서브 4 이름</name>
+				<description xml:lang="ko">서브 4 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub4_info" type="text">
+				<name xml:lang="ko">서브 4 정보</name>
+				<description xml:lang="ko">서브 4 정보을 입력합니다.</description>
+			</var>
+
+			<var name="testimonial_sub5_icon" type="text">
+				<name xml:lang="ko">서브 5 아이콘</name>
+				<description xml:lang="ko">서브 5 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub5_content" type="textarea">
+				<name xml:lang="ko">서브 5 내용</name>
+				<description xml:lang="ko">서브 5 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub5_name" type="text">
+				<name xml:lang="ko">서브 5 이름</name>
+				<description xml:lang="ko">서브 5 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub5_info" type="text">
+				<name xml:lang="ko">서브 5 정보</name>
+				<description xml:lang="ko">서브 5 정보을 입력합니다.</description>
+			</var>
+
+			<var name="testimonial_sub6_icon" type="text">
+				<name xml:lang="ko">서브 6 아이콘</name>
+				<description xml:lang="ko">서브 6 아이콘 모양을 입력합니다.(기본값: fa fa-quote-left, Font Awesome(fa fa-icon 형식으로 작성), XEIcon(xi-icon 형식으로 작성) 지원)</description>
+			</var>
+			<var name="testimonial_sub6_content" type="textarea">
+				<name xml:lang="ko">서브 6 내용</name>
+				<description xml:lang="ko">서브 6 내용을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub6_name" type="text">
+				<name xml:lang="ko">서브 6 이름</name>
+				<description xml:lang="ko">서브 6 이름을 입력합니다.</description>
+			</var>
+			<var name="testimonial_sub6_info" type="text">
+				<name xml:lang="ko">서브 6 정보</name>
+				<description xml:lang="ko">서브 6 정보을 입력합니다.</description>
+			</var>
+		</group>
+    </extra_vars>
+</widget>

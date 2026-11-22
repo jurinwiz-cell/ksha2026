@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title xml:lang="ko">XGENESIS Official Layout</title>
+    <description xml:lang="ko">
+       XGENESIS.ORG 에서 사용하려고 만든 레이아웃입니다.
+	        디자인 : jedison(master@xgenesis.org)
+	        퍼블리싱 : jedison(master@xgenesis.org)
+	        레이아웃 제작 : 제디슨(master@xgenesis.org)
+    </description>
+    <version>0.2.2</version>
+    <date>2011-02-08</date>
+    <link>http://www.xgenesis.org</link>
+
+    <author email_address="master@xgenesis.org" link="http://www.xgenesis.org">
+        <name xml:lang="ko">제디슨</name>
+    </author>
+
+    <extra_vars>
+    	<!-- 스킨 -->
+		<var name="skin_kind" type="select">
+			<title xml:lang="ko">스킨종류</title>
+			<description xml:lang="ko">레이아웃에서 사용할 스킨종류를 선택해 주세요.(메인, 컨텐츠, 검색)</description>
+			<options value="main">
+				<title xml:lang="ko">메인</title>
+	      	</options>
+	      	<options value="content">
+				<title xml:lang="ko">컨텐츠</title>
+	      	</options>
+			<options value="search">
+				<title xml:lang="ko">검색</title>
+	      	</options>
+	    </var>
+	    <var name="skin_number" type="select">
+			<title xml:lang="ko">스킨번호</title>
+			<description xml:lang="ko">레이아웃에서 사용할 스킨번호를 선택해 주세요.
+			0001: XGENESIS.ORG</description>
+			<options value="0001">
+				<title xml:lang="ko">0001</title>
+	      	</options>
+	    </var>
+	    <var name="skin_width" type="text">
+			<title xml:lang="ko"> └─ 스킨 넓이</title>
+			<description xml:lang="ko">스킨의 넓이를 입력하세요. 반드시 숫자만 입력하셔야 합니다. (기본값: 950)</description>
+	    </var>
+        <var name="skin_colorset" type="select">
+            <title xml:lang="ko"> └─ 스킨 컬러셋</title>
+            <description xml:lang="ko">원하시는 컬러셋을 선택해주세요.선택된 컬러셋에 따라 기본적으로 사용하는 배경색과 버튼색이 달라집니다.</description>
+            <options value="black">
+                <title xml:lang="ko">검정색 (기본)</title>
+            </options>
+            <options value="blue">
+                <title xml:lang="ko">파란색</title>
+            </options>
+            <options value="green">
+                <title xml:lang="ko">녹색</title>
+            </options>
+            <options value="orange">
+                <title xml:lang="ko">오렌지색</title>
+            </options>
+            <options value="purple">
+                <title xml:lang="ko">보라색</title>
+            </options>
+            <options value="red">
+                <title xml:lang="ko">빨간색</title>
+            </options>
+            <options value="yellow">
+                <title xml:lang="ko">노란색</title>
+            </options>
+        </var>
+        <!-- 배경이미지 -->
+		<var name="background_image" type="image">
+			<title xml:lang="ko">배경 이미지</title>
+			<description xml:lang="ko">
+				배경에 표시될 이미지를 입력하세요.
+			</description>
+	    </var>
+		<var name="background_image_yn" type="select">
+			<title xml:lang="ko"> └─ 배경이미지 사용여부</title>
+			<description xml:lang="ko">배경이미지 사용여부를 선택해주세요.</description>
+			<options value="Y">
+				<title xml:lang="ko">사용함</title>
+	      	</options>
+	      	<options value="N">
+				<title xml:lang="ko">사용안함</title>
+	      	</options>
+	    </var>
+	    <!-- 메뉴 -->
+	        <!-- GNB -->
+	        <var name="gnb_yn" type="title">
+	            <title xml:lang="ko">GNB 설정</title>
+	            <description xml:lang="ko">GNB와 관련된 설정입니다.</description>
+			</var>
+	        <var name="gnb_background_yn" type="select">
+	            <title xml:lang="ko"> └─ GNB 배경색 사용여부</title>
+	            <description xml:lang="ko">GNB 배경색 사용여부를 선택해주세요.</description>
+	            <options value="Y">
+	                <title xml:lang="ko">사용함</title>
+	            </options>
+	            <options value="N">
+	                <title xml:lang="ko">사용안함</title>
+	            </options>
+			</var>
+		    <!-- GNB메뉴 표시 갯수 -->
+		    <var name="gnb_menu_count" type="text">
+				<title xml:lang="ko"> └─ GNB메뉴 표시 갯수</title>
+				<description xml:lang="ko">GNB메뉴 표시 갯수를 입력해주세요. 이곳에 입력한 표시 갯수만 GNB메뉴에 표시되고 나머지는 더보기를 클릭했을 때 표시합니다. (기본값: 3)</description>
+		    </var>
+			<!-- 회원메뉴 Right -->
+		    <var name="memberPanel_right" type="text">
+				<title xml:lang="ko"> └─ 회원메뉴 Right 위치 설정</title>
+				<description xml:lang="ko">회원메뉴 Right 위치 설정을 입력하세요. 숫자만 입력하세요.</description>
+		    </var>
+		    <!-- 더보기메뉴Right -->
+		    <var name="moreMenuPanel_right" type="text">
+				<title xml:lang="ko"> └─ 더보기메뉴 Right 위치 설정</title>
+				<description xml:lang="ko">더보기메뉴 Right 위치 설정을 입력하세요. 숫자만 입력하세요.</description>
+		    </var>
+			<!-- 메인메뉴 -->
+			<var name="mainmenu_yn" type="title">
+	            <title xml:lang="ko">메인메뉴 설정</title>
+	            <description xml:lang="ko">메인메뉴와 관련된 설정입니다.</description>
+			</var>
+			<var name="mainmenu_dropdown_yn" type="select">
+				<title xml:lang="ko"> └─ 메인메뉴 드랍다운 사용여부</title>
+	            <description xml:lang="ko">메인메뉴 드랍다운 사용여부를 선택해주세요. 드랍다운 되는 메뉴는 2Depth만 지원합니다.</description>
+	            <options value="Y">
+	                <title xml:lang="ko">사용함</title>
+	            </options>
+	            <options value="N">
+	                <title xml:lang="ko">사용안함</title>
+	            </options>
+		    </var>
+		    <!-- LNB -->
+		    <!-- 
+		    <var name="mainmenu_new_article_yn" type="select">
+	            <title xml:lang="ko"> └─ 메인메뉴 새글표시 사용여부</title>
+	            <description xml:lang="ko">메인메뉴 새글표시 사용여부를 선택해주세요.</description>
+	            <options value="Y">
+	                <title xml:lang="ko">사용함</title>
+	            </options>
+	            <options value="N">
+	                <title xml:lang="ko">사용안함</title>
+	            </options>
+			</var>
+			 -->
+			<!-- Footer -->
+	        <var name="footermenu_yn" type="title">
+	            <title xml:lang="ko">Footer 설정</title>
+	            <description xml:lang="ko">Footer 관련된 설정입니다.</description>
+			</var>
+			<var name="footer_site_name" type="text">
+				<title xml:lang="ko"> └─ 사이트이름</title>
+				<description xml:lang="ko">사이트 이름를 입력하세요. 사이트 하단에 표시됩니다. 기본값: XGENESIS.ORG</description>
+		    </var>
+		    <var name="footer_site_url" type="text">
+				<title xml:lang="ko"> └─ 사이트URL</title>
+				<description xml:lang="ko">사이트 이름을 클릭시에 이동할 링크 URL을 입력해 주세요. 기본값: http://www.xgenesis.org/</description>
+		    </var>
+		    <var name="footer_site_info" type="textarea">
+				<title xml:lang="ko"> └─ 사이트정보</title>
+				<description xml:lang="ko">사이트정보를 입력하세요. 사이트 하단에 표시됩니다.HTML을 사용할 수 있습니다.</description>
+		    </var>
+		    <var name="footer_webmaster_email" type="text">
+				<title xml:lang="ko"> └─ 웹마스터이메일</title>
+				<description xml:lang="ko">웹마스터이메일를 입력하세요. 사이트 하단에 표시됩니다.</description>
+		    </var>
+		    <var name="footer_site_since_type" type="select">
+				<title xml:lang="ko"> └─ 사이트개설년도 표시방법</title>
+				<description xml:lang="ko">
+				사이트개설년도 표시방법을 선택하세요.<br/>
+				SINCE_TYPE_001: 사이트를 올해 개설했을 때 선택하세요. 사이트 하단에 현재년도가 표시합니다.
+				SINCE_TYPE_002: "사이트시작년도 - 현재년도"로 표시합니다.
+				</description>
+				<options value="SINCE_TYPE_001">
+					<title xml:lang="ko">현재년도 (예:2010)</title>
+		      	</options>
+		      	<options value="SINCE_TYPE_002">
+					<title xml:lang="ko">사이트시작년도 - 현재년도 (예: 2009 - 2010)</title>
+		      	</options>
+		    </var>
+		    <var name="footer_site_since" type="text">
+				<title xml:lang="ko"> └─ 사이트시작년도</title>
+				<description xml:lang="ko">사이트시작년도를 입력하세요. 사이트 개설년도 표시방법에 따라 사용하며 사이트 하단에 표시됩니다. 기본값: 2009</description>
+		    </var>
+		    <!-- RSS -->
+		    <var name="footer_rss_address" type="text">
+				<title xml:lang="ko"> └─ Really Simple Syndication (RSS)</title>
+				<description xml:lang="ko">FeedBurner에서 발급받은 RSS 주소를 입력하세요. 입력하지 않으면 XE가 제공하는 RSS주소를 사용합니다. 사이트 하단에 표시됩니다.</description>
+		    </var>
+		<!-- 로고 -->
+        <var name="logo_image" type="image">
+			<title xml:lang="ko">로고 이미지</title>
+			<description xml:lang="ko">
+				레이아웃에 표시될 로고 이미지를 입력하세요.<br/>
+				(MAIN_0001 추천로고 사이즈: 210 x 80)<br/>
+				(CONTENT_0001 추천로고 사이즈: 80 x 25)<br/>
+				설정을 하지 않으면 기본 로고가 표시됩니다.
+			</description>
+	    </var>
+	    <var name="logo_url" type="text">
+			<title xml:lang="ko"> └─ 로고 링크</title>
+			<description xml:lang="ko">로고를 클릭시에 이동할 링크 URL을 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+	    <var name="logo_top" type="text">
+			<title xml:lang="ko"> └─ Top 위치</title>
+			<description xml:lang="ko">로고 이미지 Top 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: -10)</description>
+	    </var>
+		<var name="logo_left" type="text">
+			<title xml:lang="ko"> └─ Left 위치</title>
+			<description xml:lang="ko">로고 이미지 Left 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 0)</description>
+	    </var>
+        
+		<!-- 통합검색 -->
+	    <var name="searchKind" type="select">
+            <title xml:lang="ko">통합검색종류</title>
+            <description xml:alng="ko">통합검색의 종류를 선택해주세요.</description>
+            <options value="MIX">
+                <title xml:lang="ko">구글맞춤검색 + XE통합검색</title>
+            </options>
+            <options value="GOOGLE">
+                <title xml:lang="ko">구글맞춤검색</title>
+            </options>
+            <options value="XE">
+                <title xml:lang="ko">XE통합검색</title>
+            </options>
+        </var>
+        <var name="searchLocation" type="select">
+            <title xml:lang="ko"> └─ 통합검색표시위치</title>
+            <description xml:alng="ko">통합검색결과를 표시할 위치를 선택해주세요.</description>
+            <options value="GOOGLE_FIRST">
+                <title xml:lang="ko">구글맞춤검색(상단)-XE통합검색(하단)</title>
+            </options>
+            <options value="XE_FIRST">
+                <title xml:lang="ko">XE통합검색(상단)-구글맞춤검색(하단)</title>
+            </options>
+        </var>
+        <var name="googleSearchEngineUniqueId" type="textarea">
+            <title xml:lang="ko"> └─ Search engine unique ID</title>
+            <description xml:lang="ko">Search engine unique ID를 입력해 주세요.</description>
+        </var>
+        
+        <!-- Analytics 설정 -->
+	    <var name="analytics" type="select">
+            <title xml:lang="ko">Analytics 사용여부</title>
+            <description xml:alng="ko">Analytics 사용여부를 선택해주세요.</description>
+            <options value="Y">
+                <title xml:lang="ko">사용함</title>
+            </options>
+            <options value="N">
+                <title xml:lang="ko">사용안함</title>
+            </options>
+        </var>
+        <var name="analyticsCode" type="textarea">
+            <title xml:lang="ko"> └─ Analytics 추적코드</title>
+            <description xml:lang="ko">Analytics 추적코드를 입력해 주세요.</description>
+        </var>
+        
+	    <!-- 광고링크 -->
+	    <var name="adlink_gnbLeft_text" type="text">
+	      	<title xml:lang="ko">[광고링크] GNB 메뉴 왼쪽</title>
+	      	<description xml:lang="ko">GNB 메뉴 왼쪽에 표시될 광고링크를 입력하세요.</description>
+    	</var>
+    	<var name="adlink_gnbLeft_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">GNB 메뉴 왼쪽에 표시된 광고링크 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+	    <var name="adlink_searchBottom_text" type="text">
+	      	<title xml:lang="ko">[광고링크] 검색창 하단</title>
+	      	<description xml:lang="ko">
+	      	검색창 하단에 표시될 광고링크를 입력하세요.
+	      	단, 메인 XXXX 스킨을 선택했을 경우에만 표시됩니다.
+	      	</description>
+    	</var>
+    	<var name="adlink_searchBottom_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">검색창 하단에 표시된 광고링크 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+	    <var name="adlink_searchBottom_top" type="text">
+			<title xml:lang="ko"> └─ Top 위치</title>
+			<description xml:lang="ko">검색창 오른쪽 배너 Top 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 50)</description>
+		</var>
+		<var name="adlink_searchBottom_left" type="text">
+			<title xml:lang="ko"> └─ Left 위치</title>
+			<description xml:lang="ko">검색창 오른쪽 배너 Left 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 427)</description>
+		</var>
+		
+		<!-- 광고 -->
+		<var name="advertise_searchRight" type="textarea">
+	      	<title xml:lang="ko">[광고] 검색창 오른쪽</title>
+	      	<description xml:lang="ko">검색창 오른쪽에 표시할 광고를 입력하세요.HTML을 사용할 수 있습니다.</description>
+    	</var>
+    	<var name="advertise_mainMenuBottom" type="textarea">
+	      	<title xml:lang="ko">[광고] 메인메뉴 하단</title>
+	      	<description xml:lang="ko">메인메뉴 하단에 표시할 광고를 입력하세요.HTML을 사용할 수 있습니다.</description>
+    	</var>
+    	<var name="advertise_mainLeft" type="textarea">
+	      	<title xml:lang="ko">[광고] 메인 왼쪽</title>
+	      	<description xml:lang="ko">메인 왼쪽에 표시할 광고를 입력하세요.HTML을 사용할 수 있습니다.</description>
+    	</var>
+    	<var name="advertise_mainRight" type="textarea">
+	      	<title xml:lang="ko">[광고] 메인 오른쪽</title>
+	      	<description xml:lang="ko">메인 오른쪽에 표시할 광고를 입력하세요.HTML을 사용할 수 있습니다.</description>
+    	</var>
+    	<var name="advertise_lnb_menu_bottom" type="textarea">
+            <title xml:lang="ko">[광고] LNB 하단</title>
+            <description xml:lang="ko">LNB 하단에 표시할 광고를 입력하세요.HTML을 사용할 수 있습니다. 여기에 설정된 광고는 XGENESIS - LNB Menu 위젯을 사용할 경우에만 표시됩니다.</description>
+        </var>
+        
+	    <!-- 배너 -->
+	    <var name="banner_searchRight_image" type="image">
+	      	<title xml:lang="ko">[배너] 검색창 오른쪽 배너 이미지</title>
+	      	<description xml:lang="ko">검색창 오른쪽에 표시될 배너 이미지를 입력하세요.</description>
+    	</var>
+    	<var name="banner_searchRight_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">검색창 오른쪽 배너 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+		<var name="banner_searchRight_top" type="text">
+			<title xml:lang="ko"> └─ Top 위치</title>
+			<description xml:lang="ko">검색창 오른쪽 배너 Top 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 3;)</description>
+		</var>
+		<var name="banner_searchRight_left" type="text">
+			<title xml:lang="ko"> └─ Left 위치</title>
+			<description xml:lang="ko">검색창 오른쪽 배너 Left 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 870)</description>
+		</var>
+		<var name="banner_searchRight_newWindow" type="select">
+			<title xml:lang="ko"> └─ 새창표시여부</title>
+            <description xml:alng="ko">새창표시여부를 선택해주세요.</description>
+            <options value="Y">
+                <title xml:lang="ko">배너클릭시 새창에 표시합니다.</title>
+            </options>
+            <options value="N">
+                <title xml:lang="ko">배너클릭시 현재창에 표시합니다.</title>
+            </options>
+		</var>
+		<var name="banner_mainLeft_image" type="image">
+	      	<title xml:lang="ko">[배너] 메인 왼쪽 배너 이미지</title>
+	      	<description xml:lang="ko">메인 왼쪽에 표시될 배너 이미지를 입력하세요. (추천사이즈 - width:100px)</description>
+    	</var>
+    	<var name="banner_mainLeft_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">메인 왼쪽 배너 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+		<var name="banner_mainLeft_top" type="text">
+			<title xml:lang="ko"> └─ Top 위치</title>
+			<description xml:lang="ko">메인 왼쪽 배너 Top 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 3)</description>
+		</var>
+		<var name="banner_mainLeft_left" type="text">
+			<title xml:lang="ko"> └─ Left 위치</title>
+			<description xml:lang="ko">메인 왼쪽 배너 Left 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: -110)</description>
+		</var>
+		<var name="banner_mainLeft_newWindow" type="select">
+			<title xml:lang="ko"> └─ 새창표시여부</title>
+            <description xml:alng="ko">새창표시여부를 선택해주세요.</description>
+            <options value="Y">
+                <title xml:lang="ko">배너클릭시 새창에 표시합니다.</title>
+            </options>
+            <options value="N">
+                <title xml:lang="ko">배너클릭시 현재창에 표시합니다.</title>
+            </options>
+		</var>
+		
+		<var name="banner_mainRight_image" type="image">
+	      	<title xml:lang="ko">[배너] 메인 오른쪽 배너 이미지</title>
+	      	<description xml:lang="ko">메인 오른쪽에 표시될 배너 이미지를 입력하세요.</description>
+    	</var>
+    	<var name="banner_mainRight_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">메인 오른쪽 배너 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+		<var name="banner_mainRight_top" type="text">
+			<title xml:lang="ko"> └─ Top 위치</title>
+			<description xml:lang="ko">메인 오른쪽 배너 Top 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: 3)</description>
+		</var>
+		<var name="banner_mainRight_right" type="text">
+			<title xml:lang="ko"> └─ Right 위치</title>
+			<description xml:lang="ko">메인 오른쪽 배너 Right 위치 설정을 입력하세요. 숫자만 입력하세요. (기본값: -80)</description>
+		</var>
+		<var name="banner_mainRight_newWindow" type="select">
+			<title xml:lang="ko"> └─ 새창표시여부</title>
+            <description xml:alng="ko">새창표시여부를 선택해주세요.</description>
+            <options value="Y">
+                <title xml:lang="ko">배너클릭시 새창에 표시합니다.</title>
+            </options>
+            <options value="N">
+                <title xml:lang="ko">배너클릭시 현재창에 표시합니다.</title>
+            </options>
+		</var>
+		
+		<var name="banner_login_image" type="image">
+	      	<title xml:lang="ko">[배너] 로그인화면 배너 이미지</title>
+	      	<description xml:lang="ko">로그인화면에 표시될 배너 이미지를 입력하세요.</description>
+    	</var>
+    	<var name="banner_login_url" type="text">
+			<title xml:lang="ko"> └─ URL 링크</title>
+			<description xml:lang="ko">로그인화면 배너 클릭시에 이동할 URL링크를 입력해 주세요. 예)http://www.xgenesis.org/</description>
+	    </var>
+		<var name="banner_login_newWindow" type="select">
+			<title xml:lang="ko"> └─ 새창표시여부</title>
+            <description xml:alng="ko">새창표시여부를 선택해주세요.</description>
+            <options value="Y">
+                <title xml:lang="ko">배너클릭시 새창에 표시합니다.</title>
+            </options>
+            <options value="N">
+                <title xml:lang="ko">배너클릭시 현재창에 표시합니다.</title>
+            </options>
+		</var>
+	</extra_vars>
+	<menus>
+	    <menu name="gnb_menu" maxdepth="1">
+			<title xml:lang="ko">상단 메뉴</title>
+	    </menu>
+		<menu name="main_menu" maxdepth="7" default="true">
+			<title xml:lang="ko">메인 메뉴</title>
+	    </menu>
+	    <menu name="bottom_menu" maxdepth="1">
+			<title xml:lang="ko">하단 메뉴</title>
+	    </menu>
+		<menu name="sitemap_menu" maxdepth="7">
+			<title xml:lang="ko">사이트맵 메뉴</title>
+	    </menu>
+		<menu name="family_menu" maxdepth="1">
+			<title xml:lang="ko">패밀리사이트 메뉴</title>
+	    </menu>
+	</menus>
+</layout>

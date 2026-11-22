@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generator="FeedCreator 1.8" -->
+<?xml-stylesheet href="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/lib/exe/css.php?s=feed" type="text/css"?>
+<rdf:RDF
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/feed.php">
+        <title>한국 사회주택 위키백과</title>
+        <description></description>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/</link>
+        <image rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/lib/exe/fetch.php?media=wiki:dokuwiki.svg" />
+       <dc:date>2026-11-22T13:13:14+00:00</dc:date>
+        <items>
+            <rdf:Seq>
+                <rdf:li rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%A3%BC%EA%B1%B0%EB%B3%B5%EC%A7%80&amp;rev=1785506355&amp;do=diff"/>
+                <rdf:li rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%82%AC%ED%9A%8C%EC%A3%BC%ED%83%9D&amp;rev=1785506274&amp;do=diff"/>
+                <rdf:li rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EA%B3%B5%EA%B3%B5%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D&amp;rev=1785506181&amp;do=diff"/>
+                <rdf:li rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=start&amp;rev=1785506103&amp;do=diff"/>
+                <rdf:li rdf:resource="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=wiki:welcome&amp;rev=1785504725&amp;do=diff"/>
+            </rdf:Seq>
+        </items>
+    </channel>
+    <image rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/lib/exe/fetch.php?media=wiki:dokuwiki.svg">
+        <title>한국 사회주택 위키백과</title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/</link>
+        <url>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/lib/exe/fetch.php?media=wiki:dokuwiki.svg</url>
+    </image>
+    <item rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%A3%BC%EA%B1%B0%EB%B3%B5%EC%A7%80&amp;rev=1785506355&amp;do=diff">
+        <dc:format>text/html</dc:format>
+        <dc:date>2026-07-31T13:59:15+00:00</dc:date>
+        <dc:creator>admin (admin@undisclosed.example.com)</dc:creator>
+        <title>주거복지 - 만듦</title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%A3%BC%EA%B1%B0%EB%B3%B5%EC%A7%80&amp;rev=1785506355&amp;do=diff</link>
+        <description>주거복지 (Housing Welfare)
+
+1. 정의
+
+주거복지는 모든 국민이 쾌적하고 안정적인 주거 환경에서 인간다운 주거 생활을 누릴 수 있도록 국가나 지자체, 시민사회 등이 제공하는 사회적 지원과 정책을 통틀어 말합니다.</description>
+    </item>
+    <item rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%82%AC%ED%9A%8C%EC%A3%BC%ED%83%9D&amp;rev=1785506274&amp;do=diff">
+        <dc:format>text/html</dc:format>
+        <dc:date>2026-07-31T13:57:54+00:00</dc:date>
+        <dc:creator>admin (admin@undisclosed.example.com)</dc:creator>
+        <title>사회주택 - 만듦</title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EC%82%AC%ED%9A%8C%EC%A3%BC%ED%83%9D&amp;rev=1785506274&amp;do=diff</link>
+        <description>사회주택 (Social Housing)
+
+1. 정의
+
+사회주택(Social Housing)은 사회적 경제 주체(비영리 단체, 협동조합, 사회적 기업 등)가 공급하고 운영하는 임대주택을 말합니다. 
+
+취약계층이나 청년, 신혼부부 등 주거 안정이 필요한 이들에게 시장 가격(시세)보다 저렴한 임대료로 장기간 안정적인 거주 공간을 제공하는 것을 목적으로 합니다. 정부나 지자체가 직접 공급하는 공공임대주택과 개인이 수익을 목적으로 공급하는 민간임대주택의 중간 영역인…</description>
+    </item>
+    <item rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EA%B3%B5%EA%B3%B5%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D&amp;rev=1785506181&amp;do=diff">
+        <dc:format>text/html</dc:format>
+        <dc:date>2026-07-31T13:56:21+00:00</dc:date>
+        <dc:creator>admin (admin@undisclosed.example.com)</dc:creator>
+        <title>공공임대주택 - 만듦</title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=%EA%B3%B5%EA%B3%B5%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D&amp;rev=1785506181&amp;do=diff</link>
+        <description>공공임대주택 (Public Rental Housing)
+
+1. 정의
+
+공공임대주택은 공공주택사업자(국가, 지방자치단체, 한국토지주택공사(LH), 지방공사 등)가 재정이나 주택도시기금을 지원받아 건설, 매입 또는 임차하여 공급하는 주택 중 임대 목적으로 제공하는 주택을 말합니다.</description>
+    </item>
+    <item rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=start&amp;rev=1785506103&amp;do=diff">
+        <dc:format>text/html</dc:format>
+        <dc:date>2026-07-31T13:55:03+00:00</dc:date>
+        <dc:creator>admin (admin@undisclosed.example.com)</dc:creator>
+        <title>start - [사회주택의 정의] </title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=start&amp;rev=1785506103&amp;do=diff</link>
+        <description>사회주택 위키백과
+
+사회주택 (Social Housing)
+
+1. 정의
+
+사회주택(Social Housing)은 사회적 경제 주체(비영리 단체, 협동조합, 사회적 기업 등)가 공급하고 운영하는 임대주택을 말합니다. 
+
+취약계층이나 청년, 신혼부부 등 주거 안정이 필요한 이들에게 시장 가격(시세)보다 저렴한 임대료로 장기간 안정적인 거주 공간을 제공하는 것을 목적으로 합니다. 정부나 지자체가 직접 공급하는 공공임대주택과 개인이 수익을 목적으로 공급하는 민간임대주택의 중간 영역인…</description>
+    </item>
+    <item rdf:about="http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=wiki:welcome&amp;rev=1785504725&amp;do=diff">
+        <dc:format>text/html</dc:format>
+        <dc:date>2026-07-31T13:32:05+00:00</dc:date>
+        <dc:creator>admin (admin@undisclosed.example.com)</dc:creator>
+        <title>welcome</title>
+        <link>http://156.121.64.34.bc.googleusercontent.com/z/dokuwiki/doku.php?id=wiki:welcome&amp;rev=1785504725&amp;do=diff</link>
+        <description>대한민국 사회주택 위키
+
+사회주택 위키를 소개합니다.
+
+첫 번째 페이지 만들기
+
+위키를 시작하려면 시작 페이지(Start page)가 필요합니다. 페이지가 만들어지기 전까지는 이 링크가 빨간색으로 표시됩니다:</description>
+    </item>
+</rdf:RDF>

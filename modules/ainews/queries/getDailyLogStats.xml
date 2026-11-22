@@ -1,0 +1,17 @@
+<query id="getDailyLogStats" action="select">
+    <tables>
+        <table name="ainews_log" />
+    </tables>
+    <columns>
+        <column name="substr(regdate, 1, 8)" alias="date" />
+        <column name="status" />
+        <column name="count(*)" alias="cnt" />
+    </columns>
+    <group>
+        <column name="substr(regdate, 1, 8)" />
+        <column name="status" />
+    </group>
+    <navigation>
+        <index column="regdate" order="desc" />
+    </navigation>
+</query>

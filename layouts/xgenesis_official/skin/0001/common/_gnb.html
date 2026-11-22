@@ -1,0 +1,32 @@
+<div id="gnb" class="<!--@if($layout_info->gnb_background_yn=='Y')-->{$layout_info->skin_colorset}<!--@end-->">
+	<div id="gnb_utility" class="{$layout_info->skin_colorset}">
+		<!-- [광고링크] GNB 메뉴 왼쪽 -->
+		<div id="adlink_gnbLeft">
+			<a href="{$layout_info->adlink_gnbLeft_url}">{$layout_info->adlink_gnbLeft_text}</a>
+		</div>
+		<ul id="account">
+			<!-- 계정 메뉴 -->
+			<!--@if($is_logged)-->
+			<li class="first-child"><a href="#" onclick="jQuery('#memberPanel').toggleClass('active');" ><strong>{$logged_info->nick_name}</strong>님</a></li>
+			<li><a href="{getUrl('act','dispMemberLogout')}"><img src="./images/{$layout_info->skin_colorset}/btn_logout.gif" alt="{$lang->cmd_logout}" title="{$lang->cmd_logout}" class="bul" /></a></li>
+			<!--@else-->
+			<li class="first-child"><a href="{getUrl('act','dispMemberSignUpForm')}" title="{$lang->cmd_signup}">{$lang->cmd_signup}</a></li>
+			<li><a href="#" onclick="jQuery('#loginWindow').css('display','block');" accesskey="L"><img src="./images/{$layout_info->skin_colorset}/btn_login.gif" alt="{$lang->cmd_login}" title="{$lang->cmd_login}" class="bul" /></a></li>
+			<!--@end-->
+			<!-- GNB 메뉴 -->
+			<!--@if($gnb_menu->list)-->
+			{@ $index=0;}
+			<!--@foreach($gnb_menu->list as $key => $val)-->
+				<!--@if( ($layout_info->gnb_menu_count==null && $index < 3) || $index < $layout_info->gnb_menu_count)-->
+					<li><a href="{$val['href']}" <!--@if($val['open_window']=='Y')-->onclick="window.open(this.href);return false;"<!--@end--> title="{$val['text']}">{$val['link']}</a></li>
+				<!--@end-->
+				{@ $index++;}
+			<!--@endforeach-->
+			<!--@end-->
+			<!-- 더보기 -->
+			<!--@if($gnb_menu->list)-->
+			<li>더보기 <a href="#" onclick="jQuery('#moreMenuPanel').toggleClass('active');" ><img src="./images/{$layout_info->skin_colorset}/btn_gnb_menu.gif" alt="" class="bul" /></a></li>
+			<!--@end-->
+		</ul>
+	</div>
+</div>

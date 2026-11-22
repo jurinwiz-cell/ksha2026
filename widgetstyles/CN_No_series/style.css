@@ -1,0 +1,9 @@
+#iv { background-color:#e8e8e8; }
+#iv .ta { height:35px; background:transparent url("img/ta.jpg") repeat-y left  top; }
+#iv .tb { height:35px; background:transparent url("img/tb.jpg") repeat-y right top; }
+#iv .title { height:35px; margin-left:20px; }
+#iv .title .l, .r { float:left; }
+#iv .title .m { height:22px; padding-top:13px; background-image:url(img/lc.jpg); float:left; font:12px Arial, Helvetica, sans-serif, gulim; color:#fff; }
+#iv .list { margin-right:7px; padding:5px 5px 0px 5px; }
+#iv .ba { height:23px; background:transparent url("img/ba.jpg") repeat-y left   top; }
+#iv .bb { height:23px; background:transparent url("img/bc.jpg") repeat-y right  top; text-align:right; }

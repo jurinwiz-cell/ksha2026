@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="1.1">
+    <title xml:lang="ko">딩 버튼 모음집</title>
+    <title xml:lang="en">ding_button_collectiont</title>
+    <description xml:lang="ko">사용자가 위젯을 통해서 여러가지 디자인 버튼을 손쉽게 추가할 수 있도록합니다.</description>
+    <version>1.1</version>
+    <date>2015-04-03</date>
+    <author email_address="pro_bi@naver.com" link="http://goo.gl/V1hfBy">
+        <name xml:lang="ko">DING</name>
+    </author>
+    <extra_vars>
+        <var id="link">
+            <type>text</type>
+            <name>하이퍼 링크</name>
+            <description>버튼클릭 시 이동할 경로</description>
+        </var>
+        <var id="font_link">
+            <type>text</type>
+            <name>불러올 웹 폰트의 주소(경로)</name>
+            <description>버튼에 사용될 폰트의 주소를 입력합니다.</description>
+        </var>
+        <var id="font_name">
+            <type>text</type>
+            <name>사용할 폰트의 이름</name>
+            <description>사용할 폰트의 이름을 입력합니다.</description>
+        </var>
+        <var id="font_height">
+            <type>text</type>
+            <name>폰트 높이</name>
+            <description>버튼 제목의 높이를 설정합니다.</description>
+        </var>
+        <var id="font_size">
+            <type>text</type>
+            <name>폰트 크기</name>
+            <description>사용할 폰트의 크기를 설정합니다.</description>s
+        </var>
+        <var id="button_name">
+            <type>text</type>
+            <name>버튼 제목</name>
+            <description>버튼에 입력될 제목을 입력합니다.</description>
+        </var>
+        <var id="font_align">
+            <type>select</type>
+            <name xml:lang="ko">글자 정렬</name>
+            <description>글자를 원하는 방향으로 정렬합니다.</description>
+            <options>
+                <value>left</value>
+                <name xml:lang="ko">왼쪽 정렬</name>
+            </options>
+            <options>
+                <value>center</value>
+                <name xml:lang="ko">가운데 정렬</name>
+            </options>
+            <options>
+                <value>right</value>
+                <name xml:lang="ko">오른쪽 정렬</name>
+            </options>
+        </var>
+    </extra_vars>
+</widget>

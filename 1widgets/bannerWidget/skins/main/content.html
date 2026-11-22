@@ -1,0 +1,41 @@
+<!--// CSS -->
+<load target="css/jquery.main.min.css" />
+<load target="css/style.css" />
+
+<!--// JS -->
+<load target="js/jquery.main.min.js" />
+
+{@
+	$bannerWidgetId = 'bannerWidget_' . uniqid();
+}
+<div class="bannerWidget" id="{$bannerWidgetId}">
+	<!--@foreach($widget_info->ad_list as $no => $oAd)-->
+	<div>
+		{$oAd->getAdContent($widget_info->subject_cut_size, true, 'banner')}
+	</div>
+	<!--@end-->
+</div>
+{@
+	$scrollSpeed = intval($widget_info->scroll_rate);
+	$scrollDelay = intval($widget_info->scroll_speed);
+}
+<script>
+jQuery(function($) {
+	$('#{$bannerWidgetId}').bxSlider({
+		pager: false,
+		speed: {$scrollSpeed},
+		autoDelay: {$scrollDelay},
+		controls: false,
+		auto: true,
+		autoControls: false,
+		randomStart: true,
+		slideWidth: '{$widget_info->slider_width}',
+		adaptiveHeight: true,
+		touchEnabled: false,
+		<!--@if($widget_info->scroll_stop == 'Y')-->
+		autoHover: true
+		<!--@end-->
+	});
+});
+
+</script>

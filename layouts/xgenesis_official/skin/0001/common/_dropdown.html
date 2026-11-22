@@ -1,0 +1,30 @@
+<!--@if($layout_info->mainmenu_dropdown_yn=='Y')-->
+	{@ $mainmenu_count = 1;}
+	<!--@foreach($main_menu->list as $key => $val)-->
+		<!--@if($val['list'])-->
+			<!-- 권한이 없는 것을 제외한 메뉴 수 구하기 -->
+			{@ $menuCount = 0;}
+			<!--@foreach($val['list'] as $k => $v)-->
+				<!--@if($v['text']!='')-->
+				{@ $menuCount++;}
+				<!--@end-->
+			<!--@end-->
+			<div id="dropmenu{$mainmenu_count}" class="dropmenudiv" >
+				<div class="boxBorder">
+					<ul>
+						{@ $menuIndex = 1;}
+						<!--@foreach($val['list'] as $k => $v)-->
+						<!-- 권한이 없는 것을 제외한 메뉴가 아닐 경우에만 출력 -->
+						<!--@if($v['text']!='')-->
+						<li <!--@if($menuCount==$menuIndex)-->class="last"<!--@end-->><a href="{$v['href']}" <!--@if($v['open_window']=='Y')-->onclick="window.open(this.href);return false;"<!--@end-->>{$v['text']}</a></li>
+						{@ $menuIndex++;}
+						<!--@end-->
+						<!--@end-->
+					</ul>
+				</div>
+			</div>
+		<!--@end-->
+		{@$mainmenu_count++;}
+	<!--@end-->
+	<script type="text/javascript">cssdropdown.startchrome("mainMenu")</script>
+<!--@end-->

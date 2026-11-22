@@ -1,0 +1,14 @@
+<!--// js 파일 import -->
+<!-- 통합검색에서 사용하기 위해 layout_info를 Context에 설정 -->
+{@ Context::set('layout_info',$layout_info);}
+
+<!--// layout 파일 include -->
+<!--@if($layout_info->skin_kind =="main" && $layout_info->skin_number == "0001")-->
+	<!--#include("skin/0001/main/layout.html")-->
+<!--@elseif($layout_info->skin_kind =="content" && $layout_info->skin_number == "0001")-->
+	<!--#include("skin/0001/content/layout.html")-->
+<!--@elseif($layout_info->skin_kind =="search" && $layout_info->skin_number == "0001")-->
+	<!--#include("skin/0001/search/layout.html")-->
+<!--@else-->
+	<!--#include("skin/error_layout_skin.html")-->
+<!--@end-->
