@@ -1,4 +1,4 @@
-$api_key = 'AIzaSyB453H8LhzWUG-xnNOpyz236Yx4qggwBIo';
+$api_key = '';
 $channel_id = 'PLXLxTt8xUmeqb9mtsINxSWSyB1iN1yeGC';
 $max_result = 10;
 
@@ -23,7 +23,7 @@ $(function() {
             order:"date",
             part:"snippet",
             channelId:"PLXLxTt8xUmeqb9mtsINxSWSyB1iN1yeGC",
-            key:"AIzaSyB453H8LhzWUG-xnNOpyz236Yx4qggwBIo",
+            key:"",
             maxResults:10
         },
         success: function(data){
